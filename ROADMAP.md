@@ -65,10 +65,10 @@
     - 任务描述：net40 默认产出 **Windows PDB**（文件头 MSF 7.00），验收时须确认；禁止用 portable PDB 验证符号路径。
     - 验收：一条命令构建全部样例；每个 `.pdb` 文件头为 MSF 7.00；WinForms 样例可正常启动显示窗口。
 
-- [ ] **阶段0-2 用 ClrDebug 初始化 CLR v4.0.30319 的 ICorDebug 会话**
-    - [ ] 通过 ClrDebug 创建 ICorDebug 对象并初始化
-    - [ ] 启动简单 FX 4.0 控制台程序（x86）并进入调试会话
-    - [ ] 附加已有 FX 4.0 进程（x86）并进入调试会话
+- [x] **阶段0-2 用 ClrDebug 初始化 CLR v4.0.30319 的 ICorDebug 会话**
+    - [x] 通过 ClrDebug 创建 ICorDebug 对象并初始化
+    - [x] 启动简单 FX 4.0 控制台程序（x86）并进入调试会话
+    - [x] 附加已有 FX 4.0 进程（x86）并进入调试会话
     - 任务描述：ClrDebug（MIT，NuGet 0.4.2）为固定版本第三方依赖；许可证与维护状态记录进 `docs/architecture.md`。
     - 验收：启动与附加均产生正常 Process 回调；全程无托管异常；记录 ClrDebug 版本与许可证结论。
 
