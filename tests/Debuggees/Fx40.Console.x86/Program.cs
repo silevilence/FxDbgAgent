@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
@@ -22,6 +23,16 @@ namespace FxDbg.Debuggees.ConsoleX86
             {
                 int waitMilliseconds = int.Parse(args[1], CultureInfo.InvariantCulture);
                 Thread.Sleep(waitMilliseconds);
+                return;
+            }
+
+            if (args.Length == 3 && string.Equals(args[0], "--launch-observation", StringComparison.Ordinal))
+            {
+                File.WriteAllText(
+                    args[1],
+                    Environment.GetEnvironmentVariable("FXDBG_TEST") + "|" +
+                    Environment.CurrentDirectory + "|" +
+                    args[2]);
                 return;
             }
 

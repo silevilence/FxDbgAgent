@@ -4,4 +4,14 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'FxDbg.Engine.x86'">
+    <BaseIntermediateOutputPath>obj\x86\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>obj\x86\</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'FxDbg.Engine.x64'">
+    <BaseIntermediateOutputPath>obj\x64\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>obj\x64\</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+
 </Project>

@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <AssemblyName>FxDbg.Engine.x64</AssemblyName>
+    <RootNamespace>FxDbg.Engine</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="EngineLaunchPreparation.cs" />
+    <Compile Include="EngineOptions.cs" />
+    <Compile Include="EngineTargetValidator.cs" />
+    <ProjectReference Include="..\FxDbg.Core\FxDbg.Core.csproj" />
+    <ProjectReference Include="..\FxDbg.Interop\FxDbg.Interop.csproj" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+</Project>

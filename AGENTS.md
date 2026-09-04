@@ -76,7 +76,7 @@ FxDbg.sln
 ## 已知坑
 
 - **CVE-2023-36796**：处理畸形 Windows PDB 存在 RCE 风险。必须固定已修复版本的 Microsoft.DiaSymReader 系包，并假定 PDB 为不可信输入。
-- **AnyCPU 32BitPreferred**：在 64 位系统上以 x64 运行，不能仅凭 32BITREQUIRED 标志判定 32 位；`auto` 探测需覆盖。
+- **AnyCPU 32BitPreferred**：在 64 位系统上优先以 x86 运行；普通 AnyCPU 则以 x64 运行。不能只检查 32BITREQUIRED，`auto` 探测必须同时覆盖 32BITPREFERRED。
 - **就地升级**：v4.0.30319 实为已安装的最新的 4.x CLR（通常 4.8）；Engine 必须按目标进程实际运行时版本加载匹配的 mscordbi，不能假定 4.0。
 - **单一调试器**：操作系统层面一个进程只允许一个调试器附加，与「一个目标进程一个 FxDbg 会话」的需求一致——附加冲突必须返回明确错误。
 - **ClrDebug 是单维护者项目**：固定版本并评审许可证；如上游失修，`FxDbg.Interop` 薄适配层是替换为自研 COM interop 的隔离点（这正是该层存在的意义）。

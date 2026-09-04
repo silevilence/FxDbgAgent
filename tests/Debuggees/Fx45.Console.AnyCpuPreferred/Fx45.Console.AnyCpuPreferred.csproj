@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net45</TargetFramework>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+    <AssemblyName>Fx45.Console.AnyCpuPreferred</AssemblyName>
+    <RootNamespace>FxDbg.Debuggees.AnyCpuPreferred</RootNamespace>
+  </PropertyGroup>
+</Project>

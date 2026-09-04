@@ -7,6 +7,8 @@ public enum FxDbgErrorCode
     SessionNotFound,
     TargetNotFound,
     ArchitectureMismatch,
+    UnsupportedArchitecture,
+    InvalidExecutable,
     NotManagedProcess,
     CoreClrNotSupported,
     UnsupportedClrVersion,
