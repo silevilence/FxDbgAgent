@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using ClrDebug;
 
@@ -42,6 +43,8 @@ namespace FxDbg.ClrDebug.Probe
         private static ProbeResult Run(ProbeOptions options)
         {
             using (var callbackQueue = new BlockingCollection<CallbackEnvelope>())
+            using (var callbackDurations = new BlockingCollection<long>())
+            using (ProbeLogger logger = ProbeLogger.Create(options))
             {
                 CorDebugProcess callbackProcess = null;
                 int callbackThreadId = 0;
@@ -53,7 +56,18 @@ namespace FxDbg.ClrDebug.Probe
                 };
                 callback.OnAnyEvent += delegate(object sender, CorDebugManagedCallbackEventArgs eventArgs)
                 {
-                    callbackQueue.Add(new CallbackEnvelope(eventArgs.Kind, eventArgs.Controller));
+                    long started = Stopwatch.GetTimestamp();
+                    try
+                    {
+                        callbackQueue.Add(new CallbackEnvelope(
+                            eventArgs.Kind,
+                            eventArgs.Controller,
+                            Thread.CurrentThread.ManagedThreadId));
+                    }
+                    finally
+                    {
+                        callbackDurations.Add(Stopwatch.GetTimestamp() - started);
+                    }
                 };
 
                 var metaHost = new CLRMetaHost();
@@ -78,6 +92,11 @@ namespace FxDbg.ClrDebug.Probe
                     DateTime deadline = DateTime.UtcNow.Add(options.Timeout);
                     bool createProcessSeen = false;
                     bool exitProcessSeen = false;
+                    int continueCount = 0;
+                    int callbackCount = 0;
+                    int commandThreadId = Thread.CurrentThread.ManagedThreadId;
+                    var callbackKinds = new List<string>();
+                    var callbackThreadIds = new HashSet<int>();
                     while (!exitProcessSeen)
                     {
                         int remainingMilliseconds = Math.Max(
@@ -101,6 +120,15 @@ namespace FxDbg.ClrDebug.Probe
                                 options.Timeout.TotalSeconds));
                         }
 
+                        callbackCount++;
+                        callbackKinds.Add(callbackEvent.Kind.ToString());
+                        callbackThreadIds.Add(callbackEvent.CallbackThreadId);
+                        logger.Write(
+                            callbackEvent.Kind,
+                            requestedProcess.Id,
+                            callbackEvent.CallbackThreadId,
+                            commandThreadId);
+
                         if (callbackEvent.Kind == CorDebugManagedCallbackKind.CreateProcess)
                         {
                             createProcessSeen = true;
@@ -113,6 +141,7 @@ namespace FxDbg.ClrDebug.Probe
                         else
                         {
                             callbackEvent.Controller.Continue(false);
+                            continueCount++;
                         }
                     }
 
@@ -127,6 +156,20 @@ namespace FxDbg.ClrDebug.Probe
                             "The CreateProcess callback did not match the requested debug process.");
                     }
 
+                    SpinWait.SpinUntil(
+                        delegate { return callbackDurations.Count >= callbackCount; },
+                        TimeSpan.FromSeconds(1));
+                    if (callbackDurations.Count != callbackCount)
+                    {
+                        throw new InvalidOperationException(
+                            "Callback duration metrics did not match the callback event count.");
+                    }
+                    long maximumCallbackTicks = 0;
+                    foreach (long duration in callbackDurations)
+                    {
+                        maximumCallbackTicks = Math.Max(maximumCallbackTicks, duration);
+                    }
+
                     CorDebugProcess process = callbackProcess;
                     var result = new ProbeResult(
                         options.Mode.ToString().ToLowerInvariant(),
@@ -134,7 +177,14 @@ namespace FxDbg.ClrDebug.Probe
                         process.Id,
                         runtimeInfo.VersionString,
                         IntPtr.Size == 4 ? "x86" : "x64",
-                        callbackThreadId);
+                        callbackThreadId,
+                        callbackKinds.ToArray(),
+                        new List<int>(callbackThreadIds).ToArray(),
+                        callbackCount,
+                        continueCount,
+                        commandThreadId,
+                        maximumCallbackTicks * 1000.0 / Stopwatch.Frequency,
+                        logger.SessionId);
 
                     if (options.Mode == ProbeMode.Attach)
                     {
@@ -262,17 +312,30 @@ namespace FxDbg.ClrDebug.Probe
             Attach
         }
 
+        private enum ProbeLogLevel
+        {
+            Off,
+            Info,
+            Trace
+        }
+
         private sealed class CallbackEnvelope
         {
-            internal CallbackEnvelope(CorDebugManagedCallbackKind kind, CorDebugController controller)
+            internal CallbackEnvelope(
+                CorDebugManagedCallbackKind kind,
+                CorDebugController controller,
+                int callbackThreadId)
             {
                 Kind = kind;
                 Controller = controller;
+                CallbackThreadId = callbackThreadId;
             }
 
             internal CorDebugManagedCallbackKind Kind { get; private set; }
 
             internal CorDebugController Controller { get; private set; }
+
+            internal int CallbackThreadId { get; private set; }
         }
 
         private sealed class ProbeFailureException : Exception
@@ -286,6 +349,82 @@ namespace FxDbg.ClrDebug.Probe
             internal string Code { get; private set; }
         }
 
+        private sealed class ProbeLogger : IDisposable
+        {
+            private readonly ProbeLogLevel logLevel;
+            private readonly StreamWriter writer;
+
+            private ProbeLogger(ProbeLogLevel logLevel, StreamWriter writer, string sessionId)
+            {
+                this.logLevel = logLevel;
+                this.writer = writer;
+                SessionId = sessionId;
+            }
+
+            internal string SessionId { get; private set; }
+
+            internal static ProbeLogger Create(ProbeOptions options)
+            {
+                string sessionId = Guid.NewGuid().ToString("D");
+                if (options.LogLevel == ProbeLogLevel.Off)
+                {
+                    return new ProbeLogger(options.LogLevel, null, sessionId);
+                }
+
+                string fullPath = Path.GetFullPath(options.LogFilePath);
+                string directory = Path.GetDirectoryName(fullPath);
+                if (!string.IsNullOrEmpty(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                var writer = new StreamWriter(fullPath, false, new UTF8Encoding(false));
+                writer.AutoFlush = true;
+                return new ProbeLogger(options.LogLevel, writer, sessionId);
+            }
+
+            internal void Write(
+                CorDebugManagedCallbackKind callbackKind,
+                int processId,
+                int callbackThreadId,
+                int commandThreadId)
+            {
+                if (logLevel == ProbeLogLevel.Off ||
+                    (logLevel == ProbeLogLevel.Info && !IsCoreCallback(callbackKind)))
+                {
+                    return;
+                }
+
+                writer.WriteLine(string.Format(
+                    CultureInfo.InvariantCulture,
+                    "{{\"timestamp\":\"{0}\",\"level\":\"{1}\",\"sessionId\":\"{2}\",\"processId\":{3},\"callback\":\"{4}\",\"callbackThreadId\":{5},\"commandThreadId\":{6}}}",
+                    DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture),
+                    logLevel.ToString().ToLowerInvariant(),
+                    EscapeJson(SessionId),
+                    processId,
+                    callbackKind,
+                    callbackThreadId,
+                    commandThreadId));
+            }
+
+            public void Dispose()
+            {
+                if (writer != null)
+                {
+                    writer.Dispose();
+                }
+            }
+
+            private static bool IsCoreCallback(CorDebugManagedCallbackKind callbackKind)
+            {
+                return callbackKind == CorDebugManagedCallbackKind.CreateProcess ||
+                    callbackKind == CorDebugManagedCallbackKind.CreateAppDomain ||
+                    callbackKind == CorDebugManagedCallbackKind.LoadAssembly ||
+                    callbackKind == CorDebugManagedCallbackKind.LoadModule ||
+                    callbackKind == CorDebugManagedCallbackKind.CreateThread;
+            }
+        }
+
         private sealed class ProbeResult
         {
             internal ProbeResult(
@@ -294,7 +433,14 @@ namespace FxDbg.ClrDebug.Probe
                 int processId,
                 string runtimeVersion,
                 string debuggerArchitecture,
-                int callbackThreadId)
+                int callbackThreadId,
+                string[] callbackKinds,
+                int[] callbackThreadIds,
+                int callbackCount,
+                int continueCount,
+                int commandThreadId,
+                double maxCallbackDurationMilliseconds,
+                string sessionId)
             {
                 Mode = mode;
                 Callback = callback;
@@ -302,6 +448,13 @@ namespace FxDbg.ClrDebug.Probe
                 RuntimeVersion = runtimeVersion;
                 DebuggerArchitecture = debuggerArchitecture;
                 CallbackThreadId = callbackThreadId;
+                CallbackKinds = callbackKinds;
+                CallbackThreadIds = callbackThreadIds;
+                CallbackCount = callbackCount;
+                ContinueCount = continueCount;
+                CommandThreadId = commandThreadId;
+                MaxCallbackDurationMilliseconds = maxCallbackDurationMilliseconds;
+                SessionId = sessionId;
             }
 
             internal string Mode { get; private set; }
@@ -316,28 +469,79 @@ namespace FxDbg.ClrDebug.Probe
 
             internal int CallbackThreadId { get; private set; }
 
+            internal string[] CallbackKinds { get; private set; }
+
+            internal int[] CallbackThreadIds { get; private set; }
+
+            internal int CallbackCount { get; private set; }
+
+            internal int ContinueCount { get; private set; }
+
+            internal int CommandThreadId { get; private set; }
+
+            internal double MaxCallbackDurationMilliseconds { get; private set; }
+
+            internal string SessionId { get; private set; }
+
             internal string ToJson()
             {
                 return string.Format(
                     CultureInfo.InvariantCulture,
-                    "{{\"mode\":\"{0}\",\"callback\":\"{1}\",\"processId\":{2},\"runtimeVersion\":\"{3}\",\"debuggerArchitecture\":\"{4}\",\"callbackThreadId\":{5},\"managedException\":null}}",
+                    "{{\"mode\":\"{0}\",\"callback\":\"{1}\",\"processId\":{2},\"runtimeVersion\":\"{3}\",\"debuggerArchitecture\":\"{4}\",\"callbackThreadId\":{5},\"callbackKinds\":{6},\"callbackThreadIds\":{7},\"callbackCount\":{8},\"continueCount\":{9},\"commandThreadId\":{10},\"maxCallbackDurationMilliseconds\":{11},\"sessionId\":\"{12}\",\"managedException\":null}}",
                     EscapeJson(Mode),
                     EscapeJson(Callback),
                     ProcessId,
                     EscapeJson(RuntimeVersion),
                     EscapeJson(DebuggerArchitecture),
-                    CallbackThreadId);
+                    CallbackThreadId,
+                    SerializeStringArray(CallbackKinds),
+                    SerializeIntArray(CallbackThreadIds),
+                    CallbackCount,
+                    ContinueCount,
+                    CommandThreadId,
+                    MaxCallbackDurationMilliseconds.ToString("0.######", CultureInfo.InvariantCulture),
+                    EscapeJson(SessionId));
+            }
+
+            private static string SerializeStringArray(IEnumerable<string> values)
+            {
+                var escaped = new List<string>();
+                foreach (string value in values)
+                {
+                    escaped.Add("\"" + EscapeJson(value) + "\"");
+                }
+
+                return "[" + string.Join(",", escaped.ToArray()) + "]";
+            }
+
+            private static string SerializeIntArray(IEnumerable<int> values)
+            {
+                var serialized = new List<string>();
+                foreach (int value in values)
+                {
+                    serialized.Add(value.ToString(CultureInfo.InvariantCulture));
+                }
+
+                return "[" + string.Join(",", serialized.ToArray()) + "]";
             }
         }
 
         private sealed class ProbeOptions
         {
-            private ProbeOptions(ProbeMode mode, string targetPath, int? processId, TimeSpan timeout)
+            private ProbeOptions(
+                ProbeMode mode,
+                string targetPath,
+                int? processId,
+                TimeSpan timeout,
+                ProbeLogLevel logLevel,
+                string logFilePath)
             {
                 Mode = mode;
                 TargetPath = targetPath;
                 ProcessId = processId;
                 Timeout = timeout;
+                LogLevel = logLevel;
+                LogFilePath = logFilePath;
             }
 
             internal ProbeMode Mode { get; private set; }
@@ -347,6 +551,10 @@ namespace FxDbg.ClrDebug.Probe
             internal int? ProcessId { get; private set; }
 
             internal TimeSpan Timeout { get; private set; }
+
+            internal ProbeLogLevel LogLevel { get; private set; }
+
+            internal string LogFilePath { get; private set; }
 
             internal static ProbeOptions Parse(string[] args)
             {
@@ -384,6 +592,13 @@ namespace FxDbg.ClrDebug.Probe
                 int timeoutSeconds = values.TryGetValue("--timeout-seconds", out timeoutValue)
                     ? int.Parse(timeoutValue, CultureInfo.InvariantCulture)
                     : 15;
+                ProbeLogLevel logLevel = ParseLogLevel(values);
+                string logFilePath;
+                values.TryGetValue("--log-file", out logFilePath);
+                if (logLevel != ProbeLogLevel.Off && string.IsNullOrWhiteSpace(logFilePath))
+                {
+                    throw new ArgumentException("--log-file is required when callback logging is enabled.");
+                }
 
                 if (mode == ProbeMode.Launch)
                 {
@@ -393,7 +608,13 @@ namespace FxDbg.ClrDebug.Probe
                         throw new ArgumentException("Launch requires --target pointing to an existing executable.");
                     }
 
-                    return new ProbeOptions(mode, Path.GetFullPath(targetPath), null, TimeSpan.FromSeconds(timeoutSeconds));
+                    return new ProbeOptions(
+                        mode,
+                        Path.GetFullPath(targetPath),
+                        null,
+                        TimeSpan.FromSeconds(timeoutSeconds),
+                        logLevel,
+                        logFilePath);
                 }
 
                 string processIdValue;
@@ -406,7 +627,31 @@ namespace FxDbg.ClrDebug.Probe
                     mode,
                     null,
                     int.Parse(processIdValue, CultureInfo.InvariantCulture),
-                    TimeSpan.FromSeconds(timeoutSeconds));
+                    TimeSpan.FromSeconds(timeoutSeconds),
+                    logLevel,
+                    logFilePath);
+            }
+
+            private static ProbeLogLevel ParseLogLevel(IDictionary<string, string> values)
+            {
+                string value;
+                if (!values.TryGetValue("--log-level", out value) ||
+                    string.Equals(value, "off", StringComparison.OrdinalIgnoreCase))
+                {
+                    return ProbeLogLevel.Off;
+                }
+
+                if (string.Equals(value, "info", StringComparison.OrdinalIgnoreCase))
+                {
+                    return ProbeLogLevel.Info;
+                }
+
+                if (string.Equals(value, "trace", StringComparison.OrdinalIgnoreCase))
+                {
+                    return ProbeLogLevel.Trace;
+                }
+
+                throw new ArgumentException("Unsupported --log-level: " + value);
             }
         }
     }
