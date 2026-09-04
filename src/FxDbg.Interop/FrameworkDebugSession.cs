@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using ClrDebug;
 using FxDbg.Core.Errors;
+using FxDbg.Core.Execution;
 using FxDbg.Core.Model;
 
 namespace FxDbg.Interop;
@@ -16,7 +17,10 @@ public sealed class FrameworkDebugSession : IDisposable
     private readonly CorDebugManagedCallback callback;
     private readonly BlockingCollection<CallbackEnvelope> callbacks;
     private readonly object callbackGate;
+    private readonly int owningThreadId;
+    private readonly ContinueStopCoordinator callbackPairing;
     private CorDebugController? pendingEntryController;
+    private CallbackEnvelope? pendingCallbackContinue;
     private bool processExited;
     private bool disposed;
 
@@ -27,6 +31,7 @@ public sealed class FrameworkDebugSession : IDisposable
         CorDebugManagedCallback callback,
         BlockingCollection<CallbackEnvelope> callbacks,
         object callbackGate,
+        ContinueStopCoordinator callbackPairing,
         CorDebugController? pendingEntryController)
     {
         Target = target;
@@ -35,26 +40,74 @@ public sealed class FrameworkDebugSession : IDisposable
         this.callback = callback;
         this.callbacks = callbacks;
         this.callbackGate = callbackGate;
+        this.callbackPairing = callbackPairing;
+        owningThreadId = Environment.CurrentManagedThreadId;
         this.pendingEntryController = pendingEntryController;
     }
 
     public DebugTargetInfo Target { get; }
 
-    public void PumpCallbacksUntil(Func<bool> shouldStop)
+    public bool PumpNextCallback(TimeSpan timeout, CancellationToken cancellationToken)
     {
-        if (shouldStop is null)
+        if (timeout < TimeSpan.Zero && timeout != Timeout.InfiniteTimeSpan)
         {
-            throw new ArgumentNullException(nameof(shouldStop));
+            throw new ArgumentOutOfRangeException(nameof(timeout));
         }
 
         ThrowIfDisposed();
-        while (!shouldStop())
+        ThrowIfWrongThread();
+        int milliseconds = timeout == Timeout.InfiniteTimeSpan
+            ? Timeout.Infinite
+            : (int)Math.Min(int.MaxValue, Math.Ceiling(timeout.TotalMilliseconds));
+        if (callbacks.TryTake(out CallbackEnvelope envelope, milliseconds, cancellationToken))
         {
-            if (callbacks.TryTake(out CallbackEnvelope envelope, 100))
-            {
-                HandleCallback(envelope, false);
-            }
+            HandleCallback(envelope, false);
+            return true;
         }
+
+        return false;
+    }
+
+    public ContinuePairingSnapshot RunPauseContinueCycles(
+        int cycleCount,
+        TimeSpan timeout,
+        CancellationToken cancellationToken)
+    {
+        if (cycleCount <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(cycleCount));
+        }
+
+        if (timeout <= TimeSpan.Zero)
+        {
+            throw new ArgumentOutOfRangeException(nameof(timeout));
+        }
+
+        ThrowIfDisposed();
+        ThrowIfWrongThread();
+        DateTime deadline = DateTime.UtcNow.Add(timeout);
+        DrainCallbacksUntilQuiet(deadline, cancellationToken);
+        long initialStops = callbackPairing.StopCount;
+        long initialContinues = callbackPairing.ContinueCount;
+        for (int index = 0; index < cycleCount; index++)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (DateTime.UtcNow >= deadline)
+            {
+                throw new FxDbgException(
+                    FxDbgErrorCode.OperationTimedOut,
+                    $"Pause/Continue verification did not finish within {timeout.TotalSeconds} seconds.");
+            }
+
+            process.Stop(0);
+            callbackPairing.RecordManualStop();
+            callbackPairing.Continue(() => process.Continue(false));
+        }
+
+        return new ContinuePairingSnapshot(
+            callbackPairing.StopCount - initialStops,
+            callbackPairing.ContinueCount - initialContinues,
+            callbackPairing.OutstandingStopCount);
     }
 
     public void Dispose()
@@ -64,6 +117,7 @@ public sealed class FrameworkDebugSession : IDisposable
             return;
         }
 
+        ThrowIfWrongThread();
         disposed = true;
         bool debuggerCanTerminate = false;
         try
@@ -94,7 +148,6 @@ public sealed class FrameworkDebugSession : IDisposable
     private void ReleaseEntryStop()
     {
         CorDebugController? entryController = pendingEntryController;
-        pendingEntryController = null;
         if (entryController is null)
         {
             return;
@@ -102,7 +155,8 @@ public sealed class FrameworkDebugSession : IDisposable
 
         try
         {
-            entryController.Continue(false);
+            callbackPairing.Continue(() => entryController.Continue(false));
+            pendingEntryController = null;
         }
         catch (Exception)
         {
@@ -119,6 +173,49 @@ public sealed class FrameworkDebugSession : IDisposable
         while (DateTime.UtcNow < deadline)
         {
             WaitForCallbackProducerBarrier();
+            if (pendingEntryController is not null)
+            {
+                try
+                {
+                    callbackPairing.Continue(() => pendingEntryController.Continue(false));
+                    pendingEntryController = null;
+                }
+                catch (Exception exception)
+                {
+                    lastFailure = exception;
+                    if (HasTargetExited())
+                    {
+                        WaitForExitProcess(deadline);
+                        return;
+                    }
+
+                    Thread.Sleep(10);
+                    continue;
+                }
+            }
+
+            if (pendingCallbackContinue is not null)
+            {
+                try
+                {
+                    CallbackEnvelope pending = pendingCallbackContinue;
+                    callbackPairing.Continue(() => pending.Controller.Continue(false));
+                    pendingCallbackContinue = null;
+                }
+                catch (Exception exception)
+                {
+                    lastFailure = exception;
+                    if (HasTargetExited())
+                    {
+                        WaitForExitProcess(deadline);
+                        return;
+                    }
+
+                    Thread.Sleep(10);
+                    continue;
+                }
+            }
+
             if (callbacks.TryTake(out CallbackEnvelope envelope))
             {
                 awaitingQueuedCallback = false;
@@ -185,6 +282,7 @@ public sealed class FrameworkDebugSession : IDisposable
                 }
 
                 process.Detach();
+                callbackPairing.MarkTerminated();
                 return;
             }
             catch (Exception exception)
@@ -237,22 +335,24 @@ public sealed class FrameworkDebugSession : IDisposable
         if (envelope.Kind == CorDebugManagedCallbackKind.ExitProcess)
         {
             processExited = true;
+            callbackPairing.MarkTerminated();
             return;
         }
 
+        callbackPairing.RecordCallbackStop(envelope.Sequence);
         if (!suppressContinueFailure)
         {
-            envelope.Controller.Continue(false);
+            callbackPairing.Continue(() => envelope.Controller.Continue(false));
             return;
         }
 
         try
         {
-            envelope.Controller.Continue(false);
+            callbackPairing.Continue(() => envelope.Controller.Continue(false));
         }
         catch (Exception)
         {
-            // The shutdown loop will retry synchronization or wait for ExitProcess.
+            pendingCallbackContinue = envelope;
         }
     }
 
@@ -276,6 +376,28 @@ public sealed class FrameworkDebugSession : IDisposable
             if (envelope.Kind == CorDebugManagedCallbackKind.ExitProcess)
             {
                 processExited = true;
+                callbackPairing.MarkTerminated();
+            }
+        }
+    }
+
+    private void DrainCallbacksUntilQuiet(DateTime deadline, CancellationToken cancellationToken)
+    {
+        DateTime quietDeadline = DateTime.UtcNow.AddMilliseconds(100);
+        while (DateTime.UtcNow < quietDeadline)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (DateTime.UtcNow >= deadline)
+            {
+                throw new FxDbgException(
+                    FxDbgErrorCode.OperationTimedOut,
+                    "Callback queue did not become quiet before the operation timed out.");
+            }
+
+            if (callbacks.TryTake(out CallbackEnvelope envelope, 10, cancellationToken))
+            {
+                HandleCallback(envelope, false);
+                quietDeadline = DateTime.UtcNow.AddMilliseconds(100);
             }
         }
     }
@@ -287,4 +409,30 @@ public sealed class FrameworkDebugSession : IDisposable
             throw new ObjectDisposedException(nameof(FrameworkDebugSession));
         }
     }
+
+    private void ThrowIfWrongThread()
+    {
+        if (Environment.CurrentManagedThreadId != owningThreadId)
+        {
+            throw new FxDbgException(
+                FxDbgErrorCode.InternalError,
+                "ICorDebug operations must run on the Engine command scheduler thread.");
+        }
+    }
+}
+
+public sealed class ContinuePairingSnapshot
+{
+    internal ContinuePairingSnapshot(long stopCount, long continueCount, long outstandingStopCount)
+    {
+        StopCount = stopCount;
+        ContinueCount = continueCount;
+        OutstandingStopCount = outstandingStopCount;
+    }
+
+    public long StopCount { get; }
+
+    public long ContinueCount { get; }
+
+    public long OutstandingStopCount { get; }
 }

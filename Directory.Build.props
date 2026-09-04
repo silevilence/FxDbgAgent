@@ -14,4 +14,9 @@
     <MSBuildProjectExtensionsPath>obj\x64\</MSBuildProjectExtensionsPath>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'FxDbg.Engine.Runtime'">
+    <BaseIntermediateOutputPath>obj\runtime\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>obj\runtime\</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+
 </Project>

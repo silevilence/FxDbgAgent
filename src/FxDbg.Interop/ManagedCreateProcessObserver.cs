@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Concurrent;
 using System.Globalization;
+using System.Threading;
 using ClrDebug;
 using FxDbg.Core.Errors;
+using FxDbg.Core.Execution;
 using FxDbg.Core.Model;
 using FxDbg.Core.Requests;
 using FxDbg.Core.Sessions;
@@ -20,12 +22,17 @@ internal static class ManagedCreateProcessObserver
     {
         var callbacks = new BlockingCollection<CallbackEnvelope>();
         var callbackGate = new object();
+        var callbackPairing = new ContinueStopCoordinator(TargetExecutionState.Running);
+        long callbackSequence = 0;
         var callback = new CorDebugManagedCallback();
         callback.OnAnyEvent += (_, eventArgs) =>
         {
             lock (callbackGate)
             {
-                callbacks.Add(new CallbackEnvelope(eventArgs.Kind, eventArgs.Controller));
+                callbacks.Add(new CallbackEnvelope(
+                    Interlocked.Increment(ref callbackSequence),
+                    eventArgs.Kind,
+                    eventArgs.Controller));
             }
         };
 
@@ -36,10 +43,22 @@ internal static class ManagedCreateProcessObserver
             corDebug.Initialize();
             corDebug.SetManagedHandler(callback);
             process = start(corDebug);
-            CorDebugController? entryController = WaitForCreateProcess(callbacks, timeout, stopAtEntry);
+            CorDebugController? entryController = WaitForCreateProcess(
+                callbacks,
+                callbackPairing,
+                timeout,
+                stopAtEntry);
             DebugSessionState state = stopAtEntry ? DebugSessionState.Stopped : DebugSessionState.Running;
             var target = new DebugTargetInfo(process.Id, architecture, "v4.0.30319", launchedByDebugger, state);
-            return new FrameworkDebugSession(target, corDebug, process, callback, callbacks, callbackGate, entryController);
+            return new FrameworkDebugSession(
+                target,
+                corDebug,
+                process,
+                callback,
+                callbacks,
+                callbackGate,
+                callbackPairing,
+                entryController);
         }
         catch
         {
@@ -63,6 +82,7 @@ internal static class ManagedCreateProcessObserver
 
     private static CorDebugController? WaitForCreateProcess(
         BlockingCollection<CallbackEnvelope> callbacks,
+        ContinueStopCoordinator callbackPairing,
         TimeSpan timeout,
         bool stopAtEntry)
     {
@@ -79,15 +99,17 @@ internal static class ManagedCreateProcessObserver
 
             if (envelope.Kind == CorDebugManagedCallbackKind.ExitProcess)
             {
+                callbackPairing.MarkTerminated();
                 throw new FxDbgException(FxDbgErrorCode.EngineExited, "Target exited before the CreateProcess callback was observed.");
             }
 
+            callbackPairing.RecordCallbackStop(envelope.Sequence);
             if (envelope.Kind == CorDebugManagedCallbackKind.CreateProcess && stopAtEntry)
             {
                 return envelope.Controller;
             }
 
-            envelope.Controller.Continue(false);
+            callbackPairing.Continue(() => envelope.Controller.Continue(false));
             if (envelope.Kind == CorDebugManagedCallbackKind.CreateProcess)
             {
                 return null;
@@ -117,8 +139,9 @@ internal static class ManagedCreateProcessObserver
 
 internal sealed class CallbackEnvelope
 {
-    internal CallbackEnvelope(CorDebugManagedCallbackKind kind, CorDebugController controller)
+    internal CallbackEnvelope(long sequence, CorDebugManagedCallbackKind kind, CorDebugController controller)
     {
+        Sequence = sequence;
         Kind = kind;
         Controller = controller;
     }
@@ -126,4 +149,6 @@ internal sealed class CallbackEnvelope
     internal CorDebugManagedCallbackKind Kind { get; }
 
     internal CorDebugController Controller { get; }
+
+    internal long Sequence { get; }
 }

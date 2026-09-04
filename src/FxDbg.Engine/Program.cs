@@ -4,6 +4,7 @@ using System.Threading;
 using FxDbg.Core.Errors;
 using FxDbg.Core.Model;
 using FxDbg.Core.Requests;
+using FxDbg.Engine.Scheduling;
 using FxDbg.Interop;
 
 namespace FxDbg.Engine;
@@ -17,25 +18,65 @@ internal static class Program
         {
             EngineOptions options = EngineOptions.Parse(args);
             EngineTargetValidator.RequireCurrentArchitecture(options.Architecture);
-            using FrameworkDebugSession session = options.Mode == EngineMode.Launch
-                ? Launch(options)
-                : Attach(options);
-            DebugTargetInfo target = session.Target;
-            Console.WriteLine(
-                "{\"ok\":true,\"sessionId\":\"" + Escape(options.SessionId.ToString()) +
-                "\",\"processId\":" + target.ProcessId.ToString(CultureInfo.InvariantCulture) +
-                ",\"architecture\":\"" + Format(target.Architecture) +
-                "\",\"runtimeVersion\":\"" + Escape(target.RuntimeVersion) +
-                "\",\"sessionState\":\"" + target.SessionState.ToString().ToLowerInvariant() + "\"}");
-            Console.Out.Flush();
-            if (options.HoldSession)
+            FrameworkDebugSession? session = null;
+            using var scheduler = new SingleThreadCommandScheduler(
+                "FxDbg.Engine.CommandScheduler",
+                cancellationToken => session?.PumpNextCallback(TimeSpan.FromMilliseconds(10), cancellationToken));
+            try
             {
-                PumpUntilInputCloses(session);
+                session = scheduler.EnqueueAsync(
+                        _ => options.Mode == EngineMode.Launch ? Launch(options) : Attach(options),
+                        AddShutdownGrace(options.Timeout))
+                    .GetAwaiter()
+                    .GetResult();
+                ContinuePairingSnapshot? verification = null;
+                if (options.VerificationCycles > 0)
+                {
+                    FrameworkDebugSession captured = session;
+                    verification = scheduler.EnqueueAsync(
+                            cancellationToken => captured.RunPauseContinueCycles(
+                                options.VerificationCycles,
+                                options.Timeout,
+                                cancellationToken),
+                            AddShutdownGrace(options.Timeout))
+                        .GetAwaiter()
+                        .GetResult();
+                }
+
+                DebugTargetInfo target = session.Target;
+                Console.WriteLine(
+                    "{\"ok\":true,\"sessionId\":\"" + Escape(options.SessionId.ToString()) +
+                    "\",\"processId\":" + target.ProcessId.ToString(CultureInfo.InvariantCulture) +
+                    ",\"architecture\":\"" + Format(target.Architecture) +
+                    "\",\"runtimeVersion\":\"" + Escape(target.RuntimeVersion) +
+                    "\",\"sessionState\":\"" + target.SessionState.ToString().ToLowerInvariant() + "\"" +
+                    FormatVerification(verification) + "}");
+                Console.Out.Flush();
+                if (options.HoldSession)
+                {
+                    WaitUntilInputCloses();
+                }
+                else
+                {
+                    Thread.Sleep(250);
+                }
             }
-            else
+            finally
             {
-                DateTime initializationDeadline = DateTime.UtcNow.AddMilliseconds(250);
-                session.PumpCallbacksUntil(() => DateTime.UtcNow >= initializationDeadline);
+                if (session is not null)
+                {
+                    FrameworkDebugSession captured = session;
+                    scheduler.EnqueueAsync(
+                            _ =>
+                            {
+                                captured.Dispose();
+                                return true;
+                            },
+                            TimeSpan.FromSeconds(5))
+                        .GetAwaiter()
+                        .GetResult();
+                    session = null;
+                }
             }
 
             return 0;
@@ -73,28 +114,17 @@ internal static class Program
         return bootstrap.Attach(processId, options.Architecture, options.Timeout);
     }
 
-    private static void PumpUntilInputCloses(FrameworkDebugSession session)
+    private static void WaitUntilInputCloses()
     {
-        using var inputClosed = new ManualResetEvent(false);
-        var inputMonitor = new Thread(() =>
+        while (Console.In.ReadLine() is not null)
         {
-            try
-            {
-                while (Console.In.ReadLine() is not null)
-                {
-                }
-            }
-            finally
-            {
-                inputClosed.Set();
-            }
-        })
-        {
-            IsBackground = true,
-            Name = "FxDbg.Engine.InputMonitor"
-        };
-        inputMonitor.Start();
-        session.PumpCallbacksUntil(() => inputClosed.WaitOne(0));
+        }
+    }
+
+    private static TimeSpan AddShutdownGrace(TimeSpan timeout)
+    {
+        double milliseconds = Math.Min(TimeSpan.MaxValue.TotalMilliseconds, timeout.TotalMilliseconds + 1_000);
+        return TimeSpan.FromMilliseconds(milliseconds);
     }
 
     private static int ExitCode(FxDbgErrorCode code) => code switch
@@ -110,6 +140,18 @@ internal static class Program
     };
 
     private static string Format(TargetArchitecture value) => value.ToString().ToLowerInvariant();
+
+    private static string FormatVerification(ContinuePairingSnapshot? verification)
+    {
+        if (verification is null)
+        {
+            return string.Empty;
+        }
+
+        return ",\"verificationStopCount\":" + verification.StopCount.ToString(CultureInfo.InvariantCulture) +
+            ",\"verificationContinueCount\":" + verification.ContinueCount.ToString(CultureInfo.InvariantCulture) +
+            ",\"verificationOutstandingStopCount\":" + verification.OutstandingStopCount.ToString(CultureInfo.InvariantCulture);
+    }
 
     private static string Escape(string value) => value
         .Replace("\\", "\\\\")

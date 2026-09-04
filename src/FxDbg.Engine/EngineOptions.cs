@@ -26,6 +26,7 @@ internal sealed class EngineOptions
         TargetArchitecture architecture,
         bool stopAtEntry,
         bool holdSession,
+        int verificationCycles,
         TimeSpan timeout)
     {
         Mode = mode;
@@ -38,6 +39,7 @@ internal sealed class EngineOptions
         Architecture = architecture;
         StopAtEntry = stopAtEntry;
         HoldSession = holdSession;
+        VerificationCycles = verificationCycles;
         Timeout = timeout;
     }
 
@@ -51,6 +53,7 @@ internal sealed class EngineOptions
     internal TargetArchitecture Architecture { get; }
     internal bool StopAtEntry { get; }
     internal bool HoldSession { get; }
+    internal int VerificationCycles { get; }
     internal TimeSpan Timeout { get; }
 
     internal LaunchRequest ToLaunchRequest() => new(
@@ -79,6 +82,7 @@ internal sealed class EngineOptions
         SessionId sessionId = SessionId.New();
         bool stopAtEntry = false;
         bool holdSession = false;
+        int verificationCycles = 0;
         var arguments = new List<string>();
         var environment = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         for (int index = 1; index < args.Length; index++)
@@ -118,6 +122,7 @@ internal sealed class EngineOptions
                     case "--arch": architecture = ParseArchitecture(value); break;
                     case "--timeout-ms": timeout = TimeSpan.FromMilliseconds(ParsePositiveInt(value, option)); break;
                     case "--session-id": sessionId = ParseSessionId(value); break;
+                    case "--verification-cycles": verificationCycles = ParsePositiveInt(value, option); break;
                     default: throw Invalid("Unknown engine option: " + option);
                 }
             }
@@ -149,6 +154,7 @@ internal sealed class EngineOptions
             architecture,
             stopAtEntry,
             holdSession,
+            verificationCycles,
             timeout);
     }
 

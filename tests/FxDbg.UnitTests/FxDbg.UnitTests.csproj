@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\FxDbg.Core\FxDbg.Core.csproj" />
+    <ProjectReference Include="..\..\src\FxDbg.Engine\FxDbg.Engine.Runtime.csproj" />
     <ProjectReference Include="..\..\src\FxDbg.Host\FxDbg.Host.csproj" />
   </ItemGroup>
 </Project>

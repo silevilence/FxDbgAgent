@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>FxDbg.Engine.Runtime</AssemblyName>
+    <RootNamespace>FxDbg.Engine</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Scheduling\*.cs" />
+    <ProjectReference Include="..\FxDbg.Core\FxDbg.Core.csproj" />
+  </ItemGroup>
+</Project>

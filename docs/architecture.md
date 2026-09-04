@@ -1,6 +1,6 @@
 # FxDbg Agent 架构与技术验证记录
 
-> 状态：阶段 0 技术验证已完成，等待用户确认后方可进入阶段 1。汇总结论见 [阶段 0 技术验证报告](stage0-validation-report.md)。
+> 状态：阶段 0 报告已获用户确认，阶段 1 产品实现进行中。汇总结论见 [阶段 0 技术验证报告](stage0-validation-report.md)。
 
 ## 已定架构约束
 
@@ -8,6 +8,14 @@
 - `FxDbg.Engine.x86.exe` 与 `FxDbg.Engine.x64.exe` 分进程承载 ICorDebug，Engine 与目标进程位数必须一致。
 - Engine 与 Host 使用 Named Pipe + JSON-RPC；CLI、MCP 与未来 DAP 共享同一 Host/Engine 逻辑。
 - MVP 只观察目标状态，不执行函数求值、属性 Getter、`ToString()` 或变量修改。
+
+## Engine 命令调度与回调桥（阶段1-3）
+
+- `FxDbg.Engine.Runtime` 提供每个 Engine 会话独占的单线程命令调度器；Engine 主线程只处理 stdio 生命周期，不调用 ICorDebug。
+- 启动、附加、回调消费、`Continue`、Detach 与 ICorDebug 终止均在同一调度线程执行。`FxDbg.Interop` 会校验会话操作线程，跨线程调用立即失败。
+- ClrDebug 回调处理器只把最小回调信封写入并发队列；调度线程空闲时消费信封并执行对应的 `Continue(false)`，回调线程不执行调试命令或 I/O。
+- 命令从入队时开始计算超时；排队中的取消会立即完成且不会执行，执行中的超时/取消通过令牌协作生效。命令必须在不可重复副作用前检查令牌，成功返回是提交点，返回后到达的取消不得把成功改报失败；工作项结束后调度器仍可串行接受后续命令。
+- `ContinueStopCoordinator` 将每个停止计数与一次 Continue 原子配对：原生 Continue 成功后才提交 Running 状态，失败时保留未消费停止；重复 Continue 与重复/倒序停止序列均返回明确错误。
 
 ## ClrDebug 依赖结论（阶段0-2）
 
