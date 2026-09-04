@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <AssemblyName>FxDbg.ClrDebug.Probe.x64</AssemblyName>
+    <RootNamespace>FxDbg.ClrDebug.Probe</RootNamespace>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="../FxDbg.ClrDebug.Probe/Program.cs" Link="Program.cs" />
+    <PackageReference Include="ClrDebug" Version="0.4.2" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+</Project>

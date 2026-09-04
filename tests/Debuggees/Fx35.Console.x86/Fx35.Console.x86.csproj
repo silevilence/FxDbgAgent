@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net35</TargetFramework>
+    <PlatformTarget>x86</PlatformTarget>
+    <AssemblyName>Fx35.Console.x86</AssemblyName>
+    <RootNamespace>FxDbg.Debuggees.Fx35ConsoleX86</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+</Project>

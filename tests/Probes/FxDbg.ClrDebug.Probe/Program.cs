@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 using ClrDebug;
 
@@ -11,6 +14,9 @@ namespace FxDbg.ClrDebug.Probe
     internal static class Program
     {
         private const string FrameworkRuntimeVersion = "v4.0.30319";
+        private const ushort ImageFileMachineUnknown = 0;
+        private const ushort ImageFileMachineI386 = 0x014c;
+        private const ushort ImageFileMachineAmd64 = 0x8664;
 
         [MTAThread]
         private static int Main(string[] args)
@@ -24,8 +30,10 @@ namespace FxDbg.ClrDebug.Probe
             }
             catch (Exception exception)
             {
+                ProbeFailureException failure = exception as ProbeFailureException;
                 Console.Error.WriteLine(
-                    "{\"error\":\"" + EscapeJson(exception.GetType().FullName) +
+                    "{\"code\":\"" + EscapeJson(failure == null ? "debug_api_error" : failure.Code) +
+                    "\",\"error\":\"" + EscapeJson(exception.GetType().FullName) +
                     "\",\"message\":\"" + EscapeJson(exception.Message) + "\"}");
                 return 1;
             }
@@ -63,6 +71,7 @@ namespace FxDbg.ClrDebug.Probe
                     }
                     else
                     {
+                        ValidateAttachTarget(options.ProcessId.Value);
                         requestedProcess = corDebug.DebugActiveProcess(options.ProcessId.Value, false);
                     }
 
@@ -164,6 +173,89 @@ namespace FxDbg.ClrDebug.Probe
             return value.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\r", "\\r").Replace("\n", "\\n");
         }
 
+        private static void ValidateAttachTarget(int processId)
+        {
+            using (Process process = Process.GetProcessById(processId))
+            {
+                string debuggerArchitecture = IntPtr.Size == 4 ? "x86" : "x64";
+                string targetArchitecture = GetProcessArchitecture(process);
+                if (!string.Equals(debuggerArchitecture, targetArchitecture, StringComparison.Ordinal))
+                {
+                    throw new ProbeFailureException(
+                        "architecture_mismatch",
+                        "Debugger architecture " + debuggerArchitecture +
+                        " does not match target architecture " + targetArchitecture + ".");
+                }
+
+                bool hasFramework4 = false;
+                bool hasFramework2 = false;
+                bool hasCoreClr = false;
+                foreach (ProcessModule module in process.Modules)
+                {
+                    string moduleName = module.ModuleName.ToLowerInvariant();
+                    hasFramework4 = hasFramework4 || moduleName == "clr.dll";
+                    hasFramework2 = hasFramework2 || moduleName == "mscorwks.dll";
+                    hasCoreClr = hasCoreClr || moduleName == "coreclr.dll";
+                }
+
+                if (hasCoreClr)
+                {
+                    throw new ProbeFailureException(
+                        "coreclr_not_supported",
+                        "Target uses CoreCLR; this probe supports .NET Framework CLR v4 only.");
+                }
+
+                if (hasFramework2)
+                {
+                    throw new ProbeFailureException(
+                        "unsupported_clr_version",
+                        "Target uses CLR v2.0.50727; only CLR v4.0.30319 is supported.");
+                }
+
+                if (!hasFramework4)
+                {
+                    throw new ProbeFailureException(
+                        "not_managed_process",
+                        "Target has no loaded .NET Framework CLR module.");
+                }
+            }
+        }
+
+        private static string GetProcessArchitecture(Process process)
+        {
+            ushort processMachine;
+            ushort nativeMachine;
+            if (!IsWow64Process2(process.Handle, out processMachine, out nativeMachine))
+            {
+                throw new Win32Exception(Marshal.GetLastWin32Error(), "IsWow64Process2 failed.");
+            }
+
+            ushort effectiveMachine = processMachine == ImageFileMachineUnknown
+                ? nativeMachine
+                : processMachine;
+            if (effectiveMachine == ImageFileMachineI386)
+            {
+                return "x86";
+            }
+
+            if (effectiveMachine == ImageFileMachineAmd64)
+            {
+                return "x64";
+            }
+
+            throw new ProbeFailureException(
+                "unsupported_architecture",
+                "Target machine type 0x" + effectiveMachine.ToString("X4", CultureInfo.InvariantCulture) +
+                " is not supported.");
+        }
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool IsWow64Process2(
+            IntPtr processHandle,
+            out ushort processMachine,
+            out ushort nativeMachine);
+
         private enum ProbeMode
         {
             Launch,
@@ -181,6 +273,17 @@ namespace FxDbg.ClrDebug.Probe
             internal CorDebugManagedCallbackKind Kind { get; private set; }
 
             internal CorDebugController Controller { get; private set; }
+        }
+
+        private sealed class ProbeFailureException : Exception
+        {
+            internal ProbeFailureException(string code, string message)
+                : base(message)
+            {
+                Code = code;
+            }
+
+            internal string Code { get; private set; }
         }
 
         private sealed class ProbeResult

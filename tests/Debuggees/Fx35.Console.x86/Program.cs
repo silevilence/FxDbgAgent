@@ -2,17 +2,12 @@ using System;
 using System.Globalization;
 using System.Threading;
 
-namespace FxDbg.Debuggees.ConsoleX64
+namespace FxDbg.Debuggees.Fx35ConsoleX86
 {
     internal static class Program
     {
         private static void Main(string[] args)
         {
-            if (args.Length == 1 && string.Equals(args[0], "--probe", StringComparison.Ordinal))
-            {
-                return;
-            }
-
             if (args.Length == 2 && string.Equals(args[0], "--wait-milliseconds", StringComparison.Ordinal))
             {
                 int waitMilliseconds = int.Parse(args[1], CultureInfo.InvariantCulture);
@@ -20,8 +15,7 @@ namespace FxDbg.Debuggees.ConsoleX64
                 return;
             }
 
-            Console.WriteLine("FxDbg .NET Framework 4.0 x64 debuggee");
-            Console.WriteLine("CLR " + Environment.Version);
+            Console.WriteLine("FxDbg unsupported CLR 2.0 x86 debuggee");
         }
     }
 }
