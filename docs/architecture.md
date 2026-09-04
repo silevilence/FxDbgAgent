@@ -49,3 +49,15 @@
 - 普通回调与 `Continue(false)` 严格一一配对，`ExitProcess` 不调用 Continue；验收脚本同时核对事件数与 Continue 计数。
 - `info` 只记录五类核心事件，`trace` 记录完整事件流，`off` 不创建日志文件。每条 JSONL 日志含 UTC 时间、会话 ID、进程 ID、回调类型、回调线程 ID 和命令线程 ID。
 - Debug 与 Release 验收均要求单次回调入队耗时低于 50 ms；该阈值用于发现明显阻塞，不作为产品性能承诺。
+
+## Windows PDB 读取结论（阶段0-5）
+
+- 固定 `Microsoft.DiaSymReader` 2.2.11 与 `Microsoft.DiaSymReader.Native` 17.12.0-beta1.24603.5；前者提供托管接口，后者提供 Windows PDB 原生读取器。本项目将该 Native 版本作为 2023 年安全公告之后的固定基线，但不声称它是 Microsoft 官方确认的最低 CVE 修复版本。
+- 只打开调用方明确指定的本地 PDB，不启用注册表 COM 回退或网络符号搜索。先从 PE CodeView 目录读取 GUID、stamp、age，再通过 `ISymUnmanagedReader5.MatchesModule` 验证 PDB 与模块身份。
+- 源码行通过 document → method → sequence point 映射为 method token 与方法内 IL offset；隐藏 sequence point 被过滤，同一行的全部候选方法与 offset 都会保留，符号层不自行移动断点行。
+- 在 x64 Probe 中读取真实 net40 Windows PDB（MSF 7.00），`FxDbg.Debuggees.ConsoleX86.Program.Main` 第 23 行映射为 method token `0x06000001`、IL offset 82；独立读取该方法 IL 确认 offset 82 是该语句的 `ldstr` 指令。
+- 对外明确区分 `pdb_missing`、`pdb_mismatch`、`read_failed`。PDB 已加载但指定行没有 sequence point 时返回 `loaded` 与空映射，不冒充读取失败。
+- Windows PDB 始终按不可信输入处理：PE/PDB 单文件限制 512 MiB，文档、方法、sequence point 分别限制 10 万、100 万、500 万项，托管枚举预算 30 秒。Native 调用无法在进程内可靠中断，产品化实现仍须依靠 Engine 进程隔离及 Host 超时回收。
+- reader 生命周期显式调用 `ISymUnmanagedDispose.Destroy`、释放 COM 引用并关闭文件流。阶段 0 的空 metadata provider 仅足够读取文档、方法和 sequence point；阶段 1 读取局部变量签名时必须换成真实 provider。
+
+详细依据见 [Windows PDB / DiaSymReader 技术验证结论](research/windows-pdb-dia.md)，机器可读状态样例及人工 IL 复核见 [阶段 0-5 验证样例](validation/stage0-5-symbol-status-examples.md)。

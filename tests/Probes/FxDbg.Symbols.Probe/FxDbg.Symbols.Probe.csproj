@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <AssemblyName>FxDbg.Symbols.Probe</AssemblyName>
+    <RootNamespace>FxDbg.Symbols.Probe</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.DiaSymReader" Version="2.2.11" />
+    <PackageReference Include="Microsoft.DiaSymReader.Native" Version="17.12.0-beta1.24603.5" />
+  </ItemGroup>
+</Project>
