@@ -1,6 +1,6 @@
 # ClrDebug 0.4.2：CLR v4.0.30319 启动/附加验证笔记
 
-> 调研日期：2026-09-04  
+> 调研日期：2026-09-04
 > 范围：ROADMAP 阶段0-2；只采用 NuGet 包元数据、`lordmilko/ClrDebug` 上游源码/许可证和 Microsoft 官方文档/IDL。
 
 ## 结论
