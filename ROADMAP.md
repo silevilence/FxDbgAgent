@@ -58,11 +58,11 @@
 
 ### 阶段 1：调试引擎 MVP
 
-- [ ] **阶段1-1 FxDbg.Core：会话状态机与领域模型**
-    - [ ] 状态集合：created / starting / running / stopped / detaching / terminated / failed
-    - [ ] 断点、线程、栈帧、变量、异常的统一模型
-    - [ ] 引擎请求与事件定义、统一错误码
-    - [ ] 所有状态变更产生结构化事件
+- [x] **阶段1-1 FxDbg.Core：会话状态机与领域模型**
+    - [x] 状态集合：created / starting / running / stopped / detaching / terminated / failed
+    - [x] 断点、线程、栈帧、变量、异常的统一模型
+    - [x] 引擎请求与事件定义、统一错误码
+    - [x] 所有状态变更产生结构化事件
     - 验收：单元测试覆盖非法迁移（未停止时继续、重复继续等）；事件序列完整可枚举。
 
 - [ ] **阶段1-2 Engine 进程宿主：启动 / 附加与架构探测**
