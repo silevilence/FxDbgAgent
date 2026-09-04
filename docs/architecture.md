@@ -1,6 +1,6 @@
 # FxDbg Agent 架构与技术验证记录
 
-> 状态：阶段 0 技术验证进行中。阶段0-7将汇总本文件并固化最终结论。
+> 状态：阶段 0 技术验证已完成，等待用户确认后方可进入阶段 1。汇总结论见 [阶段 0 技术验证报告](stage0-validation-report.md)。
 
 ## 已定架构约束
 
@@ -72,3 +72,10 @@
 - `FxDbg.Breakpoint.Probe` 只是阶段 0 技术探针；其会话代码不会进入 CLI/MCP 产品路径。阶段 1 必须把同一机制收敛到 `FxDbg.Interop`、`FxDbg.Engine` 与 `FxDbg.Host` 的单一逻辑源。
 
 复核记录见 [阶段 0-6 源码断点与调用栈验证](validation/stage0-6-breakpoint-stack.md)。
+
+## 阶段 0 架构结论（阶段0-7）
+
+- 技术验证确认既定 Host + x86/x64 双 Engine、同位数 ICorDebug、Windows PDB 与只读观察优先路线可行。
+- 没有结论推翻需求 §16 的既定决策，因此本阶段没有新增反向 ADR。
+- Probe 是阶段 0 验证资产，不是产品架构层；阶段 1 必须按计划目录把协议无关模型、ClrDebug 适配、符号、Engine 与 Host 分离。
+- AnyCPU 32BitPreferred 启动路由、Named Pipe/JSON-RPC、变量读取、异常与崩溃清理仍是后续实现项，不得把阶段 0 的可行性结论误写成已经交付。

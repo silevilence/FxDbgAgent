@@ -1,12 +1,12 @@
 # AGENTS.md
 
-本文件为在本仓库工作的 AI 编码助手与人类开发者提供事实与约束。当前仓库处于**规划阶段**：尚无实现代码。本文件内容来源于《FX 4.0 AI 调试器需求文档》（见对话上下文 / docs 规划）与可行性评估结论；一旦代码落地，此文件必须回填真实构建与测试命令。
+本文件为在本仓库工作的 AI 编码助手与人类开发者提供事实与约束。仓库已完成**阶段 0 技术验证实现**，尚未开始阶段 1 产品代码；技术探针只作为可行性证据，不得直接演变成第二套产品调试逻辑。
 
 ## 项目状态（2026-09）
 
-- 仓库为空：无源码、无构建脚本、无测试。
-- 第一步工作 = `ROADMAP.md` 中「阶段 0：技术验证」；**完成并确认前不得开发 MCP 外壳**（需求 §12 明确要求）。
-- 可行性结论：**技术上可行**。三大风险点（ICorDebug 回调线程模型、Windows PDB 读取、ClrDebug 第三方依赖）已在 ROADMAP 中作为独立任务前置验证。
+- 阶段 0-1～0-6 已完成真实 Windows 验证；阶段 0-7 报告见 `docs/stage0-validation-report.md`。
+- 可行性结论：**技术上可行**。ICorDebug 双架构启动/附加、回调线程纪律、Windows PDB、源码断点和 14 层托管栈均已实测。
+- 阶段 1 尚未开始；**阶段 0 报告经用户确认前不得开发 MCP 外壳或阶段 1 产品实现**（需求 §12）。
 
 ## 项目是什么
 
@@ -19,7 +19,7 @@ FxDbg Agent：运行于 Windows 的托管代码调试器，使外部 AI Agent（
 - 架构探测：启动模式按 PE + CorFlags（必须正确处理 AnyCPU 32BitPreferred）；附加模式用 `IsWow64Process2`，回退 `IsWow64Process`。
 - 技术栈：C#；ICorDebug 经 **ClrDebug**（lordmilko，MIT，NuGet 0.4.2）包装，作为固定版本第三方依赖——**不修改、不复制其生成代码**；Windows PDB 基于 DIA（Microsoft.DiaSymReader 系包）；SharpDbg 仅作会话模型 / 变量树 / DAP 参考，不依赖其调试后端（已验证：SharpDbg 自身为 CoreCLR-only——基于 ICorDebugSharp + DbgShim 的 RegisterForRuntimeStartup，仅读 portable PDB，net10.0 AnyCPU 无 x86 构建，无任何 ICLRMetaHost/FX 运行时发现路径，不能调试 FX 目标）。
 - 首期不做：函数求值、变量修改、Edit and Continue、Set Next Statement、条件/数据断点、混合模式调试、Dump 分析、多进程联调、远程调试、HTTP MCP、VS 扩展。
-- 待定项：阶段 0-7 验证报告将确认符号读取方案与 ClrDebug 结论；报告经确认后在此文件与 `docs/architecture.md` 中固化。
+- 阶段 0 定案：固定 `ClrDebug` 0.4.2；Windows PDB 固定 `Microsoft.DiaSymReader` 2.2.11 与 `Microsoft.DiaSymReader.Native` 17.12.0-beta1.24603.5。独立 Native 包没有 Microsoft 公布的 CVE 最低修复版，所选版本是公告后的项目安全基线，并非官方最低修复下限。
 
 ## 计划目录结构（需求 §15）
 
@@ -61,7 +61,8 @@ FxDbg.sln
 - SDK 由 `global.json` 固定为 .NET SDK 10.0.301（允许同一 feature band 的最新补丁）。
 - `net40` 使用 SDK 风格项目；`Directory.Build.props` 固定引用 `Microsoft.NETFramework.ReferenceAssemblies` 1.0.3，因此构建机无需预装 .NET Framework 4.0 targeting pack。
 - 构建全部阶段 0 样例：`dotnet build FxDbg.sln --configuration Debug`。
-- 阶段0-1完整验收：`./eng/verify-stage0-1.ps1`。该命令构建四个样例、检查全部 PDB 的 MSF 7.00 文件头，并启动 x86/x64 WinForms 样例确认主窗口可显示。
+- 阶段 0 的验收脚本按依赖递进：`./eng/verify-stage0-1.ps1`、`verify-stage0-2.ps1`、`verify-stage0-3.ps1`、`verify-stage0-4.ps1`、`verify-stage0-5.ps1`、`verify-stage0-6.ps1`。每个脚本接受 `-Configuration Debug|Release`；0-6 会覆盖此前构建/PDB 验证并额外执行真实断点、14 层栈、pending/unresolved 和 x86 CDB/SOS 对照。
+- 完整阶段 0 回归至少运行：`./eng/verify-stage0-4.ps1 -Configuration Debug`、`./eng/verify-stage0-4.ps1 -Configuration Release`、`./eng/verify-stage0-6.ps1 -Configuration Debug`、`./eng/verify-stage0-6.ps1 -Configuration Release`。0-4 覆盖双架构启动/附加和拒绝路径；0-6 覆盖构建、PDB、断点及栈。
 - 注意：net40 默认产出 **Windows PDB**（MSF 7.00 文件头）。验证符号路径必须使用 Windows PDB，禁止拿 portable PDB 当证据。
 - 本项目 Windows-only：ICorDebug、Named Pipe、DIA 均需在 Windows 上验证；调试样例须为真实 .NET Framework 4.x 进程。
 - 测试要求：会话状态机、断点状态迁移、变量读取边界、异常报告、生命周期清理均有自动化覆盖；集成测试基于 `tests/Debuggees/` 样例。
