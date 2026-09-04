@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core80.Console.x64", "tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FxDbg.Symbols.Probe", "tests\Probes\FxDbg.Symbols.Probe\FxDbg.Symbols.Probe.csproj", "{6FBCB446-887F-4C3B-9405-CF38E648EE9B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FxDbg.Breakpoint.Probe", "tests\Probes\FxDbg.Breakpoint.Probe\FxDbg.Breakpoint.Probe.csproj", "{3DAAF5FC-8128-491E-B363-E36E2F613999}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,6 +64,10 @@ Global
 		{6FBCB446-887F-4C3B-9405-CF38E648EE9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6FBCB446-887F-4C3B-9405-CF38E648EE9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6FBCB446-887F-4C3B-9405-CF38E648EE9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DAAF5FC-8128-491E-B363-E36E2F613999}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DAAF5FC-8128-491E-B363-E36E2F613999}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DAAF5FC-8128-491E-B363-E36E2F613999}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DAAF5FC-8128-491E-B363-E36E2F613999}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

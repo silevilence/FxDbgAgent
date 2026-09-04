@@ -11,12 +11,15 @@
   "assemblyFile": "tests/Debuggees/Fx40.Console.x86/bin/Release/net40/Fx40.Console.x86.exe",
   "pdbFile": "tests/Debuggees/Fx40.Console.x86/bin/Release/net40/Fx40.Console.x86.pdb",
   "sourceFile": "tests/Debuggees/Fx40.Console.x86/Program.cs",
-  "line": 23,
+  "line": 41,
   "mappings": [
     {
       "methodToken": "0x06000001",
       "methodName": "FxDbg.Debuggees.ConsoleX86.Program.Main",
-      "ilOffsets": [82]
+      "ilOffsets": [130],
+      "sourceFile": "tests/Debuggees/Fx40.Console.x86/Program.cs",
+      "startLine": 41,
+      "endLine": 41
     }
   ],
   "errorType": null,
@@ -26,7 +29,7 @@
 }
 ```
 
-独立使用程序集 metadata 读取 `0x06000001` 的方法体，确认 IL offset 82 的操作码为 `0x72`（`ldstr`），即该 `Console.WriteLine` 语句的首条 IL 指令。
+独立使用 x86 反射读取程序集 metadata 与 `0x06000001` 的方法体，确认 IL offset 130 的操作码为 `0x72`（`ldstr`），即该 `Console.WriteLine` 语句的首条 IL 指令。验收脚本通过语句内容动态定位行号；本报告记录当前 Release 样例的具体值。
 
 ## PDB 缺失
 

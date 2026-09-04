@@ -117,12 +117,19 @@ internal static class Program
                 }
 
                 MetadataReader metadata = peReader.GetMetadataReader();
-                IReadOnlyList<SymbolMapping> mappings = FindMappings(
-                    symReader,
-                    metadata,
-                    options.SourcePath,
-                    options.Line,
-                    processingTimer);
+                IReadOnlyList<SymbolMapping> mappings = options.Command == "map"
+                    ? FindMappings(
+                        symReader,
+                        metadata,
+                        options.SourcePath!,
+                        options.Line,
+                        processingTimer)
+                    : ResolveLocation(
+                        symReader,
+                        metadata,
+                        options.MethodToken!.Value,
+                        options.IlOffset!.Value,
+                        processingTimer);
                 return SymbolResult.Loaded(options, mappings);
             }
             finally
@@ -256,9 +263,79 @@ internal static class Program
             .Select(pair => new SymbolMapping(
                 "0x" + pair.Key.ToString("X8"),
                 ResolveMethodName(metadata, pair.Key),
-                pair.Value.ToArray()))
+                pair.Value.ToArray(),
+                sourcePath,
+                line,
+                line))
             .OrderBy(mapping => mapping.MethodToken, StringComparer.Ordinal)
             .ToArray();
+    }
+
+    private static IReadOnlyList<SymbolMapping> ResolveLocation(
+        ISymUnmanagedReader5 symReader,
+        MetadataReader metadata,
+        int methodToken,
+        int ilOffset,
+        Stopwatch processingTimer)
+    {
+        SymUnmanagedSequencePoint? bestPoint = null;
+        int documentCount = 0;
+        int methodCount = 0;
+        int sequencePointCount = 0;
+        var visitedMethods = new HashSet<int>();
+        foreach (ISymUnmanagedDocument document in symReader.GetDocuments())
+        {
+            EnsureBudget(processingTimer, ++documentCount, MaximumDocuments, "document_limit_exceeded");
+            foreach (ISymUnmanagedMethod method in symReader.GetMethodsInDocument(document))
+            {
+                int token = method.GetToken();
+                if (!visitedMethods.Add(token))
+                {
+                    continue;
+                }
+
+                EnsureBudget(processingTimer, ++methodCount, MaximumMethods, "method_limit_exceeded");
+                if (token != methodToken)
+                {
+                    continue;
+                }
+
+                foreach (SymUnmanagedSequencePoint point in method.GetSequencePoints())
+                {
+                    EnsureBudget(
+                        processingTimer,
+                        ++sequencePointCount,
+                        MaximumSequencePoints,
+                        "sequence_point_limit_exceeded");
+                    if (point.IsHidden || point.Offset > ilOffset)
+                    {
+                        continue;
+                    }
+
+                    if (bestPoint is null || point.Offset > bestPoint.Value.Offset)
+                    {
+                        bestPoint = point;
+                    }
+                }
+            }
+        }
+
+        if (bestPoint is null)
+        {
+            return Array.Empty<SymbolMapping>();
+        }
+
+        SymUnmanagedSequencePoint resolved = bestPoint.Value;
+        return new[]
+        {
+            new SymbolMapping(
+                "0x" + methodToken.ToString("X8"),
+                ResolveMethodName(metadata, methodToken),
+                new[] { resolved.Offset },
+                resolved.Document.GetName(),
+                resolved.StartLine,
+                resolved.EndLine)
+        };
     }
 
     private static void EnsureBudget(
@@ -338,16 +415,21 @@ internal static class Program
     }
 
     private sealed record ProbeOptions(
+        string Command,
         string AssemblyPath,
         string PdbPath,
-        string SourcePath,
-        int Line)
+        string? SourcePath,
+        int Line,
+        int? MethodToken,
+        int? IlOffset)
     {
         internal static ProbeOptions Parse(string[] args)
         {
-            if (args.Length == 0 || !string.Equals(args[0], "map", StringComparison.Ordinal))
+            if (args.Length == 0 ||
+                (!string.Equals(args[0], "map", StringComparison.Ordinal) &&
+                 !string.Equals(args[0], "resolve", StringComparison.Ordinal)))
             {
-                throw new ArgumentException("Expected command: map.");
+                throw new ArgumentException("Expected command: map or resolve.");
             }
 
             var values = new Dictionary<string, string>(StringComparer.Ordinal);
@@ -361,11 +443,28 @@ internal static class Program
                 values.Add(args[index], args[index + 1]);
             }
 
+            string assemblyPath = RequiredPath(values, "--assembly", mustExist: true);
+            string pdbPath = RequiredPath(values, "--pdb", mustExist: false);
+            if (args[0] == "map")
+            {
+                return new ProbeOptions(
+                    args[0],
+                    assemblyPath,
+                    pdbPath,
+                    RequiredPath(values, "--source", mustExist: true),
+                    int.Parse(Required(values, "--line"), System.Globalization.CultureInfo.InvariantCulture),
+                    null,
+                    null);
+            }
+
             return new ProbeOptions(
-                RequiredPath(values, "--assembly", mustExist: true),
-                RequiredPath(values, "--pdb", mustExist: false),
-                RequiredPath(values, "--source", mustExist: true),
-                int.Parse(Required(values, "--line"), System.Globalization.CultureInfo.InvariantCulture));
+                args[0],
+                assemblyPath,
+                pdbPath,
+                null,
+                0,
+                ParseInteger(Required(values, "--method-token")),
+                ParseInteger(Required(values, "--il-offset")));
         }
 
         private static string RequiredPath(
@@ -391,9 +490,22 @@ internal static class Program
 
             return value;
         }
+
+        private static int ParseInteger(string value)
+        {
+            return value.StartsWith("0x", StringComparison.OrdinalIgnoreCase)
+                ? int.Parse(value[2..], System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture)
+                : int.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+        }
     }
 
-    private sealed record SymbolMapping(string MethodToken, string MethodName, int[] IlOffsets);
+    private sealed record SymbolMapping(
+        string MethodToken,
+        string MethodName,
+        int[] IlOffsets,
+        string? SourceFile,
+        int? StartLine,
+        int? EndLine);
 
     private sealed class SymbolProbeException : Exception
     {
