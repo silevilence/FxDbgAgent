@@ -222,7 +222,7 @@ internal static class Program
         int documentCount = 0;
         int methodCount = 0;
         int sequencePointCount = 0;
-        foreach (ISymUnmanagedDocument document in symReader.GetDocuments())
+        foreach (ISymUnmanagedDocument document in GetDocumentsSafely(symReader, processingTimer))
         {
             EnsureBudget(processingTimer, ++documentCount, MaximumDocuments, "document_limit_exceeded");
             string documentPath = document.GetName();
@@ -234,11 +234,18 @@ internal static class Program
                 continue;
             }
 
-            foreach (ISymUnmanagedMethod method in symReader.GetMethodsInDocument(document))
+            foreach (ISymUnmanagedMethod method in GetMethodsSafely(
+                symReader,
+                document,
+                MaximumMethods - methodCount,
+                processingTimer))
             {
                 EnsureBudget(processingTimer, ++methodCount, MaximumMethods, "method_limit_exceeded");
                 int token = method.GetToken();
-                foreach (SymUnmanagedSequencePoint point in method.GetSequencePoints())
+                foreach (SymUnmanagedSequencePoint point in GetSequencePointsSafely(
+                    method,
+                    MaximumSequencePoints - sequencePointCount,
+                    processingTimer))
                 {
                     EnsureBudget(
                         processingTimer,
@@ -283,10 +290,14 @@ internal static class Program
         int methodCount = 0;
         int sequencePointCount = 0;
         var visitedMethods = new HashSet<int>();
-        foreach (ISymUnmanagedDocument document in symReader.GetDocuments())
+        foreach (ISymUnmanagedDocument document in GetDocumentsSafely(symReader, processingTimer))
         {
             EnsureBudget(processingTimer, ++documentCount, MaximumDocuments, "document_limit_exceeded");
-            foreach (ISymUnmanagedMethod method in symReader.GetMethodsInDocument(document))
+            foreach (ISymUnmanagedMethod method in GetMethodsSafely(
+                symReader,
+                document,
+                MaximumMethods - methodCount,
+                processingTimer))
             {
                 int token = method.GetToken();
                 if (!visitedMethods.Add(token))
@@ -300,7 +311,10 @@ internal static class Program
                     continue;
                 }
 
-                foreach (SymUnmanagedSequencePoint point in method.GetSequencePoints())
+                foreach (SymUnmanagedSequencePoint point in GetSequencePointsSafely(
+                    method,
+                    MaximumSequencePoints - sequencePointCount,
+                    processingTimer))
                 {
                     EnsureBudget(
                         processingTimer,
@@ -338,6 +352,122 @@ internal static class Program
         };
     }
 
+    private static ISymUnmanagedDocument[] GetDocumentsSafely(
+        ISymUnmanagedReader reader,
+        Stopwatch processingTimer)
+    {
+        EnsureProcessingTime(processingTimer);
+        Marshal.ThrowExceptionForHR(reader.GetDocuments(0, out int count, null!));
+        EnsureCollectionCount(count, MaximumDocuments, "document_limit_exceeded");
+        if (count == 0)
+        {
+            return Array.Empty<ISymUnmanagedDocument>();
+        }
+
+        var documents = new ISymUnmanagedDocument[count];
+        Marshal.ThrowExceptionForHR(reader.GetDocuments(documents.Length, out int actualCount, documents));
+        EnsureProcessingTime(processingTimer);
+        return TrimResult(documents, actualCount, "document_count_invalid");
+    }
+
+    private static ISymUnmanagedMethod[] GetMethodsSafely(
+        ISymUnmanagedReader2 reader,
+        ISymUnmanagedDocument document,
+        int remainingLimit,
+        Stopwatch processingTimer)
+    {
+        EnsureProcessingTime(processingTimer);
+        Marshal.ThrowExceptionForHR(reader.GetMethodsInDocument(document, 0, out int count, null!));
+        EnsureCollectionCount(count, remainingLimit, "method_limit_exceeded");
+        if (count == 0)
+        {
+            return Array.Empty<ISymUnmanagedMethod>();
+        }
+
+        var methods = new ISymUnmanagedMethod[count];
+        Marshal.ThrowExceptionForHR(reader.GetMethodsInDocument(document, methods.Length, out int actualCount, methods));
+        EnsureProcessingTime(processingTimer);
+        return TrimResult(methods, actualCount, "method_count_invalid");
+    }
+
+    private static SymUnmanagedSequencePoint[] GetSequencePointsSafely(
+        ISymUnmanagedMethod method,
+        int remainingLimit,
+        Stopwatch processingTimer)
+    {
+        EnsureProcessingTime(processingTimer);
+        Marshal.ThrowExceptionForHR(method.GetSequencePointCount(out int count));
+        EnsureCollectionCount(count, remainingLimit, "sequence_point_limit_exceeded");
+        if (count == 0)
+        {
+            return Array.Empty<SymUnmanagedSequencePoint>();
+        }
+
+        var offsets = new int[count];
+        var documents = new ISymUnmanagedDocument[count];
+        var startLines = new int[count];
+        var startColumns = new int[count];
+        var endLines = new int[count];
+        var endColumns = new int[count];
+        Marshal.ThrowExceptionForHR(method.GetSequencePoints(
+            count,
+            out int actualCount,
+            offsets,
+            documents,
+            startLines,
+            startColumns,
+            endLines,
+            endColumns));
+        EnsureProcessingTime(processingTimer);
+        EnsureCollectionCount(actualCount, count, "sequence_point_count_invalid");
+
+        var points = new SymUnmanagedSequencePoint[actualCount];
+        for (int index = 0; index < actualCount; index++)
+        {
+            points[index] = new SymUnmanagedSequencePoint(
+                offsets[index],
+                documents[index],
+                startLines[index],
+                startColumns[index],
+                endLines[index],
+                endColumns[index]);
+        }
+
+        return points;
+    }
+
+    private static T[] TrimResult<T>(T[] values, int actualCount, string errorCode)
+    {
+        EnsureCollectionCount(actualCount, values.Length, errorCode);
+        if (actualCount == values.Length)
+        {
+            return values;
+        }
+
+        Array.Resize(ref values, actualCount);
+        return values;
+    }
+
+    private static void EnsureCollectionCount(int count, int maximumCount, string errorCode)
+    {
+        if (count < 0 || count > maximumCount)
+        {
+            throw new SymbolProbeException(
+                errorCode,
+                $"Native symbol data requested {count} items; the remaining limit is {maximumCount}.");
+        }
+    }
+
+    private static void EnsureProcessingTime(Stopwatch processingTimer)
+    {
+        if (processingTimer.Elapsed > MaximumManagedProcessingTime)
+        {
+            throw new SymbolProbeException(
+                "processing_timeout",
+                $"Managed symbol processing exceeded {MaximumManagedProcessingTime.TotalSeconds} seconds.");
+        }
+    }
+
     private static void EnsureBudget(
         Stopwatch processingTimer,
         int observedCount,
@@ -351,12 +481,7 @@ internal static class Program
                 $"Symbol enumeration exceeded its {maximumCount} item limit.");
         }
 
-        if (processingTimer.Elapsed > MaximumManagedProcessingTime)
-        {
-            throw new SymbolProbeException(
-                "processing_timeout",
-                $"Managed symbol processing exceeded {MaximumManagedProcessingTime.TotalSeconds} seconds.");
-        }
+        EnsureProcessingTime(processingTimer);
     }
 
     private static string ResolveMethodName(MetadataReader metadata, int token)

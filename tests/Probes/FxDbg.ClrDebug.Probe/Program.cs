@@ -121,27 +121,34 @@ namespace FxDbg.ClrDebug.Probe
                         }
 
                         callbackCount++;
-                        callbackKinds.Add(callbackEvent.Kind.ToString());
-                        callbackThreadIds.Add(callbackEvent.CallbackThreadId);
-                        logger.Write(
-                            callbackEvent.Kind,
-                            requestedProcess.Id,
-                            callbackEvent.CallbackThreadId,
-                            commandThreadId);
+                        bool continueRequired = callbackEvent.Kind != CorDebugManagedCallbackKind.ExitProcess;
+                        try
+                        {
+                            callbackKinds.Add(callbackEvent.Kind.ToString());
+                            callbackThreadIds.Add(callbackEvent.CallbackThreadId);
+                            logger.Write(
+                                callbackEvent.Kind,
+                                requestedProcess.Id,
+                                callbackEvent.CallbackThreadId,
+                                commandThreadId);
 
-                        if (callbackEvent.Kind == CorDebugManagedCallbackKind.CreateProcess)
-                        {
-                            createProcessSeen = true;
-                        }
+                            if (callbackEvent.Kind == CorDebugManagedCallbackKind.CreateProcess)
+                            {
+                                createProcessSeen = true;
+                            }
 
-                        if (callbackEvent.Kind == CorDebugManagedCallbackKind.ExitProcess)
-                        {
-                            exitProcessSeen = true;
+                            if (callbackEvent.Kind == CorDebugManagedCallbackKind.ExitProcess)
+                            {
+                                exitProcessSeen = true;
+                            }
                         }
-                        else
+                        finally
                         {
-                            callbackEvent.Controller.Continue(false);
-                            continueCount++;
+                            if (continueRequired)
+                            {
+                                callbackEvent.Controller.Continue(false);
+                                continueCount++;
+                            }
                         }
                     }
 
@@ -188,8 +195,7 @@ namespace FxDbg.ClrDebug.Probe
 
                     if (options.Mode == ProbeMode.Attach)
                     {
-                        process.Stop(0);
-                        process.Detach();
+                        StopAndDetach(process);
                     }
 
                     requestedProcess = null;
@@ -201,8 +207,7 @@ namespace FxDbg.ClrDebug.Probe
                     {
                         if (requestedProcess != null)
                         {
-                            requestedProcess.Stop(0);
-                            requestedProcess.Detach();
+                            StopAndDetach(requestedProcess);
                         }
                     }
                     finally
@@ -210,6 +215,18 @@ namespace FxDbg.ClrDebug.Probe
                         corDebug.Terminate();
                     }
                 }
+            }
+        }
+
+        private static void StopAndDetach(CorDebugProcess process)
+        {
+            try
+            {
+                process.Stop(0);
+            }
+            finally
+            {
+                process.Detach();
             }
         }
 

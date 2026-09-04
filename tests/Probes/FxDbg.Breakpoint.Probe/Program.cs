@@ -53,6 +53,7 @@ namespace FxDbg.Breakpoint.Probe
                 CLRRuntimeInfo runtimeInfo = metaHost.GetRuntime(FrameworkRuntimeVersion);
                 CorDebug corDebug = runtimeInfo.GetInterface().CorDebug;
                 CorDebugProcess process = null;
+                int? launchedProcessId = null;
                 try
                 {
                     corDebug.Initialize();
@@ -60,6 +61,7 @@ namespace FxDbg.Breakpoint.Probe
                     process = corDebug.CreateProcess(
                         QuoteCommandLine(options.TargetPath) + " --breakpoint-probe");
                     int processId = process.Id;
+                    launchedProcessId = processId;
 
                     var bindingStates = new List<string> { "pending" };
                     var frames = new List<RawStackFrame>();
@@ -88,49 +90,56 @@ namespace FxDbg.Breakpoint.Probe
                         }
 
                         callbackCount++;
-                        callbackThreadId = callbackEvent.CallbackThreadId;
-                        if (callbackEvent.Kind == CorDebugManagedCallbackKind.LoadModule &&
-                            callbackEvent.Module != null &&
-                            string.Equals(
-                                Path.GetFileName(callbackEvent.Module.Name),
-                                options.ModuleName,
-                                StringComparison.OrdinalIgnoreCase))
+                        bool continueRequired = callbackEvent.Kind != CorDebugManagedCallbackKind.ExitProcess;
+                        try
                         {
-                            try
+                            callbackThreadId = callbackEvent.CallbackThreadId;
+                            if (callbackEvent.Kind == CorDebugManagedCallbackKind.LoadModule &&
+                                callbackEvent.Module != null &&
+                                string.Equals(
+                                    Path.GetFileName(callbackEvent.Module.Name),
+                                    options.ModuleName,
+                                    StringComparison.OrdinalIgnoreCase))
                             {
-                                CorDebugFunction function = callbackEvent.Module.GetFunctionFromToken(
-                                    new mdMethodDef(options.MethodToken));
-                                activeBreakpoint = function.ILCode.CreateBreakpoint(options.IlOffset);
-                                activeBreakpoint.Activate(true);
-                                bindingStates.Add("verified");
-                            }
-                            catch (Exception exception)
-                            {
-                                bindingStates.Add("unresolved");
-                                bindingError = exception.GetType().FullName + ": " + exception.Message;
-                            }
-                        }
-
-                        if (callbackEvent.Kind == CorDebugManagedCallbackKind.Breakpoint)
-                        {
-                            if (callbackEvent.Thread == null)
-                            {
-                                throw new InvalidOperationException("Breakpoint callback did not include a thread.");
+                                try
+                                {
+                                    CorDebugFunction function = callbackEvent.Module.GetFunctionFromToken(
+                                        new mdMethodDef(options.MethodToken));
+                                    activeBreakpoint = function.ILCode.CreateBreakpoint(options.IlOffset);
+                                    activeBreakpoint.Activate(true);
+                                    bindingStates.Add("verified");
+                                }
+                                catch (Exception exception)
+                                {
+                                    bindingStates.Add("unresolved");
+                                    bindingError = exception.GetType().FullName + ": " + exception.Message;
+                                }
                             }
 
-                            frames.AddRange(CaptureManagedFrames(callbackEvent.Thread));
-                            hit = true;
-                        }
+                            if (callbackEvent.Kind == CorDebugManagedCallbackKind.Breakpoint)
+                            {
+                                if (callbackEvent.Thread == null)
+                                {
+                                    throw new InvalidOperationException("Breakpoint callback did not include a thread.");
+                                }
 
-                        if (callbackEvent.Kind == CorDebugManagedCallbackKind.ExitProcess)
-                        {
-                            exited = true;
-                            process = null;
+                                frames.AddRange(CaptureManagedFrames(callbackEvent.Thread));
+                                hit = true;
+                            }
+
+                            if (callbackEvent.Kind == CorDebugManagedCallbackKind.ExitProcess)
+                            {
+                                exited = true;
+                                process = null;
+                            }
                         }
-                        else
+                        finally
                         {
-                            callbackEvent.Controller.Continue(false);
-                            continueCount++;
+                            if (continueRequired)
+                            {
+                                callbackEvent.Controller.Continue(false);
+                                continueCount++;
+                            }
                         }
                     }
 
@@ -167,7 +176,14 @@ namespace FxDbg.Breakpoint.Probe
                     {
                         if (process != null)
                         {
-                            process.Terminate(1);
+                            try
+                            {
+                                process.Terminate(1);
+                            }
+                            finally
+                            {
+                                WaitForProcessExit(launchedProcessId.Value, TimeSpan.FromSeconds(5));
+                            }
                         }
                     }
                     finally
@@ -175,6 +191,27 @@ namespace FxDbg.Breakpoint.Probe
                         corDebug.Terminate();
                     }
                 }
+            }
+        }
+
+        private static void WaitForProcessExit(int processId, TimeSpan timeout)
+        {
+            try
+            {
+                using (Process process = Process.GetProcessById(processId))
+                {
+                    if (!process.WaitForExit((int)timeout.TotalMilliseconds))
+                    {
+                        throw new TimeoutException(
+                            "Launched debuggee did not terminate within " +
+                            timeout.TotalSeconds.ToString(CultureInfo.InvariantCulture) +
+                            " seconds.");
+                    }
+                }
+            }
+            catch (ArgumentException)
+            {
+                // The process exited before Process.GetProcessById observed it.
             }
         }
 

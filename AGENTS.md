@@ -59,7 +59,7 @@ FxDbg.sln
 ## 构建与测试
 
 - SDK 由 `global.json` 固定为 .NET SDK 10.0.301（允许同一 feature band 的最新补丁）。
-- `net40` 使用 SDK 风格项目；`Directory.Build.props` 固定引用 `Microsoft.NETFramework.ReferenceAssemblies` 1.0.3，因此构建机无需预装 .NET Framework 4.0 targeting pack。
+- `net40` 使用 SDK 风格项目；`Directory.Build.targets` 固定引用 `Microsoft.NETFramework.ReferenceAssemblies` 1.0.3，因此构建机无需预装 .NET Framework 4.0 targeting pack。
 - 构建全部阶段 0 样例：`dotnet build FxDbg.sln --configuration Debug`。
 - 阶段 0 的验收脚本按依赖递进：`./eng/verify-stage0-1.ps1`、`verify-stage0-2.ps1`、`verify-stage0-3.ps1`、`verify-stage0-4.ps1`、`verify-stage0-5.ps1`、`verify-stage0-6.ps1`。每个脚本接受 `-Configuration Debug|Release`；0-6 会覆盖此前构建/PDB 验证并额外执行真实断点、14 层栈、pending/unresolved 和 x86 CDB/SOS 对照。
 - 完整阶段 0 回归至少运行：`./eng/verify-stage0-4.ps1 -Configuration Debug`、`./eng/verify-stage0-4.ps1 -Configuration Release`、`./eng/verify-stage0-6.ps1 -Configuration Debug`、`./eng/verify-stage0-6.ps1 -Configuration Release`。0-4 覆盖双架构启动/附加和拒绝路径；0-6 覆盖构建、PDB、断点及栈。

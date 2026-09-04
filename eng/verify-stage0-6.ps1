@@ -111,6 +111,18 @@ try {
         Resolve-StackFrame -SymbolProbePath $symbolProbePath -AssemblyPath $assemblyPath -PdbPath $pdbPath -Frame $_
     })
     $firstTen = @($resolvedFrames | Select-Object -First 10)
+    $expectedMethods = @(
+        'FxDbg.Debuggees.ConsoleX86.Program.BreakpointTarget',
+        'FxDbg.Debuggees.ConsoleX86.Program.StackLevel12',
+        'FxDbg.Debuggees.ConsoleX86.Program.StackLevel11',
+        'FxDbg.Debuggees.ConsoleX86.Program.StackLevel10',
+        'FxDbg.Debuggees.ConsoleX86.Program.StackLevel09',
+        'FxDbg.Debuggees.ConsoleX86.Program.StackLevel08',
+        'FxDbg.Debuggees.ConsoleX86.Program.StackLevel07',
+        'FxDbg.Debuggees.ConsoleX86.Program.StackLevel06',
+        'FxDbg.Debuggees.ConsoleX86.Program.StackLevel05',
+        'FxDbg.Debuggees.ConsoleX86.Program.StackLevel04'
+    )
     foreach ($frame in $firstTen) {
         if ([string]::IsNullOrWhiteSpace($frame.methodName) -or
             [string]::IsNullOrWhiteSpace($frame.module) -or
@@ -124,6 +136,10 @@ try {
         $firstTen[0].line -ne $sourceLine -or
         $firstTen[0].ilOffset -ne $ilOffset) {
         throw "Breakpoint stopped at the wrong source location: $($firstTen[0] | ConvertTo-Json -Compress)"
+    }
+    $actualMethods = @($firstTen | ForEach-Object { $_.methodName })
+    if (($actualMethods -join ',') -ne ($expectedMethods -join ',')) {
+        throw "ICorDebug stack order mismatch. Expected $($expectedMethods -join ' -> '), actual $($actualMethods -join ' -> ')."
     }
 
     $pending = Invoke-BreakpointProbe -ProbePath $breakpointProbePath -TargetPath $assemblyPath -ModuleName 'NeverLoaded.Managed.dll' -MethodToken $methodToken -IlOffset $ilOffset
@@ -159,10 +175,13 @@ try {
 
     $cdbOutput = @(& $cdbPath -o -g -G -c '.load C:\Windows\Microsoft.NET\Framework\v4.0.30319\sos.dll; !clrstack; q' $assemblyPath --windbg-probe 2>&1)
     $cdbText = $cdbOutput -join [Environment]::NewLine
-    foreach ($expectedMethod in @('BreakpointTarget', 'StackLevel12', 'StackLevel11', 'StackLevel10', 'StackLevel09', 'StackLevel08', 'StackLevel07', 'StackLevel06', 'StackLevel05', 'StackLevel04')) {
-        if ($cdbText -notmatch [regex]::Escape("FxDbg.Debuggees.ConsoleX86.Program.$expectedMethod")) {
-            throw "WinDbg/SOS comparison is missing $expectedMethod."
+    $cdbMethods = @($cdbOutput | ForEach-Object {
+        if ($_ -match 'FxDbg\.Debuggees\.ConsoleX86\.Program\.(BreakpointTarget|StackLevel(?:0[1-9]|1[0-2]))\(') {
+            "FxDbg.Debuggees.ConsoleX86.Program.$($Matches[1])"
         }
+    } | Select-Object -First 10)
+    if (($cdbMethods -join ',') -ne ($expectedMethods -join ',')) {
+        throw "WinDbg/SOS stack order mismatch. Expected $($expectedMethods -join ' -> '), actual $($cdbMethods -join ' -> ')."
     }
     $cdbText | Set-Content -LiteralPath (Join-Path $reportDirectory "windbg-$($Configuration.ToLowerInvariant()).txt") -Encoding utf8
 
