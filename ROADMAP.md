@@ -6,12 +6,62 @@
 
 ## 📝 计划中 (Planned)
 
+### 阶段 2：Agent 接入（MCP）
+
+- [ ] **阶段2-1 MCP stdio Host 骨架**
+    - [ ] MCP initialize / tools/list / tools/call 三协议
+    - [ ] stdout 仅输出 MCP 协议内容，日志写入 stderr 或文件
+    - [ ] 所有会话内调用显式携带 `sessionId`
+    - 验收：标准 MCP 客户端（如 MCP Inspector）可列出全部工具并完成一次调用。
+
+- [ ] **阶段2-2 14 个 MCP 工具实现（需求 §8）**
+    - [ ] launch / attach / set_breakpoint / remove_breakpoint / continue / step / pause / status / threads / stack / variables / detach / terminate
+    - [ ] 结构化 JSON 输出；`continue`、`step` 支持「等待至停止」与「返回操作 ID 轮询」两种模式
+    - [ ] 所有调用设置超时；会话状态校验；限流
+    - 验收：每个工具按文档示例可调用；非法状态调用返回统一错误码；超时行为一致。
+
+- [ ] **阶段2-3 Agent 使用文档与 SKILL**
+    - [ ] `docs/agent-skill.md`：快速开始、工具语义、边界说明（禁用求值等）、错误对照
+    - 验收：在 Cursor 或 Claude Code 中仅凭文档完成「启动 → 断点 → 变量 → 继续」全流程。
+
+- [ ] **阶段2-4 生命周期与安全清理**
+    - [ ] Host 或 Agent 断开时安全清理调试会话
+    - [ ] 附加模式下目标进程绝不被意外终止
+    - [ ] 日志脱敏开关（敏感变量值不掉入日志）
+    - 验收：终止 Host 进程后，附加目标存活；Engine 全部退出；覆盖需求验收标准 7。
+
+### 阶段 3：可用性增强（MVP 验收后启动）
+
+- [ ] **阶段3-1 对象与数组分页展开**——大对象/数组分页读取，深度、数量、字符串长度限制调优
+    - 验收：超大对象图（>10 万成员）分页读出且响应时间符合 §10.3。
+- [ ] **阶段3-2 源码路径映射**——构建机路径与本地工作区路径不一致时的映射（全局 + 模块级）
+    - 验收：路径映射后断点绑定与栈帧源码行均可解析。
+- [ ] **阶段3-3 多 AppDomain 识别与筛选**——事件、栈、变量携带 AppDomain 信息，支持按需过滤
+    - 验收：多 AppDomain 样例中可定位指定 AppDomain 的线程与断点。
+- [ ] **阶段3-4 Windows Service 与 w3wp 附加增强**——SeDebugPrivilege 权限路径、IIS 影子复制与动态模块加载
+    - 验收：可在管理员权限下附加运行中的 Service 与 w3wp 并正常断点。
+- [ ] **阶段3-5 可选 DAP Host**——复用同一 Engine，支持 VS Code / Cursor 调试界面
+    - 验收：VS Code DAP 客户端可完成启动、断点、单步、栈、变量。
+
+### 阶段 4：高级能力（需先完成安全评估）
+
+- [ ] **阶段4-1 受限表达式求值**——安全评估通过后设计受限求值
+    - 验收：求值能力不改变业务状态，超时与取消可靠。
+- [ ] **阶段4-2 first-chance exception 过滤**——按类型配置停止条件
+    - 验收：可只对指定异常类型在 first-chance 停止。
+- [ ] **阶段4-3 条件断点**——基于简单表达式或命中次数的条件
+    - 验收：不命中条件的断点不触发停止。
+- [ ] **阶段4-4 Streamable HTTP MCP 与远程宿主**——评估安全边界后实施
+    - 验收：远程会话可用且经过认证与权限控制。
+
+## 🚧 开发中 (In Progress)
+
 ### 阶段 0：技术验证（先于一切产品开发，需求 §12）
 
-- [ ] **阶段0-1 搭建解决方案骨架与 FX 4.0 调试样例工程**
-    - [ ] 按需求 §15 建立 `src/`、`tests/`、`docs/` 目录与解决方案
-    - [ ] 4 个调试样例（Fx40.Console.x86 / x64、Fx40.WinForms.x86 / x64）可编译
-    - [ ] 明确 SDK 版本、net40 目标构建方式（Microsoft.NETFramework.ReferenceAssemblies）并写入 AGENTS.md
+- [x] **阶段0-1 搭建解决方案骨架与 FX 4.0 调试样例工程**
+    - [x] 按需求 §15 建立 `src/`、`tests/`、`docs/` 目录与解决方案
+    - [x] 4 个调试样例（Fx40.Console.x86 / x64、Fx40.WinForms.x86 / x64）可编译
+    - [x] 明确 SDK 版本、net40 目标构建方式（Microsoft.NETFramework.ReferenceAssemblies）并写入 AGENTS.md
     - 任务描述：net40 默认产出 **Windows PDB**（文件头 MSF 7.00），验收时须确认；禁止用 portable PDB 验证符号路径。
     - 验收：一条命令构建全部样例；每个 `.pdb` 文件头为 MSF 7.00；WinForms 样例可正常启动显示窗口。
 
@@ -129,55 +179,5 @@
     - [ ] 示例场景：Hello 断点、递归 + 变量、未处理异常、延迟加载模块、循环引用对象
     - [ ] 覆盖需求验收标准 1~6、8~9
     - 验收：自动化脚本全量通过；后续回归一键执行。
-
-### 阶段 2：Agent 接入（MCP）
-
-- [ ] **阶段2-1 MCP stdio Host 骨架**
-    - [ ] MCP initialize / tools/list / tools/call 三协议
-    - [ ] stdout 仅输出 MCP 协议内容，日志写入 stderr 或文件
-    - [ ] 所有会话内调用显式携带 `sessionId`
-    - 验收：标准 MCP 客户端（如 MCP Inspector）可列出全部工具并完成一次调用。
-
-- [ ] **阶段2-2 14 个 MCP 工具实现（需求 §8）**
-    - [ ] launch / attach / set_breakpoint / remove_breakpoint / continue / step / pause / status / threads / stack / variables / detach / terminate
-    - [ ] 结构化 JSON 输出；`continue`、`step` 支持「等待至停止」与「返回操作 ID 轮询」两种模式
-    - [ ] 所有调用设置超时；会话状态校验；限流
-    - 验收：每个工具按文档示例可调用；非法状态调用返回统一错误码；超时行为一致。
-
-- [ ] **阶段2-3 Agent 使用文档与 SKILL**
-    - [ ] `docs/agent-skill.md`：快速开始、工具语义、边界说明（禁用求值等）、错误对照
-    - 验收：在 Cursor 或 Claude Code 中仅凭文档完成「启动 → 断点 → 变量 → 继续」全流程。
-
-- [ ] **阶段2-4 生命周期与安全清理**
-    - [ ] Host 或 Agent 断开时安全清理调试会话
-    - [ ] 附加模式下目标进程绝不被意外终止
-    - [ ] 日志脱敏开关（敏感变量值不掉入日志）
-    - 验收：终止 Host 进程后，附加目标存活；Engine 全部退出；覆盖需求验收标准 7。
-
-### 阶段 3：可用性增强（MVP 验收后启动）
-
-- [ ] **阶段3-1 对象与数组分页展开**——大对象/数组分页读取，深度、数量、字符串长度限制调优
-    - 验收：超大对象图（>10 万成员）分页读出且响应时间符合 §10.3。
-- [ ] **阶段3-2 源码路径映射**——构建机路径与本地工作区路径不一致时的映射（全局 + 模块级）
-    - 验收：路径映射后断点绑定与栈帧源码行均可解析。
-- [ ] **阶段3-3 多 AppDomain 识别与筛选**——事件、栈、变量携带 AppDomain 信息，支持按需过滤
-    - 验收：多 AppDomain 样例中可定位指定 AppDomain 的线程与断点。
-- [ ] **阶段3-4 Windows Service 与 w3wp 附加增强**——SeDebugPrivilege 权限路径、IIS 影子复制与动态模块加载
-    - 验收：可在管理员权限下附加运行中的 Service 与 w3wp 并正常断点。
-- [ ] **阶段3-5 可选 DAP Host**——复用同一 Engine，支持 VS Code / Cursor 调试界面
-    - 验收：VS Code DAP 客户端可完成启动、断点、单步、栈、变量。
-
-### 阶段 4：高级能力（需先完成安全评估）
-
-- [ ] **阶段4-1 受限表达式求值**——安全评估通过后设计受限求值
-    - 验收：求值能力不改变业务状态，超时与取消可靠。
-- [ ] **阶段4-2 first-chance exception 过滤**——按类型配置停止条件
-    - 验收：可只对指定异常类型在 first-chance 停止。
-- [ ] **阶段4-3 条件断点**——基于简单表达式或命中次数的条件
-    - 验收：不命中条件的断点不触发停止。
-- [ ] **阶段4-4 Streamable HTTP MCP 与远程宿主**——评估安全边界后实施
-    - 验收：远程会话可用且经过认证与权限控制。
-
-## 🚧 开发中 (In Progress)
 
 ## ✅ 已完成 (Completed)

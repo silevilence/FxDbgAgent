@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net40</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <AssemblyName>Fx40.Console.x64</AssemblyName>
+    <RootNamespace>FxDbg.Debuggees.ConsoleX64</RootNamespace>
+  </PropertyGroup>
+</Project>

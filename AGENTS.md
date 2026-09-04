@@ -58,7 +58,10 @@ FxDbg.sln
 
 ## 构建与测试
 
-- **尚无构建脚本**。第一个任务（ROADMAP 阶段0-1）将确定并在此回填：SDK 版本、net40 构建方式（无 targeting pack 环境使用 `Microsoft.NETFramework.ReferenceAssemblies`）、构建与测试命令、样例运行方式。
+- SDK 由 `global.json` 固定为 .NET SDK 10.0.301（允许同一 feature band 的最新补丁）。
+- `net40` 使用 SDK 风格项目；`Directory.Build.props` 固定引用 `Microsoft.NETFramework.ReferenceAssemblies` 1.0.3，因此构建机无需预装 .NET Framework 4.0 targeting pack。
+- 构建全部阶段 0 样例：`dotnet build FxDbg.sln --configuration Debug`。
+- 阶段0-1完整验收：`./eng/verify-stage0-1.ps1`。该命令构建四个样例、检查全部 PDB 的 MSF 7.00 文件头，并启动 x86/x64 WinForms 样例确认主窗口可显示。
 - 注意：net40 默认产出 **Windows PDB**（MSF 7.00 文件头）。验证符号路径必须使用 Windows PDB，禁止拿 portable PDB 当证据。
 - 本项目 Windows-only：ICorDebug、Named Pipe、DIA 均需在 Windows 上验证；调试样例须为真实 .NET Framework 4.x 进程。
 - 测试要求：会话状态机、断点状态迁移、变量读取边界、异常报告、生命周期清理均有自动化覆盖；集成测试基于 `tests/Debuggees/` 样例。

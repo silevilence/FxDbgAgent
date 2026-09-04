@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net40</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>Fx40.WinForms.x64</AssemblyName>
+    <RootNamespace>FxDbg.Debuggees.WinFormsX64</RootNamespace>
+  </PropertyGroup>
+</Project>
