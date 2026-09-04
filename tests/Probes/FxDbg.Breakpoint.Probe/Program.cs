@@ -370,13 +370,14 @@ namespace FxDbg.Breakpoint.Probe
 
                 return string.Format(
                     CultureInfo.InvariantCulture,
-                    "{{\"bindingState\":\"{0}\",\"bindingStates\":[{1}],\"bindingError\":{2},\"hit\":{3},\"processId\":{4},\"runtimeVersion\":\"{5}\",\"debuggerArchitecture\":\"x86\",\"callbackThreadId\":{6},\"commandThreadId\":{7},\"callbackCount\":{8},\"continueCount\":{9},\"frames\":[{10}]}}",
+                    "{{\"bindingState\":\"{0}\",\"bindingStates\":[{1}],\"bindingError\":{2},\"hit\":{3},\"processId\":{4},\"runtimeVersion\":\"{5}\",\"debuggerArchitecture\":\"{6}\",\"callbackThreadId\":{7},\"commandThreadId\":{8},\"callbackCount\":{9},\"continueCount\":{10},\"frames\":[{11}]}}",
                     EscapeJson(BindingState),
                     string.Join(",", states.ToArray()),
                     BindingError == null ? "null" : "\"" + EscapeJson(BindingError) + "\"",
                     Hit ? "true" : "false",
                     ProcessId,
                     EscapeJson(RuntimeVersion),
+                    IntPtr.Size == 4 ? "x86" : "x64",
                     CallbackThreadId,
                     CommandThreadId,
                     CallbackCount,

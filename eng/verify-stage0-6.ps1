@@ -95,6 +95,9 @@ try {
     if (-not $hit.hit -or $hit.bindingState -ne 'verified' -or ($hit.bindingStates -join ',') -ne 'pending,verified') {
         throw "Expected pending -> verified -> hit: $($hit | ConvertTo-Json -Compress -Depth 6)"
     }
+    if ($hit.debuggerArchitecture -ne 'x86') {
+        throw "Expected the x86 breakpoint probe to report its actual architecture: $($hit | ConvertTo-Json -Compress -Depth 6)"
+    }
     if ($hit.callbackThreadId -eq $hit.commandThreadId) {
         throw 'Breakpoint callback work was not separated from the command thread.'
     }

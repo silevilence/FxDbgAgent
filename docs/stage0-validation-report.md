@@ -105,10 +105,12 @@
 
 ```powershell
 dotnet build FxDbg.sln --configuration Debug
+./eng/verify-stage0-3.ps1 -Configuration Debug
+./eng/verify-stage0-3.ps1 -Configuration Release
 ./eng/verify-stage0-4.ps1 -Configuration Debug
 ./eng/verify-stage0-4.ps1 -Configuration Release
 ./eng/verify-stage0-6.ps1 -Configuration Debug
 ./eng/verify-stage0-6.ps1 -Configuration Release
 ```
 
-0-4 脚本覆盖 ClrDebug 双架构矩阵、拒绝路径和回调线程纪律；0-6 脚本递进覆盖构建、Windows PDB、源码断点、14 层栈、绑定失败状态及 WinDbg/SOS 对照。
+0-3 脚本覆盖 ClrDebug 双架构启动/附加矩阵和拒绝路径；0-4 脚本覆盖回调线程纪律与日志级别；0-6 脚本递进覆盖构建、Windows PDB、源码断点、14 层栈、绑定失败状态及 WinDbg/SOS 对照。

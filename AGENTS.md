@@ -62,7 +62,7 @@ FxDbg.sln
 - `net40` 使用 SDK 风格项目；`Directory.Build.targets` 固定引用 `Microsoft.NETFramework.ReferenceAssemblies` 1.0.3，因此构建机无需预装 .NET Framework 4.0 targeting pack。
 - 构建全部阶段 0 样例：`dotnet build FxDbg.sln --configuration Debug`。
 - 阶段 0 的验收脚本按依赖递进：`./eng/verify-stage0-1.ps1`、`verify-stage0-2.ps1`、`verify-stage0-3.ps1`、`verify-stage0-4.ps1`、`verify-stage0-5.ps1`、`verify-stage0-6.ps1`。每个脚本接受 `-Configuration Debug|Release`；0-6 会覆盖此前构建/PDB 验证并额外执行真实断点、14 层栈、pending/unresolved 和 x86 CDB/SOS 对照。
-- 完整阶段 0 回归至少运行：`./eng/verify-stage0-4.ps1 -Configuration Debug`、`./eng/verify-stage0-4.ps1 -Configuration Release`、`./eng/verify-stage0-6.ps1 -Configuration Debug`、`./eng/verify-stage0-6.ps1 -Configuration Release`。0-4 覆盖双架构启动/附加和拒绝路径；0-6 覆盖构建、PDB、断点及栈。
+- 完整阶段 0 回归至少运行：`./eng/verify-stage0-3.ps1 -Configuration Debug`、`./eng/verify-stage0-3.ps1 -Configuration Release`、`./eng/verify-stage0-4.ps1 -Configuration Debug`、`./eng/verify-stage0-4.ps1 -Configuration Release`、`./eng/verify-stage0-6.ps1 -Configuration Debug`、`./eng/verify-stage0-6.ps1 -Configuration Release`。0-3 覆盖双架构启动/附加和拒绝路径；0-4 覆盖回调线程纪律与日志级别；0-6 覆盖构建、PDB、断点及栈。
 - 注意：net40 默认产出 **Windows PDB**（MSF 7.00 文件头）。验证符号路径必须使用 Windows PDB，禁止拿 portable PDB 当证据。
 - 本项目 Windows-only：ICorDebug、Named Pipe、DIA 均需在 Windows 上验证；调试样例须为真实 .NET Framework 4.x 进程。
 - 测试要求：会话状态机、断点状态迁移、变量读取边界、异常报告、生命周期清理均有自动化覆盖；集成测试基于 `tests/Debuggees/` 样例。
