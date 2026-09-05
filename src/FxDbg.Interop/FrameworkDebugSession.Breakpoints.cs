@@ -50,12 +50,13 @@ public sealed partial class FrameworkDebugSession
 
     public void Continue()
     {
-        ThrowIfDisposed();
-        ThrowIfWrongThread();
+        RequireStopped();
         callbackPairing.Continue(() => (pendingEntryController ?? process).Continue(false));
         pendingEntryController = null;
         HitBreakpointId = null;
         StoppedThreadId = null;
+        CurrentStop = null;
+        domain.Resume();
     }
 
     private T WithSynchronizedTarget<T>(Func<T> action)
@@ -97,6 +98,12 @@ public sealed partial class FrameworkDebugSession
                 HitBreakpointId = modules.Values.Select(moduleItem => moduleItem.FindBreakpoint(hit.Breakpoint)).FirstOrDefault(id => id is not null);
                 StoppedThreadId = hit.Thread.Id;
                 pendingEntryController = envelope.Controller;
+                StopAt(hit.Thread, FxDbg.Core.Sessions.StopReason.Breakpoint);
+                return true;
+            case StepCompleteCorDebugManagedCallbackEventArgs step:
+                stepper = null;
+                pendingEntryController = envelope.Controller;
+                StopAt(step.Thread, FxDbg.Core.Sessions.StopReason.Step);
                 return true;
             case BreakpointSetErrorCorDebugManagedCallbackEventArgs failed:
                 foreach (DebugModule loadedModule in modules.Values)

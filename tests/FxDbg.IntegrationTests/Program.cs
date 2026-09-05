@@ -11,12 +11,18 @@ using FxDbg.Interop;
 
 namespace FxDbg.IntegrationTests;
 
-internal static class Program
+internal static partial class Program
 {
     private static int Main(string[] args)
     {
         try
         {
+            if (args.Length > 2 && args[2] == "execution")
+            {
+                RunExecutionControl(Path.GetFullPath(args[0]), args[1]);
+                Console.WriteLine("PASS: execution control, source stepping, timeout/cancellation, detach and terminate (" + (IntPtr.Size * 8) + " bit).");
+                return 0;
+            }
             RunBreakpointLifecycle(Path.GetFullPath(args[0]), args.Length > 1 ? args[1] : "Debug");
             Console.WriteLine("PASS: real breakpoint lifecycle, delayed PDB, enable/disable/remove, AppDomain unload/reload (" + (IntPtr.Size * 8) + " bit).");
             return 0;

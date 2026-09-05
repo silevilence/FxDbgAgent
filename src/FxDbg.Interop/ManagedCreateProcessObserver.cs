@@ -18,7 +18,8 @@ internal static class ManagedCreateProcessObserver
         TargetArchitecture architecture,
         bool launchedByDebugger,
         bool stopAtEntry,
-        Func<CorDebug, CorDebugProcess> start)
+        Func<CorDebug, CorDebugProcess> start,
+        SessionId? sessionId)
     {
         var callbacks = new BlockingCollection<CallbackEnvelope>();
         var callbackGate = new object();
@@ -59,7 +60,8 @@ internal static class ManagedCreateProcessObserver
                 callbacks,
                 callbackGate,
                 callbackPairing,
-                entryController);
+                entryController,
+                sessionId ?? SessionId.New());
         }
         catch
         {

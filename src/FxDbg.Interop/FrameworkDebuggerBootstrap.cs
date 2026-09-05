@@ -2,6 +2,7 @@ using System;
 using ClrDebug;
 using FxDbg.Core.Model;
 using FxDbg.Core.Requests;
+using FxDbg.Core.Sessions;
 
 namespace FxDbg.Interop;
 
@@ -15,7 +16,8 @@ public sealed class FrameworkDebuggerBootstrap
         IntPtr environment,
         TargetArchitecture architecture,
         bool stopAtEntry,
-        TimeSpan timeout)
+        TimeSpan timeout,
+        SessionId? sessionId = null)
     {
         RequireEngineArchitecture(architecture);
         return ManagedCreateProcessObserver.Start(
@@ -30,10 +32,10 @@ public sealed class FrameworkDebuggerBootstrap
                     ? (CreateProcessFlags)0
                     : CreateProcessFlags.CREATE_UNICODE_ENVIRONMENT,
                 lpEnvironment: environment == IntPtr.Zero ? (IntPtr?)null : environment,
-                lpCurrentDirectory: workingDirectory));
+                lpCurrentDirectory: workingDirectory), sessionId);
     }
 
-    public FrameworkDebugSession Attach(int processId, TargetArchitecture architecture, TimeSpan timeout)
+    public FrameworkDebugSession Attach(int processId, TargetArchitecture architecture, TimeSpan timeout, SessionId? sessionId = null)
     {
         RequireEngineArchitecture(architecture);
         return ManagedCreateProcessObserver.Start(
@@ -41,7 +43,7 @@ public sealed class FrameworkDebuggerBootstrap
             architecture,
             false,
             false,
-            corDebug => corDebug.DebugActiveProcess(processId, false));
+            corDebug => corDebug.DebugActiveProcess(processId, false), sessionId);
     }
 
     private static void RequireEngineArchitecture(TargetArchitecture requested)

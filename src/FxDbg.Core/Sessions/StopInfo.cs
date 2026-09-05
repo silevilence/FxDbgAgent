@@ -24,7 +24,7 @@ public sealed class StopInfo
             throw new ArgumentOutOfRangeException(nameof(processId));
         }
 
-        if (threadId <= 0 && reason != StopReason.ProcessExit)
+        if (threadId < 0 || (threadId == 0 && reason != StopReason.ProcessExit && reason != StopReason.Entry && reason != StopReason.UserPause))
         {
             throw new ArgumentOutOfRangeException(nameof(threadId));
         }

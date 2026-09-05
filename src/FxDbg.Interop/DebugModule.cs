@@ -28,6 +28,10 @@ internal sealed class DebugModule : ISourceBreakpointModule, IDisposable
 
     public string Id { get; }
 
+    internal SourceLocation? Resolve(int token, int offset) => symbols?.Resolve(token, offset);
+    internal string? GetMethodName(int token) => symbols?.GetMethodName(token);
+    internal int GetStepRangeEnd(int token, int offset, int codeSize) => symbols?.GetStepRangeEnd(token, offset, codeSize) ?? codeSize;
+
     public SourceBreakpointResolution Resolve(SourceLocation location) => symbols?.Resolve(location)
         ?? new SourceBreakpointResolution(false, Array.Empty<BreakpointBindingLocation>(), "This module has no local PE/PDB files.");
 

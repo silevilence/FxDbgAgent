@@ -7,6 +7,15 @@ namespace FxDbg.UnitTests.Model;
 
 public sealed class StopInfoTests
 {
+    [Theory]
+    [InlineData(StopReason.Entry)]
+    [InlineData(StopReason.UserPause)]
+    public void Process_wide_stops_can_report_that_no_managed_thread_is_available(StopReason reason)
+    {
+        var stop = new StopInfo(reason, 42, 0, null, null);
+        Assert.Equal(0, stop.ThreadId);
+    }
+
     [Fact]
     public void Stop_keeps_method_module_and_brief_stack_context()
     {

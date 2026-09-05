@@ -81,6 +81,34 @@ public sealed class WindowsModuleSymbols : IDisposable
             .OrderByDescending(point => point.IlOffset).FirstOrDefault()?.Source;
     }
 
+    public int GetStepRangeEnd(int methodToken, int ilOffset, int codeSize)
+    {
+        ThrowIfDisposed();
+        SourceLocation? current = Resolve(methodToken, ilOffset);
+        return documents.Values.SelectMany(points => points)
+            .Where(point => point.MethodToken == methodToken && point.IlOffset > ilOffset &&
+                (current is null || point.Source.Line != current.Line || point.Source.FilePath != current.FilePath))
+            .Select(point => point.IlOffset).DefaultIfEmpty(codeSize).Min();
+    }
+
+    public string? GetMethodName(int methodToken)
+    {
+        ThrowIfDisposed();
+        if (pe is null) return null;
+        MetadataReader metadata = pe.GetMetadataReader();
+        MethodDefinition method = metadata.GetMethodDefinition((MethodDefinitionHandle)MetadataTokens.Handle(methodToken));
+        return GetTypeName(metadata, method.GetDeclaringType()) + "." + metadata.GetString(method.Name);
+    }
+
+    private static string GetTypeName(MetadataReader metadata, TypeDefinitionHandle handle)
+    {
+        TypeDefinition type = metadata.GetTypeDefinition(handle);
+        string name = metadata.GetString(type.Name);
+        if (!type.GetDeclaringType().IsNil) return GetTypeName(metadata, type.GetDeclaringType()) + "+" + name;
+        string ns = metadata.GetString(type.Namespace);
+        return ns.Length == 0 ? name : ns + "." + name;
+    }
+
     public void Dispose()
     {
         if (disposed) return;

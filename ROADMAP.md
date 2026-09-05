@@ -86,10 +86,10 @@
     - [x] 状态：pending / verified / moved / unresolved，移动到最近可执行行时明确告知
     - 验收：对延迟加载程序集与模块卸载重载场景，状态迁移正确且事件完整。
 
-- [ ] **阶段1-5 执行控制：Continue / Pause / Step / Detach / Terminate**
-    - [ ] Continue、Pause、Step Into / Over / Out（单步必须指定线程）
-    - [ ] Detach（启动与附加两种模式均可）、Terminate（仅限由调试器启动的目标）
-    - [ ] 非法状态下调用返回明确错误
+- [x] **阶段1-5 执行控制：Continue / Pause / Step / Detach / Terminate**
+    - [x] Continue、Pause、Step Into / Over / Out（单步必须指定线程）
+    - [x] Detach（启动与附加两种模式均可）、Terminate（仅限由调试器启动的目标）
+    - [x] 非法状态下调用返回明确错误
     - 验收：step 后停止位置与源码行吻合；detach 后目标继续运行；terminate 后目标退出且会话终止。
 
 - [ ] **阶段1-6 托管线程枚举与调用栈**

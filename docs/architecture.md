@@ -26,6 +26,15 @@
 - 断点删除会停用其全部原生绑定并发布删除通知；模块卸载时丢弃失效绑定及符号缓存，不对已经失效的 COM 对象调用 Activate。Detach 前停用仍有效的原生断点。
 - `eng/verify-stage1-4.ps1 -Configuration Debug|Release` 使用同一产品 Interop/Core/Symbols 验证 x86/x64 延迟模块、延迟 PDB、禁用/启用、命中、AppDomain 卸载重载与删除后不再绑定。执行控制和跨进程请求入口仍按后续任务实施。
 
+## 执行控制（阶段1-5）
+
+- 产品会话复用 Core 状态机；启动、可观察停止、继续、Detach、退出及清理失败产生有序状态事件。入口处尚无托管线程、或进程级暂停无法确定托管线程时，`threadId = 0` 明确表示未知；断点与单步停止仍要求真实线程 ID。
+- Continue 消费当前唯一停止；Step 必须指定存在且具有活动 IL 帧的线程。Into/Over 使用 PDB 下一可执行源码行构造 IL 范围，Out 使用当前帧的 Stepper。断点/暂停打断单步时停用 Stepper，Detach 前同样清理 Stepper 和有效断点。
+- 等待运行结果可超时或取消；届时尝试暂停目标，返回 `operation_timed_out` / `operation_cancelled`，保留可检查且可再次继续的停止状态。底层不可中断 COM 调用的进程级超时约束由阶段 1-10 完成。
+- Detach 支持启动与附加目标，均让目标继续运行。Terminate 拒绝附加目标；对启动目标先同步停止，再请求终止并等待真实 ExitProcess。当前 Desktop CLR 实测 Terminate 后停止已失效，额外 Continue 会返回 `CORDBG_E_SUPERFLOUS_CONTINUE`，因此终止不走正常 Resume 路径，ExitProcess 也不 Continue。
+- 复现：`eng/verify-stage1-5.ps1 -Configuration Debug|Release`，覆盖双架构源码单步、非法状态/线程、超时/取消、活动断点清理、启动/附加 Detach、停止/运行中 Terminate，并回归阶段 1-4。
+- 单步范围语义参考 [Microsoft ICorDebugStepper::StepRange](https://learn.microsoft.com/en-us/dotnet/core/unmanaged-api/debugging/icordebug/icordebugstepper-steprange-method)。
+
 ## ClrDebug 依赖结论（阶段0-2）
 
 - NuGet 包固定为 `ClrDebug` **0.4.2**；包内仓库提交为 `9628778ff761b2e466ca3199392cbd3de6de5bc5`，本次验证下载的 nupkg SHA-256 为 `880276A4D34EAA32EF6FB3598B7464E16C133B1184E9963D59398607BB5EDFBA`。

@@ -231,7 +231,9 @@ public sealed class SingleThreadCommandSchedulerTests
                         callbackRan.Set();
                     });
                 commandStarted.Set();
-                cancellationToken.WaitHandle.WaitOne();
+                // A token's wait handle is signaled before its callbacks run. Waiting on it here
+                // can dispose the registration before the callback this test intends to exercise.
+                callbackRan.Wait(TimeSpan.FromSeconds(3));
                 return true;
             },
             TimeSpan.FromSeconds(5));

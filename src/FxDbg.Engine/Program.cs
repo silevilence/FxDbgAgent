@@ -103,7 +103,8 @@ internal static class Program
             prepared.Environment,
             request.Architecture,
             request.StopAtEntry,
-            request.Timeout);
+            request.Timeout,
+            request.SessionId);
     }
 
     private static FrameworkDebugSession Attach(EngineOptions options)
@@ -111,7 +112,7 @@ internal static class Program
         int processId = options.ProcessId!.Value;
         EngineTargetValidator.ValidateAttachRuntime(processId, options.Architecture);
         var bootstrap = new FrameworkDebuggerBootstrap();
-        return bootstrap.Attach(processId, options.Architecture, options.Timeout);
+        return bootstrap.Attach(processId, options.Architecture, options.Timeout, options.SessionId);
     }
 
     private static void WaitUntilInputCloses()

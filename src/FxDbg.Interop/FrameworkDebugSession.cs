@@ -5,6 +5,7 @@ using ClrDebug;
 using FxDbg.Core.Errors;
 using FxDbg.Core.Execution;
 using FxDbg.Core.Model;
+using FxDbg.Core.Sessions;
 
 namespace FxDbg.Interop;
 
@@ -32,9 +33,12 @@ public sealed partial class FrameworkDebugSession : IDisposable
         BlockingCollection<CallbackEnvelope> callbacks,
         object callbackGate,
         ContinueStopCoordinator callbackPairing,
-        CorDebugController? pendingEntryController)
+        CorDebugController? pendingEntryController,
+        SessionId sessionId)
     {
-        Target = target;
+        initialTarget = target;
+        domain = new DebugSession(sessionId);
+        domain.Start();
         this.corDebug = corDebug;
         this.process = process;
         this.callback = callback;
@@ -43,9 +47,19 @@ public sealed partial class FrameworkDebugSession : IDisposable
         this.callbackPairing = callbackPairing;
         owningThreadId = Environment.CurrentManagedThreadId;
         this.pendingEntryController = pendingEntryController;
+        if (pendingEntryController is not null)
+        {
+            CurrentStop = new StopInfo(StopReason.Entry, target.ProcessId, 0, null, null);
+            domain.MarkStopped(CurrentStop);
+        }
+        else domain.MarkRunning("process_started");
     }
 
-    public DebugTargetInfo Target { get; }
+    private readonly DebugTargetInfo initialTarget;
+    private readonly DebugSession domain;
+
+    public DebugTargetInfo Target => new(initialTarget.ProcessId, initialTarget.Architecture,
+        initialTarget.RuntimeVersion, initialTarget.LaunchedByDebugger, domain.State);
 
     public bool PumpNextCallback(TimeSpan timeout, CancellationToken cancellationToken)
     {
@@ -121,6 +135,7 @@ public sealed partial class FrameworkDebugSession : IDisposable
 
         ThrowIfWrongThread();
         disposed = true;
+        if (domain.State != DebugSessionState.Terminated && domain.State != DebugSessionState.Failed) domain.BeginDetach();
         bool debuggerCanTerminate = false;
         try
         {
@@ -129,6 +144,12 @@ public sealed partial class FrameworkDebugSession : IDisposable
             debuggerCanTerminate = true;
             WaitForCallbackProducerBarrier();
             DrainDetachedCallbacks();
+            if (domain.State != DebugSessionState.Terminated && domain.State != DebugSessionState.Failed) domain.MarkTerminated("detached");
+        }
+        catch
+        {
+            if (domain.State != DebugSessionState.Terminated && domain.State != DebugSessionState.Failed) domain.Fail("detach_failed");
+            throw;
         }
         finally
         {
@@ -284,6 +305,8 @@ public sealed partial class FrameworkDebugSession : IDisposable
                     continue;
                 }
 
+                stepper?.Deactivate();
+                stepper = null;
                 breakpoints.Dispose();
                 process.Detach();
                 ClearModules();
@@ -340,7 +363,10 @@ public sealed partial class FrameworkDebugSession : IDisposable
         if (envelope.Kind == CorDebugManagedCallbackKind.ExitProcess)
         {
             processExited = true;
+            pendingEntryController = null;
             callbackPairing.MarkTerminated();
+            CurrentStop = new StopInfo(StopReason.ProcessExit, Target.ProcessId, 0, null, null);
+            if (domain.State != DebugSessionState.Terminated && domain.State != DebugSessionState.Failed) domain.MarkTerminated("process_exited");
             ClearModules();
             return;
         }

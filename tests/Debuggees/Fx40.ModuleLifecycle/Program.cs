@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using System.Runtime.CompilerServices;
 
 namespace FxDbg.Debuggees
 {
@@ -24,8 +25,11 @@ namespace FxDbg.Debuggees
 
     internal static class Program
     {
+        private static int executionSink;
+
         private static void Main(string[] args)
         {
+            if (args[0] == "--execution") { RunExecution(args[1]); return; }
             for (int cycle = 0; cycle < 3; cycle++)
             {
                 AppDomain domain = AppDomain.CreateDomain("LateModule-" + cycle);
@@ -34,6 +38,23 @@ namespace FxDbg.Debuggees
                 AppDomain.Unload(domain);
                 File.WriteAllText(Path.Combine(args[0], "unloaded-" + cycle), "done");
             }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void RunExecution(string directory)
+        {
+            executionSink = AddOne(7); // STEP_CALL
+            executionSink += 10; // STEP_AFTER
+            executionSink = AddOne(executionSink); // STEP_OVER
+            File.WriteAllText(Path.Combine(directory, "execution-ready"), executionSink.ToString()); // STEP_READY
+            while (!File.Exists(Path.Combine(directory, "execution-done"))) Thread.Sleep(10);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static int AddOne(int value)
+        { // STEP_INNER_ENTRY
+            int result = value + 1; // STEP_INNER
+            return result;
         }
     }
 }
