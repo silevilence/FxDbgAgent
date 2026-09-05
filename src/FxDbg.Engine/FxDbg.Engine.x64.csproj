@@ -12,10 +12,12 @@
 
   <ItemGroup>
     <Compile Include="Program.cs" />
+    <Compile Include="EngineServer.cs" />
     <Compile Include="EngineLaunchPreparation.cs" />
     <Compile Include="EngineOptions.cs" />
     <Compile Include="EngineTargetValidator.cs" />
     <ProjectReference Include="..\FxDbg.Core\FxDbg.Core.csproj" />
+    <ProjectReference Include="..\FxDbg.Engine.Protocol\FxDbg.Engine.Protocol.csproj" />
     <ProjectReference Include="FxDbg.Engine.Runtime.csproj" />
     <ProjectReference Include="..\FxDbg.Interop\FxDbg.Interop.csproj" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />

@@ -61,6 +61,13 @@
 - 同一模块恢复或替换 PDB 保留实例 ID，真正卸载重载后产生新 ID。名称元数据、PDB 与断点缓存由 DebugModule 统一持有，卸载释放；事件快照不保留原生对象，退出后活动模块列表为空。
 - `eng/verify-stage1-9.ps1 -Configuration Debug|Release` 使用真实 Windows PDB 验证缺失、不匹配、损坏、恢复及 AppDomain 重载，回归断点与线程栈。
 
+## Engine/Host 进程协议（阶段1-10）
+
+- 产品 Host 使用本机 Named Pipe + JSON-RPC v1，随机管道名、当前用户 ACL、预期 Engine PID 与本机校验；协议层为 netstandard2.0，Host 不依赖 Interop。帧格式、命令、事件及超时规则见 [engine-protocol.md](engine-protocol.md)。
+- 管道 I/O、心跳与命令线程分离；调试操作只进入原有单一调度器。事件出站有界，帧不写入日志；Core 历史有界且事件序号保持单调。
+- Host 崩溃、取消及正常关闭时，Engine 尝试在调度线程安全 Detach；真实双架构暂停附加目标均存活且可再次附加。强杀 Engine 本体会使 Desktop CLR 目标退出，不能宣称此路径能保活目标；Host 隔离错误并可继续工作。
+- `eng/verify-stage1-10.ps1 -Configuration Debug|Release` 验证真实跨进程调试、双向崩溃、超时/取消、反复清理和句柄数量。
+
 ## ClrDebug 依赖结论（阶段0-2）
 
 - NuGet 包固定为 `ClrDebug` **0.4.2**；包内仓库提交为 `9628778ff761b2e466ca3199392cbd3de6de5bc5`，本次验证下载的 nupkg SHA-256 为 `880276A4D34EAA32EF6FB3598B7464E16C133B1184E9963D59398607BB5EDFBA`。

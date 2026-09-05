@@ -9,14 +9,15 @@ namespace FxDbg.Core.Sessions;
 public sealed class DebugSession
 {
     private readonly List<EngineEvent> events = new();
+    private long eventSequence;
 
     public DebugSession(SessionId id)
     {
         Id = id ?? throw new ArgumentNullException(nameof(id));
         State = DebugSessionState.Created;
-        events.Add(new SessionStateChangedEvent(
+        Append(new SessionStateChangedEvent(
             id,
-            1,
+            ++eventSequence,
             DateTimeOffset.UtcNow,
             null,
             State,
@@ -30,7 +31,7 @@ public sealed class DebugSession
     public IReadOnlyList<EngineEvent> Events => events;
 
     public void RecordModuleChange(ModuleChangeKind change, ModuleInfo module)
-        => events.Add(new ModuleChangedEvent(Id, events.Count + 1, DateTimeOffset.UtcNow, change, module));
+        => Append(new ModuleChangedEvent(Id, ++eventSequence, DateTimeOffset.UtcNow, change, module));
 
     public SessionStateChangedEvent Start()
     {
@@ -50,8 +51,8 @@ public sealed class DebugSession
             DebugSessionState.Starting,
             DebugSessionState.Running);
 
-        var stopped = new StoppedEvent(Id, events.Count + 1, DateTimeOffset.UtcNow, stop);
-        events.Add(stopped);
+        var stopped = new StoppedEvent(Id, ++eventSequence, DateTimeOffset.UtcNow, stop);
+        Append(stopped);
         return stopped;
     }
 
@@ -114,12 +115,18 @@ public sealed class DebugSession
         State = nextState;
         var changed = new SessionStateChangedEvent(
             Id,
-            events.Count + 1,
+            ++eventSequence,
             DateTimeOffset.UtcNow,
             previous,
             State,
             reason);
-        events.Add(changed);
+        Append(changed);
         return changed;
+    }
+
+    private void Append(EngineEvent value)
+    {
+        if (events.Count == 10000) events.RemoveRange(0, 5000);
+        events.Add(value);
     }
 }

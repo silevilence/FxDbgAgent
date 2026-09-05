@@ -16,6 +16,7 @@ internal static class Program
     {
         try
         {
+            if (args.Length > 0 && args[0] == "serve") return EngineServer.Run(args);
             EngineOptions options = EngineOptions.Parse(args);
             EngineTargetValidator.RequireCurrentArchitecture(options.Architecture);
             FrameworkDebugSession? session = null;
@@ -92,7 +93,7 @@ internal static class Program
         }
     }
 
-    private static FrameworkDebugSession Launch(EngineOptions options)
+    internal static FrameworkDebugSession Launch(EngineOptions options)
     {
         LaunchRequest request = options.ToLaunchRequest();
         using EngineLaunchPreparation prepared = EngineLaunchPreparation.Create(request);
@@ -107,7 +108,7 @@ internal static class Program
             request.SessionId);
     }
 
-    private static FrameworkDebugSession Attach(EngineOptions options)
+    internal static FrameworkDebugSession Attach(EngineOptions options)
     {
         int processId = options.ProcessId!.Value;
         EngineTargetValidator.ValidateAttachRuntime(processId, options.Architecture);

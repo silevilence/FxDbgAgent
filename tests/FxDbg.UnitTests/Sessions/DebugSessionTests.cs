@@ -10,6 +10,16 @@ namespace FxDbg.UnitTests.Sessions;
 public sealed class DebugSessionTests
 {
     [Fact]
+    public void Event_history_is_bounded_without_reusing_sequence_numbers()
+    {
+        var session = new DebugSession(SessionId.New());
+        var module = new FxDbg.Core.Model.ModuleInfo("id", "module", "path", "domain", FxDbg.Core.Model.SymbolStatus.Missing, null, null);
+        for (int index = 0; index < 10020; index++) session.RecordModuleChange(FxDbg.Core.Events.ModuleChangeKind.SymbolsChanged, module);
+        Assert.InRange(session.Events.Count, 1, 10000);
+        Assert.Equal(10021, session.Events[session.Events.Count - 1].Sequence);
+        Assert.True(session.Events[0].Sequence > 1);
+    }
+    [Fact]
     public void Start_moves_created_session_to_starting_and_records_event()
     {
         var session = new DebugSession(SessionId.New());
