@@ -16,6 +16,10 @@ internal sealed class McpTestConnection : IAsyncDisposable
     internal McpClient Client { get; private set; } = null!;
     internal string StandardError { get; private set; } = "";
     internal int ProcessId => process.Id;
+    internal void CloseInput() => process.StandardInput.Close();
+    internal void KillHost() { if (!process.HasExited) process.Kill(); }
+    internal void BreakOutput() => process.StandardOutput.Close();
+    internal async Task WaitExit(CancellationToken token) => await process.WaitForExitAsync(token);
 
     internal static async Task<McpTestConnection> Create(string bundle, CancellationToken token, string? directory = null, string[]? arguments = null)
     {

@@ -17,6 +17,8 @@ internal static class ObservationSuite
             Directory.CreateDirectory(gate);
             string original = Path.Combine(root, $"tests/Debuggees/Fx40.Console.{architecture}/bin/{configuration}/net40/Fx40.Console.{architecture}.exe");
             string executable = Path.Combine(gate, Path.GetFileName(original));
+            string secret = "MCP-SECRET-" + Guid.NewGuid().ToString("N");
+            string auditPath = Path.Combine(gate, "host-audit.jsonl");
             foreach (string extension in new[] { "", ".config" }) if (File.Exists(original + extension)) File.Copy(original + extension, executable + extension);
             File.Copy(Path.ChangeExtension(original, ".pdb"), Path.ChangeExtension(executable, ".pdb"));
             using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(45));
@@ -25,7 +27,7 @@ internal static class ObservationSuite
             McpClient? client = null;
             try
             {
-                connection = await McpTestConnection.Create(bundle, timeout.Token, gate);
+                connection = await McpTestConnection.Create(bundle, timeout.Token, gate, ["--log-level", "debug", "--log-file", auditPath, "--value-logs", "off"]);
                 client = connection.Client;
                 string session;
                 if (attach)
@@ -33,7 +35,7 @@ internal static class ObservationSuite
                     var start = new ProcessStartInfo(executable) { UseShellExecute = false, CreateNoWindow = true, WorkingDirectory = gate,
                         RedirectStandardOutput = true, RedirectStandardError = true };
                     start.ArgumentList.Add("--scenario"); start.ArgumentList.Add("gated"); start.ArgumentList.Add(gate);
-                    start.Environment["FXDBG_MCP_TEST"] = "fixture-env-value";
+                    start.Environment["FXDBG_MCP_TEST"] = secret;
                     target = Process.Start(start)!;
                     await Until(() => File.Exists(Path.Combine(gate, "ready")), timeout.Token);
                     var created = await Call(client, "attach", new() { ["pid"] = target.Id }, timeout.Token);
@@ -45,7 +47,7 @@ internal static class ObservationSuite
                     var created = await Call(client, "launch", new()
                     {
                         ["exe"] = executable, ["args"] = new[] { "--scenario", "gated", gate }, ["cwd"] = gate,
-                        ["env"] = new Dictionary<string, string> { ["FXDBG_MCP_TEST"] = "fixture-env-value" }
+                        ["env"] = new Dictionary<string, string> { ["FXDBG_MCP_TEST"] = secret }
                     }, timeout.Token);
                     session = created["sessionId"]!.GetValue<string>();
                     target = Process.GetProcessById(created["result"]!["processId"]!.GetValue<int>());
@@ -53,7 +55,7 @@ internal static class ObservationSuite
                     Require(!string.IsNullOrEmpty(created["result"]!["runtimeFileVersion"]!.GetValue<string>()), "Actual CLR file version.");
                     await Until(() => File.Exists(Path.Combine(gate, "ready")), timeout.Token);
                 }
-                await Until(() => File.ReadAllText(Path.Combine(gate, "ready")) == "fixture-env-value|" + gate, timeout.Token);
+                await Until(() => File.ReadAllText(Path.Combine(gate, "ready")) == secret + "|" + gate, timeout.Token);
                 await Call(client, "attach", new() { ["pid"] = target.Id }, timeout.Token, "already_debugged");
                 await Call(client, "launch", new() { ["exe"] = executable, ["arch"] = architecture == "x86" ? "x64" : "x86" }, timeout.Token, "architecture_mismatch");
                 async Task<JsonNode> Invoke(string tool, Dictionary<string, object?>? arguments = null, string? error = null)
@@ -119,7 +121,9 @@ internal static class ObservationSuite
                 await connection.DisposeAsync(); client = null;
                 await target.WaitForExitAsync(timeout.Token);
                 Require(File.Exists(Path.Combine(gate, "completed")), "EOF detaches the stopped target so it finishes.");
-                Require(!connection.StandardError.Contains("fixture-env-value") && !connection.StandardError.Contains("TARGET_STD"), "No target output or values in MCP diagnostics.");
+                string diagnostics = connection.StandardError + File.ReadAllText(auditPath);
+                Require(!diagnostics.Contains(secret) && !diagnostics.Contains("TARGET_STD") && !diagnostics.Contains("hello-framework") && !diagnostics.Contains("local-value"), "No target output, env or variable values in debug diagnostics.");
+                foreach (string record in File.ReadAllLines(auditPath)) Require(JsonNode.Parse(record)!["command"] is not null, "File audit contains only metadata JSON.");
                 Console.WriteLine($"MCP observation: {architecture} {(attach ? "attach" : "launch")} passed.");
             }
             finally

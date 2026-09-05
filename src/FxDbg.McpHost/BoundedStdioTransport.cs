@@ -14,6 +14,7 @@ internal sealed class BoundedStdioTransport : ITransport
     private readonly Channel<JsonRpcMessage> incoming = Channel.CreateBounded<JsonRpcMessage>(16);
     private readonly Channel<Outgoing> outgoing = Channel.CreateBounded<Outgoing>(8);
     private readonly CancellationTokenSource closed = new();
+    private readonly CancellationTokenSource disconnected = new();
     private readonly SemaphoreSlim dispatched = new(64, 64);
     private readonly Task reader;
     private readonly Task writer;
@@ -25,6 +26,8 @@ internal sealed class BoundedStdioTransport : ITransport
     }
     public string? SessionId => null;
     public ChannelReader<JsonRpcMessage> MessageReader => incoming.Reader;
+    internal CancellationToken Disconnected => disconnected.Token;
+    internal bool Failed { get; private set; }
     internal void MessageHandled() => dispatched.Release();
 
     public Task SendMessageAsync(JsonRpcMessage message, CancellationToken cancellationToken = default)
@@ -50,6 +53,7 @@ internal sealed class BoundedStdioTransport : ITransport
                 {
                     if (line.Length != 0) throw new InvalidDataException("MCP input ended inside a frame.");
                     incoming.Writer.TryComplete();
+                    disconnected.Cancel();
                     return;
                 }
                 int begin = 0;
@@ -121,14 +125,19 @@ internal sealed class BoundedStdioTransport : ITransport
     private void Close(Exception? error)
     {
         if (Interlocked.Exchange(ref disposed, 1) != 0) return;
+        Failed = error is not null;
         incoming.Writer.TryComplete(error); outgoing.Writer.TryComplete(error);
+        disconnected.Cancel();
         closed.Cancel();
         input.Dispose(); output.Dispose();
     }
     public async ValueTask DisposeAsync()
     {
         Close(null);
-        await Task.WhenAll(reader, writer).ConfigureAwait(false);
+        // Console input on Windows can retain a synchronous pending ReadFile after
+        // cancellation/handle disposal. It must not keep process shutdown waiting on the client.
+        try { await Task.WhenAll(reader, writer).WaitAsync(TimeSpan.FromSeconds(1)).ConfigureAwait(false); }
+        catch (TimeoutException) { }
     }
     private sealed class Outgoing(byte[] bytes)
     {

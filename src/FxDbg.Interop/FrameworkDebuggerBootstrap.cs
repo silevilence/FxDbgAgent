@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using ClrDebug;
 using FxDbg.Core.Errors;
 using FxDbg.Core.Model;
@@ -18,7 +19,8 @@ public sealed class FrameworkDebuggerBootstrap
         TargetArchitecture architecture,
         bool stopAtEntry,
         TimeSpan timeout,
-        SessionId? sessionId = null)
+        SessionId? sessionId = null,
+        CancellationToken cancellationToken = default)
     {
         RequireEngineArchitecture(architecture);
         return ManagedCreateProcessObserver.Start(
@@ -33,10 +35,10 @@ public sealed class FrameworkDebuggerBootstrap
                     ? (CreateProcessFlags)0
                     : CreateProcessFlags.CREATE_UNICODE_ENVIRONMENT,
                 lpEnvironment: environment == IntPtr.Zero ? (IntPtr?)null : environment,
-                lpCurrentDirectory: workingDirectory), sessionId);
+                lpCurrentDirectory: workingDirectory), sessionId, cancellationToken);
     }
 
-    public FrameworkDebugSession Attach(int processId, TargetArchitecture architecture, TimeSpan timeout, SessionId? sessionId = null)
+    public FrameworkDebugSession Attach(int processId, TargetArchitecture architecture, TimeSpan timeout, SessionId? sessionId = null, CancellationToken cancellationToken = default)
     {
         RequireEngineArchitecture(architecture);
         return ManagedCreateProcessObserver.Start(
@@ -44,7 +46,7 @@ public sealed class FrameworkDebuggerBootstrap
             architecture,
             false,
             false,
-            corDebug => AttachProcess(corDebug, processId), sessionId);
+            corDebug => AttachProcess(corDebug, processId), sessionId, cancellationToken);
     }
 
     private static CorDebugProcess AttachProcess(CorDebug debugger, int processId)

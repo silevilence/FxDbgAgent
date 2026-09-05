@@ -104,7 +104,13 @@ public sealed class EngineProcessHost : IDisposable
             connections.Clear();
         }
         shutdown.Cancel();
-        foreach (EngineConnection connection in active) connection.Dispose();
+        DateTime deadline = DateTime.UtcNow.AddSeconds(8);
+        Task.WhenAll(active.Select(connection => Task.Run(connection.Dispose))).GetAwaiter().GetResult();
+        while (DateTime.UtcNow < deadline)
+        {
+            lock (gate) if (starting.Count == 0) break;
+            Thread.Sleep(10);
+        }
     }
 
     private EngineConnection Find(SessionId id)

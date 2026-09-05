@@ -31,7 +31,7 @@ function connect(extra = []) {
   }));
   let id = 0;
   const api = {
-    child, messages,
+    child, messages, get stderr() { return stderr; },
     send: item => child.stdin.write(JSON.stringify(item) + '\n'),
     async call(method, params) {
       const requestId = ++id;
@@ -74,7 +74,7 @@ try {
   await malformed.close(); // A malformed transport is allowed to close; no log text may enter stdout.
   const absent = connect(['--engine-dir', join(bundle, 'missing engines')]);
   assert.notEqual(await absent.close(), 0, 'Missing dependency must fail startup');
-  for (const option of [['--max-sessions', '9'], ['--max-calls', '0'], ['--max-control-calls', 'bad']]) {
+  for (const option of [['--max-sessions', '9'], ['--max-calls', '0'], ['--max-control-calls', 'bad'], ['--log-level', 'trace'], ['--value-logs', 'on']]) {
     const invalidConfig = connect(option);
     assert.notEqual(await invalidConfig.close(), 0, 'Invalid limits must fail startup');
   }
@@ -84,5 +84,11 @@ try {
   const duplicate = connect();
   duplicate.child.stdin.write('{"jsonrpc":"2.0","id":1,"id":2,"method":"ping"}\n');
   assert.notEqual(await duplicate.close(), 0, 'Duplicate properties must not select an ambiguous request');
+  const quiet = connect(['--log-level', 'off', '--value-logs', 'off']);
+  await quiet.call('initialize', { protocolVersion: '2025-11-25', capabilities: {}, clientInfo: { name: 'quiet-test', version: '1' } });
+  quiet.send({ jsonrpc: '2.0', method: 'notifications/initialized', params: {} });
+  await quiet.call('tools/call', { name: 'debug_status', arguments: { sessionId: 'secret-invalid-session' } });
+  await quiet.close();
+  assert.equal(quiet.stderr, '', 'Off level emits no tool diagnostics');
   console.log('Raw stdio: initialization, version negotiation, ping, errors, cancellation, malformed input and EOF passed.');
 } finally { for (const child of children) child.kill(); }

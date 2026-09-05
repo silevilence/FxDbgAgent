@@ -14,11 +14,20 @@ try
 {
     string engineDirectory = Path.Combine(AppContext.BaseDirectory, "engines");
     int maxSessions = 8, maxCalls = 32, maxControls = 8;
+    string logLevel = "info";
+    string? logFile = null;
     var seenOptions = new HashSet<string>(StringComparer.Ordinal);
     for (int index = 0; index < args.Length; index += 2)
     {
         if (index + 1 == args.Length || !seenOptions.Add(args[index])) throw new ArgumentException("Each startup option requires exactly one value.");
         if (args[index] == "--engine-dir") { engineDirectory = Path.GetFullPath(args[index + 1]); continue; }
+        if (args[index] == "--log-level") { logLevel = args[index + 1]; continue; }
+        if (args[index] == "--log-file") { logFile = args[index + 1]; continue; }
+        if (args[index] == "--value-logs")
+        {
+            if (args[index + 1] != "off") throw new ArgumentException("Value logging is disabled. --value-logs only accepts off.");
+            continue;
+        }
         if (!int.TryParse(args[index + 1], out int limit)) throw new ArgumentException("Startup limits must be integers.");
         switch (args[index])
         {
@@ -29,6 +38,7 @@ try
         }
     }
     var limits = new SessionServiceLimits(maxSessions, maxCalls, maxControls);
+    using var audit = new AuditLog(logLevel, logFile);
     foreach (string file in new[] { "FxDbg.Engine.x86.exe", "FxDbg.Engine.x64.exe", "FxDbg.Interop.dll", "ClrDebug.dll", "FxDbg.Engine.Protocol.dll" })
         if (!File.Exists(Path.Combine(engineDirectory, file))) throw new ArgumentException("Engine bundle is incomplete. Use --engine-dir with a published engines directory.");
     string manifestPath = Path.Combine(engineDirectory, "engine-manifest.json");
@@ -48,6 +58,7 @@ try
     }
     Console.CancelKeyPress += (_, input) => { input.Cancel = true; shutdown.Cancel(); };
     await using var transport = new BoundedStdioTransport(Console.OpenStandardInput(), Console.OpenStandardOutput());
+    using var disconnected = transport.Disconnected.Register(shutdown.Cancel);
     var options = new McpServerOptions
     {
         ServerInfo = new Implementation { Name = "FxDbg Agent", Version = "0.2.0" }, ProtocolVersion = "2025-11-25",
@@ -88,6 +99,7 @@ try
                 if (JsonSerializer.SerializeToUtf8Bytes(wrapped, McpJsonUtilities.DefaultOptions).Length > BoundedStdioTransport.MaximumBytes - 16384)
                     wrapped = Wrap(new JsonObject { ["ok"] = false, ["sessionId"] = sessionId,
                         ["error"] = new JsonObject { ["code"] = "invalid_request", ["message"] = "MCP result exceeds 4 MiB. Reduce page count, depth or string length and retry." } });
+                audit.ToolCompleted(tool.Name, (JsonObject)JsonNode.Parse(wrapped.StructuredContent!.Value.GetRawText())!);
                 return wrapped;
             }
         }
@@ -103,8 +115,27 @@ try
         finally { transport.MessageHandled(); }
     });
     await using var server = McpServer.Create(transport, options);
-    await server.RunAsync(shutdown.Token);
-    return 0;
+    async Task CheckClientAsync()
+    {
+        try
+        {
+            while (!shutdown.IsCancellationRequested)
+            {
+                await Task.Delay(3000, shutdown.Token);
+                if (Volatile.Read(ref initialized) == 0) continue;
+                using var probe = CancellationTokenSource.CreateLinkedTokenSource(shutdown.Token);
+                probe.CancelAfter(TimeSpan.FromSeconds(5));
+                await server.SendRequestAsync(new JsonRpcRequest { Id = new RequestId("fxdbg-health-" + Guid.NewGuid().ToString("N")), Method = "ping" }, probe.Token);
+            }
+        }
+        catch (Exception) { shutdown.Cancel(); }
+    }
+    Task health = CheckClientAsync();
+    try { await server.RunAsync(shutdown.Token); }
+    catch (OperationCanceledException) when (shutdown.IsCancellationRequested) { }
+    finally { shutdown.Cancel(); await health; }
+    if (transport.Failed) Console.Error.WriteLine("MCP transport failed; check message size, JSON framing or disconnected output.");
+    return transport.Failed ? 1 : 0;
 }
 catch (OperationCanceledException) { return 0; }
 catch (Exception error)

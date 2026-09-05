@@ -1,6 +1,6 @@
 # MCP 工具契约
 
-阶段 2 的公开契约。当前实现进度以 ROADMAP 勾选项和验证报告为准；13 个工具、操作跟踪及资源限流均已接通共享 Host/Engine，完整生命周期与 Agent 验收按后续任务实施。
+阶段 2 的公开契约。当前实现进度以 ROADMAP 勾选项和验证报告为准；13 个工具、操作跟踪、资源限流和生命周期清理均已接通共享 Host/Engine，Agent 与完整 MVP 验收按后续任务实施。
 
 运行 `./eng/publish-mcp.ps1 -Configuration Debug`，用 `dotnet <发布目录>/fxdbg-mcp.dll` 作为 MCP command/args。发布目录默认 `artifacts/mcp/Debug`，其旁 `engines/` 放置完整 x86/x64 Engine 与 DIA/ClrDebug 等依赖。可使用 `--engine-dir <绝对路径>` 覆盖，不依赖当前工作目录。仅本机 stdio，无网络监听。
 
@@ -63,3 +63,13 @@ MCP 单行输入上限 4 MiB，读取过程中即检查，没有换行也不能�
 本阶段验收按用户 2026-09-05 最新指示使用独立子代理：子代理读取安装后的技能与本文件，自主选择并执行真实 MCP 工具调用，保留请求和结果。禁止使用 Claude Code；固定脚本回归单独记录，不替代自主 Agent 验收。
 
 连接关闭应先关闭 MCP stdin，让服务完成安全分离。客户端不得把“断开”实现为终止整个进程树：固定 SDK 2.2.0 的 `StdioClientTransport` 在清理路径可能调用 KillTree，不能以该行为证明本服务的正常 EOF 清理。集成测试使用官方 `McpClient` + `StreamClientTransport` 连接实际子进程 stdio，由测试框架显式关闭 stdin 并等待 Host 退出；不修改 SDK。任意外部工具直接强杀 Engine/目标的边界见 `engine-protocol.md`。
+
+## 生命周期与诊断
+
+stdin EOF、输出断开或 Host 退出均结束所属会话，默认尝试 Detach，包括 launch 目标。MCP 输入关闭立即取消未结束处理器，避免等待四分钟运行期限才开始清理；多个 Engine 并行收尾，正常场景要求 15 秒内退出。启动阶段也接收取消。仅显式 debug_terminate 可终止 launch 目标，attach 目标一律拒绝。自然退出、detach、terminate 后及时释放 Engine，缓存的终态仍可查询。
+
+服务初始化后每 3 秒发送标准 MCP ping，5 秒未响应则关闭会话；接收方应立即用同 ID 的 `result:{}` 响应。此机制识别 stdin 仍开着但客户端已关闭输出读取端的情况，符合 [MCP Ping 协议](https://modelcontextprotocol.io/specification/2025-11-25/basic/utilities/ping)。官方客户端会自动响应。Windows 标准输入的待处理读取可能不接受取消，传输关闭后的读取任务最多再等待 1 秒，随后结束 Host 进程，不让客户端永久拖住清理。
+
+正常 EOF/Host 被强杀后，真实 x86/x64 launch/attach 目标均验证存活和可重附加。强杀 Engine 本身时，已实测 Desktop CLR 目标也退出；Host 隔离故障并继续服务。这是独立边界，不能将其称为安全分离成功。
+
+诊断参数：`--log-level off|error|info|debug`（默认 info）、`--log-file <本地路径>`（省略则 stderr）、`--value-logs off`（唯一允许值，任何级别都禁止值日志）。日志 API 仅接收完成状态、稳定错误码、命令、合法 sessionId、可用 PID 及 debug 级 Host 线程 ID，不接受原始请求、目标变量、环境/参数内容或异常消息；SDK 原始帧日志不启用。文件为最多约 1 MiB 的单个日志，满后清空最老记录重新写入。日志写入失败不改变已执行工具的结果。stdout 始终只有协议，业务响应仍可包含调用方请求的变量与异常数据。

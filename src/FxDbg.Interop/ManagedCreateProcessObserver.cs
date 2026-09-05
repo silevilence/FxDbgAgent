@@ -21,7 +21,7 @@ internal static class ManagedCreateProcessObserver
         bool launchedByDebugger,
         bool stopAtEntry,
         Func<CorDebug, CorDebugProcess> start,
-        SessionId? sessionId)
+        SessionId? sessionId, CancellationToken cancellationToken = default)
     {
         var callbacks = new BlockingCollection<CallbackEnvelope>();
         var callbackGate = new object();
@@ -46,6 +46,7 @@ internal static class ManagedCreateProcessObserver
         {
             corDebug.Initialize();
             corDebug.SetManagedHandler(callback);
+            cancellationToken.ThrowIfCancellationRequested();
             process = start(corDebug);
             string? runtimeFileVersion = null;
             CorDebugController? entryController = WaitForCreateProcess(
@@ -53,7 +54,7 @@ internal static class ManagedCreateProcessObserver
                 callbackPairing,
                 timeout,
                 stopAtEntry,
-                () => runtimeFileVersion = GetRuntimeFileVersion(process.Id));
+                () => runtimeFileVersion = GetRuntimeFileVersion(process.Id), cancellationToken);
             DebugSessionState state = stopAtEntry ? DebugSessionState.Stopped : DebugSessionState.Running;
             var target = new DebugTargetInfo(process.Id, architecture, runtimeVersion, launchedByDebugger, state, runtimeFileVersion);
             return new FrameworkDebugSession(
@@ -92,13 +93,13 @@ internal static class ManagedCreateProcessObserver
         ContinueStopCoordinator callbackPairing,
         TimeSpan timeout,
         bool stopAtEntry,
-        Action captureRuntimeVersion)
+        Action captureRuntimeVersion, CancellationToken cancellationToken)
     {
         DateTime deadline = DateTime.UtcNow.Add(timeout);
         while (true)
         {
             int remaining = Math.Max(1, (int)Math.Min(int.MaxValue, (deadline - DateTime.UtcNow).TotalMilliseconds));
-            if (!callbacks.TryTake(out CallbackEnvelope envelope, remaining))
+            if (!callbacks.TryTake(out CallbackEnvelope envelope, remaining, cancellationToken))
             {
                 throw new FxDbgException(
                     FxDbgErrorCode.OperationTimedOut,

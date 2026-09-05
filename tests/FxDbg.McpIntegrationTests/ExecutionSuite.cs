@@ -7,7 +7,8 @@ internal static class ExecutionSuite
     internal static async Task Run(string bundle, string root, string configuration)
     {
         using var deadline = new CancellationTokenSource(TimeSpan.FromMinutes(3));
-        await using var connection = await McpTestConnection.Create(bundle, deadline.Token);
+        string audit = Path.Combine(root, "artifacts", "mcp-execution-audit-" + Guid.NewGuid().ToString("N") + ".jsonl");
+        await using var connection = await McpTestConnection.Create(bundle, deadline.Token, arguments: ["--log-level", "debug", "--log-file", audit, "--value-logs", "off"]);
         McpClient client = connection.Client;
         var targets = new List<Process>();
         string source = Path.Combine(root, "tests/Debuggees/Shared/EndToEndScenarios.cs");
@@ -103,6 +104,8 @@ internal static class ExecutionSuite
                 target.Dispose();
             }
             await connection.DisposeAsync();
+            string log = File.ReadAllText(audit) + connection.StandardError;
+            ObservationSuite.Require(!log.Contains("e2e-unhandled-message") && !log.Contains("hello-framework"), "Debug audit excludes exception and variable values.");
         }
     }
 }

@@ -23,6 +23,7 @@ public sealed partial class DebugSessionService : IAsyncDisposable
     private readonly SessionServiceLimits limits;
     private readonly CallAdmission admission;
     private readonly object creationGate = new();
+    private Task? disposal;
 
     public DebugSessionService(EngineProcessHost engine, SessionServiceLimits? limits = null)
     {
@@ -213,7 +214,12 @@ public sealed partial class DebugSessionService : IAsyncDisposable
     private static JObject Envelope(SessionId id, JToken value) => new() { ["ok"] = true, ["sessionId"] = id.ToString(), ["result"] = value };
     private static FxDbgException Invalid(string message) => new(FxDbgErrorCode.InvalidRequest, message);
 
-    public async ValueTask DisposeAsync()
+    public ValueTask DisposeAsync()
+    {
+        lock (creationGate) return new ValueTask(disposal ??= DisposeCoreAsync());
+    }
+
+    private async Task DisposeCoreAsync()
     {
         lifetime.Cancel();
         foreach (Observation observation in sessions.Values)

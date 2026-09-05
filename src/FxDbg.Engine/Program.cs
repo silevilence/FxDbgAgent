@@ -94,7 +94,7 @@ internal static class Program
         }
     }
 
-    internal static FrameworkDebugSession Launch(EngineOptions options)
+    internal static FrameworkDebugSession Launch(EngineOptions options, CancellationToken cancellationToken = default)
     {
         LaunchRequest request = options.ToLaunchRequest();
         using EngineLaunchPreparation prepared = EngineLaunchPreparation.Create(request);
@@ -106,15 +106,15 @@ internal static class Program
             request.Architecture,
             request.StopAtEntry,
             request.Timeout,
-            request.SessionId);
+            request.SessionId, cancellationToken);
     }
 
-    internal static FrameworkDebugSession Attach(EngineOptions options)
+    internal static FrameworkDebugSession Attach(EngineOptions options, CancellationToken cancellationToken = default)
     {
         int processId = options.ProcessId!.Value;
         EngineTargetValidator.ValidateAttachRuntime(processId, options.Architecture);
         var bootstrap = new FrameworkDebuggerBootstrap();
-        return bootstrap.Attach(processId, options.Architecture, options.Timeout, options.SessionId);
+        return bootstrap.Attach(processId, options.Architecture, options.Timeout, options.SessionId, cancellationToken);
     }
 
     private static void WaitUntilInputCloses()

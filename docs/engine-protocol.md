@@ -33,6 +33,7 @@ Core 标识序列化为字符串，枚举为 camelCase。`start` 要求 protocol
 - Host 的命令期限最多 4 分钟，传输等待额外给 2 秒收尾。协作超时返回明确错误，可保留 Pause 后的会话；客户端取消或传输期限耗尽则关闭状态不确定的会话，Engine 尝试安全 Detach。
 - Engine 出站事件队列 1024、Host 未消费事件 2048；溢出时断开并清理，禁止无限积压或默默丢事件。Core 保留最近至多 10000 个事件，裁剪后序号不复用。
 - Host 断开/崩溃导致管道 EOF，Engine 在调度线程尝试 Detach，并给清理有限期限。Host 不对目标调用终止；必要时只回收 Engine 本体，不使用进程树终止。重复会话 ID 在启动新 Engine 前拒绝。
+- 阶段 2 清理补充：Engine 启动等待 CreateProcess 回调也接收请求取消；Host 整体退出时并行关闭既有 Engine，启动中请求由共享关闭令牌收尾，避免多会话清理期限串行累加。重复 Dispose 不重复清理。MCP stdio 断开立即取消请求，与 Engine 管道心跳分工明确。
 - Engine 硬崩溃会被 Host 隔离、移除活动会话并报告进程/传输错误；Host 可继续建立会话。**实测直接强杀 Engine 时，Desktop CLR 目标也退出（x86/x64，退出码 0）**。因此不保证 Engine 本体硬崩溃后的目标存活；正常 Detach、客户端取消和 Host 崩溃均验证附加目标存活且可重新附加。
 
 旧 Engine launch/attach 命令入口仅用于已有阶段 1-2/1-3 验证，仍复用相同 bootstrap、调度器和 Interop。产品 Host 使用 serve + Named Pipe。Engine serve 的 stdout 不承担日志，帧与诊断日志隔离；不记录参数帧或变量值。
