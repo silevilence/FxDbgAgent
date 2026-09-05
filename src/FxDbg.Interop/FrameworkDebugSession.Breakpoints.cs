@@ -39,7 +39,7 @@ public sealed partial class FrameworkDebugSession
         return breakpoints.List();
     }
 
-    public BreakpointInfo SetBreakpoint(SourceLocation source) => WithSynchronizedTarget(() => breakpoints.Set(source));
+    public BreakpointInfo SetBreakpoint(SourceLocation source, bool enabled = true) => WithSynchronizedTarget(() => breakpoints.Set(source, enabled));
 
     public BreakpointInfo SetBreakpointEnabled(BreakpointId id, bool enabled) =>
         WithSynchronizedTarget(() => breakpoints.SetEnabled(id, enabled));

@@ -1,6 +1,6 @@
 # MCP 工具契约
 
-阶段 2 的公开契约。当前实现进度以 ROADMAP 勾选项和验证报告为准；骨架阶段只验证发现、输入校验与不存在会话的错误，不宣称调试工具已完成。
+阶段 2 的公开契约。当前实现进度以 ROADMAP 勾选项和验证报告为准；阶段 2-2a 已接通会话、断点与观察八个工具，执行控制/操作跟踪按 2-2b 实施。
 
 运行 `./eng/publish-mcp.ps1 -Configuration Debug`，用 `dotnet <发布目录>/fxdbg-mcp.dll` 作为 MCP command/args。发布目录默认 `artifacts/mcp/Debug`，其旁 `engines/` 放置完整 x86/x64 Engine 与 DIA/ClrDebug 等依赖。可使用 `--engine-dir <绝对路径>` 覆盖，不依赖当前工作目录。仅本机 stdio，无网络监听。
 
@@ -25,7 +25,7 @@
 | debug_pause | 无 | 正在运行的会话 | userPause 停止信息 |
 | debug_status | operationId | 可选操作查询，允许运行中查询 | 状态、最近停止、符号/断点快照、序号/时间及可选操作结果 |
 | debug_threads | 无 | stopped | 托管线程数组 |
-| debug_stack | threadId*、start、count | start=0，count=32（1～1024） | 托管栈数组，stopped |
+| debug_stack | threadId*、start、count | start=0（0～100000），count=32（1～1024） | 托管栈数组，stopped |
 | debug_variables | frameId*、referenceId、start、count、maxDepth、maxStringLength | start=0，count=100（1～1024），maxDepth=1（0～8），maxStringLength=256（1～32768） | 参数/局部/对象字段数组，stopped；展开对象时再传 referenceId |
 | debug_detach | 无 | 安全分离，launch/attach 均适用 | 终态会话；目标继续运行 |
 | debug_terminate | 无 | 仅 launch 目标 | 终态会话；附加目标返回状态错误 |
@@ -47,3 +47,5 @@ continue/step 默认等待新的停止，也可 `waitForStop:false` 返回 opera
 取消通知仅针对未返回请求；已返回异步操作用 pause 停止或 detach 结束。协作超时尝试暂停，传输失败安全分离；具体实际状态随结果返回。附加目标不能 terminate。异常默认仅未处理异常，读取变量不调用 Getter、ToString 或函数求值。对象读取不可获取、优化掉与 null 分别返回，不合并为 null。
 
 本阶段验收按用户 2026-09-05 最新指示使用独立子代理：子代理读取安装后的技能与本文件，自主选择并执行真实 MCP 工具调用，保留请求和结果。禁止使用 Claude Code；固定脚本回归单独记录，不替代自主 Agent 验收。
+
+连接关闭应先关闭 MCP stdin，让服务完成安全分离。客户端不得把“断开”实现为终止整个进程树：固定 SDK 2.2.0 的 `StdioClientTransport` 在清理路径可能调用 KillTree，不能以该行为证明本服务的正常 EOF 清理。集成测试使用官方 `McpClient` + `StreamClientTransport` 连接实际子进程 stdio，由测试框架显式关闭 stdin 并等待 Host 退出；不修改 SDK。任意外部工具直接强杀 Engine/目标的边界见 `engine-protocol.md`。

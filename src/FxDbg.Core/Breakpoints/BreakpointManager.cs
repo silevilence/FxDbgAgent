@@ -18,9 +18,9 @@ public sealed class BreakpointManager : IDisposable
 
     public BreakpointInfo Get(BreakpointId id) => Require(id).Info;
 
-    public BreakpointInfo Set(SourceLocation location)
+    public BreakpointInfo Set(SourceLocation location, bool enabled = true)
     {
-        var entry = new Entry(new BreakpointInfo(BreakpointId.New(), location, null, BreakpointState.Pending, true,
+        var entry = new Entry(new BreakpointInfo(BreakpointId.New(), location, null, BreakpointState.Pending, enabled,
             "Waiting for a loaded module with matching source symbols."));
         entries.Add(entry.Info.BreakpointId, entry);
         Changed?.Invoke(new BreakpointChange(entry.Info));

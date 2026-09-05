@@ -59,15 +59,16 @@
 - [ ] **阶段2-2 13 个 MCP 工具实现（需求 §8，下列三个子任务全部通过后勾选）**
     - 任务描述：需求 §8 实际列出 13 个工具，原“14 个”为计数错误。工具使用完整 `debug_` 前缀；操作轮询通过 debug_status 完成，不为凑数量增加工具。
 
-- [ ] **阶段2-2a 会话、断点与观察工具**
-    - [ ] 实现 `debug_launch`、`debug_attach`、`debug_set_breakpoint`、`debug_remove_breakpoint`、`debug_status`、`debug_threads`、`debug_stack`、`debug_variables`，参数映射既有 Core 请求与 Host/Engine 命令
-    - [ ] launch 支持 exe、字符串数组 args、cwd、env、arch、stopAtEntry；attach 支持 pid、arch；arch 默认 auto，stopAtEntry 默认 false，文档断点流程显式使用 true。返回 sessionId、PID、实际架构、CLR 承载标识/文件版本与会话状态；同一 MCP 连接支持相互隔离的会话，一个 PID 仍只允许一个调试会话
-    - [ ] set_breakpoint 支持 file、line、enabled（默认 true），可携带已有 breakpointId 仅更新 enabled；新增、更新与删除均复用现有断点管理。返回 pending / verified / moved / unresolved、请求行及实际绑定位置；模块/PDB 后续变化可由 status 查询，不以首次 pending 作为最终失败
-    - [ ] status 返回当前状态、最近停止/退出观察、断点与模块符号状态，以及可选 operationId 对应的操作结果；通过 Host 持续消费既有事件维护观察，标明事件序号与快照时间，不将历史停止位置标成当前运行位置。MVP 无需客户端订阅自定义通知即可完成流程
-    - [ ] stack 必须指定 threadId，默认 start=0、count=32；variables 必须指定 frameId，展开时再带 referenceId，默认 start=0、count=100、maxDepth=1、maxStringLength=256；沿用 Core 上限（深度 8、成员 1024、字符串 32768）。帧及引用均是不透明字符串，恢复运行后失效，禁止跨会话复用
-    - [ ] 结果在 MCP structuredContent 中提供统一对象：成功含 ok=true、sessionId、result，失败含 ok=false、sessionId（尚未创建时可空）、error.code/message；同时返回序列化 JSON 的 text content。枚举与 ID 沿用 Core 线格式，禁止输出 COM 对象或要求 Agent 解析日志
-    - [ ] 非法会话状态、目标类型、位数、符号与失效引用等业务错误使用 MCP 工具结果 isError=true，沿用 Core 稳定错误码；JSON-RPC 封装错误/未知工具按 MCP 协议错误处理。错误说明可操作且不泄漏原始异常堆栈或敏感请求内容
+- [x] **阶段2-2a 会话、断点与观察工具**
+    - [x] 实现 `debug_launch`、`debug_attach`、`debug_set_breakpoint`、`debug_remove_breakpoint`、`debug_status`、`debug_threads`、`debug_stack`、`debug_variables`，参数映射既有 Core 请求与 Host/Engine 命令
+    - [x] launch 支持 exe、字符串数组 args、cwd、env、arch、stopAtEntry；attach 支持 pid、arch；arch 默认 auto，stopAtEntry 默认 false，文档断点流程显式使用 true。返回 sessionId、PID、实际架构、CLR 承载标识/文件版本与会话状态；同一 MCP 连接支持相互隔离的会话，一个 PID 仍只允许一个调试会话
+    - [x] set_breakpoint 支持 file、line、enabled（默认 true），可携带已有 breakpointId 仅更新 enabled；新增、更新与删除均复用现有断点管理。返回 pending / verified / moved / unresolved、请求行及实际绑定位置；模块/PDB 后续变化可由 status 查询，不以首次 pending 作为最终失败
+    - [x] status 返回当前状态、最近停止/退出观察、断点与模块符号状态，以及可选 operationId 对应的操作结果；通过 Host 持续消费既有事件维护观察，标明事件序号与快照时间，不将历史停止位置标成当前运行位置。MVP 无需客户端订阅自定义通知即可完成流程
+    - [x] stack 必须指定 threadId，默认 start=0、count=32；variables 必须指定 frameId，展开时再带 referenceId，默认 start=0、count=100、maxDepth=1、maxStringLength=256；沿用 Core 上限（深度 8、成员 1024、字符串 32768）。帧及引用均是不透明字符串，恢复运行后失效，禁止跨会话复用
+    - [x] 结果在 MCP structuredContent 中提供统一对象：成功含 ok=true、sessionId、result，失败含 ok=false、sessionId（尚未创建时可空）、error.code/message；同时返回序列化 JSON 的 text content。枚举与 ID 沿用 Core 线格式，禁止输出 COM 对象或要求 Agent 解析日志
+    - [x] 非法会话状态、目标类型、位数、符号与失效引用等业务错误使用 MCP 工具结果 isError=true，沿用 Core 稳定错误码；JSON-RPC 封装错误/未知工具按 MCP 协议错误处理。错误说明可操作且不泄漏原始异常堆栈或敏感请求内容
     - 验收：八个工具的文档示例经真实 stdio 调用并验证 schema；覆盖 x86/x64 自动路由、含空格路径与参数、环境变量、断点移动与重绑定、符号异常、优化掉/不可获取/null、对象分页与循环引用、失效及跨会话 ID。超大变量结果可缩页重试且原会话仍有效。
+    - 验证记录：Debug 四组合及 64 项单元测试通过，快速审核阻塞项已修复；见 docs/validation/stage2-2a-observations.md。
 
 - [ ] **阶段2-2b 执行控制与操作轮询**
     - [ ] 实现 `debug_continue`、`debug_step`、`debug_pause`、`debug_detach`、`debug_terminate`；step 必须携带 threadId 与 kind=into/over/out，terminate 仅限 launch 创建的目标；状态判断以共享 Host/Engine 为准

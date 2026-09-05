@@ -2,13 +2,17 @@ using System.Text.Json;
 using ModelContextProtocol;
 using ModelContextProtocol.Client;
 
-string bundle = Path.GetFullPath(args[0]);
-using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(45));
-var transport = new StdioClientTransport(new StdioClientTransportOptions
+try
 {
-    Command = "dotnet", Arguments = [Path.Combine(bundle, "fxdbg-mcp.dll")], Name = "FxDbg integration"
-});
-await using var client = await McpClient.CreateAsync(transport, new McpClientOptions { ProtocolVersion = "2025-11-25" }, cancellationToken: timeout.Token);
+string bundle = Path.GetFullPath(args[0]);
+if (args.Length > 1 && args[1] == "observations")
+{
+    await ObservationSuite.Run(bundle, Path.GetFullPath(args[2]), args[3]);
+    return 0;
+}
+using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(45));
+await using var connection = await McpTestConnection.Create(bundle, timeout.Token);
+var client = connection.Client;
 var tools = await client.ListToolsAsync(cancellationToken: timeout.Token);
 Require(tools.Count == 13, "Exactly thirteen tools are advertised.");
 Require(tools.All(x => x.ProtocolTool.InputSchema.GetProperty("type").GetString() == "object"), "Input schemas must be objects.");
@@ -20,6 +24,9 @@ Require(invalid.IsError == true && invalid.StructuredContent!.Value.GetProperty(
 try { await client.CallToolAsync("debug_missing", cancellationToken: timeout.Token); throw new InvalidOperationException("Unknown tool was accepted."); }
 catch (McpProtocolException error) { Require(error.ErrorCode == McpErrorCode.InvalidParams, "Unknown tool is a protocol error."); }
 Console.WriteLine("Official MCP client: handshake, 13 schemas, business errors, unknown tool passed.");
+return 0;
+}
+catch (Exception error) { Console.Error.WriteLine(error); return 1; }
 
 static void Require(bool condition, string message)
 {

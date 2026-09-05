@@ -56,7 +56,7 @@ public static class ToolCatalog
             Fields(("operationId", Text())), [], true, true),
         Define("threads", "Read managed threads from a stopped session; use returned IDs, never guess them.", Fields(), [], true, true),
         Define("stack", "Read managed frames for one stopped thread. Use returned opaque frameId for variables.",
-            Fields(("threadId", Number(1, int.MaxValue)), ("start", Number(0, int.MaxValue, 0)), ("count", Number(1, 1024, 32))), ["threadId"], true, true),
+            Fields(("threadId", Number(1, int.MaxValue)), ("start", Number(0, 100000, 0)), ("count", Number(1, 1024, 32))), ["threadId"], true, true),
         Define("variables", "Read fields/arguments/locals without getters, ToString or evaluation. References belong to this session and stop only.",
             Fields(("frameId", Text()), ("referenceId", Text()), ("start", Number(0, int.MaxValue, 0)), ("count", Number(1, 1024, 100)),
                 ("maxDepth", Number(0, 8, 1)), ("maxStringLength", Number(1, 32768, 256))), ["frameId"], true, true),

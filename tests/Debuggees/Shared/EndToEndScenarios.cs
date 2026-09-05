@@ -12,6 +12,18 @@ namespace FxDbg.Debuggees
 
         internal static void Run(string mode, string directory)
         {
+            if (mode == "gated")
+            {
+                File.WriteAllText(Path.Combine(directory, "ready"), Environment.GetEnvironmentVariable("FXDBG_MCP_TEST") + "|" + Environment.CurrentDirectory);
+                Console.WriteLine("TARGET_STDOUT_MUST_NOT_ENTER_MCP");
+                Console.Error.WriteLine("TARGET_STDERR_MUST_NOT_ENTER_MCP");
+                DateTime deadline = DateTime.UtcNow.AddSeconds(45);
+                while (!File.Exists(Path.Combine(directory, "go")))
+                {
+                    if (DateTime.UtcNow >= deadline) throw new TimeoutException("MCP test gate was not opened.");
+                    System.Threading.Thread.Sleep(10);
+                }
+            }
             if (mode == "runtime")
             {
                 File.WriteAllText(Path.Combine(directory, "runtime-version"), "v" + Environment.Version);
@@ -76,6 +88,7 @@ namespace FxDbg.Debuggees
 
         private sealed class Node
         {
+            public object Nothing = null;
             public Node Self;
             public string Label = "node-label";
             public string[] LargeTexts = new string[129];

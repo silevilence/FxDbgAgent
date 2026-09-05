@@ -10,6 +10,20 @@ namespace FxDbg.UnitTests.Breakpoints;
 public sealed class BreakpointManagerTests
 {
     [Fact]
+    public void Creating_disabled_breakpoint_never_publishes_or_activates_enabled_state()
+    {
+        var manager = new BreakpointManager();
+        var module = new SampleModule("ready");
+        manager.ModuleLoaded(module);
+        var changes = new List<BreakpointChange>();
+        manager.Changed += changes.Add;
+        var breakpoint = manager.Set(new SourceLocation("sample.cs", 10), false);
+        Assert.False(breakpoint.Enabled);
+        Assert.All(changes, change => Assert.False(change.Breakpoint.Enabled));
+        Assert.False(module.LastBinding!.EverEnabled);
+    }
+
+    [Fact]
     public void Pending_breakpoint_rebinds_after_module_unload_and_reload()
     {
         var manager = new BreakpointManager();
@@ -50,7 +64,8 @@ public sealed class BreakpointManagerTests
     private sealed class Binding : ISourceBreakpointBinding
     {
         public bool Enabled { get; private set; }
-        public void SetEnabled(bool enabled) => Enabled = enabled;
+        public bool EverEnabled { get; private set; }
+        public void SetEnabled(bool enabled) { Enabled = enabled; EverEnabled |= enabled; }
         public void Dispose() => Enabled = false;
     }
 

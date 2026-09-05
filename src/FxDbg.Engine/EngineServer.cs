@@ -93,8 +93,16 @@ internal sealed class EngineServer
         object? result;
         switch (method)
         {
-            case "state": result = new { target = current.Target, stop = current.CurrentStop }; break;
-            case "break.set": result = current.SetBreakpoint(new SourceLocation(Text(args, "file"), Integer(args, "line", 0))); break;
+            case "state":
+                PublishEvents();
+                result = new JObject { ["target"] = WireJson.Value(current.Target), ["stop"] = WireJson.Value(current.CurrentStop), ["eventSequence"] = eventSequence };
+                if (Boolean(args, "includeDetails", false))
+                {
+                    ((JObject)result)["breakpoints"] = WireJson.Value(current.GetBreakpoints());
+                    ((JObject)result)["modules"] = WireJson.Value(current.GetModules());
+                }
+                break;
+            case "break.set": result = current.SetBreakpoint(new SourceLocation(Text(args, "file"), Integer(args, "line", 0)), Boolean(args, "enabled", true)); break;
             case "break.list": result = current.GetBreakpoints(); break;
             case "break.remove": current.RemoveBreakpoint(new BreakpointId(Text(args, "breakpointId"))); result = new { removed = true }; break;
             case "break.enable": result = current.SetBreakpointEnabled(new BreakpointId(Text(args, "breakpointId")), Boolean(args, "enabled", true)); break;

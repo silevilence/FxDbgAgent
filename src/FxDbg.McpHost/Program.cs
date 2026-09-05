@@ -4,6 +4,7 @@ using FxDbg.Core.Errors;
 using FxDbg.Core.Sessions;
 using FxDbg.Host.Architecture;
 using FxDbg.Host.Engine;
+using FxDbg.Host.Sessions;
 using FxDbg.McpHost;
 using ModelContextProtocol;
 using ModelContextProtocol.Protocol;
@@ -26,6 +27,7 @@ try
         throw new ArgumentException("Engine dependencies are missing; republish the complete bundle.");
     using var host = new EngineProcessHost(new ArchitectureRouter(new PeArchitectureDetector(), new ProcessArchitectureDetector()),
         new EngineProcessPaths(Path.Combine(engineDirectory, "FxDbg.Engine.x86.exe"), Path.Combine(engineDirectory, "FxDbg.Engine.x64.exe")));
+    await using var sessions = new DebugSessionService(host);
     using var shutdown = new CancellationTokenSource();
     int initialized = 0;
     void RequireInitialized()
@@ -57,10 +59,8 @@ try
                 try
                 {
                     ToolCatalog.Validate(tool, arguments);
-                    if (sessionId is null) throw new FxDbgException(FxDbgErrorCode.InvalidSessionState, "Session creation will be available in stage 2-2a.");
-                    var session = new SessionId(Guid.Parse(sessionId));
-                    var state = await host.InvokeAsync(session, "state", cancellationToken: token);
-                    result = new JsonObject { ["ok"] = true, ["sessionId"] = sessionId, ["result"] = JsonNode.Parse(state.ToString()) };
+                    var response = await sessions.InvokeAsync(call.Name[6..], Newtonsoft.Json.Linq.JObject.Parse(arguments.GetRawText()), token);
+                    result = (JsonObject)JsonNode.Parse(response.ToString())!;
                 }
                 catch (Exception error) when (error is FxDbgException or ArgumentException or FormatException or OperationCanceledException)
                 {
