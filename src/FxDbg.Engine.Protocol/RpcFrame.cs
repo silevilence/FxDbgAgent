@@ -31,10 +31,18 @@ public static class RpcFrame
         return value;
     }
 
-    public static async Task WriteAsync(Stream stream, JObject value, CancellationToken cancellationToken)
+    public static Task WriteAsync(Stream stream, JObject value, CancellationToken cancellationToken) =>
+        WriteAsync(stream, Encode(value), cancellationToken);
+
+    internal static byte[] Encode(JObject value)
     {
         byte[] bytes = Utf8.GetBytes(value.ToString(Formatting.None));
         if (bytes.Length == 0 || bytes.Length > MaximumBytes) throw new InvalidDataException("RPC frame length exceeds its 4 MiB limit.");
+        return bytes;
+    }
+
+    internal static async Task WriteAsync(Stream stream, byte[] bytes, CancellationToken cancellationToken)
+    {
         int length = bytes.Length;
         var header = new[] { (byte)length, (byte)(length >> 8), (byte)(length >> 16), (byte)(length >> 24) };
         await stream.WriteAsync(header, 0, header.Length, cancellationToken).ConfigureAwait(false);

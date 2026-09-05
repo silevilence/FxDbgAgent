@@ -81,6 +81,14 @@ public sealed class RpcPeer : IDisposable
 
     private async Task Send(JObject message)
     {
+        // Validate before writing any bytes: a large result is a request error, not a broken stream.
+        byte[] bytes;
+        try { bytes = RpcFrame.Encode(message); }
+        catch (InvalidDataException error)
+        {
+            throw new FxDbgException(FxDbgErrorCode.InvalidRequest,
+                "RPC message exceeds 4 MiB. Reduce the request size, variable page count, depth, or string length and retry.", error);
+        }
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(shutdown.Token);
         timeout.CancelAfter(TimeSpan.FromSeconds(3));
         bool acquired = false;
@@ -90,7 +98,7 @@ public sealed class RpcPeer : IDisposable
             acquired = true;
             // Closing the stream is the fallback when a platform I/O ignores cancellation.
             using CancellationTokenRegistration cancel = timeout.Token.Register(() => Close(Disconnected()));
-            await RpcFrame.WriteAsync(stream, message, timeout.Token).ConfigureAwait(false);
+            await RpcFrame.WriteAsync(stream, bytes, timeout.Token).ConfigureAwait(false);
         }
         catch (Exception error)
         {

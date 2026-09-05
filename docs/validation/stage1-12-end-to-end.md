@@ -19,6 +19,8 @@
 
 结果：一键入口的 Debug 与 Release 全部通过，退出码 0；阶段 1-12 可原位勾选。
 
+后续整体审核新增终态 wait、终态非法断点操作与超大变量页缩页重试，单元测试增至 63 项，见 [整体审核与修复](stage1-final-review.md)。
+
 快速审核修复：目标自然退出后，协议 detach 改为释放终态会话资源；CDB 使用本地符号路径与 30 秒硬超时，避免无人值守验证被远程符号查询挂起。Release x64 的 JIT 确实将验收样例局部变量优化掉，产品正确返回 optimizedAway；仅基础局部变量验收方法指定 NoOptimization，优化状态仍由独立变量套件覆盖。WinForms 异常样例使用工作线程，避免 UI BeginInvoke 将原异常包成 TargetInvocationException。
 
 生命周期边界沿用阶段 1-10 的实测结论：正常 Detach、Host 异常退出均保护附加目标；强制杀死 Engine 时 Desktop CLR 可能连带结束目标，不能承诺目标存活。Host 本身保持可用并可建立新会话。

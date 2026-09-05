@@ -70,8 +70,7 @@ public sealed partial class FrameworkDebugSession
 
     private T WithSynchronizedTarget<T>(Func<T> action)
     {
-        ThrowIfDisposed();
-        ThrowIfWrongThread();
+        RequireActive();
         if (IsStopped) return action();
         process.Stop(0);
         callbackPairing.RecordManualStop();

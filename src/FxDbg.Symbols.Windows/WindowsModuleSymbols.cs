@@ -149,24 +149,6 @@ public sealed class WindowsModuleSymbols : IDisposable
         if (value is not null && Marshal.IsComObject(value)) Marshal.ReleaseComObject(value);
     }
 
-    public string? GetMethodName(int methodToken)
-    {
-        ThrowIfDisposed();
-        if (pe is null) return null;
-        MetadataReader metadata = pe.GetMetadataReader();
-        MethodDefinition method = metadata.GetMethodDefinition((MethodDefinitionHandle)MetadataTokens.Handle(methodToken));
-        return GetTypeName(metadata, method.GetDeclaringType()) + "." + metadata.GetString(method.Name);
-    }
-
-    private static string GetTypeName(MetadataReader metadata, TypeDefinitionHandle handle)
-    {
-        TypeDefinition type = metadata.GetTypeDefinition(handle);
-        string name = metadata.GetString(type.Name);
-        if (!type.GetDeclaringType().IsNil) return GetTypeName(metadata, type.GetDeclaringType()) + "+" + name;
-        string ns = metadata.GetString(type.Namespace);
-        return ns.Length == 0 ? name : ns + "." + name;
-    }
-
     public void Dispose()
     {
         if (disposed) return;

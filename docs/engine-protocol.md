@@ -16,6 +16,8 @@ Core 标识序列化为字符串，枚举为 camelCase。`start` 要求 protocol
 
 `start`、`state`、`break.set/list/remove/enable`、`continue`、`pause`、`step`、`wait`、`threads`、`stack`、`variables`、`exceptions.configure`、`modules`、`symbols.refresh`、`detach`、`terminate`。
 
+超出 4 MiB 的出站结果在写入前返回 `invalid_request`，提示缩小变量页数、深度或字符串长度；连接与当前变量引用保持可用，调用方可以缩页重试。目标已退出但会话未释放时，`wait` 返回保存的 `processExit`；断点修改与符号刷新返回 `invalid_session_state`。
+
 命令调度只进入现有 Engine 单一线程，所有 ICorDebug 行为继续复用 Interop。Host InvokeAsync 返回统一 JSON 结果，未来 CLI/MCP 只映射入口参数，不实现独立调试逻辑。
 
 ## 超时、取消与生命周期

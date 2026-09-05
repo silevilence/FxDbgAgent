@@ -29,6 +29,8 @@ namespace FxDbg.Debuggees
             if (depth != 0) return Recurse(depth - 1) + 1;
             var node = new Node();
             node.Self = node;
+            string longText = new string('x', 32768);
+            for (int index = 0; index < node.LargeTexts.Length; index++) node.LargeTexts[index] = longText;
             Observe(42, "hello-framework", node);
             return sink;
         }
@@ -66,6 +68,7 @@ namespace FxDbg.Debuggees
         {
             public Node Self;
             public string Label = "node-label";
+            public string[] LargeTexts = new string[129];
             public int Dangerous { get { userCodeCalls++; throw new InvalidOperationException("Getter invoked"); } }
             public override string ToString() { userCodeCalls++; return "must-not-run"; }
         }

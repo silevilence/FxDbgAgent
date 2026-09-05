@@ -72,8 +72,12 @@ public sealed partial class FrameworkDebugSession
 
     public StopInfo WaitForStop(TimeSpan timeout, CancellationToken cancellationToken = default)
     {
-        RequireActive();
+        ThrowIfWrongThread();
+        ThrowIfDisposed();
         if (timeout <= TimeSpan.Zero) throw new FxDbgException(FxDbgErrorCode.InvalidRequest, "A positive wait timeout is required.");
+        // ExitProcess may have been handled by the idle pump before this request was scheduled.
+        if (HasExited) return CurrentStop!;
+        RequireActive();
         var timer = Stopwatch.StartNew();
         while (!IsStopped && !HasExited)
         {

@@ -13,6 +13,24 @@ namespace FxDbg.UnitTests.Engine;
 public sealed class RpcPeerTests
 {
     [Fact]
+    public async Task Oversized_response_returns_actionable_error_and_keeps_session_usable()
+    {
+        var (server, client) = await Pipes();
+        using (server)
+        using (client)
+        using (var remote = new RpcPeer(server, "test", (method, args, token) => Task.FromResult<JToken>(
+            new JValue(method == "large" ? new string('x', RpcFrame.MaximumBytes) : "ok"))))
+        using (var local = new RpcPeer(client, "test"))
+        {
+            FxDbgException error = await Assert.ThrowsAsync<FxDbgException>(() => local.CallAsync("large", new JObject(), TimeSpan.FromSeconds(5)));
+            Assert.Equal(FxDbgErrorCode.InvalidRequest, error.Code);
+            Assert.Contains("4 MiB", error.Message);
+            Assert.True(local.IsConnected && remote.IsConnected);
+            Assert.Equal("ok", (string?)await local.CallAsync("echo", new JObject(), TimeSpan.FromSeconds(5)));
+        }
+    }
+
+    [Fact]
     public async Task Concurrent_responses_correlate_and_cancel_reaches_the_remote_handler()
     {
         var (server, client) = await Pipes();
