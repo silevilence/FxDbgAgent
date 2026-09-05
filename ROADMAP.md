@@ -104,12 +104,13 @@
     - 验收：真实 x86/x64 launch/attach 故障矩阵覆盖 EOF、Host 强杀、Engine 崩溃、清理重复、启动中断和停止中断；用带唯一敏感标记的变量/env/异常样例扫描 stdout 协议外输出、stderr 与文件日志。记录目标存活、可重新附加、Engine 退出与句柄基线，覆盖需求验收标准 7。
     - 验证记录：Debug 32 组合故障矩阵、多会话/启动中断/句柄与日志专项通过；见 docs/validation/stage2-4-lifecycle.md。
 
-- [ ] **阶段2-5 MCP 端到端回归与 MVP 验收**
-    - [ ] 新增 `eng/verify-stage2.ps1` 作为一键无人值守入口，默认跑 Debug/Release，支持单配置；驱动真实发布的 MCP stdio 进程与标准客户端，不以直接调用 Host 或 mock Engine 代替产品链路
-    - [ ] Console/WinForms × x86/x64 验证需求 §13 的 1～9：架构自动选择、Windows PDB、断点与停止信息、至少 10 层栈、变量、Continue/三种 Step、未处理异常、清理及明确错误；复用 `tests/Debuggees/` 并覆盖 CoreCLR/跨位数/PDB 不匹配拒绝路径
-    - [ ] 汇总阶段2-1～2-4的协议、schema、取消/限流、生命周期、技能安装与真实 Agent 证据；全量回归包括 `eng/verify-stage1.ps1`，不因 MCP 适配改变既有 CLI 行为
-    - [ ] 测试脚本各子进程有总超时与 finally 清理，只清理自己创建的测试进程；失败或缺少外部 Agent 验收证据时非零退出。机器结果写入 `artifacts/stage2-validation/`，结论写入 `docs/validation/stage2-mvp.md`，逐项关联需求验收编号、命令及证据
+- [x] **阶段2-5 MCP 端到端回归与 MVP 验收**
+    - [x] 新增 `eng/verify-stage2.ps1` 作为一键无人值守入口，默认跑 Debug/Release，支持单配置；驱动真实发布的 MCP stdio 进程与标准客户端，不以直接调用 Host 或 mock Engine 代替产品链路
+    - [x] Console/WinForms × x86/x64 验证需求 §13 的 1～9：架构自动选择、Windows PDB、断点与停止信息、至少 10 层栈、变量、Continue/三种 Step、未处理异常、清理及明确错误；复用 `tests/Debuggees/` 并覆盖 CoreCLR/跨位数/PDB 不匹配拒绝路径
+    - [x] 汇总阶段2-1～2-4的协议、schema、取消/限流、生命周期、技能安装与真实 Agent 证据；全量回归包括 `eng/verify-stage1.ps1`，不因 MCP 适配改变既有 CLI 行为
+    - [x] 测试脚本各子进程有总超时与 finally 清理，只清理自己创建的测试进程；失败或缺少外部 Agent 验收证据时非零退出。机器结果写入 `artifacts/stage2-validation/`，结论写入 `docs/validation/stage2-mvp.md`，逐项关联需求验收编号、命令及证据
     - 验收：一键入口 Debug/Release 全通过，13 个工具均有正反例，真实外部 Agent 验收证据齐全，所有进程清理可核查；只有上述条件满足才标记阶段 2 / MVP 完成，不能把阶段 1 的共享后端验收直接算作 MCP 入口验收。
+    - 验证记录：最终一键 Debug/Release、74 项单元、真实 MCP/CLI/原生回归及双轴审核通过，源码哈希稳定且监督清理零强制终止；见 docs/validation/stage2-mvp.md。阶段 2 / MVP 完成，条目依要求保留原位置。
 
 本阶段协议行为以 [MCP 生命周期](https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle)、[stdio 传输](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports)、[工具结果](https://modelcontextprotocol.io/specification/2025-11-25/server/tools)、[取消](https://modelcontextprotocol.io/specification/2025-11-25/basic/utilities/cancellation) 与 [官方 C# SDK](https://github.com/modelcontextprotocol/csharp-sdk) 为依据；轮询、限额和保留时间为本项目的实施默认约定，不宣称为 MCP 规范要求。
 

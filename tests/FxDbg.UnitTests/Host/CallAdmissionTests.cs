@@ -14,6 +14,24 @@ namespace FxDbg.UnitTests.Host;
 public sealed class CallAdmissionTests
 {
     [Fact]
+    public async System.Threading.Tasks.Task Cancelled_status_keeps_its_slot_until_the_underlying_query_finishes()
+    {
+        var admission = new CallAdmission(new SessionServiceLimits(controlCalls: 1));
+        var query = new System.Threading.Tasks.TaskCompletionSource(System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously);
+        var lease = admission.Enter("status", CancellationToken.None);
+        lease.HoldUntil(query.Task);
+        lease.Dispose();
+        Assert.Throws<FxDbgException>(() => admission.Enter("status", CancellationToken.None));
+        query.SetResult();
+        // Deferred release runs asynchronously; wait for the capacity without admitting unbounded work.
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+        while (true)
+        {
+            try { using var next = admission.Enter("status", CancellationToken.None); break; }
+            catch (FxDbgException) { await System.Threading.Tasks.Task.Delay(1, timeout.Token); }
+        }
+    }
+    [Fact]
     public void SaturatedOrdinaryCallsKeepBoundedControlCapacityAndReleaseExactlyOnce()
     {
         var admission = new CallAdmission(new SessionServiceLimits(1, 1, 1));

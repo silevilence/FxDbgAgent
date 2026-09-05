@@ -11,11 +11,12 @@ internal static class ObservationSuite
         string source = Path.Combine(root, "tests/Debuggees/Shared/EndToEndScenarios.cs");
         int line = File.ReadAllLines(source).Select((text, index) => (text, index)).Single(x => x.text.Contains("// E2E_BREAKPOINT")).index + 1;
         foreach (string architecture in new[] { "x86", "x64" })
+        foreach (string kind in new[] { "Console", "WinForms" })
         foreach (bool attach in new[] { false, true })
         {
             string gate = Path.GetFullPath(Path.Combine(root, "artifacts/mcp-observation", Guid.NewGuid().ToString("N"), "gate with spaces"));
             Directory.CreateDirectory(gate);
-            string original = Path.Combine(root, $"tests/Debuggees/Fx40.Console.{architecture}/bin/{configuration}/net40/Fx40.Console.{architecture}.exe");
+            string original = Path.Combine(root, $"tests/Debuggees/Fx40.{kind}.{architecture}/bin/{configuration}/net40/Fx40.{kind}.{architecture}.exe");
             string executable = Path.Combine(gate, Path.GetFileName(original));
             string secret = "MCP-SECRET-" + Guid.NewGuid().ToString("N");
             string auditPath = Path.Combine(gate, "host-audit.jsonl");
@@ -124,7 +125,7 @@ internal static class ObservationSuite
                 string diagnostics = connection.StandardError + File.ReadAllText(auditPath);
                 Require(!diagnostics.Contains(secret) && !diagnostics.Contains("TARGET_STD") && !diagnostics.Contains("hello-framework") && !diagnostics.Contains("local-value"), "No target output, env or variable values in debug diagnostics.");
                 foreach (string record in File.ReadAllLines(auditPath)) Require(JsonNode.Parse(record)!["command"] is not null, "File audit contains only metadata JSON.");
-                Console.WriteLine($"MCP observation: {architecture} {(attach ? "attach" : "launch")} passed.");
+                Console.WriteLine($"MCP observation: {kind} {architecture} {(attach ? "attach" : "launch")} passed.");
             }
             finally
             {
@@ -138,6 +139,7 @@ internal static class ObservationSuite
     {
         CallToolResult response = await client.CallToolAsync("debug_" + method, arguments, cancellationToken: token);
         JsonNode envelope = JsonNode.Parse(response.StructuredContent!.Value.GetRawText())!;
+        SchemaAssertions.Check(client, "debug_" + method, envelope);
         Require(JsonNode.DeepEquals(envelope, JsonNode.Parse(((TextContentBlock)response.Content[0]).Text)), "Structured and text JSON must agree.");
         if (expectedError is not null) Require(response.IsError == true && (string?)envelope["error"]?["code"] == expectedError, $"{method} expected {expectedError}: {envelope}");
         else Require(response.IsError != true && envelope["ok"]!.GetValue<bool>(), $"{method} failed: {envelope}");

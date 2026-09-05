@@ -26,7 +26,7 @@ internal sealed class CallAdmission
         ordinary = new(limits.OrdinaryCalls, limits.OrdinaryCalls);
         control = new(limits.ControlCalls, limits.ControlCalls);
     }
-    internal IDisposable Enter(string method, CancellationToken token)
+    internal Lease Enter(string method, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         SemaphoreSlim capacity = method is "status" or "pause" or "detach" or "terminate" ? control : ordinary;
@@ -39,9 +39,17 @@ internal sealed class CallAdmission
         error.Data["retryAfterMs"] = 1000;
         return error;
     }
-    private sealed class Lease(SemaphoreSlim capacity) : IDisposable
+    internal sealed class Lease(SemaphoreSlim capacity) : IDisposable
     {
         private SemaphoreSlim? held = capacity;
-        public void Dispose() => Interlocked.Exchange(ref held, null)?.Release();
+        private System.Threading.Tasks.Task? pending;
+        internal void HoldUntil(System.Threading.Tasks.Task task) => pending = task;
+        public void Dispose()
+        {
+            if (pending is { IsCompleted: false } task)
+                _ = task.ContinueWith(_ => Release(), System.Threading.Tasks.TaskContinuationOptions.ExecuteSynchronously);
+            else Release();
+        }
+        private void Release() => Interlocked.Exchange(ref held, null)?.Release();
     }
 }

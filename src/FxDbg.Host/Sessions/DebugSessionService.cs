@@ -16,7 +16,7 @@ namespace FxDbg.Host.Sessions;
 /// <summary>Protocol-independent session ownership and observation over the single Engine backend.</summary>
 public sealed partial class DebugSessionService : IAsyncDisposable
 {
-    private readonly EngineProcessHost engine;
+    private readonly IEngineSessionHost engine;
     private readonly ConcurrentDictionary<SessionId, Observation> sessions = new();
     private readonly CancellationTokenSource lifetime = new();
     private readonly Task eventPump;
@@ -26,6 +26,9 @@ public sealed partial class DebugSessionService : IAsyncDisposable
     private Task? disposal;
 
     public DebugSessionService(EngineProcessHost engine, SessionServiceLimits? limits = null)
+        : this((IEngineSessionHost)engine, limits) { }
+
+    internal DebugSessionService(IEngineSessionHost engine, SessionServiceLimits? limits = null)
     {
         this.engine = engine ?? throw new ArgumentNullException(nameof(engine));
         this.limits = limits ?? new SessionServiceLimits();
@@ -59,6 +62,7 @@ public sealed partial class DebugSessionService : IAsyncDisposable
                 {
                     // Cancelling a read-only status request must not close a running operation's pipe.
                     Task<JToken> query = engine.InvokeAsync(id, "state", new JObject { ["includeDetails"] = true }, timeout, lifetime.Token);
+                    lease.HoldUntil(query);
                     _ = query.ContinueWith(task => _ = task.Exception, TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously);
                     snapshot = (JObject)await query.WaitAsync(timeout, linked.Token).ConfigureAwait(false);
                 }

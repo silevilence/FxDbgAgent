@@ -17,7 +17,7 @@ using Newtonsoft.Json.Linq;
 
 namespace FxDbg.Host.Engine;
 
-public sealed class EngineProcessHost : IDisposable
+public sealed class EngineProcessHost : IDisposable, IEngineSessionHost
 {
     private readonly ArchitectureRouter router;
     private readonly EngineProcessPaths paths;

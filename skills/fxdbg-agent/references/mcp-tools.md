@@ -1,6 +1,6 @@
 # MCP 工具契约
 
-阶段 2 的公开契约。当前实现进度以 ROADMAP 勾选项和验证报告为准；13 个工具、操作跟踪、资源限流和生命周期清理均已接通共享 Host/Engine，Agent 与完整 MVP 验收按后续任务实施。
+阶段 2 的公开契约。当前实现进度以 ROADMAP 勾选项和验证报告为准；13 个工具、操作跟踪、资源限流和生命周期清理均复用共享 Host/Engine；独立 Agent 证据和完整回归结论见 docs/validation 下的阶段 2 报告。
 
 运行 `./eng/publish-mcp.ps1 -Configuration Debug`，用 `dotnet <发布目录>/fxdbg-mcp.dll` 作为 MCP command/args。发布目录默认 `artifacts/mcp/Debug`，其旁 `engines/` 放置完整 x86/x64 Engine 与 DIA/ClrDebug 等依赖。可使用 `--engine-dir <绝对路径>` 覆盖，不依赖当前工作目录。仅本机 stdio，无网络监听。
 
@@ -12,7 +12,7 @@
 
 输入为 JSON 对象，字段区分大小写，拒绝未知字段、类型错误和 null（除明确允许的值）。所有工具可选 `timeoutMs`：整数 1～240000，默认 10000。除 launch/attach 外必填 `sessionId`（非空 GUID 字符串），由创建结果取得，不由调用方编造。帧、变量引用和断点 ID 是不透明字符串。
 
-`tools/list` 的 inputSchema/outputSchema 为机器契约；契约定义与执行校验共用 `ToolCatalog`。字符串不可空白，布尔值不能用字符串代替，整数不能传小数。
+`tools/list` 的 inputSchema/outputSchema 为机器契约；输入契约与执行校验共用 `ToolCatalog`，`OutputSchemas` 定义每个工具的具体结果类型、可空字段和递归变量。字符串不可空白，布尔值不能用字符串代替，整数不能传小数。
 
 | 工具 | 额外输入（* 为必填） | 默认值 / 约束 | 成功 result / 合法状态 |
 |---|---|---|---|
@@ -50,7 +50,7 @@ continue/step 默认等待新的停止，也可 `waitForStop:false` 返回 opera
 
 取消通知仅针对未返回请求；已返回异步操作用 pause 停止或 detach 结束。协作超时尝试暂停，传输失败安全分离；具体实际状态随结果返回。附加目标不能 terminate。异常默认仅未处理异常，读取变量不调用 Getter、ToString 或函数求值。对象读取不可获取、优化掉与 null 分别返回，不合并为 null。
 
-取消须在 stdio 上实际发送 `{"jsonrpc":"2.0","method":"notifications/cancelled","params":{"requestId":"待取消请求的 id"}}`，取消通知自身无响应，数字/字符串 ID 类型应与原请求相同。不能把客户端本地不再等待当成服务端已取消的证据。SDK 2.2.0 的本地令牌取消在本轮测试中未可靠发出通知，专项验收通过官方客户端显式发送带 ID 的通知。取消与成功竞争只保留一个终态；收到迟到响应时客户端应忽略。状态查询取消或短期限不关闭正在运行操作的会话，执行中取消会关闭不确定会话并尝试 Detach，status 在清理中可返回 closing=true，结束后再确认目标状态。尚未进入 Host 的取消不启动 Engine。
+取消须在 stdio 上实际发送 `{"jsonrpc":"2.0","method":"notifications/cancelled","params":{"requestId":"待取消请求的 id"}}`，取消通知自身无响应，数字/字符串 ID 类型应与原请求相同。不能把客户端本地不再等待当成服务端已取消的证据。SDK 2.2.0 的本地令牌取消在本轮测试中未可靠发出通知，专项验收通过官方客户端显式发送带 ID 的通知。取消与成功竞争只保留一个终态；收到迟到响应时客户端应忽略。状态查询取消或短期限不关闭正在运行操作的会话，且控制槽保留到实际底层查询完成，执行中取消会关闭不确定会话并尝试 Detach，status 在清理中可返回 closing=true，结束后再确认目标状态。尚未进入 Host 的取消不启动 Engine。
 
 ## 资源边界
 

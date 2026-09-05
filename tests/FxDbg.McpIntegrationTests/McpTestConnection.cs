@@ -35,6 +35,7 @@ internal sealed class McpTestConnection : IAsyncDisposable
         {
             connection.Client = await McpClient.CreateAsync(new StreamClientTransport(connection.process.StandardInput.BaseStream, connection.process.StandardOutput.BaseStream),
                 new McpClientOptions { ProtocolVersion = "2025-11-25" }, cancellationToken: token);
+            await SchemaAssertions.Register(connection.Client, token);
             return connection;
         }
         catch { await connection.DisposeAsync(); throw; }

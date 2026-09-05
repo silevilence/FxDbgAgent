@@ -30,7 +30,6 @@ public sealed partial class DebugSessionService
                 if (!operation.IsCompleted)
                 {
                     operation.Finishing = true;
-                    observation.Closing = true;
                 }
             }
         });
@@ -51,6 +50,10 @@ public sealed partial class DebugSessionService
             lock (observation.Gate) operation.Watchdog = WatchDeadlineAsync(observation, operation, timeout);
             if ((bool?)arguments["waitForStop"] == false)
             {
+                // Establish the async acceptance boundary outside the observation lock.
+                // Dispose waits for an in-flight cancellation callback before checking its token.
+                cancellation.Dispose();
+                token.ThrowIfCancellationRequested();
                 lock (observation.Gate) return Envelope(observation.Id, operation.Snapshot());
             }
             JObject outcome;
@@ -69,6 +72,8 @@ public sealed partial class DebugSessionService
             string code = error is FxDbgException known ? FxDbgErrorCodeWireName.Format(known.Code) : error is OperationCanceledException ? "operation_cancelled" : "internal_error";
             if (token.IsCancellationRequested)
             {
+                lock (observation.Gate)
+                    if (operation.IsCompleted) return OperationEnvelope(observation, operation.Snapshot());
                 await CancelSessionAsync(observation, operation).ConfigureAwait(false);
                 lock (observation.Gate) return OperationEnvelope(observation, operation.Snapshot());
             }
@@ -150,12 +155,16 @@ public sealed partial class DebugSessionService
 
     private async Task<JToken> ControlAsync(Observation observation, string method, JObject arguments, TimeSpan timeout, CancellationToken token)
     {
+        ExecutionOperation? controlledOperation;
+        long beforeSequence;
         lock (observation.Gate)
         {
             RequireActive(observation);
             if (method == "terminate" && (bool?)observation.Target?["launchedByDebugger"] != true)
                 throw Invalid("An attached target cannot be terminated. Use detach instead.");
             if (method is "detach" or "terminate") observation.Closing = true;
+            controlledOperation = observation.ActiveOperation;
+            beforeSequence = observation.Sequence;
         }
         try
         {
@@ -164,8 +173,9 @@ public sealed partial class DebugSessionService
             {
                 lock (observation.Gate)
                 {
-                    observation.LastStop = result.DeepClone();
-                    if (observation.ActiveOperation is { Finishing: false } active) active.Finish("completed", result);
+                    if (observation.Sequence == beforeSequence) observation.LastStop = result.DeepClone();
+                    if (ReferenceEquals(observation.ActiveOperation, controlledOperation) && controlledOperation is { Finishing: false })
+                        controlledOperation.Finish("completed", result);
                     PruneOperations(observation, DateTimeOffset.UtcNow);
                 }
             }
@@ -190,7 +200,7 @@ public sealed partial class DebugSessionService
             }
             return Envelope(observation.Id, result);
         }
-        finally { lock (observation.Gate) observation.Closing = false; }
+        finally { if (method is "detach" or "terminate") lock (observation.Gate) observation.Closing = false; }
     }
 
     private static JObject OperationEnvelope(Observation observation, JObject operation)

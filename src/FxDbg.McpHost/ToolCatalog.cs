@@ -20,21 +20,6 @@ public static class ToolCatalog
         foreach (var field in fields) result[field.Name] = field.Schema;
         return result;
     }
-    private static readonly JsonElement Output = JsonSerializer.SerializeToElement(new
-    {
-        type = "object", required = new[] { "ok", "sessionId" },
-        properties = new
-        {
-            ok = new { type = "boolean" }, sessionId = new { type = new[] { "string", "null" } },
-            result = new { }, error = new { type = "object", required = new[] { "code", "message" },
-                properties = new { code = new { type = "string" }, message = new { type = "string" } } }
-        },
-        oneOf = new object[]
-        {
-            new { properties = new { ok = new { @const = true } }, required = new[] { "result" } },
-            new { properties = new { ok = new { @const = false } }, required = new[] { "error" } }
-        }
-    });
 
     public static IReadOnlyList<Tool> Tools { get; } =
     [
@@ -78,7 +63,7 @@ public static class ToolCatalog
             schema["oneOf"] = JsonNode.Parse("""[{"required":["file","line"],"not":{"required":["breakpointId"]}},{"required":["breakpointId","enabled"],"not":{"anyOf":[{"required":["file"]},{"required":["line"]}]}}]""");
         return new Tool
         {
-            Name = "debug_" + name, Description = description, InputSchema = JsonSerializer.SerializeToElement(schema), OutputSchema = Output,
+            Name = "debug_" + name, Description = description, InputSchema = JsonSerializer.SerializeToElement(schema), OutputSchema = OutputSchemas.For(name),
             Annotations = new ToolAnnotations { ReadOnlyHint = readOnly, DestructiveHint = !readOnly, OpenWorldHint = false, IdempotentHint = readOnly }
         };
     }

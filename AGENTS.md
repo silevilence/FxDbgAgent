@@ -1,12 +1,12 @@
 # AGENTS.md
 
-本文件为在本仓库工作的 AI 编码助手与人类开发者提供事实与约束。仓库已完成**阶段 0 技术验证实现**并开始阶段 1 产品代码；技术探针只作为可行性证据，不得直接演变成第二套产品调试逻辑。
+本文件为在本仓库工作的 AI 编码助手与人类开发者提供事实与约束。仓库已完成阶段 0 技术验证和阶段 1 产品内核；阶段 2 MCP 接入及 MVP 已完成最终 Debug/Release 验收。技术探针只作为可行性证据，不得直接演变成第二套产品调试逻辑。
 
 ## 项目状态（2026-09）
 
 - 阶段 0-1～0-6 已完成真实 Windows 验证；阶段 0-7 报告见 `docs/stage0-validation-report.md`，并已于 2026-09-04 获用户确认。
 - 可行性结论：**技术上可行**。ICorDebug 双架构启动/附加、回调线程纪律、Windows PDB、源码断点和 14 层托管栈均已实测。
-- 阶段 1 正按 `ROADMAP.md` 顺序实施；阶段 1 完成前不得提前开发阶段 2 MCP 外壳（需求 §12）。
+- 阶段 1 已完成，依据为 `docs/validation/stage1-final-review.md`。阶段 2 的实现、独立 Agent 调用证据与完整回归见 `docs/validation/stage2-mvp.md`；按 `ROADMAP.md` 原地勾选保留任务位置。
 
 ## 项目是什么
 
@@ -20,6 +20,7 @@ FxDbg Agent：运行于 Windows 的托管代码调试器，使外部 AI Agent（
 - 技术栈：C#；ICorDebug 经 **ClrDebug**（lordmilko，MIT，NuGet 0.4.2）包装，作为固定版本第三方依赖——**不修改、不复制其生成代码**；Windows PDB 基于 DIA（Microsoft.DiaSymReader 系包）；SharpDbg 仅作会话模型 / 变量树 / DAP 参考，不依赖其调试后端（已验证：SharpDbg 自身为 CoreCLR-only——基于 ICorDebugSharp + DbgShim 的 RegisterForRuntimeStartup，仅读 portable PDB，net10.0 AnyCPU 无 x86 构建，无任何 ICLRMetaHost/FX 运行时发现路径，不能调试 FX 目标）。
 - 首期不做：函数求值、变量修改、Edit and Continue、Set Next Statement、条件/数据断点、混合模式调试、Dump 分析、多进程联调、远程调试、HTTP MCP、VS 扩展。
 - 阶段 0 定案：固定 `ClrDebug` 0.4.2；Windows PDB 固定 `Microsoft.DiaSymReader` 2.2.11 与 `Microsoft.DiaSymReader.Native` 17.12.0-beta1.24603.5。独立 Native 包没有 Microsoft 公布的 CVE 最低修复版，所选版本是公告后的项目安全基线，并非官方最低修复下限。
+- MCP 固定官方 `ModelContextProtocol` / `ModelContextProtocol.Core` 2.2.0，协议 2025-11-25，仅 stdio 和 13 个 `debug_` 工具；字段、默认上限和错误恢复见 `docs/mcp-tools.md`，安装与调用流程见 `docs/agent-skill.md`。
 
 ## 计划目录结构（需求 §15）
 
@@ -58,6 +59,8 @@ FxDbg.sln
 
 ## 构建与测试
 
+- MVP 一键验收：`./eng/verify-stage2.ps1`，默认 Debug/Release，支持 `-Configuration Debug|Release`。包括真实 MCP、技能安装/独立 Agent 证据检查和 `eng/verify-stage1.ps1`；记录源码哈希、超时、日志及自有进程退出，任何失败不得标记通过。
+- 发布 MCP：`./eng/publish-mcp.ps1 -Configuration Release`，入口为 `dotnet <发布目录>/fxdbg-mcp.dll`；必须携带相邻 `engines/` 的完整双架构依赖，不依赖当前目录。
 - SDK 由 `global.json` 固定为 .NET SDK 10.0.301（允许同一 feature band 的最新补丁）。
 - `net40` 使用 SDK 风格项目；`Directory.Build.targets` 固定引用 `Microsoft.NETFramework.ReferenceAssemblies` 1.0.3，因此构建机无需预装 .NET Framework 4.0 targeting pack。
 - 构建全部阶段 0 样例：`dotnet build FxDbg.sln --configuration Debug`。

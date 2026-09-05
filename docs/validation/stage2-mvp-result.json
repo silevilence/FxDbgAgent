@@ -1,0 +1,63 @@
+{
+  "inputCount": 201,
+  "configuration": "Debug+Release",
+  "inputsSha256": "61D3361F674910F2C9E28FA3708DD83C89F9D8C2F479107DDC4EC318D934D389",
+  "steps": [
+    {
+      "name": "stage2-3-install-evidence",
+      "log": "artifacts\\stage2-validation\\stage2-3-install-evidence.log",
+      "logSha256": "C1B418E58D770D1AD4F1912105DFCD72F2B93D7EE0124F8AF16625F5BCA81B9C",
+      "forcedCleanup": 0,
+      "exitCode": 0,
+      "observedProcesses": 6,
+      "allExited": true
+    },
+    {
+      "name": "stage2-Debug",
+      "log": "artifacts\\stage2-validation\\stage2-Debug.log",
+      "logSha256": "348BCBA71A4A19B407221BA6EF50FAF04BDA4DA0400B8A4CC68B7A397C93B2F5",
+      "forcedCleanup": 0,
+      "exitCode": 0,
+      "observedProcesses": 663,
+      "allExited": true
+    },
+    {
+      "name": "stage2-mvp-Debug",
+      "log": "artifacts\\stage2-validation\\stage2-mvp-Debug.log",
+      "logSha256": "45944CB92D229F9659B0F830456F1A64DCFCCFA88EF3D8E2ADDFCC16E1E3610D",
+      "forcedCleanup": 0,
+      "exitCode": 0,
+      "observedProcesses": 72,
+      "allExited": true
+    },
+    {
+      "name": "stage2-Release",
+      "log": "artifacts\\stage2-validation\\stage2-Release.log",
+      "logSha256": "581B4D024C9967A33FE4806DC14D7637E9A5DBF62A8217ED5C7EA0DF8E166C46",
+      "forcedCleanup": 0,
+      "exitCode": 0,
+      "observedProcesses": 663,
+      "allExited": true
+    },
+    {
+      "name": "stage2-mvp-Release",
+      "log": "artifacts\\stage2-validation\\stage2-mvp-Release.log",
+      "logSha256": "B768EF8C797000DB08FC144A4153F1975FAE9E330429DB49C109A9C056EB03AC",
+      "forcedCleanup": 0,
+      "exitCode": 0,
+      "observedProcesses": 72,
+      "allExited": true
+    },
+    {
+      "name": "stage1-full-regression",
+      "log": "artifacts\\stage2-validation\\stage1-full-regression.log",
+      "logSha256": "D1BA268274B80D3AB0BA0A5A505DAA2B66D1CE9E4DBE6FF286DAC6622DE92A93",
+      "forcedCleanup": 0,
+      "exitCode": 0,
+      "observedProcesses": 1470,
+      "allExited": true
+    }
+  ],
+  "finishedAtUtc": "2026-09-05T16:23:27.171593+08:00",
+  "passed": true
+}
