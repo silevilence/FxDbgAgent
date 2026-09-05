@@ -37,15 +37,44 @@ public sealed partial class DebugSessionService : IAsyncDisposable
         Observation observation = Find(id);
         if (method == "status")
         {
-            if (arguments["operationId"] is not null) throw Invalid("Operation tracking is not available before execution-control implementation.");
-            JObject snapshot = (JObject)await engine.InvokeAsync(id, "state", new JObject { ["includeDetails"] = true }, timeout, linked.Token).ConfigureAwait(false);
+            string? operationId = (string?)arguments["operationId"];
+            ExecutionOperation? requestedOperation = null;
+            JObject? snapshot = null;
+            lock (observation.Gate)
+            {
+                PruneOperations(observation, DateTimeOffset.UtcNow);
+                if (operationId is not null && !observation.Operations.TryGetValue(operationId, out requestedOperation)) throw new FxDbgException(FxDbgErrorCode.OperationNotFound, "Operation is unknown, expired, or belongs to another session.");
+                if (observation.ClosedAtUtc.HasValue) snapshot = TerminalSnapshot(observation);
+            }
+            if (snapshot is null)
+            {
+                try { snapshot = (JObject)await engine.InvokeAsync(id, "state", new JObject { ["includeDetails"] = true }, timeout, linked.Token).ConfigureAwait(false); }
+                catch (FxDbgException error) when (error.Code is FxDbgErrorCode.EngineExited or FxDbgErrorCode.TransportDisconnected or FxDbgErrorCode.SessionNotFound)
+                {
+                    lock (observation.Gate)
+                    {
+                        FailObservation(observation, error.Code);
+                        snapshot = TerminalSnapshot(observation);
+                    }
+                }
+            }
             snapshot["snapshotAtUtc"] = DateTimeOffset.UtcNow;
             snapshot["lastStop"] = snapshot["stop"]?.DeepClone();
             if (snapshot["lastStop"]?.Type is null or JTokenType.Null)
                 lock (observation.Gate) snapshot["lastStop"] = observation.LastStop?.DeepClone();
             if ((string?)snapshot["target"]?["sessionState"] != "stopped") snapshot["stop"] = null;
+            lock (observation.Gate)
+            {
+                snapshot.Remove("operation");
+                if (requestedOperation is not null) snapshot["operation"] = requestedOperation.Snapshot();
+                snapshot["activeOperationId"] = observation.ActiveOperation is { IsCompleted: false } active ? active.Id : null;
+                observation.LastSnapshot = (JObject)snapshot.DeepClone();
+            }
             return Envelope(id, snapshot);
         }
+        lock (observation.Gate) RequireActive(observation);
+        if (method is "continue" or "step") return await RunAsync(observation, method, arguments, timeout, linked.Token).ConfigureAwait(false);
+        if (method is "pause" or "detach" or "terminate") return await ControlAsync(observation, method, arguments, timeout, linked.Token).ConfigureAwait(false);
         string command = method switch
         {
             "set_breakpoint" => arguments["breakpointId"] is null ? "break.set" : "break.enable",
@@ -84,7 +113,7 @@ public sealed partial class DebugSessionService : IAsyncDisposable
             {
                 foreach (Observation observation in sessions.Values)
                 {
-                    lock (observation.Gate) { if (!observation.Started || observation.Failure is not null) continue; }
+                    lock (observation.Gate) { if (!observation.Started || observation.ClosedAtUtc.HasValue || observation.Closing) continue; }
                     try
                     {
                         foreach (JObject message in engine.DrainEvents(observation.Id))
@@ -95,14 +124,24 @@ public sealed partial class DebugSessionService : IAsyncDisposable
                                 if (sequence != observation.Sequence + 1) throw new FxDbgException(FxDbgErrorCode.TransportDisconnected, "Engine event sequence has a gap.");
                                 observation.Sequence = sequence;
                                 observation.ObservedAtUtc = DateTimeOffset.UtcNow;
-                                if ((string?)message["kind"] == "stopped") observation.LastStop = message["data"]?["stop"]?.DeepClone();
+                                if ((string?)message["kind"] == "stopped" || (string?)message["data"]?["stop"]?["reason"] == "processExit")
+                                {
+                                    observation.LastStop = message["data"]?["stop"]?.DeepClone();
+                                    if (observation.ActiveOperation is { IsCompleted: false, Finishing: false } operation && sequence > operation.AfterSequence)
+                                        operation.Finish("completed", observation.LastStop);
+                                    if ((string?)observation.LastStop?["reason"] == "processExit") MarkClosed(observation, "terminated");
+                                }
                                 if ((string?)message["kind"] == "stateChanged" && message["data"]?["currentState"] is JToken state)
                                     observation.Target!["sessionState"] = state.DeepClone();
                             }
                         }
                     }
-                    catch (FxDbgException error) { lock (observation.Gate) observation.Failure = error.Code; }
+                    catch (FxDbgException error) { lock (observation.Gate) if (!observation.Closing) FailObservation(observation, error.Code); }
+                    bool ended;
+                    lock (observation.Gate) ended = observation.ClosedAtUtc.HasValue;
+                    if (ended) await Task.Run(() => engine.CloseSession(observation.Id)).ConfigureAwait(false);
                 }
+                PruneSessions();
                 await Task.Delay(10, lifetime.Token).ConfigureAwait(false);
             }
         }
@@ -111,10 +150,40 @@ public sealed partial class DebugSessionService : IAsyncDisposable
 
     private Observation Find(SessionId id)
     {
+        PruneSessions();
         if (!sessions.TryGetValue(id, out Observation? observation)) throw new FxDbgException(FxDbgErrorCode.SessionNotFound, "Session was not found in this Host.");
-        lock (observation.Gate)
-            if (observation.Failure is FxDbgErrorCode failure) throw new FxDbgException(failure, "Engine connection failed; create a new session after checking the target.");
         return observation;
+    }
+
+    private void PruneSessions()
+    {
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        var ended = sessions.Values.Where(x => { lock (x.Gate) return x.ClosedAtUtc.HasValue; }).OrderBy(x => x.ClosedAtUtc).ToArray();
+        int removeCount = Math.Max(0, sessions.Count - 1024);
+        foreach (Observation observation in ended)
+        {
+            lock (observation.Gate)
+                if (removeCount-- > 0 || now - observation.ClosedAtUtc!.Value >= Retention) sessions.TryRemove(observation.Id, out _);
+        }
+    }
+
+    private static void FailObservation(Observation observation, FxDbgErrorCode code)
+    {
+        if (observation.ClosedAtUtc.HasValue) return;
+        observation.Failure = code;
+        MarkClosed(observation, "failed");
+        observation.ActiveOperation?.Finish("failed", code: FxDbgErrorCodeWireName.Format(code), message: "Engine connection failed; inspect the target before reattaching.");
+    }
+
+    private static JObject TerminalSnapshot(Observation observation)
+    {
+        var snapshot = observation.LastSnapshot is null ? new JObject() : (JObject)observation.LastSnapshot.DeepClone();
+        snapshot["target"] = observation.Target?.DeepClone();
+        snapshot["stop"] = null;
+        snapshot["lastStop"] = observation.LastStop?.DeepClone();
+        snapshot["eventSequence"] = observation.Sequence;
+        if (observation.Failure is FxDbgErrorCode failure) snapshot["failureCode"] = FxDbgErrorCodeWireName.Format(failure);
+        return snapshot;
     }
 
     private static JObject Envelope(SessionId id, JToken value) => new() { ["ok"] = true, ["sessionId"] = id.ToString(), ["result"] = value };
@@ -123,7 +192,10 @@ public sealed partial class DebugSessionService : IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         lifetime.Cancel();
+        foreach (Observation observation in sessions.Values)
+            lock (observation.Gate) observation.ActiveOperation?.Finish("cancelled", code: "operation_cancelled", message: "Host is closing.");
         await eventPump.ConfigureAwait(false);
+        await Task.WhenAll(sessions.Values.SelectMany(x => { lock (x.Gate) return x.Operations.Values.Select(o => o.Watchdog).OfType<Task>().ToArray(); })).ConfigureAwait(false);
         engine.Dispose();
         lifetime.Dispose();
     }
@@ -139,5 +211,10 @@ public sealed partial class DebugSessionService : IAsyncDisposable
         internal DateTimeOffset ObservedAtUtc;
         internal JToken? LastStop;
         internal FxDbgErrorCode? Failure;
+        internal bool Closing;
+        internal DateTimeOffset? ClosedAtUtc;
+        internal JObject? LastSnapshot;
+        internal ExecutionOperation? ActiveOperation;
+        internal Dictionary<string, ExecutionOperation> Operations { get; } = new(StringComparer.Ordinal);
     }
 }

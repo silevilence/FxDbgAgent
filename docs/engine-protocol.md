@@ -18,6 +18,8 @@ Core 标识序列化为字符串，枚举为 camelCase。`start` 要求 protocol
 
 阶段 2 兼容扩展：`state` 返回调度线程上生成的 `eventSequence` 水位；可选 `includeDetails=true` 同时读取断点与模块符号快照，供共享 Host 的观察入口使用。`break.set` 可选 `enabled`（默认 true）在同一次同步目标操作中创建禁用断点，避免先激活再跨请求禁用的命中竞态。既有 CLI 参数与默认行为不变。
 
+自然退出的 `stateChanged` 事件在 data 中附带实际 `stop`（reason=processExit）。Host 在恢复前取得事件序号水位，恢复后只使用更新事件完成操作，因而即使命令响应前已停止也不会遗漏；退出不被伪装成可恢复的 stopped 状态。
+
 超出 4 MiB 的出站结果在写入前返回 `invalid_request`，提示缩小变量页数、深度或字符串长度；连接与当前变量引用保持可用，调用方可以缩页重试。目标已退出但会话未释放时，`wait` 返回保存的 `processExit`；断点修改与符号刷新返回 `invalid_session_state`。
 
 目标信息中 `runtimeVersion` 为 ICLRRuntimeInfo 实际返回的 CLR 承载标识（4.x 通常仍为 `v4.0.30319`），`runtimeFileVersion` 为目标已加载 `clr.dll` 的文件版本，包含实际更新构建信息；两者不能与 .NET Framework 产品版本混为一谈。附加已有调试器的目标返回 `already_debugged`，提示先分离现有调试器；失败不会替换或终止原调试会话。

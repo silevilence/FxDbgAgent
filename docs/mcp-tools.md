@@ -1,6 +1,6 @@
 # MCP 工具契约
 
-阶段 2 的公开契约。当前实现进度以 ROADMAP 勾选项和验证报告为准；阶段 2-2a 已接通会话、断点与观察八个工具，执行控制/操作跟踪按 2-2b 实施。
+阶段 2 的公开契约。当前实现进度以 ROADMAP 勾选项和验证报告为准；13 个工具均已接通共享 Host/Engine，资源限流和完整生命周期验收按后续任务实施。
 
 运行 `./eng/publish-mcp.ps1 -Configuration Debug`，用 `dotnet <发布目录>/fxdbg-mcp.dll` 作为 MCP command/args。发布目录默认 `artifacts/mcp/Debug`，其旁 `engines/` 放置完整 x86/x64 Engine 与 DIA/ClrDebug 等依赖。可使用 `--engine-dir <绝对路径>` 覆盖，不依赖当前工作目录。仅本机 stdio，无网络监听。
 
@@ -28,11 +28,11 @@
 | debug_stack | threadId*、start、count | start=0（0～100000），count=32（1～1024） | 托管栈数组，stopped |
 | debug_variables | frameId*、referenceId、start、count、maxDepth、maxStringLength | start=0，count=100（1～1024），maxDepth=1（0～8），maxStringLength=256（1～32768） | 参数/局部/对象字段数组，stopped；展开对象时再传 referenceId |
 | debug_detach | 无 | 安全分离，launch/attach 均适用 | 终态会话；目标继续运行 |
-| debug_terminate | 无 | 仅 launch 目标 | 终态会话；附加目标返回状态错误 |
+| debug_terminate | 无 | 仅 launch 目标 | 终态会话；附加目标返回 invalid_request |
 
 每次工具响应同时包含 structuredContent 对象和等价的 JSON text content。成功为 `{"ok":true,"sessionId":"...","result":...}`；失败为 `{"ok":false,"sessionId":"...","error":{"code":"session_not_found","message":"..."}}`，创建前的 sessionId 可为 null。失败设置 MCP isError=true。结果中枚举使用 Core camelCase，错误码使用 Core snake_case。没有源码时位置字段可空，不捏造源码信息。
 
-工具业务错误包括 invalid_request、session_not_found、invalid_session_state、already_debugged、architecture_mismatch、core_clr_not_supported、symbols_missing/mismatch/read_failed、frame_not_found、value_unavailable、operation_timed_out/cancelled、transport_disconnected、engine_exited。后续操作管理补充 operation_not_found 与 rate_limited（含 retryAfterMs）。JSON-RPC 封装错误、未知方法和未知工具是协议错误；输入不合法及执行失败为工具错误。
+工具业务错误包括 invalid_request、session_not_found、invalid_session_state、already_debugged、architecture_mismatch、core_clr_not_supported、symbols_missing/mismatch/read_failed、frame_not_found、value_unavailable、operation_timed_out/cancelled、operation_not_found、transport_disconnected、engine_exited。资源限流任务补充 rate_limited（含 retryAfterMs）。JSON-RPC 封装错误、未知方法和未知工具是协议错误；输入不合法及执行失败为工具错误。
 
 ## 调用与恢复
 
@@ -43,6 +43,10 @@
 不存在会话返回 session_not_found；缺 sessionId 或传 `timeoutMs:0` 返回 invalid_request；未知工具返回协议 InvalidParams。每个工具上表输入可以放入同一 tools/call 封装。阶段 2-3 将补充可直接执行的完整调试示例。
 
 continue/step 默认等待新的停止，也可 `waitForStop:false` 返回 operationId，由 status 查询。轮询不重复执行运行命令，不延长操作期限。每会话一个运行操作；停止或恢复运行后必须重新取有效 threadId/frameId/referenceId。运行命令、launch/attach 状态不确定时先查 status，禁止盲重试。
+
+两种模式的 `result` 都是操作对象，含 operationId、state、createdAtUtc；终态增加 finishedAtUtc，正常完成含 stop（包括 reason=processExit）。状态为 running / completed / timedOut / cancelled / failed。异步请求可能返回前就已停止，因此不要假设初次返回一定是 running。`debug_status` 的 `result.operation` 返回指定操作的一次性终态；失败操作包含 error，等待模式同时将工具的 ok 置为 false。正常 pause 以 userPause 完成操作；detach 取消操作并结束会话，terminate 确认退出后完成操作。正在等待的请求不占用 Engine 调度线程，其他会话和本会话状态/暂停/清理仍可调用。
+
+每会话保留至多 128 条已完成操作，终态保存 10 分钟。结束会话同样保存 10 分钟，总会话记录至多 1024，超限先淘汰最早终态。运行中的操作不因缓存裁剪消失；未知、跨会话和过期操作返回 operation_not_found。Host 重启后无历史恢复。status 的 stop 只表示当前停止，lastStop 是最近观察，运行期间不可拿 lastStop 的帧引用读取变量。
 
 取消通知仅针对未返回请求；已返回异步操作用 pause 停止或 detach 结束。协作超时尝试暂停，传输失败安全分离；具体实际状态随结果返回。附加目标不能 terminate。异常默认仅未处理异常，读取变量不调用 Getter、ToString 或函数求值。对象读取不可获取、优化掉与 null 分别返回，不合并为 null。
 

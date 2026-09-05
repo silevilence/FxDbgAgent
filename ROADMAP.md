@@ -70,13 +70,14 @@
     - 验收：八个工具的文档示例经真实 stdio 调用并验证 schema；覆盖 x86/x64 自动路由、含空格路径与参数、环境变量、断点移动与重绑定、符号异常、优化掉/不可获取/null、对象分页与循环引用、失效及跨会话 ID。超大变量结果可缩页重试且原会话仍有效。
     - 验证记录：Debug 四组合及 64 项单元测试通过，快速审核阻塞项已修复；见 docs/validation/stage2-2a-observations.md。
 
-- [ ] **阶段2-2b 执行控制与操作轮询**
-    - [ ] 实现 `debug_continue`、`debug_step`、`debug_pause`、`debug_detach`、`debug_terminate`；step 必须携带 threadId 与 kind=into/over/out，terminate 仅限 launch 创建的目标；状态判断以共享 Host/Engine 为准
-    - [ ] continue/step 使用 waitForStop（默认 true）：true 等待一次新的停止或进程退出；false 在命令受理后返回 operationId，并由 debug_status(sessionId, operationId) 轮询。两种模式共用一次执行操作，不能在轮询或重试时再次 Continue/Step；不得把 MCP request id 或 MCP Tasks 扩展当作此 operationId
-    - [ ] 明确定义操作状态 running / completed / timedOut / cancelled / failed，completed 携带对应 StopInfo 或 processExit；一次运行操作最多产生一个终态，捕获命令返回前已发生的停止，重复轮询结果一致，旧停止事件不能完成新操作
-    - [ ] 每会话最多一个运行操作；运行期间 status、pause、detach 及合法 terminate 仍可响应。pause 使运行操作以 userPause 停止完成；detach/terminate、超时、取消及 Engine 故障均结束关联等待，不占住 Engine 调度线程等待客户端轮询
-    - [ ] 已完成操作仅在本 MCP 进程保留，默认最多每会话 128 条且终态保留 10 分钟；已结束会话保留终态查询同样 10 分钟，Host 总计最多保留 1024 条会话记录，超限淘汰最早终态。未知、跨会话或已淘汰 operationId 返回 operation_not_found；Host 重启不恢复旧会话或操作
+- [x] **阶段2-2b 执行控制与操作轮询**
+    - [x] 实现 `debug_continue`、`debug_step`、`debug_pause`、`debug_detach`、`debug_terminate`；step 必须携带 threadId 与 kind=into/over/out，terminate 仅限 launch 创建的目标；状态判断以共享 Host/Engine 为准
+    - [x] continue/step 使用 waitForStop（默认 true）：true 等待一次新的停止或进程退出；false 在命令受理后返回 operationId，并由 debug_status(sessionId, operationId) 轮询。两种模式共用一次执行操作，不能在轮询或重试时再次 Continue/Step；不得把 MCP request id 或 MCP Tasks 扩展当作此 operationId
+    - [x] 明确定义操作状态 running / completed / timedOut / cancelled / failed，completed 携带对应 StopInfo 或 processExit；一次运行操作最多产生一个终态，捕获命令返回前已发生的停止，重复轮询结果一致，旧停止事件不能完成新操作
+    - [x] 每会话最多一个运行操作；运行期间 status、pause、detach 及合法 terminate 仍可响应。pause 使运行操作以 userPause 停止完成；detach/terminate、超时、取消及 Engine 故障均结束关联等待，不占住 Engine 调度线程等待客户端轮询
+    - [x] 已完成操作仅在本 MCP 进程保留，默认最多每会话 128 条且终态保留 10 分钟；已结束会话保留终态查询同样 10 分钟，Host 总计最多保留 1024 条会话记录，超限淘汰最早终态。未知、跨会话或已淘汰 operationId 返回 operation_not_found；Host 重启不恢复旧会话或操作
     - 验收：五个工具及两种等待模式覆盖断点、三种单步、暂停、自然退出、未处理异常；另测立即停止竞态、重复 continue、并发操作、旧操作轮询、操作过期、跨会话误用。连续 100 次 continue/pause 无重复 Continue 或死锁，等待中其他会话可用。
+    - 验证记录：Debug 双架构执行矩阵、66 项单元测试及原生执行回归通过；见 docs/validation/stage2-2b-execution.md。
 
 - [ ] **阶段2-2c 超时、取消、限流与资源边界**
     - [ ] 每个工具有 timeoutMs，默认 10000、允许 1～240000 毫秒；continue/step 的期限覆盖命令受理和等待，异步返回不取消后台操作的期限。status 的超时只影响本次查询，不延长或取消正在执行的操作

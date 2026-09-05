@@ -23,6 +23,7 @@ public enum FxDbgErrorCode
     ValueOptimizedAway,
     OperationTimedOut,
     OperationCancelled,
+    OperationNotFound,
     TransportDisconnected,
     EngineExited,
     AccessDenied,

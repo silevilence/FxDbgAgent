@@ -152,7 +152,11 @@ internal sealed class EngineServer
             if (item.Sequence != lastDomainSequence + 1) { peer.Dispose(); return; }
             lastDomainSequence = item.Sequence;
             string kind = item is StoppedEvent ? "stopped" : item is ModuleChangedEvent ? "moduleChanged" : "stateChanged";
-            QueueEvent(kind, WireJson.Value(item));
+            JToken data = WireJson.Value(item);
+            if (item is SessionStateChangedEvent changed && changed.CurrentState == DebugSessionState.Terminated
+                && session.CurrentStop?.Reason == StopReason.ProcessExit)
+                data["stop"] = WireJson.Value(session.CurrentStop);
+            QueueEvent(kind, data);
         }
     }
 

@@ -1,0 +1,198 @@
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using FxDbg.Core.Errors;
+using Newtonsoft.Json.Linq;
+
+namespace FxDbg.Host.Sessions;
+
+public sealed partial class DebugSessionService
+{
+    private static readonly TimeSpan Retention = TimeSpan.FromMinutes(10);
+
+    private async Task<JToken> RunAsync(Observation observation, string command, JObject arguments, TimeSpan timeout, CancellationToken token)
+    {
+        var operation = new ExecutionOperation();
+        lock (observation.Gate)
+        {
+            RequireActive(observation);
+            if (observation.ActiveOperation is { IsCompleted: false })
+                throw new FxDbgException(FxDbgErrorCode.InvalidSessionState, "A running operation already exists. Query status or pause it first.");
+            observation.ActiveOperation = operation;
+            observation.Operations.Add(operation.Id, operation);
+            PruneOperations(observation, DateTimeOffset.UtcNow);
+        }
+        try
+        {
+            // The Engine takes this snapshot on its command thread after publishing all prior stops.
+            // Arm before resuming: even a stop delivered before the resume response is then observed once.
+            var state = (JObject)await engine.InvokeAsync(observation.Id, "state", timeout: Remaining(operation, timeout), cancellationToken: token).ConfigureAwait(false);
+            if ((string?)state["target"]?["sessionState"] != "stopped")
+                throw new FxDbgException(FxDbgErrorCode.InvalidSessionState, "Continue and step require a stopped session.");
+            lock (observation.Gate)
+            {
+                RequireActive(observation);
+                observation.LastSnapshot = (JObject)state.DeepClone();
+                operation.AfterSequence = (long)state["eventSequence"]!;
+            }
+            await engine.InvokeAsync(observation.Id, command, arguments, Remaining(operation, timeout), token).ConfigureAwait(false);
+            lock (observation.Gate) operation.Watchdog = WatchDeadlineAsync(observation, operation, timeout);
+            if ((bool?)arguments["waitForStop"] == false)
+            {
+                lock (observation.Gate) return Envelope(observation.Id, operation.Snapshot());
+            }
+            JObject outcome;
+            try { outcome = await operation.Completion.Task.WaitAsync(token).ConfigureAwait(false); }
+            catch (OperationCanceledException)
+            {
+                bool cancel;
+                lock (observation.Gate) { cancel = !operation.IsCompleted; if (cancel) operation.Finishing = true; }
+                if (cancel) await CancelSessionAsync(observation, operation).ConfigureAwait(false);
+                outcome = await operation.Completion.Task.ConfigureAwait(false);
+            }
+            return OperationEnvelope(observation, outcome);
+        }
+        catch (Exception error)
+        {
+            string code = error is FxDbgException known ? FxDbgErrorCodeWireName.Format(known.Code) : error is OperationCanceledException ? "operation_cancelled" : "internal_error";
+            lock (observation.Gate) operation.Finish(code == "operation_cancelled" ? "cancelled" : code == "operation_timed_out" ? "timedOut" : "failed", code: code, message: "Execution command did not complete; query session status before retrying.");
+            throw;
+        }
+    }
+
+    private static TimeSpan Remaining(ExecutionOperation operation, TimeSpan timeout)
+    {
+        TimeSpan remaining = timeout - (DateTimeOffset.UtcNow - operation.CreatedAtUtc);
+        if (remaining <= TimeSpan.Zero) throw new FxDbgException(FxDbgErrorCode.OperationTimedOut, "Execution deadline elapsed before command acceptance.");
+        return remaining;
+    }
+
+    private async Task WatchDeadlineAsync(Observation observation, ExecutionOperation operation, TimeSpan timeout)
+    {
+        try
+        {
+            TimeSpan remaining = timeout - (DateTimeOffset.UtcNow - operation.CreatedAtUtc);
+            if (remaining > TimeSpan.Zero)
+            {
+                using var delayCancellation = CancellationTokenSource.CreateLinkedTokenSource(lifetime.Token);
+                Task delay = Task.Delay(remaining, delayCancellation.Token);
+                if (await Task.WhenAny(operation.Completion.Task, delay).ConfigureAwait(false) == operation.Completion.Task)
+                {
+                    delayCancellation.Cancel();
+                    return;
+                }
+                await delay.ConfigureAwait(false);
+            }
+            lock (observation.Gate)
+            {
+                if (operation.IsCompleted || operation.Finishing) return;
+                operation.Finishing = true;
+            }
+            var state = (JObject)await engine.InvokeAsync(observation.Id, "state", timeout: TimeSpan.FromSeconds(5), cancellationToken: lifetime.Token).ConfigureAwait(false);
+            JToken? stop = state["stop"];
+            if ((string?)state["target"]?["sessionState"] == "running")
+                stop = await engine.InvokeAsync(observation.Id, "pause", timeout: TimeSpan.FromSeconds(5), cancellationToken: lifetime.Token).ConfigureAwait(false);
+            lock (observation.Gate)
+            {
+                observation.LastStop = stop?.DeepClone();
+                operation.Finish("timedOut", stop, "operation_timed_out", "Execution deadline elapsed; target is paused or exited. Query status before continuing.");
+            }
+        }
+        catch (OperationCanceledException) when (lifetime.IsCancellationRequested) { }
+        catch (Exception)
+        {
+            lock (observation.Gate) observation.Closing = true;
+            await Task.Run(() => engine.CloseSession(observation.Id)).ConfigureAwait(false);
+            lock (observation.Gate)
+            {
+                MarkClosed(observation, "failed");
+                operation.Finish("failed", code: "transport_disconnected", message: "Could not confirm a pause after timeout; the session was closed.");
+                observation.Closing = false;
+            }
+        }
+    }
+
+    private async Task CancelSessionAsync(Observation observation, ExecutionOperation operation)
+    {
+        lock (observation.Gate) observation.Closing = true;
+        await Task.Run(() => engine.CloseSession(observation.Id)).ConfigureAwait(false);
+        lock (observation.Gate)
+        {
+            MarkClosed(observation, "terminated");
+            operation.Finish("cancelled", code: "operation_cancelled", message: "Request cancelled; session closed and Engine attempted safe detach. Check target state before reattaching.");
+            observation.Closing = false;
+        }
+    }
+
+    private async Task<JToken> ControlAsync(Observation observation, string method, JObject arguments, TimeSpan timeout, CancellationToken token)
+    {
+        lock (observation.Gate)
+        {
+            RequireActive(observation);
+            if (method == "terminate" && (bool?)observation.Target?["launchedByDebugger"] != true)
+                throw Invalid("An attached target cannot be terminated. Use detach instead.");
+            if (method is "detach" or "terminate") observation.Closing = true;
+        }
+        try
+        {
+            JToken result = await engine.InvokeAsync(observation.Id, method, arguments, timeout, token).ConfigureAwait(false);
+            if (method == "pause")
+            {
+                lock (observation.Gate)
+                {
+                    observation.LastStop = result.DeepClone();
+                    if (observation.ActiveOperation is { Finishing: false } active) active.Finish("completed", result);
+                }
+            }
+            else
+            {
+                JToken? stop = null;
+                if (method == "terminate")
+                {
+                    var exited = await engine.InvokeAsync(observation.Id, "state", timeout: timeout, cancellationToken: token).ConfigureAwait(false);
+                    stop = exited["stop"]?.DeepClone();
+                    await Task.Run(() => engine.CloseSession(observation.Id)).ConfigureAwait(false);
+                }
+                lock (observation.Gate)
+                {
+                    observation.Target = (JObject)result.DeepClone();
+                    if (stop is not null) observation.LastStop = stop;
+                    MarkClosed(observation, "terminated");
+                    observation.ActiveOperation?.Finish(method == "terminate" ? "completed" : "cancelled", stop,
+                        method == "detach" ? "operation_cancelled" : null, method == "detach" ? "Session detached." : null);
+                }
+            }
+            return Envelope(observation.Id, result);
+        }
+        finally { lock (observation.Gate) observation.Closing = false; }
+    }
+
+    private static JObject OperationEnvelope(Observation observation, JObject operation)
+    {
+        JObject envelope = Envelope(observation.Id, operation);
+        if (operation["error"] is JToken error)
+        {
+            envelope["ok"] = false;
+            envelope["error"] = error.DeepClone();
+        }
+        return envelope;
+    }
+
+    private static void RequireActive(Observation observation)
+    {
+        if (observation.ClosedAtUtc.HasValue || observation.Closing)
+            throw new FxDbgException(FxDbgErrorCode.InvalidSessionState, "Session is closing or ended.");
+    }
+
+    private static void MarkClosed(Observation observation, string state)
+    {
+        observation.ClosedAtUtc ??= DateTimeOffset.UtcNow;
+        if (observation.Target is not null) observation.Target["sessionState"] = state;
+    }
+
+    private static void PruneOperations(Observation observation, DateTimeOffset now)
+    {
+        OperationRetention.Trim(observation.Operations, now, Retention);
+    }
+}

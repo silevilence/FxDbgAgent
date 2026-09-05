@@ -113,7 +113,7 @@ public sealed partial class FrameworkDebugSession
         // Keep the terminal stop out of the resume path and confirm ExitProcess before reporting success.
         pendingEntryController = null;
         stepper = null;
-        WaitForExitProcess(DateTime.UtcNow.Add(timeout));
+        WaitForExitProcess(DateTime.UtcNow.Add(timeout), terminationAccepted: true);
     }
 
     private void StopAt(CorDebugThread? thread, StopReason reason, bool unhandledException = true)

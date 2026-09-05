@@ -332,13 +332,16 @@ public sealed partial class FrameworkDebugSession : IDisposable
             lastFailure ?? new InvalidOperationException("Detach did not complete."));
     }
 
-    private void WaitForExitProcess(DateTime deadline)
+    private void WaitForExitProcess(DateTime deadline, bool terminationAccepted = false)
     {
         while (!processExited && DateTime.UtcNow < deadline)
         {
             WaitForCallbackProducerBarrier();
             if (callbacks.TryTake(out CallbackEnvelope envelope, 25))
             {
+                // Terminate invalidates native stops. A callback already queued before it
+                // succeeded must not be counted or continued against the terminated process.
+                if (terminationAccepted && envelope.Kind != CorDebugManagedCallbackKind.ExitProcess) continue;
                 HandleCallback(envelope, true);
             }
         }

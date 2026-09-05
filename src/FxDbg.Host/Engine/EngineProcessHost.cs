@@ -85,6 +85,12 @@ public sealed class EngineProcessHost : IDisposable
 
     public IReadOnlyList<JObject> DrainEvents(SessionId sessionId) => Find(sessionId).DrainEvents();
     public int GetEngineProcessId(SessionId sessionId) => Find(sessionId).ProcessId;
+    public void CloseSession(SessionId sessionId)
+    {
+        EngineConnection? connection;
+        lock (gate) connections.TryGetValue(sessionId, out connection);
+        if (connection is not null) Release(sessionId, connection, null);
+    }
     public IReadOnlyList<SessionId> ActiveSessions { get { lock (gate) return connections.Where(pair => pair.Value.Peer.IsConnected).Select(pair => pair.Key).ToArray(); } }
 
     public void Dispose()

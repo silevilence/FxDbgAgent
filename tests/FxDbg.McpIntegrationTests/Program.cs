@@ -10,6 +10,11 @@ if (args.Length > 1 && args[1] == "observations")
     await ObservationSuite.Run(bundle, Path.GetFullPath(args[2]), args[3]);
     return 0;
 }
+if (args.Length > 1 && args[1] == "execution")
+{
+    await ExecutionSuite.Run(bundle, Path.GetFullPath(args[2]), args[3]);
+    return 0;
+}
 using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(45));
 await using var connection = await McpTestConnection.Create(bundle, timeout.Token);
 var client = connection.Client;
