@@ -8,7 +8,7 @@ using FxDbg.Core.Model;
 
 namespace FxDbg.Interop;
 
-public sealed class FrameworkDebugSession : IDisposable
+public sealed partial class FrameworkDebugSession : IDisposable
 {
     private static readonly TimeSpan ShutdownTimeout = TimeSpan.FromSeconds(4);
 
@@ -59,6 +59,8 @@ public sealed class FrameworkDebugSession : IDisposable
         int milliseconds = timeout == Timeout.InfiniteTimeSpan
             ? Timeout.Infinite
             : (int)Math.Min(int.MaxValue, Math.Ceiling(timeout.TotalMilliseconds));
+        PollSymbolFiles();
+        if (pendingEntryController is not null) return false;
         if (callbacks.TryTake(out CallbackEnvelope envelope, milliseconds, cancellationToken))
         {
             HandleCallback(envelope, false);
@@ -135,11 +137,12 @@ public sealed class FrameworkDebugSession : IDisposable
             {
                 try
                 {
-                    corDebug.Terminate();
+            corDebug.Terminate();
                 }
                 finally
                 {
                     callbacks.Dispose();
+                    ClearModules();
                 }
             }
         }
@@ -281,7 +284,9 @@ public sealed class FrameworkDebugSession : IDisposable
                     continue;
                 }
 
+                breakpoints.Dispose();
                 process.Detach();
+                ClearModules();
                 callbackPairing.MarkTerminated();
                 return;
             }
@@ -336,10 +341,24 @@ public sealed class FrameworkDebugSession : IDisposable
         {
             processExited = true;
             callbackPairing.MarkTerminated();
+            ClearModules();
             return;
         }
 
         callbackPairing.RecordCallbackStop(envelope.Sequence);
+        if (!suppressContinueFailure)
+        {
+            try
+            {
+                if (HandleBreakpointCallback(envelope)) return;
+            }
+            catch
+            {
+                // Preserve the single outstanding stop when command-thread processing fails.
+                pendingEntryController = envelope.Controller;
+                throw;
+            }
+        }
         if (!suppressContinueFailure)
         {
             callbackPairing.Continue(() => envelope.Controller.Continue(false));

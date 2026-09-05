@@ -19,5 +19,6 @@
     <ProjectReference Include="..\..\src\FxDbg.Core\FxDbg.Core.csproj" />
     <ProjectReference Include="..\..\src\FxDbg.Engine\FxDbg.Engine.Runtime.csproj" />
     <ProjectReference Include="..\..\src\FxDbg.Host\FxDbg.Host.csproj" />
+    <ProjectReference Include="..\..\src\FxDbg.Symbols.Windows\FxDbg.Symbols.Windows.csproj" />
   </ItemGroup>
 </Project>

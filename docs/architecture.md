@@ -17,6 +17,15 @@
 - 命令从入队时开始计算超时；排队中的取消会立即完成且不会执行，执行中的超时/取消通过令牌协作生效。命令必须在不可重复副作用前检查令牌，成功返回是提交点，返回后到达的取消不得把成功改报失败；工作项结束后调度器仍可串行接受后续命令。
 - `ContinueStopCoordinator` 将每个停止计数与一次 Continue 原子配对：原生 Continue 成功后才提交 Running 状态，失败时保留未消费停止；重复 Continue 与重复/倒序停止序列均返回明确错误。
 
+## 源码断点生命周期（阶段1-4）
+
+- `FxDbg.Core.Breakpoints.BreakpointManager` 是断点状态的单一来源；每个逻辑断点可绑定多个模块加载实例。相同 DLL 在不同 AppDomain 的加载实例使用不同身份，卸载其中一个不会丢失其他实例的绑定。
+- `FxDbg.Symbols.Windows` 是产品 Windows PDB 读取层，与技术 Probe 无运行时依赖。读取本地同名 PDB、验证 CodeView GUID/stamp/age，使用真实 PE 元数据 provider；在分配原生返回数组前检查计数，限制输入大小及托管处理时间。
+- 未找到含目标源码的已加载符号时保持 `pending`；存在源码但无可绑定 IL 或 CLR 报告绑定失败时为 `unresolved`。成功绑定为 `verified`，最近可执行行与请求行不同时为 `moved`，保留请求行、实际行和诊断。
+- 模块 Load/Unload、UpdateModuleSymbols 仅在回调线程入队，由命令线程处理。已加载模块的本地 PDB 文件时间/大小每 500 ms 检查一次，变化后在同步停止内重新读取及绑定，启用状态保持不变。
+- 断点删除会停用其全部原生绑定并发布删除通知；模块卸载时丢弃失效绑定及符号缓存，不对已经失效的 COM 对象调用 Activate。Detach 前停用仍有效的原生断点。
+- `eng/verify-stage1-4.ps1 -Configuration Debug|Release` 使用同一产品 Interop/Core/Symbols 验证 x86/x64 延迟模块、延迟 PDB、禁用/启用、命中、AppDomain 卸载重载与删除后不再绑定。执行控制和跨进程请求入口仍按后续任务实施。
+
 ## ClrDebug 依赖结论（阶段0-2）
 
 - NuGet 包固定为 `ClrDebug` **0.4.2**；包内仓库提交为 `9628778ff761b2e466ca3199392cbd3de6de5bc5`，本次验证下载的 nupkg SHA-256 为 `880276A4D34EAA32EF6FB3598B7464E16C133B1184E9963D59398607BB5EDFBA`。

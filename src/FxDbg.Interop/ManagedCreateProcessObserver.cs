@@ -32,7 +32,8 @@ internal static class ManagedCreateProcessObserver
                 callbacks.Add(new CallbackEnvelope(
                     Interlocked.Increment(ref callbackSequence),
                     eventArgs.Kind,
-                    eventArgs.Controller));
+                    eventArgs.Controller,
+                    eventArgs));
             }
         };
 
@@ -139,11 +140,13 @@ internal static class ManagedCreateProcessObserver
 
 internal sealed class CallbackEnvelope
 {
-    internal CallbackEnvelope(long sequence, CorDebugManagedCallbackKind kind, CorDebugController controller)
+    internal CallbackEnvelope(long sequence, CorDebugManagedCallbackKind kind, CorDebugController controller,
+        CorDebugManagedCallbackEventArgs eventArgs)
     {
         Sequence = sequence;
         Kind = kind;
         Controller = controller;
+        EventArgs = eventArgs;
     }
 
     internal CorDebugManagedCallbackKind Kind { get; }
@@ -151,4 +154,6 @@ internal sealed class CallbackEnvelope
     internal CorDebugController Controller { get; }
 
     internal long Sequence { get; }
+
+    internal CorDebugManagedCallbackEventArgs EventArgs { get; }
 }

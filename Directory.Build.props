@@ -19,4 +19,9 @@
     <MSBuildProjectExtensionsPath>obj\runtime\</MSBuildProjectExtensionsPath>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'FxDbg.IntegrationTests.x86' Or '$(MSBuildProjectName)' == 'FxDbg.IntegrationTests.x64'">
+    <BaseIntermediateOutputPath>obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>obj\$(MSBuildProjectName)\</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+
 </Project>
