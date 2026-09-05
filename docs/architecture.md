@@ -68,6 +68,12 @@
 - Host 崩溃、取消及正常关闭时，Engine 尝试在调度线程安全 Detach；真实双架构暂停附加目标均存活且可再次附加。强杀 Engine 本体会使 Desktop CLR 目标退出，不能宣称此路径能保活目标；Host 隔离错误并可继续工作。
 - `eng/verify-stage1-10.ps1 -Configuration Debug|Release` 验证真实跨进程调试、双向崩溃、超时/取消、反复清理和句柄数量。
 
+## CLI 持久会话入口（阶段1-11）
+
+- CLI 参数解析和输出由 FxDbg.Cli 承担；独立命令通过本机管道访问 FxDbg.Host.PersistentSessionServer，后者调用同一 EngineProcessHost。CLI 不承载原生调试逻辑。
+- 每个会话一个后台 Host，使用不继承句柄的 detached 进程启动，避免输出捕获等待后台进程退出。Detach 或 30 分钟空闲结束会话；请求中途断开执行既有取消/安全 Detach 流程。
+- [CLI 文档](cli.md) 包含全套命令和 ID 使用规则。`eng/verify-stage1-11.ps1 -Configuration Debug|Release` 验证独立进程命令链与后台生命周期。
+
 ## ClrDebug 依赖结论（阶段0-2）
 
 - NuGet 包固定为 `ClrDebug` **0.4.2**；包内仓库提交为 `9628778ff761b2e466ca3199392cbd3de6de5bc5`，本次验证下载的 nupkg SHA-256 为 `880276A4D34EAA32EF6FB3598B7464E16C133B1184E9963D59398607BB5EDFBA`。

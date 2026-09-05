@@ -124,9 +124,9 @@
     - [x] Engine 崩溃不拖垮 Host，Host 崩溃时 Engine 尝试安全 Detach
     - 验收：模拟双方崩溃，另一方均能检测并清理，无僵尸进程、无半开会话、无泄漏句柄。
 
-- [ ] **阶段1-11 CLI 验证入口（复用同一 Host/Engine）**
-    - [ ] `fxdbg launch/attach/break/continue/step/stack/variables/detach` 全套命令
-    - [ ] CLI 与 MCP 共享 FxDbg.Host，不维护第二套调试逻辑
+- [x] **阶段1-11 CLI 验证入口（复用同一 Host/Engine）**
+    - [x] `fxdbg launch/attach/break/continue/step/stack/variables/detach` 全套命令
+    - [x] CLI 与 MCP 共享 FxDbg.Host，不维护第二套调试逻辑
     - 验收：需求 §9 全部命令可用，输出语义与 MCP 结果同源一致。
 
 - [ ] **阶段1-12 端到端集成测试（Console + WinForms，双架构）**

@@ -10,7 +10,7 @@ namespace FxDbg.Host.Engine;
 internal static class LocalPipeIdentity
 {
     private const int ErrorPipeLocal = 229;
-    internal static void RequireEngine(NamedPipeServerStream pipe, int processId)
+    internal static void RequireEngine(NamedPipeServerStream pipe, int? processId)
     {
         var computer = new StringBuilder(256);
         bool hasId = GetNamedPipeClientProcessId(pipe.SafePipeHandle, out uint clientId);
@@ -18,7 +18,7 @@ internal static class LocalPipeIdentity
         int computerError = Marshal.GetLastWin32Error();
         bool isLocal = !hasComputer && computerError == ErrorPipeLocal || hasComputer &&
             string.Equals(computer.ToString().TrimStart('\\'), Environment.MachineName, StringComparison.OrdinalIgnoreCase);
-        if (!hasId || clientId != (uint)processId || !isLocal)
+        if (!hasId || processId is not null && clientId != (uint)processId || !isLocal)
             throw new FxDbgException(FxDbgErrorCode.AccessDenied, "Pipe client is not the local Engine process started by this Host.");
     }
 
