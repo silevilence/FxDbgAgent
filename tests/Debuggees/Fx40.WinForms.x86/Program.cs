@@ -7,11 +7,24 @@ namespace FxDbg.Debuggees.WinFormsX86
     internal static class Program
     {
         [STAThread]
-        private static void Main()
+        private static void Main(string[] args)
         {
+            bool scenario = args.Length == 3 && args[0] == "--scenario";
+            if (scenario) Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            var form = new MainForm();
+            if (scenario)
+            {
+                form.ShowInTaskbar = false;
+                form.Opacity = 0;
+                form.Shown += (_, __) => form.BeginInvoke(new Action(() =>
+                {
+                    if (args[1] == "exception") new System.Threading.Thread(() => EndToEndScenarios.Run(args[1], args[2])).Start();
+                    else { EndToEndScenarios.Run(args[1], args[2]); form.Close(); }
+                }));
+            }
+            Application.Run(form);
         }
     }
 

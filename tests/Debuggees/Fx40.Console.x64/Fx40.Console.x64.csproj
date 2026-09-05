@@ -6,4 +6,5 @@
     <AssemblyName>Fx40.Console.x64</AssemblyName>
     <RootNamespace>FxDbg.Debuggees.ConsoleX64</RootNamespace>
   </PropertyGroup>
+  <ItemGroup><Compile Include="..\Shared\EndToEndScenarios.cs" Link="EndToEndScenarios.cs" /></ItemGroup>
 </Project>

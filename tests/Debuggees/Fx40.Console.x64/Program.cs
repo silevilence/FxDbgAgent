@@ -14,6 +14,7 @@ namespace FxDbg.Debuggees.ConsoleX64
 
         private static void Main(string[] args)
         {
+            if (args.Length == 3 && args[0] == "--scenario") { EndToEndScenarios.Run(args[1], args[2]); return; }
             if (args.Length == 1 && (args[0] == "--stack-threads" || args[0] == "--stack-threads-windbg"))
             {
                 Thread.CurrentThread.Name = "FxDbg-main";

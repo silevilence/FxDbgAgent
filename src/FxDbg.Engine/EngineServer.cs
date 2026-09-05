@@ -112,7 +112,10 @@ internal sealed class EngineServer
             case "exceptions.configure": current.ConfigureExceptionStops(Boolean(args, "firstChance", false)); result = new { configured = true }; break;
             case "modules": result = current.GetModules(); break;
             case "symbols.refresh": current.RefreshSymbols(); result = current.GetModules(); break;
-            case "detach": current.Detach(); result = current.Target; break;
+            case "detach":
+                if (current.State == DebugSessionState.Terminated) current.Dispose();
+                else current.Detach();
+                result = current.Target; break;
             case "terminate": current.Terminate(timeout, token); result = current.Target; break;
             default: throw Invalid("Unknown Engine command.");
         }

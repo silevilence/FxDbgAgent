@@ -176,7 +176,26 @@ try {
         throw 'The x86 Windows debugger is required for the independent stack comparison.'
     }
 
-    $cdbOutput = @(& $cdbPath -o -g -G -c '.load C:\Windows\Microsoft.NET\Framework\v4.0.30319\sos.dll; !clrstack; q' $assemblyPath --windbg-probe 2>&1)
+    $start = [Diagnostics.ProcessStartInfo]::new($cdbPath)
+    $start.UseShellExecute = $false
+    $start.CreateNoWindow = $true
+    $start.RedirectStandardOutput = $true
+    $start.RedirectStandardError = $true
+    foreach ($argument in @('-y', $reportDirectory, '-o', '-g', '-G', '-c',
+        '.load C:\Windows\Microsoft.NET\Framework\v4.0.30319\sos.dll; !clrstack; q', $assemblyPath, '--windbg-probe')) {
+        $start.ArgumentList.Add($argument)
+    }
+    $debugger = [Diagnostics.Process]::Start($start)
+    try {
+        $stdout = $debugger.StandardOutput.ReadToEndAsync()
+        $stderr = $debugger.StandardError.ReadToEndAsync()
+        $timedOut = -not $debugger.WaitForExit(30000)
+        if ($timedOut) { $debugger.Kill($true); $debugger.WaitForExit() }
+        $cdbOutput = ($stdout.GetAwaiter().GetResult() + $stderr.GetAwaiter().GetResult()) -split '\r?\n'
+        if ($timedOut) { throw 'CDB exceeded 30 seconds; its test process tree was cleaned up.' }
+        if ($debugger.ExitCode -ne 0) { throw 'CDB/SOS comparison failed.' }
+    }
+    finally { $debugger.Dispose() }
     $cdbText = $cdbOutput -join [Environment]::NewLine
     $cdbMethods = @($cdbOutput | ForEach-Object {
         if ($_ -match 'FxDbg\.Debuggees\.ConsoleX86\.Program\.(BreakpointTarget|StackLevel(?:0[1-9]|1[0-2]))\(') {

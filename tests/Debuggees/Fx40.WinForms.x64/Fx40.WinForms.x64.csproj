@@ -7,4 +7,5 @@
     <AssemblyName>Fx40.WinForms.x64</AssemblyName>
     <RootNamespace>FxDbg.Debuggees.WinFormsX64</RootNamespace>
   </PropertyGroup>
+  <ItemGroup><Compile Include="..\Shared\EndToEndScenarios.cs" Link="EndToEndScenarios.cs" /></ItemGroup>
 </Project>

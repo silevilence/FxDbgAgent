@@ -8,6 +8,11 @@ using Newtonsoft.Json.Linq;
 
 string root = Path.GetFullPath(args[0]);
 string configuration = args[1];
+if (args.Length > 2 && args[2] == "e2e")
+{
+    await EndToEndSuite.Run(root, configuration);
+    return;
+}
 EngineProcessHost CreateHost()
 {
     string engineRoot = Path.Combine(root, "src", "FxDbg.Engine", "bin", configuration, "net48");
