@@ -11,7 +11,9 @@ public sealed class ExceptionInfo
         string? message,
         int threadId,
         SourceLocation? throwLocation,
-        IReadOnlyList<StackFrameInfo> stack)
+        IReadOnlyList<StackFrameInfo> stack,
+        bool isUnhandled = true,
+        string? diagnostic = null)
     {
         TypeName = string.IsNullOrWhiteSpace(typeName)
             ? throw new ArgumentException("An exception type is required.", nameof(typeName))
@@ -19,6 +21,8 @@ public sealed class ExceptionInfo
         Message = message;
         ThreadId = threadId;
         ThrowLocation = throwLocation;
+        IsUnhandled = isUnhandled;
+        Diagnostic = diagnostic;
         Stack = new ReadOnlyCollection<StackFrameInfo>(
             stack is null
                 ? throw new ArgumentNullException(nameof(stack))
@@ -34,4 +38,6 @@ public sealed class ExceptionInfo
     public SourceLocation? ThrowLocation { get; }
 
     public IReadOnlyList<StackFrameInfo> Stack { get; }
+    public bool IsUnhandled { get; }
+    public string? Diagnostic { get; }
 }

@@ -49,6 +49,12 @@
 - Null、OptimizedAway、Unavailable 明确区分；只有 CLR 的 IL_VAR_NOT_AVAILABLE 映射为优化掉，读取失败保留错误码，不凭 Release 配置猜测。字符串读取使用有界缓冲区，不通过 Getter 或任何目标格式化方法。
 - `eng/verify-stage1-7.ps1 -Configuration Debug|Release` 覆盖双架构参数/局部变量、静态字段、循环引用、十万元素数组尾页及目标格式化副作用为零。
 
+## 异常观察（阶段1-8）
+
+- 默认仅未处理托管异常停止；会话可显式配置 first-chance，关闭后恢复默认。忽略 USER_FIRST_CHANCE 与 CATCH_HANDLER_FOUND 的重复通知。
+- Exception2 回调只入队，命令线程读取 CurrentException、准确类型、最多 32 帧和抛出位置。消息仅读取 mscorlib 中 System.Exception 的 `_message` 字段，不执行 Message Getter 或 ToString；缺失消息保持 null，读取错误带诊断。
+- [Microsoft 的 Exception 回调约定](https://learn.microsoft.com/en-us/dotnet/core/unmanaged-api/debugging/icordebug/icordebugmanagedcallback2-exception-method) 规定未处理通知的 Frame 为 null；实现从异常线程取栈，双架构 Debug/Release 实测抛出位置与源码标记一致。
+
 ## ClrDebug 依赖结论（阶段0-2）
 
 - NuGet 包固定为 `ClrDebug` **0.4.2**；包内仓库提交为 `9628778ff761b2e466ca3199392cbd3de6de5bc5`，本次验证下载的 nupkg SHA-256 为 `880276A4D34EAA32EF6FB3598B7464E16C133B1184E9963D59398607BB5EDFBA`。

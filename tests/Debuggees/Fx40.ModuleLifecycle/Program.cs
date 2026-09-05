@@ -31,6 +31,13 @@ namespace FxDbg.Debuggees
 
         private static void Main(string[] args)
         {
+            if (args[0] == "--exceptions")
+            {
+                try { ThrowObserved("handled-message"); }
+                catch (ObservedException) { }
+                ThrowObserved("unhandled-message");
+                return;
+            }
             if (args[0] == "--variables")
             {
                 var node = new Node();
@@ -79,6 +86,19 @@ namespace FxDbg.Debuggees
             public object Empty = null;
             public int Dangerous { get { userCodeCalls++; throw new InvalidOperationException("Getter executed"); } }
             public override string ToString() { userCodeCalls++; return "FORMATTING_EXECUTED"; }
+        }
+
+        private sealed class ObservedException : Exception
+        {
+            internal ObservedException(string message) : base(message) { }
+            public override string Message { get { userCodeCalls++; return "custom-message-must-not-run"; } }
+            public override string ToString() { userCodeCalls++; return "custom-format-must-not-run"; }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void ThrowObserved(string message)
+        {
+            throw new ObservedException(message); // EXCEPTION_THROW
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

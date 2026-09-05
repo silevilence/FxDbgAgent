@@ -112,7 +112,7 @@ public sealed partial class FrameworkDebugSession
         WaitForExitProcess(DateTime.UtcNow.Add(timeout));
     }
 
-    private void StopAt(CorDebugThread? thread, StopReason reason)
+    private void StopAt(CorDebugThread? thread, StopReason reason, bool unhandledException = true)
     {
         stopGeneration++;
         framesById.Clear();
@@ -127,8 +127,10 @@ public sealed partial class FrameworkDebugSession
         string? appDomain = thread?.AppDomain.Name;
         IReadOnlyList<StackFrameInfo> stack = thread is null ? Array.Empty<StackFrameInfo>() : CaptureStack(thread, 0, 5);
         StackFrameInfo? first = stack.FirstOrDefault();
+        ExceptionInfo? exception = reason == StopReason.Exception && thread is not null
+            ? CaptureException(thread, unhandledException) : null;
         CurrentStop = new StopInfo(reason, Target.ProcessId, threadId, appDomain, first?.SourceLocation,
-            HitBreakpointId, moduleName: first?.ModuleName, methodName: first?.MethodName, briefStack: stack);
+            HitBreakpointId, exception, moduleName: first?.ModuleName, methodName: first?.MethodName, briefStack: stack);
         domain.MarkStopped(CurrentStop);
     }
 
