@@ -55,6 +55,12 @@
 - Exception2 回调只入队，命令线程读取 CurrentException、准确类型、最多 32 帧和抛出位置。消息仅读取 mscorlib 中 System.Exception 的 `_message` 字段，不执行 Message Getter 或 ToString；缺失消息保持 null，读取错误带诊断。
 - [Microsoft 的 Exception 回调约定](https://learn.microsoft.com/en-us/dotnet/core/unmanaged-api/debugging/icordebug/icordebugmanagedcallback2-exception-method) 规定未处理通知的 Frame 为 null；实现从异常线程取栈，双架构 Debug/Release 实测抛出位置与源码标记一致。
 
+## 模块快照与符号状态（阶段1-9）
+
+- Core 定义不可变 ModuleInfo 和 ModuleChangedEvent；模块 Load/Unload、符号状态变化与会话状态使用同一事件序列。快照包含加载实例 ID、路径、AppDomain、PDB 路径及 Loaded/Missing/Mismatch/ReadFailed 状态。
+- 同一模块恢复或替换 PDB 保留实例 ID，真正卸载重载后产生新 ID。名称元数据、PDB 与断点缓存由 DebugModule 统一持有，卸载释放；事件快照不保留原生对象，退出后活动模块列表为空。
+- `eng/verify-stage1-9.ps1 -Configuration Debug|Release` 使用真实 Windows PDB 验证缺失、不匹配、损坏、恢复及 AppDomain 重载，回归断点与线程栈。
+
 ## ClrDebug 依赖结论（阶段0-2）
 
 - NuGet 包固定为 `ClrDebug` **0.4.2**；包内仓库提交为 `9628778ff761b2e466ca3199392cbd3de6de5bc5`，本次验证下载的 nupkg SHA-256 为 `880276A4D34EAA32EF6FB3598B7464E16C133B1184E9963D59398607BB5EDFBA`。

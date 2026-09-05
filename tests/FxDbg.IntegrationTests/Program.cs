@@ -17,6 +17,12 @@ internal static partial class Program
     {
         try
         {
+            if (args.Length > 2 && args[2] == "modules")
+            {
+                RunModuleInspection(args[0], args[1]);
+                Console.WriteLine("PASS: module identities, symbol states, reload and cache cleanup (" + (IntPtr.Size * 8) + " bit).");
+                return 0;
+            }
             if (args.Length > 2 && args[2] == "exceptions")
             {
                 RunExceptionInspection(args[0], args[1], false);

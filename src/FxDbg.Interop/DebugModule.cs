@@ -17,21 +17,32 @@ internal sealed class DebugModule : ISourceBreakpointModule, IDisposable
     private readonly string path;
     private DateTime symbolWriteTime;
     private long symbolLength;
+    private readonly Dictionary<int, string> methodNames = new();
+    private readonly string appDomain;
+    private ModuleInfo? snapshot;
 
     internal DebugModule(CorDebugModule module)
     {
         this.module = module;
         path = module.Name;
+        appDomain = module.Assembly.AppDomain.Name;
         Id = Guid.NewGuid().ToString("D");
         ReloadSymbols();
     }
 
     public string Id { get; }
+    internal ModuleInfo Snapshot => snapshot!;
     internal bool HasSymbols => symbols?.Status == SymbolStatus.Loaded;
 
     internal SourceLocation? Resolve(int token, int offset) => symbols?.Resolve(token, offset);
     internal IReadOnlyList<LocalVariableSlot> GetLocals(int token, int offset) => symbols?.GetLocals(token, offset) ?? Array.Empty<LocalVariableSlot>();
-    internal string? GetMethodName(int token) => symbols?.GetMethodName(token);
+    internal string GetMethodName(int token)
+    {
+        if (methodNames.TryGetValue(token, out string? name)) return name;
+        name = MetadataNames.Method(module.GetFunctionFromToken(new mdMethodDef(token)));
+        if (methodNames.Count < 100000) methodNames.Add(token, name);
+        return name;
+    }
     internal int GetStepRangeEnd(int token, int offset, int codeSize) => symbols?.GetStepRangeEnd(token, offset, codeSize) ?? codeSize;
 
     public SourceBreakpointResolution Resolve(SourceLocation location) => symbols?.Resolve(location)
@@ -52,23 +63,42 @@ internal sealed class DebugModule : ISourceBreakpointModule, IDisposable
     {
         symbols?.Dispose();
         symbols = null;
-        if (File.Exists(path)) symbols = WindowsModuleSymbols.Open(path);
-        var file = new FileInfo(Path.ChangeExtension(path, ".pdb"));
-        symbolWriteTime = file.Exists ? file.LastWriteTimeUtc : DateTime.MinValue;
-        symbolLength = file.Exists ? file.Length : 0;
+        try
+        {
+            if (File.Exists(path)) symbols = WindowsModuleSymbols.Open(path);
+            var file = new FileInfo(Path.ChangeExtension(path, ".pdb"));
+            symbolWriteTime = file.Exists ? file.LastWriteTimeUtc : DateTime.MinValue;
+            symbolLength = file.Exists ? file.Length : 0;
+            snapshot = new ModuleInfo(Id, Path.GetFileName(path), path, appDomain, symbols?.Status ?? SymbolStatus.Missing,
+                symbols?.PdbPath, symbols?.Diagnostic ?? (symbols is null ? "This module has no local PE/PDB files." : null));
+        }
+        catch (Exception error) when (error is IOException || error is UnauthorizedAccessException || error is ArgumentException || error is NotSupportedException)
+        {
+            symbolWriteTime = DateTime.MinValue;
+            symbolLength = -1;
+            snapshot = new ModuleInfo(Id, path, path, appDomain, SymbolStatus.ReadFailed, null, "Cannot inspect symbol files: " + error.Message);
+        }
     }
 
     internal bool SymbolsFileChanged()
     {
-        if (!File.Exists(path)) return false;
-        var file = new FileInfo(Path.ChangeExtension(path, ".pdb"));
-        return (file.Exists ? file.LastWriteTimeUtc : DateTime.MinValue) != symbolWriteTime ||
-            (file.Exists ? file.Length : 0) != symbolLength;
+        try
+        {
+            if (!File.Exists(path)) return false;
+            var file = new FileInfo(Path.ChangeExtension(path, ".pdb"));
+            return (file.Exists ? file.LastWriteTimeUtc : DateTime.MinValue) != symbolWriteTime ||
+                (file.Exists ? file.Length : 0) != symbolLength;
+        }
+        catch (Exception error) when (error is IOException || error is UnauthorizedAccessException || error is ArgumentException || error is NotSupportedException)
+        {
+            return snapshot?.SymbolStatus != SymbolStatus.ReadFailed;
+        }
     }
 
     public void Dispose()
     {
         bindings.Clear();
+        methodNames.Clear();
         symbols?.Dispose();
         symbols = null;
     }

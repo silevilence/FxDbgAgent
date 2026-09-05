@@ -4,6 +4,7 @@ using System.Linq;
 using ClrDebug;
 using FxDbg.Core.Breakpoints;
 using FxDbg.Core.Model;
+using FxDbg.Core.Events;
 
 namespace FxDbg.Interop;
 
@@ -24,6 +25,13 @@ public sealed partial class FrameworkDebugSession
     public bool IsStopped => pendingEntryController is not null;
     public bool HasExited => processExited;
 
+    public IReadOnlyList<ModuleInfo> GetModules()
+    {
+        ThrowIfDisposed();
+        ThrowIfWrongThread();
+        return modules.Values.Select(module => module.Snapshot).ToArray();
+    }
+
     public IReadOnlyList<BreakpointInfo> GetBreakpoints()
     {
         ThrowIfDisposed();
@@ -42,8 +50,7 @@ public sealed partial class FrameworkDebugSession
     {
         foreach (DebugModule module in modules.Values)
         {
-            module.ReloadSymbols();
-            breakpoints.SymbolsChanged(module.Id);
+            ReloadModuleSymbols(module);
         }
         return true;
     });
@@ -80,20 +87,21 @@ public sealed partial class FrameworkDebugSession
                 var module = new DebugModule(loaded.Module);
                 modules.Add(loaded.Module.Raw, module);
                 breakpoints.ModuleLoaded(module);
+                domain.RecordModuleChange(ModuleChangeKind.Loaded, module.Snapshot);
                 break;
             case UnloadModuleCorDebugManagedCallbackEventArgs unloaded:
                 if (modules.TryGetValue(unloaded.Module.Raw, out DebugModule? removed))
                 {
                     breakpoints.ModuleUnloaded(removed.Id);
                     modules.Remove(unloaded.Module.Raw);
+                    domain.RecordModuleChange(ModuleChangeKind.Unloaded, removed.Snapshot);
                     removed.Dispose();
                 }
                 break;
             case UpdateModuleSymbolsCorDebugManagedCallbackEventArgs updated:
                 if (modules.TryGetValue(updated.Module.Raw, out DebugModule? changed))
                 {
-                    changed.ReloadSymbols();
-                    breakpoints.SymbolsChanged(changed.Id);
+                    ReloadModuleSymbols(changed);
                 }
                 break;
             case BreakpointCorDebugManagedCallbackEventArgs hit:
@@ -126,6 +134,7 @@ public sealed partial class FrameworkDebugSession
         foreach (DebugModule module in modules.Values)
         {
             breakpoints.ModuleUnloaded(module.Id);
+            domain.RecordModuleChange(ModuleChangeKind.Unloaded, module.Snapshot);
             module.Dispose();
         }
         modules.Clear();
@@ -141,10 +150,18 @@ public sealed partial class FrameworkDebugSession
         {
             foreach (DebugModule module in changed)
             {
-                module.ReloadSymbols();
-                breakpoints.SymbolsChanged(module.Id);
+                ReloadModuleSymbols(module);
             }
             return true;
         });
+    }
+
+    private void ReloadModuleSymbols(DebugModule module)
+    {
+        ModuleInfo previous = module.Snapshot;
+        module.ReloadSymbols();
+        breakpoints.SymbolsChanged(module.Id);
+        if (previous.SymbolStatus != module.Snapshot.SymbolStatus || previous.Diagnostic != module.Snapshot.Diagnostic)
+            domain.RecordModuleChange(ModuleChangeKind.SymbolsChanged, module.Snapshot);
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using FxDbg.Core.Errors;
 using FxDbg.Core.Events;
+using FxDbg.Core.Model;
 
 namespace FxDbg.Core.Sessions;
 
@@ -27,6 +28,9 @@ public sealed class DebugSession
     public DebugSessionState State { get; private set; }
 
     public IReadOnlyList<EngineEvent> Events => events;
+
+    public void RecordModuleChange(ModuleChangeKind change, ModuleInfo module)
+        => events.Add(new ModuleChangedEvent(Id, events.Count + 1, DateTimeOffset.UtcNow, change, module));
 
     public SessionStateChangedEvent Start()
     {

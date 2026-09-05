@@ -15,8 +15,6 @@ using Microsoft.DiaSymReader;
 
 namespace FxDbg.Symbols.Windows;
 
-public enum SymbolStatus { Loaded, Missing, Mismatch, ReadFailed }
-
 /// <summary>A local Windows PDB reader. Native work must be isolated in an Engine process.</summary>
 public sealed class WindowsModuleSymbols : IDisposable
 {
@@ -49,7 +47,7 @@ public sealed class WindowsModuleSymbols : IDisposable
         {
             symbols.Load();
         }
-        catch (Exception exception) when (exception is IOException || exception is UnauthorizedAccessException ||
+        catch (Exception exception) when (exception is IOException || exception is InvalidDataException || exception is UnauthorizedAccessException ||
             exception is BadImageFormatException || exception is COMException || exception is ArgumentException ||
             exception is InvalidOperationException || exception is NotSupportedException || exception is DllNotFoundException)
         {
