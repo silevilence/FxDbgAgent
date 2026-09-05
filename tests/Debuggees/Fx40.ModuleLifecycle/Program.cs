@@ -31,6 +31,7 @@ namespace FxDbg.Debuggees
 
         private static void Main(string[] args)
         {
+            if (args[0] == "--breakpoint-race") { RunBreakpointRace(args[1]); return; }
             if (args[0] == "--exceptions")
             {
                 try { ThrowObserved("handled-message"); }
@@ -59,6 +60,19 @@ namespace FxDbg.Debuggees
                 AppDomain.Unload(domain);
                 File.WriteAllText(Path.Combine(args[0], "unloaded-" + cycle), "done");
             }
+        }
+
+        // This fixture isolates native stop counts and needs a bindable loop sequence point.
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        private static void RunBreakpointRace(string directory)
+        {
+            File.WriteAllText(Path.Combine(directory, "race-ready"), "ready");
+            for (int index = 0; index < 32; index++)
+            {
+                while (!File.Exists(Path.Combine(directory, "go-" + index))) Thread.Sleep(10);
+                File.WriteAllText(Path.Combine(directory, "hit-" + index), "hit"); // RACE_BREAKPOINT
+            }
+            while (!File.Exists(Path.Combine(directory, "race-done"))) Thread.Sleep(10);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

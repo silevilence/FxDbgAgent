@@ -59,7 +59,7 @@ public sealed partial class FrameworkDebugSession : IDisposable
     private readonly DebugSession domain;
 
     public DebugTargetInfo Target => new(initialTarget.ProcessId, initialTarget.Architecture,
-        initialTarget.RuntimeVersion, initialTarget.LaunchedByDebugger, domain.State);
+        initialTarget.RuntimeVersion, initialTarget.LaunchedByDebugger, domain.State, initialTarget.RuntimeFileVersion);
 
     public bool PumpNextCallback(TimeSpan timeout, CancellationToken cancellationToken)
     {

@@ -8,6 +8,11 @@ using Newtonsoft.Json.Linq;
 
 string root = Path.GetFullPath(args[0]);
 string configuration = args[1];
+if (args.Length > 2 && args[2] == "review")
+{
+    await ReviewRegressionSuite.Run(root, configuration);
+    return;
+}
 if (args.Length > 2 && args[2] == "e2e")
 {
     await EndToEndSuite.Run(root, configuration);

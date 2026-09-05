@@ -113,7 +113,7 @@ public sealed class EngineProcessHost : IDisposable
 
     private static List<string> CommonArguments(string mode, SessionId id, TargetArchitecture architecture, TimeSpan timeout) => new()
     {
-        mode, "--session-id", id.ToString(), "--arch", architecture.ToString().ToLowerInvariant(),
+        mode, "--session-id", id.ToString(), "--arch", TargetArchitectureWireName.Format(architecture),
         "--timeout-ms", Math.Ceiling(timeout.TotalMilliseconds).ToString(CultureInfo.InvariantCulture)
     };
 

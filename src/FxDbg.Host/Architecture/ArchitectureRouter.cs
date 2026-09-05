@@ -43,8 +43,8 @@ public sealed class ArchitectureRouter
         {
             throw new FxDbgException(
                 FxDbgErrorCode.ArchitectureMismatch,
-                $"Requested {requested.ToString().ToLowerInvariant()} engine does not match " +
-                $"the target architecture {actual.ToString().ToLowerInvariant()}.");
+                $"Requested {TargetArchitectureWireName.Format(requested)} engine does not match " +
+                $"the target architecture {TargetArchitectureWireName.Format(actual)}.");
         }
 
         return actual;

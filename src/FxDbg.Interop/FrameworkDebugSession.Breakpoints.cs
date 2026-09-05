@@ -72,6 +72,8 @@ public sealed partial class FrameworkDebugSession
     {
         RequireActive();
         if (IsStopped) return action();
+        // Stop adds its own native count even when an unconsumed callback already holds a stop.
+        // Its paired Continue removes only that count; the queued callback remains suspended.
         process.Stop(0);
         callbackPairing.RecordManualStop();
         try { return action(); }

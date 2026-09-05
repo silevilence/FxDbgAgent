@@ -12,6 +12,16 @@ namespace FxDbg.Debuggees
 
         internal static void Run(string mode, string directory)
         {
+            if (mode == "runtime")
+            {
+                File.WriteAllText(Path.Combine(directory, "runtime-version"), "v" + Environment.Version);
+                using (var process = System.Diagnostics.Process.GetCurrentProcess())
+                    foreach (System.Diagnostics.ProcessModule module in process.Modules)
+                        if (string.Equals(module.ModuleName, "clr.dll", StringComparison.OrdinalIgnoreCase))
+                            File.WriteAllText(Path.Combine(directory, "runtime-file-version"), module.FileVersionInfo.FileVersion);
+                System.Threading.Thread.Sleep(60000);
+                return;
+            }
             if (mode == "exception") ThrowScenario();
             else if (mode == "late")
             {

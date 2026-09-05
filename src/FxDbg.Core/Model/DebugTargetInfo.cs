@@ -11,7 +11,8 @@ public sealed class DebugTargetInfo
         TargetArchitecture architecture,
         string runtimeVersion,
         bool launchedByDebugger,
-        DebugSessionState sessionState)
+        DebugSessionState sessionState,
+        string? runtimeFileVersion = null)
     {
         if (processId <= 0)
         {
@@ -25,6 +26,7 @@ public sealed class DebugTargetInfo
             : runtimeVersion;
         LaunchedByDebugger = launchedByDebugger;
         SessionState = sessionState;
+        RuntimeFileVersion = runtimeFileVersion;
     }
 
     public int ProcessId { get; }
@@ -32,6 +34,9 @@ public sealed class DebugTargetInfo
     public TargetArchitecture Architecture { get; }
 
     public string RuntimeVersion { get; }
+
+    /// <summary>File version of the clr.dll loaded by the target, distinct from the CLR hosting moniker.</summary>
+    public string? RuntimeFileVersion { get; }
 
     public bool LaunchedByDebugger { get; }
 

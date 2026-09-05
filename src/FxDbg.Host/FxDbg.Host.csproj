@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\Shared\WindowsProcessArchitecture.cs" Link="Architecture\WindowsProcessArchitecture.cs" />
     <ProjectReference Include="..\FxDbg.Core\FxDbg.Core.csproj" />
     <ProjectReference Include="..\FxDbg.Engine.Protocol\FxDbg.Engine.Protocol.csproj" />
   </ItemGroup>

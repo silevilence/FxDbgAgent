@@ -48,8 +48,9 @@ internal static class Program
                 Console.WriteLine(
                     "{\"ok\":true,\"sessionId\":\"" + Escape(options.SessionId.ToString()) +
                     "\",\"processId\":" + target.ProcessId.ToString(CultureInfo.InvariantCulture) +
-                    ",\"architecture\":\"" + Format(target.Architecture) +
+                    ",\"architecture\":\"" + TargetArchitectureWireName.Format(target.Architecture) +
                     "\",\"runtimeVersion\":\"" + Escape(target.RuntimeVersion) +
+                    "\",\"runtimeFileVersion\":\"" + Escape(target.RuntimeFileVersion ?? "") +
                     "\",\"sessionState\":\"" + target.SessionState.ToString().ToLowerInvariant() + "\"" +
                     FormatVerification(verification) + "}");
                 Console.Out.Flush();
@@ -141,7 +142,7 @@ internal static class Program
         _ => 20
     };
 
-    private static string Format(TargetArchitecture value) => value.ToString().ToLowerInvariant();
+
 
     private static string FormatVerification(ContinuePairingSnapshot? verification)
     {

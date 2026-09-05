@@ -11,7 +11,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Unit tests failed.' }
     foreach ($architecture in @('x86','x64')) {
         $runner = Join-Path $repoRoot "tests/FxDbg.IntegrationTests/bin/$Configuration/net48/FxDbg.IntegrationTests.$architecture.exe"
-        foreach ($mode in @('breakpoints','execution','variables','exceptions','modules')) {
+        foreach ($mode in @('breakpoints','breakpoint-race','execution','variables','exceptions','modules')) {
             & $runner $repoRoot $Configuration $mode
             if ($LASTEXITCODE -ne 0) { throw "$architecture $mode regression failed." }
         }
@@ -23,6 +23,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Protocol/lifecycle regression failed.' }
     dotnet $hostRunner $repoRoot $Configuration e2e
     if ($LASTEXITCODE -ne 0) { throw 'Console/WinForms end-to-end matrix failed.' }
+    dotnet $hostRunner $repoRoot $Configuration review
+    if ($LASTEXITCODE -ne 0) { throw 'Runtime version or debugger conflict regression failed.' }
     & ./eng/verify-stage1-11.ps1 -Configuration $Configuration
     & ./eng/verify-stage0-3.ps1 -Configuration $Configuration
     & ./eng/verify-stage0-4.ps1 -Configuration $Configuration

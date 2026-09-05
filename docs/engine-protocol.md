@@ -18,6 +18,8 @@ Core 标识序列化为字符串，枚举为 camelCase。`start` 要求 protocol
 
 超出 4 MiB 的出站结果在写入前返回 `invalid_request`，提示缩小变量页数、深度或字符串长度；连接与当前变量引用保持可用，调用方可以缩页重试。目标已退出但会话未释放时，`wait` 返回保存的 `processExit`；断点修改与符号刷新返回 `invalid_session_state`。
 
+目标信息中 `runtimeVersion` 为 ICLRRuntimeInfo 实际返回的 CLR 承载标识（4.x 通常仍为 `v4.0.30319`），`runtimeFileVersion` 为目标已加载 `clr.dll` 的文件版本，包含实际更新构建信息；两者不能与 .NET Framework 产品版本混为一谈。附加已有调试器的目标返回 `already_debugged`，提示先分离现有调试器；失败不会替换或终止原调试会话。
+
 命令调度只进入现有 Engine 单一线程，所有 ICorDebug 行为继续复用 Interop。Host InvokeAsync 返回统一 JSON 结果，未来 CLI/MCP 只映射入口参数，不实现独立调试逻辑。
 
 ## 超时、取消与生命周期

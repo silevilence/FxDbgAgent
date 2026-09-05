@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
-using System.Runtime.InteropServices;
+using FxDbg.Platform;
 using FxDbg.Core.Errors;
 using FxDbg.Core.Requests;
 
@@ -10,10 +10,6 @@ namespace FxDbg.Engine;
 
 internal static class EngineTargetValidator
 {
-    private const ushort ImageFileMachineUnknown = 0;
-    private const ushort ImageFileMachineI386 = 0x014c;
-    private const ushort ImageFileMachineAmd64 = 0x8664;
-
     internal static void RequireCurrentArchitecture(TargetArchitecture requested)
     {
         TargetArchitecture current = IntPtr.Size == 4 ? TargetArchitecture.X86 : TargetArchitecture.X64;
@@ -26,7 +22,7 @@ internal static class EngineTargetValidator
         {
             throw new FxDbgException(
                 FxDbgErrorCode.ArchitectureMismatch,
-                $"Request architecture {Format(requested)} does not match Engine architecture {Format(current)}.");
+                $"Request architecture {TargetArchitectureWireName.Format(requested)} does not match Engine architecture {TargetArchitectureWireName.Format(current)}.");
         }
     }
 
@@ -35,12 +31,12 @@ internal static class EngineTargetValidator
         try
         {
             using Process process = Process.GetProcessById(processId);
-            TargetArchitecture targetArchitecture = GetProcessArchitecture(process.Handle);
+            TargetArchitecture targetArchitecture = WindowsProcessArchitecture.Detect(process.Handle);
             if (targetArchitecture != engineArchitecture)
             {
                 throw new FxDbgException(
                     FxDbgErrorCode.ArchitectureMismatch,
-                    $"Engine architecture {Format(engineArchitecture)} does not match target architecture {Format(targetArchitecture)}.");
+                    $"Engine architecture {TargetArchitectureWireName.Format(engineArchitecture)} does not match target architecture {TargetArchitectureWireName.Format(targetArchitecture)}.");
             }
 
             bool framework4 = false;
@@ -104,50 +100,4 @@ internal static class EngineTargetValidator
         }
     }
 
-    private static TargetArchitecture GetProcessArchitecture(IntPtr processHandle)
-    {
-        try
-        {
-            if (IsWow64Process2(processHandle, out ushort processMachine, out ushort nativeMachine))
-            {
-                ushort machine = processMachine == ImageFileMachineUnknown ? nativeMachine : processMachine;
-                return machine switch
-                {
-                    ImageFileMachineI386 => TargetArchitecture.X86,
-                    ImageFileMachineAmd64 => TargetArchitecture.X64,
-                    _ => throw new FxDbgException(
-                        FxDbgErrorCode.UnsupportedArchitecture,
-                        $"Target machine 0x{machine:X4} is not supported.")
-                };
-            }
-
-            int error = Marshal.GetLastWin32Error();
-            if (error != 120)
-            {
-                throw new Win32Exception(error, "IsWow64Process2 failed.");
-            }
-        }
-        catch (EntryPointNotFoundException)
-        {
-        }
-
-        if (!IsWow64Process(processHandle, out bool isWow64))
-        {
-            throw new Win32Exception(Marshal.GetLastWin32Error(), "IsWow64Process failed.");
-        }
-
-        return Environment.Is64BitOperatingSystem && !isWow64
-            ? TargetArchitecture.X64
-            : TargetArchitecture.X86;
-    }
-
-    private static string Format(TargetArchitecture architecture) => architecture.ToString().ToLowerInvariant();
-
-    [DllImport("kernel32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool IsWow64Process2(IntPtr processHandle, out ushort processMachine, out ushort nativeMachine);
-
-    [DllImport("kernel32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool IsWow64Process(IntPtr processHandle, [MarshalAs(UnmanagedType.Bool)] out bool wow64Process);
 }

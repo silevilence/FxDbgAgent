@@ -46,7 +46,8 @@ public sealed class EngineProcessHostTests
             DebugTargetInfo target = await host.LaunchAsync(request, CancellationToken.None);
 
             Assert.Equal(expected, target.Architecture);
-            Assert.Equal("v4.0.30319", target.RuntimeVersion);
+            Assert.Matches(@"^v4\.0\.\d+$", target.RuntimeVersion);
+            Assert.False(string.IsNullOrWhiteSpace(target.RuntimeFileVersion));
             Assert.True(target.LaunchedByDebugger);
             Assert.Equal(DebugSessionState.Running, target.SessionState);
         }

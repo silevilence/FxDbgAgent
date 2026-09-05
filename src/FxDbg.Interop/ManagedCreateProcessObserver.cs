@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Concurrent;
 using System.Globalization;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using ClrDebug;
 using FxDbg.Core.Errors;
@@ -38,20 +40,22 @@ internal static class ManagedCreateProcessObserver
             }
         };
 
-        CorDebug corDebug = FrameworkDebuggerBootstrap.CreateDebugger();
+        CorDebug corDebug = FrameworkDebuggerBootstrap.CreateDebugger(out string runtimeVersion);
         CorDebugProcess? process = null;
         try
         {
             corDebug.Initialize();
             corDebug.SetManagedHandler(callback);
             process = start(corDebug);
+            string? runtimeFileVersion = null;
             CorDebugController? entryController = WaitForCreateProcess(
                 callbacks,
                 callbackPairing,
                 timeout,
-                stopAtEntry);
+                stopAtEntry,
+                () => runtimeFileVersion = GetRuntimeFileVersion(process.Id));
             DebugSessionState state = stopAtEntry ? DebugSessionState.Stopped : DebugSessionState.Running;
-            var target = new DebugTargetInfo(process.Id, architecture, "v4.0.30319", launchedByDebugger, state);
+            var target = new DebugTargetInfo(process.Id, architecture, runtimeVersion, launchedByDebugger, state, runtimeFileVersion);
             return new FrameworkDebugSession(
                 target,
                 corDebug,
@@ -87,7 +91,8 @@ internal static class ManagedCreateProcessObserver
         BlockingCollection<CallbackEnvelope> callbacks,
         ContinueStopCoordinator callbackPairing,
         TimeSpan timeout,
-        bool stopAtEntry)
+        bool stopAtEntry,
+        Action captureRuntimeVersion)
     {
         DateTime deadline = DateTime.UtcNow.Add(timeout);
         while (true)
@@ -107,6 +112,7 @@ internal static class ManagedCreateProcessObserver
             }
 
             callbackPairing.RecordCallbackStop(envelope.Sequence);
+            if (envelope.Kind == CorDebugManagedCallbackKind.CreateProcess) captureRuntimeVersion();
             if (envelope.Kind == CorDebugManagedCallbackKind.CreateProcess && stopAtEntry)
             {
                 return envelope.Controller;
@@ -118,6 +124,15 @@ internal static class ManagedCreateProcessObserver
                 return null;
             }
         }
+    }
+
+    private static string GetRuntimeFileVersion(int processId)
+    {
+        // Called on the command thread while CreateProcess still holds its native stop.
+        using Process target = Process.GetProcessById(processId);
+        ProcessModule runtime = target.Modules.Cast<ProcessModule>().Single(module =>
+            string.Equals(module.ModuleName, "clr.dll", StringComparison.OrdinalIgnoreCase));
+        return runtime.FileVersionInfo.FileVersion;
     }
 
     private static void BestEffortDetach(CorDebugProcess process)

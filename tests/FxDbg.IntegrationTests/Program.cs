@@ -17,6 +17,11 @@ internal static partial class Program
     {
         try
         {
+            if (args.Length > 2 && args[2] == "breakpoint-race")
+            {
+                RunQueuedBreakpointRace(Path.GetFullPath(args[0]), args[1]);
+                return 0;
+            }
             if (args.Length > 2 && args[2] == "modules")
             {
                 RunModuleInspection(args[0], args[1]);
