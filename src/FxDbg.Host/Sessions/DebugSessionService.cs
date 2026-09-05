@@ -20,16 +20,22 @@ public sealed partial class DebugSessionService : IAsyncDisposable
     private readonly ConcurrentDictionary<SessionId, Observation> sessions = new();
     private readonly CancellationTokenSource lifetime = new();
     private readonly Task eventPump;
+    private readonly SessionServiceLimits limits;
+    private readonly CallAdmission admission;
+    private readonly object creationGate = new();
 
-    public DebugSessionService(EngineProcessHost engine)
+    public DebugSessionService(EngineProcessHost engine, SessionServiceLimits? limits = null)
     {
         this.engine = engine ?? throw new ArgumentNullException(nameof(engine));
+        this.limits = limits ?? new SessionServiceLimits();
+        admission = new CallAdmission(this.limits);
         eventPump = PumpEventsAsync();
     }
 
     public async Task<JToken> InvokeAsync(string method, JObject arguments, CancellationToken cancellationToken = default)
     {
         using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, lifetime.Token);
+        using var lease = admission.Enter(method, linked.Token);
         TimeSpan timeout = TimeSpan.FromMilliseconds((int?)arguments["timeoutMs"] ?? 10000);
         if (timeout <= TimeSpan.Zero || timeout > TimeSpan.FromMinutes(4)) throw Invalid("Timeout must be 1-240000 milliseconds.");
         if (method is "launch" or "attach") return await CreateAsync(method, arguments, timeout, linked.Token).ConfigureAwait(false);
@@ -44,11 +50,18 @@ public sealed partial class DebugSessionService : IAsyncDisposable
             {
                 PruneOperations(observation, DateTimeOffset.UtcNow);
                 if (operationId is not null && !observation.Operations.TryGetValue(operationId, out requestedOperation)) throw new FxDbgException(FxDbgErrorCode.OperationNotFound, "Operation is unknown, expired, or belongs to another session.");
-                if (observation.ClosedAtUtc.HasValue) snapshot = TerminalSnapshot(observation);
+                if (observation.ClosedAtUtc.HasValue || observation.Closing) snapshot = TerminalSnapshot(observation);
             }
             if (snapshot is null)
             {
-                try { snapshot = (JObject)await engine.InvokeAsync(id, "state", new JObject { ["includeDetails"] = true }, timeout, linked.Token).ConfigureAwait(false); }
+                try
+                {
+                    // Cancelling a read-only status request must not close a running operation's pipe.
+                    Task<JToken> query = engine.InvokeAsync(id, "state", new JObject { ["includeDetails"] = true }, timeout, lifetime.Token);
+                    _ = query.ContinueWith(task => _ = task.Exception, TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously);
+                    snapshot = (JObject)await query.WaitAsync(timeout, linked.Token).ConfigureAwait(false);
+                }
+                catch (TimeoutException) { throw new FxDbgException(FxDbgErrorCode.OperationTimedOut, "Status query timed out; the running operation keeps its original deadline."); }
                 catch (FxDbgException error) when (error.Code is FxDbgErrorCode.EngineExited or FxDbgErrorCode.TransportDisconnected or FxDbgErrorCode.SessionNotFound)
                 {
                     lock (observation.Gate)
@@ -90,7 +103,14 @@ public sealed partial class DebugSessionService : IAsyncDisposable
     {
         SessionId id = SessionId.New();
         var observation = new Observation(id);
-        if (!sessions.TryAdd(id, observation)) throw Invalid("Could not allocate session identity.");
+        lock (creationGate)
+        {
+            token.ThrowIfCancellationRequested();
+            PruneSessions(extraRecords: 1);
+            if (sessions.Values.Count(x => { lock (x.Gate) return !x.ClosedAtUtc.HasValue; }) >= limits.ActiveSessions)
+                throw CallAdmission.RateLimited();
+            if (!sessions.TryAdd(id, observation)) throw Invalid("Could not allocate session identity.");
+        }
         try
         {
             TargetArchitecture architecture = Enum.TryParse((string?)args["arch"] ?? "auto", true, out TargetArchitecture parsed) && Enum.IsDefined(parsed)
@@ -128,7 +148,10 @@ public sealed partial class DebugSessionService : IAsyncDisposable
                                 {
                                     observation.LastStop = message["data"]?["stop"]?.DeepClone();
                                     if (observation.ActiveOperation is { IsCompleted: false, Finishing: false } operation && sequence > operation.AfterSequence)
+                                    {
                                         operation.Finish("completed", observation.LastStop);
+                                        PruneOperations(observation, DateTimeOffset.UtcNow);
+                                    }
                                     if ((string?)observation.LastStop?["reason"] == "processExit") MarkClosed(observation, "terminated");
                                 }
                                 if ((string?)message["kind"] == "stateChanged" && message["data"]?["currentState"] is JToken state)
@@ -155,24 +178,24 @@ public sealed partial class DebugSessionService : IAsyncDisposable
         return observation;
     }
 
-    private void PruneSessions()
+    private void PruneSessions(int extraRecords = 0)
     {
         DateTimeOffset now = DateTimeOffset.UtcNow;
-        var ended = sessions.Values.Where(x => { lock (x.Gate) return x.ClosedAtUtc.HasValue; }).OrderBy(x => x.ClosedAtUtc).ToArray();
-        int removeCount = Math.Max(0, sessions.Count - 1024);
-        foreach (Observation observation in ended)
+        var ended = new List<(SessionId Id, DateTimeOffset Ended)>();
+        foreach (Observation observation in sessions.Values)
         {
-            lock (observation.Gate)
-                if (removeCount-- > 0 || now - observation.ClosedAtUtc!.Value >= Retention) sessions.TryRemove(observation.Id, out _);
+            lock (observation.Gate) if (observation.ClosedAtUtc.HasValue) ended.Add((observation.Id, observation.ClosedAtUtc.Value));
         }
+        foreach (SessionId id in SessionRetention.Evictions(ended, sessions.Count, now, extraRecords)) sessions.TryRemove(id, out _);
     }
 
     private static void FailObservation(Observation observation, FxDbgErrorCode code)
     {
-        if (observation.ClosedAtUtc.HasValue) return;
+        if (observation.ClosedAtUtc.HasValue || observation.Closing) return;
         observation.Failure = code;
         MarkClosed(observation, "failed");
         observation.ActiveOperation?.Finish("failed", code: FxDbgErrorCodeWireName.Format(code), message: "Engine connection failed; inspect the target before reattaching.");
+        PruneOperations(observation, DateTimeOffset.UtcNow);
     }
 
     private static JObject TerminalSnapshot(Observation observation)
@@ -182,6 +205,7 @@ public sealed partial class DebugSessionService : IAsyncDisposable
         snapshot["stop"] = null;
         snapshot["lastStop"] = observation.LastStop?.DeepClone();
         snapshot["eventSequence"] = observation.Sequence;
+        snapshot["closing"] = observation.Closing;
         if (observation.Failure is FxDbgErrorCode failure) snapshot["failureCode"] = FxDbgErrorCodeWireName.Format(failure);
         return snapshot;
     }

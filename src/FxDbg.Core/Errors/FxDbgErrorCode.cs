@@ -24,6 +24,7 @@ public enum FxDbgErrorCode
     OperationTimedOut,
     OperationCancelled,
     OperationNotFound,
+    RateLimited,
     TransportDisconnected,
     EngineExited,
     AccessDenied,

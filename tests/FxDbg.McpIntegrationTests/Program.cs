@@ -5,6 +5,11 @@ using ModelContextProtocol.Client;
 try
 {
 string bundle = Path.GetFullPath(args[0]);
+if (args.Length > 1 && args[1] == "resources")
+{
+    await ResourceSuite.Run(bundle, Path.GetFullPath(args[2]), args[3]);
+    return 0;
+}
 if (args.Length > 1 && args[1] == "observations")
 {
     await ObservationSuite.Run(bundle, Path.GetFullPath(args[2]), args[3]);

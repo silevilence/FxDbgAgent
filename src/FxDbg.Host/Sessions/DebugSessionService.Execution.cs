@@ -23,6 +23,17 @@ public sealed partial class DebugSessionService
             observation.Operations.Add(operation.Id, operation);
             PruneOperations(observation, DateTimeOffset.UtcNow);
         }
+        using var cancellation = token.Register(() =>
+        {
+            lock (observation.Gate)
+            {
+                if (!operation.IsCompleted)
+                {
+                    operation.Finishing = true;
+                    observation.Closing = true;
+                }
+            }
+        });
         try
         {
             // The Engine takes this snapshot on its command thread after publishing all prior stops.
@@ -56,7 +67,16 @@ public sealed partial class DebugSessionService
         catch (Exception error)
         {
             string code = error is FxDbgException known ? FxDbgErrorCodeWireName.Format(known.Code) : error is OperationCanceledException ? "operation_cancelled" : "internal_error";
-            lock (observation.Gate) operation.Finish(code == "operation_cancelled" ? "cancelled" : code == "operation_timed_out" ? "timedOut" : "failed", code: code, message: "Execution command did not complete; query session status before retrying.");
+            if (token.IsCancellationRequested)
+            {
+                await CancelSessionAsync(observation, operation).ConfigureAwait(false);
+                lock (observation.Gate) return OperationEnvelope(observation, operation.Snapshot());
+            }
+            lock (observation.Gate)
+            {
+                operation.Finish(code == "operation_cancelled" ? "cancelled" : code == "operation_timed_out" ? "timedOut" : "failed", code: code, message: "Execution command did not complete; query session status before retrying.");
+                PruneOperations(observation, DateTimeOffset.UtcNow);
+            }
             throw;
         }
     }
@@ -97,6 +117,7 @@ public sealed partial class DebugSessionService
             {
                 observation.LastStop = stop?.DeepClone();
                 operation.Finish("timedOut", stop, "operation_timed_out", "Execution deadline elapsed; target is paused or exited. Query status before continuing.");
+                PruneOperations(observation, DateTimeOffset.UtcNow);
             }
         }
         catch (OperationCanceledException) when (lifetime.IsCancellationRequested) { }
@@ -108,6 +129,7 @@ public sealed partial class DebugSessionService
             {
                 MarkClosed(observation, "failed");
                 operation.Finish("failed", code: "transport_disconnected", message: "Could not confirm a pause after timeout; the session was closed.");
+                PruneOperations(observation, DateTimeOffset.UtcNow);
                 observation.Closing = false;
             }
         }
@@ -121,6 +143,7 @@ public sealed partial class DebugSessionService
         {
             MarkClosed(observation, "terminated");
             operation.Finish("cancelled", code: "operation_cancelled", message: "Request cancelled; session closed and Engine attempted safe detach. Check target state before reattaching.");
+            PruneOperations(observation, DateTimeOffset.UtcNow);
             observation.Closing = false;
         }
     }
@@ -143,6 +166,7 @@ public sealed partial class DebugSessionService
                 {
                     observation.LastStop = result.DeepClone();
                     if (observation.ActiveOperation is { Finishing: false } active) active.Finish("completed", result);
+                    PruneOperations(observation, DateTimeOffset.UtcNow);
                 }
             }
             else
@@ -161,6 +185,7 @@ public sealed partial class DebugSessionService
                     MarkClosed(observation, "terminated");
                     observation.ActiveOperation?.Finish(method == "terminate" ? "completed" : "cancelled", stop,
                         method == "detach" ? "operation_cancelled" : null, method == "detach" ? "Session detached." : null);
+                    PruneOperations(observation, DateTimeOffset.UtcNow);
                 }
             }
             return Envelope(observation.Id, result);

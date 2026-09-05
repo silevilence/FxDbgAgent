@@ -13,11 +13,22 @@ using ModelContextProtocol.Server;
 try
 {
     string engineDirectory = Path.Combine(AppContext.BaseDirectory, "engines");
-    if (args.Length != 0)
+    int maxSessions = 8, maxCalls = 32, maxControls = 8;
+    var seenOptions = new HashSet<string>(StringComparer.Ordinal);
+    for (int index = 0; index < args.Length; index += 2)
     {
-        if (args.Length != 2 || args[0] != "--engine-dir") throw new ArgumentException("Usage: fxdbg-mcp [--engine-dir DIR]");
-        engineDirectory = Path.GetFullPath(args[1]);
+        if (index + 1 == args.Length || !seenOptions.Add(args[index])) throw new ArgumentException("Each startup option requires exactly one value.");
+        if (args[index] == "--engine-dir") { engineDirectory = Path.GetFullPath(args[index + 1]); continue; }
+        if (!int.TryParse(args[index + 1], out int limit)) throw new ArgumentException("Startup limits must be integers.");
+        switch (args[index])
+        {
+            case "--max-sessions": maxSessions = limit; break;
+            case "--max-calls": maxCalls = limit; break;
+            case "--max-control-calls": maxControls = limit; break;
+            default: throw new ArgumentException("Usage: fxdbg-mcp [--engine-dir DIR] [--max-sessions 1..8] [--max-calls 1..32] [--max-control-calls 1..8]");
+        }
     }
+    var limits = new SessionServiceLimits(maxSessions, maxCalls, maxControls);
     foreach (string file in new[] { "FxDbg.Engine.x86.exe", "FxDbg.Engine.x64.exe", "FxDbg.Interop.dll", "ClrDebug.dll", "FxDbg.Engine.Protocol.dll" })
         if (!File.Exists(Path.Combine(engineDirectory, file))) throw new ArgumentException("Engine bundle is incomplete. Use --engine-dir with a published engines directory.");
     string manifestPath = Path.Combine(engineDirectory, "engine-manifest.json");
@@ -27,7 +38,7 @@ try
         throw new ArgumentException("Engine dependencies are missing; republish the complete bundle.");
     using var host = new EngineProcessHost(new ArchitectureRouter(new PeArchitectureDetector(), new ProcessArchitectureDetector()),
         new EngineProcessPaths(Path.Combine(engineDirectory, "FxDbg.Engine.x86.exe"), Path.Combine(engineDirectory, "FxDbg.Engine.x64.exe")));
-    await using var sessions = new DebugSessionService(host);
+    await using var sessions = new DebugSessionService(host, limits);
     using var shutdown = new CancellationTokenSource();
     int initialized = 0;
     void RequireInitialized()
@@ -36,6 +47,7 @@ try
             throw new McpProtocolException("Complete initialize and notifications/initialized first.", McpErrorCode.InvalidRequest);
     }
     Console.CancelKeyPress += (_, input) => { input.Cancel = true; shutdown.Cancel(); };
+    await using var transport = new BoundedStdioTransport(Console.OpenStandardInput(), Console.OpenStandardOutput());
     var options = new McpServerOptions
     {
         ServerInfo = new Implementation { Name = "FxDbg Agent", Version = "0.2.0" }, ProtocolVersion = "2025-11-25",
@@ -68,19 +80,28 @@ try
                         : error is OperationCanceledException ? "operation_cancelled" : "invalid_request";
                     result = new JsonObject { ["ok"] = false, ["sessionId"] = sessionId,
                         ["error"] = new JsonObject { ["code"] = code, ["message"] = error is FxDbgException ? error.Message : "Invalid or cancelled request; check the tool schema." } };
+                    if (error is FxDbgException { Code: FxDbgErrorCode.RateLimited }) result["error"]!["retryAfterMs"] = 1000;
                 }
-                return new CallToolResult { IsError = !result["ok"]!.GetValue<bool>(), StructuredContent = JsonSerializer.SerializeToElement(result),
-                    Content = [new TextContentBlock { Text = result.ToJsonString() }] };
+                CallToolResult Wrap(JsonObject value) => new() { IsError = !value["ok"]!.GetValue<bool>(), StructuredContent = JsonSerializer.SerializeToElement(value),
+                    Content = [new TextContentBlock { Text = value.ToJsonString() }] };
+                CallToolResult wrapped = Wrap(result);
+                if (JsonSerializer.SerializeToUtf8Bytes(wrapped, McpJsonUtilities.DefaultOptions).Length > BoundedStdioTransport.MaximumBytes - 16384)
+                    wrapped = Wrap(new JsonObject { ["ok"] = false, ["sessionId"] = sessionId,
+                        ["error"] = new JsonObject { ["code"] = "invalid_request", ["message"] = "MCP result exceeds 4 MiB. Reduce page count, depth or string length and retry." } });
+                return wrapped;
             }
         }
     };
     options.Filters.Message.IncomingFilters.Add(next => async (context, token) =>
     {
-        if (context.JsonRpcMessage is JsonRpcNotification { Method: "notifications/initialized" } && context.Server.ClientInfo is not null)
-            Volatile.Write(ref initialized, 1);
-        await next(context, token);
+        try
+        {
+            if (context.JsonRpcMessage is JsonRpcNotification { Method: "notifications/initialized" } && context.Server.ClientInfo is not null)
+                Volatile.Write(ref initialized, 1);
+            await next(context, token);
+        }
+        finally { transport.MessageHandled(); }
     });
-    await using var transport = new StdioServerTransport(options);
     await using var server = McpServer.Create(transport, options);
     await server.RunAsync(shutdown.Token);
     return 0;

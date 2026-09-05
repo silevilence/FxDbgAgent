@@ -11,6 +11,7 @@ function connect(extra = []) {
   let buffer = '', stderr = '', failure;
   child.stderr.setEncoding('utf8');
   child.stderr.on('data', data => stderr += data);
+  child.stdin.on('error', error => { if (error.code !== 'EPIPE' && error.code !== 'EOF') failure = error; });
   child.stdout.setEncoding('utf8');
   child.stdout.on('data', data => {
     buffer += data;
@@ -73,5 +74,15 @@ try {
   await malformed.close(); // A malformed transport is allowed to close; no log text may enter stdout.
   const absent = connect(['--engine-dir', join(bundle, 'missing engines')]);
   assert.notEqual(await absent.close(), 0, 'Missing dependency must fail startup');
+  for (const option of [['--max-sessions', '9'], ['--max-calls', '0'], ['--max-control-calls', 'bad']]) {
+    const invalidConfig = connect(option);
+    assert.notEqual(await invalidConfig.close(), 0, 'Invalid limits must fail startup');
+  }
+  const oversized = connect();
+  oversized.child.stdin.write(' '.repeat(4 * 1024 * 1024 + 1)); // No newline: limit applies while accumulating.
+  assert.notEqual(await oversized.close(), 0, 'Oversized input closes without unbounded buffering');
+  const duplicate = connect();
+  duplicate.child.stdin.write('{"jsonrpc":"2.0","id":1,"id":2,"method":"ping"}\n');
+  assert.notEqual(await duplicate.close(), 0, 'Duplicate properties must not select an ambiguous request');
   console.log('Raw stdio: initialization, version negotiation, ping, errors, cancellation, malformed input and EOF passed.');
 } finally { for (const child of children) child.kill(); }

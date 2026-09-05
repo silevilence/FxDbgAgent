@@ -109,6 +109,8 @@ internal static class ObservationSuite
                 var texts = members.Single(x => (string?)x!["name"] == "LargeTexts")!;
                 var largeArgs = new Dictionary<string, object?> { ["frameId"] = frame, ["referenceId"] = texts["referenceId"]!.GetValue<string>(), ["count"] = 129, ["maxStringLength"] = 32768 };
                 await Invoke("variables", largeArgs, "invalid_request");
+                largeArgs["count"] = 64; // Fits the Engine frame, exceeds the duplicated MCP structured/text envelope.
+                await Invoke("variables", largeArgs, "invalid_request");
                 largeArgs["count"] = 1;
                 Require((await Invoke("variables", largeArgs))["result"]!.AsArray().Count == 1, "Oversized page can be reduced without losing the session.");
                 await Invoke("variables", new() { ["frameId"] = "not-a-frame" }, "frame_not_found");

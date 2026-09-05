@@ -17,7 +17,7 @@ internal sealed class McpTestConnection : IAsyncDisposable
     internal string StandardError { get; private set; } = "";
     internal int ProcessId => process.Id;
 
-    internal static async Task<McpTestConnection> Create(string bundle, CancellationToken token, string? directory = null)
+    internal static async Task<McpTestConnection> Create(string bundle, CancellationToken token, string? directory = null, string[]? arguments = null)
     {
         var start = new ProcessStartInfo("dotnet")
         {
@@ -25,6 +25,7 @@ internal sealed class McpTestConnection : IAsyncDisposable
             RedirectStandardError = true, WorkingDirectory = directory ?? Path.GetTempPath()
         };
         start.ArgumentList.Add(Path.Combine(Path.GetFullPath(bundle), "fxdbg-mcp.dll"));
+        foreach (string argument in arguments ?? []) start.ArgumentList.Add(argument);
         var connection = new McpTestConnection(Process.Start(start)!);
         try
         {

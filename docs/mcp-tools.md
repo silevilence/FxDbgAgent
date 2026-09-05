@@ -1,6 +1,6 @@
 # MCP 工具契约
 
-阶段 2 的公开契约。当前实现进度以 ROADMAP 勾选项和验证报告为准；13 个工具均已接通共享 Host/Engine，资源限流和完整生命周期验收按后续任务实施。
+阶段 2 的公开契约。当前实现进度以 ROADMAP 勾选项和验证报告为准；13 个工具、操作跟踪及资源限流均已接通共享 Host/Engine，完整生命周期与 Agent 验收按后续任务实施。
 
 运行 `./eng/publish-mcp.ps1 -Configuration Debug`，用 `dotnet <发布目录>/fxdbg-mcp.dll` 作为 MCP command/args。发布目录默认 `artifacts/mcp/Debug`，其旁 `engines/` 放置完整 x86/x64 Engine 与 DIA/ClrDebug 等依赖。可使用 `--engine-dir <绝对路径>` 覆盖，不依赖当前工作目录。仅本机 stdio，无网络监听。
 
@@ -32,7 +32,7 @@
 
 每次工具响应同时包含 structuredContent 对象和等价的 JSON text content。成功为 `{"ok":true,"sessionId":"...","result":...}`；失败为 `{"ok":false,"sessionId":"...","error":{"code":"session_not_found","message":"..."}}`，创建前的 sessionId 可为 null。失败设置 MCP isError=true。结果中枚举使用 Core camelCase，错误码使用 Core snake_case。没有源码时位置字段可空，不捏造源码信息。
 
-工具业务错误包括 invalid_request、session_not_found、invalid_session_state、already_debugged、architecture_mismatch、core_clr_not_supported、symbols_missing/mismatch/read_failed、frame_not_found、value_unavailable、operation_timed_out/cancelled、operation_not_found、transport_disconnected、engine_exited。资源限流任务补充 rate_limited（含 retryAfterMs）。JSON-RPC 封装错误、未知方法和未知工具是协议错误；输入不合法及执行失败为工具错误。
+工具业务错误包括 invalid_request、session_not_found、invalid_session_state、already_debugged、architecture_mismatch、core_clr_not_supported、symbols_missing/mismatch/read_failed、frame_not_found、value_unavailable、operation_timed_out/cancelled、operation_not_found、transport_disconnected、engine_exited、rate_limited（error.retryAfterMs=1000）。JSON-RPC 封装错误、未知方法和未知工具是协议错误；输入不合法及执行失败为工具错误。
 
 ## 调用与恢复
 
@@ -49,6 +49,16 @@ continue/step 默认等待新的停止，也可 `waitForStop:false` 返回 opera
 每会话保留至多 128 条已完成操作，终态保存 10 分钟。结束会话同样保存 10 分钟，总会话记录至多 1024，超限先淘汰最早终态。运行中的操作不因缓存裁剪消失；未知、跨会话和过期操作返回 operation_not_found。Host 重启后无历史恢复。status 的 stop 只表示当前停止，lastStop 是最近观察，运行期间不可拿 lastStop 的帧引用读取变量。
 
 取消通知仅针对未返回请求；已返回异步操作用 pause 停止或 detach 结束。协作超时尝试暂停，传输失败安全分离；具体实际状态随结果返回。附加目标不能 terminate。异常默认仅未处理异常，读取变量不调用 Getter、ToString 或函数求值。对象读取不可获取、优化掉与 null 分别返回，不合并为 null。
+
+取消须在 stdio 上实际发送 `{"jsonrpc":"2.0","method":"notifications/cancelled","params":{"requestId":"待取消请求的 id"}}`，取消通知自身无响应，数字/字符串 ID 类型应与原请求相同。不能把客户端本地不再等待当成服务端已取消的证据。SDK 2.2.0 的本地令牌取消在本轮测试中未可靠发出通知，专项验收通过官方客户端显式发送带 ID 的通知。取消与成功竞争只保留一个终态；收到迟到响应时客户端应忽略。状态查询取消或短期限不关闭正在运行操作的会话，执行中取消会关闭不确定会话并尝试 Detach，status 在清理中可返回 closing=true，结束后再确认目标状态。尚未进入 Host 的取消不启动 Engine。
+
+## 资源边界
+
+默认每 Host 最多 8 个活动或启动中会话、32 个在途普通调用，status/pause/detach/terminate 另有 8 个有界控制槽；超限立即返回 rate_limited，不排队。可通过 `--max-sessions 1..8`、`--max-calls 1..32`、`--max-control-calls 1..8` 降低上限，非法/重复启动参数非零退出。调试操作等待占用普通槽；轮询不增加新的运行操作。
+
+MCP 单行输入上限 4 MiB，读取过程中即检查，没有换行也不能无界增长；深度至多 64，拒绝重复 JSON 字段。逐行传输实现官方 SDK 的 ITransport 接口，MCP 协议和类型仍由固定 SDK 处理。输入通道 16 条、尚未处理完的消息 64 条、输出通道 8 条，stdout 写入期限 3 秒；不可恢复的畸形消息、溢出或传输堵塞关闭连接并进入清理，不截断 JSON。
+
+输出在 structuredContent/text 双重封装后计算体积，为 JSON-RPC 外壳留出空间；超出 4 MiB 返回 invalid_request，变量可缩小 count/maxDepth/maxStringLength 后在原会话重试。Engine 事件队列和操作/会话缓存继续使用各自有界保留策略。continue/step 的 timeoutMs 从命令受理前开始计时，异步返回后仍有效；到期尝试暂停，返回 timedOut 和实际 StopInfo，暂停失败则关闭不确定会话。Engine RPC 传输有额外 2 秒收尾，安全暂停/分离也需有限时间，因此 timeoutMs 是操作期限而非进程清理总耗时承诺。
 
 本阶段验收按用户 2026-09-05 最新指示使用独立子代理：子代理读取安装后的技能与本文件，自主选择并执行真实 MCP 工具调用，保留请求和结果。禁止使用 Claude Code；固定脚本回归单独记录，不替代自主 Agent 验收。
 
