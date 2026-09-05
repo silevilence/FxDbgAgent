@@ -5,6 +5,20 @@ namespace FxDbg.Interop;
 
 internal static class MetadataNames
 {
+    internal static int EnumFields(MetaDataImport metadata, ref IntPtr enumeration, mdTypeDef type, mdFieldDef[] fields)
+    {
+        HRESULT result = metadata.TryEnumFields(ref enumeration, type, fields, out int count);
+        if (result != HRESULT.S_FALSE) ClrDebug.Extensions.ThrowOnFailed(result);
+        return count;
+    }
+
+    internal static int EnumParams(MetaDataImport metadata, ref IntPtr enumeration, mdMethodDef method, mdParamDef[] parameters)
+    {
+        HRESULT result = metadata.TryEnumParams(ref enumeration, method, parameters, out int count);
+        if (result != HRESULT.S_FALSE) ClrDebug.Extensions.ThrowOnFailed(result);
+        return count;
+    }
+
     internal static string Method(CorDebugFunction function)
     {
         MetaDataImport metadata = function.Module.GetMetaDataInterface().MetaDataImport;
@@ -35,7 +49,7 @@ internal static class MetadataNames
             {
                 int count;
                 int inspected = 0;
-                while ((count = metadata.EnumFields(ref enumeration, type.Token, fields)) > 0)
+                while ((count = MetadataNames.EnumFields(metadata, ref enumeration, type.Token, fields)) > 0)
                 {
                     if ((inspected += count) > 1024) return null;
                     for (int index = 0; index < count; index++)
@@ -45,7 +59,7 @@ internal static class MetadataNames
                         CorDebugValue? field = Dereference(instance.GetFieldValue(type.Raw, fields[index]));
                         if (field?.Raw is not ICorDebugStringValue text) return null;
                         var valueString = new CorDebugStringValue(text);
-                        return valueString.GetString(Math.Min(valueString.Length, 256) + 1);
+                        return ReadString(text, Math.Min(valueString.Length, 256));
                     }
                 }
             }
@@ -63,5 +77,15 @@ internal static class MetadataNames
         if (value.Raw is not ICorDebugReferenceValue raw) return value;
         var reference = new CorDebugReferenceValue(raw);
         return reference.IsNull ? null : reference.Dereference();
+    }
+
+    internal static string ReadString(ICorDebugStringValue value, int length)
+    {
+        if (length == 0) return string.Empty;
+        var buffer = new char[length + 1];
+        HRESULT result = value.GetString(buffer.Length, out int written, buffer);
+        if (unchecked((int)result) < 0) ClrDebug.Extensions.ThrowOnFailed(result);
+        // Desktop CLR may report the full required length even when the buffer is truncated.
+        return new string(buffer, 0, Math.Min(length, Math.Max(0, written)));
     }
 }

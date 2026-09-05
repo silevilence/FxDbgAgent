@@ -26,9 +26,23 @@ namespace FxDbg.Debuggees
     internal static class Program
     {
         private static int executionSink;
+        private static int variableSink;
+        private static int userCodeCalls;
 
         private static void Main(string[] args)
         {
+            if (args[0] == "--variables")
+            {
+                var node = new Node();
+                node.Self = node;
+                var values = new int[100000];
+                values[0] = 10;
+                values[99999] = 909;
+                variableSink = Node.Counter;
+                ObserveVariables(42, "abcdefghijklmnop", node, values, null);
+                if (userCodeCalls != 0) throw new InvalidOperationException("Debugger executed target formatting code.");
+                return;
+            }
             if (args[0] == "--execution") { RunExecution(args[1]); return; }
             for (int cycle = 0; cycle < 3; cycle++)
             {
@@ -55,6 +69,33 @@ namespace FxDbg.Debuggees
         { // STEP_INNER_ENTRY
             int result = value + 1; // STEP_INNER
             return result;
+        }
+
+        private sealed class Node
+        {
+            public static int Counter = 777;
+            public Node Self;
+            public string Label = "node-label";
+            public object Empty = null;
+            public int Dangerous { get { userCodeCalls++; throw new InvalidOperationException("Getter executed"); } }
+            public override string ToString() { userCodeCalls++; return "FORMATTING_EXECUTED"; }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void ObserveVariables(int number, string message, Node node, int[] values, object nothing)
+        {
+            int localNumber = number * 2;
+            string localText = "local-text";
+            int optimized = number * 3;
+            variableSink = optimized;
+            variableSink = number; // VARIABLE_BREAKPOINT
+            GC.KeepAlive(localNumber);
+            GC.KeepAlive(localText);
+            GC.KeepAlive(number);
+            GC.KeepAlive(message);
+            GC.KeepAlive(node);
+            GC.KeepAlive(values);
+            GC.KeepAlive(nothing);
         }
     }
 }

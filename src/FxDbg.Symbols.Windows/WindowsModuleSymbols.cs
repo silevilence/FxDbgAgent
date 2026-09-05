@@ -91,6 +91,66 @@ public sealed class WindowsModuleSymbols : IDisposable
             .Select(point => point.IlOffset).DefaultIfEmpty(codeSize).Min();
     }
 
+    public IReadOnlyList<LocalVariableSlot> GetLocals(int methodToken, int ilOffset)
+    {
+        ThrowIfDisposed();
+        var result = new List<LocalVariableSlot>();
+        if (reader is null) return result;
+        int hr = reader.GetMethod(methodToken, out ISymUnmanagedMethod method);
+        if (hr < 0) return result;
+        try
+        {
+            Marshal.ThrowExceptionForHR(method.GetRootScope(out ISymUnmanagedScope root));
+            int scopes = 0;
+            try { ReadLocals(root, ilOffset, result, ref scopes, 0); }
+            finally { ReleaseCom(root); }
+        }
+        finally { ReleaseCom(method); }
+        return result;
+    }
+
+    private static void ReadLocals(ISymUnmanagedScope scope, int offset, List<LocalVariableSlot> result, ref int scopes, int depth)
+    {
+        if (++scopes > 10000 || depth > 128) throw new InvalidDataException("PDB local scopes exceed their traversal budget.");
+        Marshal.ThrowExceptionForHR(scope.GetStartOffset(out int start));
+        Marshal.ThrowExceptionForHR(scope.GetEndOffset(out int end));
+        if (offset < start || offset >= end) return;
+        Marshal.ThrowExceptionForHR(scope.GetLocalCount(out int count));
+        CheckCount(count, 10000 - result.Count);
+        var locals = new ISymUnmanagedVariable[count];
+        try
+        {
+            Marshal.ThrowExceptionForHR(scope.GetLocals(count, out int actual, locals));
+            CheckCount(actual, count);
+            foreach (ISymUnmanagedVariable local in locals.Take(actual))
+            {
+                Marshal.ThrowExceptionForHR(local.GetName(0, out int length, null!));
+                CheckCount(length, 32768);
+                var chars = new char[length];
+                Marshal.ThrowExceptionForHR(local.GetName(length, out int nameLength, chars));
+                CheckCount(nameLength, length);
+                Marshal.ThrowExceptionForHR(local.GetAddressField1(out int slot));
+                result.Add(new LocalVariableSlot(new string(chars, 0, nameLength).TrimEnd('\0'), slot));
+            }
+        }
+        finally { foreach (ISymUnmanagedVariable local in locals) ReleaseCom(local); }
+        Marshal.ThrowExceptionForHR(scope.GetChildren(0, out int childCount, null!));
+        CheckCount(childCount, 10000 - scopes);
+        var children = new ISymUnmanagedScope[childCount];
+        try
+        {
+            Marshal.ThrowExceptionForHR(scope.GetChildren(childCount, out int childActual, children));
+            CheckCount(childActual, childCount);
+            foreach (ISymUnmanagedScope child in children.Take(childActual)) ReadLocals(child, offset, result, ref scopes, depth + 1);
+        }
+        finally { foreach (ISymUnmanagedScope child in children) ReleaseCom(child); }
+    }
+
+    private static void ReleaseCom(object? value)
+    {
+        if (value is not null && Marshal.IsComObject(value)) Marshal.ReleaseComObject(value);
+    }
+
     public string? GetMethodName(int methodToken)
     {
         ThrowIfDisposed();

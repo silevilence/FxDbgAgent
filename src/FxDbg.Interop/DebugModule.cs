@@ -27,8 +27,10 @@ internal sealed class DebugModule : ISourceBreakpointModule, IDisposable
     }
 
     public string Id { get; }
+    internal bool HasSymbols => symbols?.Status == SymbolStatus.Loaded;
 
     internal SourceLocation? Resolve(int token, int offset) => symbols?.Resolve(token, offset);
+    internal IReadOnlyList<LocalVariableSlot> GetLocals(int token, int offset) => symbols?.GetLocals(token, offset) ?? Array.Empty<LocalVariableSlot>();
     internal string? GetMethodName(int token) => symbols?.GetMethodName(token);
     internal int GetStepRangeEnd(int token, int offset, int codeSize) => symbols?.GetStepRangeEnd(token, offset, codeSize) ?? codeSize;
 

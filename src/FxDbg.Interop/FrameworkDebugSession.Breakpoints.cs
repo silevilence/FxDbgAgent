@@ -54,6 +54,7 @@ public sealed partial class FrameworkDebugSession
         callbackPairing.Continue(() => (pendingEntryController ?? process).Continue(false));
         pendingEntryController = null;
         framesById.Clear();
+        variableReader = null;
         HitBreakpointId = null;
         StoppedThreadId = null;
         CurrentStop = null;
@@ -121,6 +122,7 @@ public sealed partial class FrameworkDebugSession
     private void ClearModules()
     {
         framesById.Clear();
+        variableReader = null;
         foreach (DebugModule module in modules.Values)
         {
             breakpoints.ModuleUnloaded(module.Id);

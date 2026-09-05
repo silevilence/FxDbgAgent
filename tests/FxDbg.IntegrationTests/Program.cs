@@ -17,6 +17,12 @@ internal static partial class Program
     {
         try
         {
+            if (args.Length > 2 && args[2] == "variables")
+            {
+                RunVariableInspection(Path.GetFullPath(args[0]), args[1]);
+                Console.WriteLine("PASS: arguments, locals, fields, bounded strings, array pages and cycle references (" + (IntPtr.Size * 8) + " bit).");
+                return 0;
+            }
             if (args.Length > 2 && args[2] == "stack")
             {
                 RunStackInspection(Path.GetFullPath(args[0]), args[1]);

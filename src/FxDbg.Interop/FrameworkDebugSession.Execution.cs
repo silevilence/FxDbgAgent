@@ -116,6 +116,7 @@ public sealed partial class FrameworkDebugSession
     {
         stopGeneration++;
         framesById.Clear();
+        variableReader = null;
         if (stepper is not null)
         {
             stepper.Deactivate();

@@ -42,6 +42,13 @@
 - 帧 ID 包含停止代次、线程及托管帧深度，同一停止中分页稳定；继续运行、退出或 Detach 清理帧引用。栈帧 AppDomain 使用帧所属模块的 Assembly/AppDomain，避免把跨域调用的所有帧误标为活动线程的域。
 - 停止摘要仅读取当前线程前 5 个托管帧，完整栈按请求读取。`eng/verify-stage1-6.ps1 -Configuration Debug|Release` 对 x86/x64 14 层托管栈进行 CDB/SOS 独立逐帧对照；CDB 使用本地符号路径，30 秒超时后清理测试进程树。
 
+## 只读变量观察（阶段1-7）
+
+- Core VariableReader 对单次停止维护引用表、循环检测及总成员预算；Interop 薄适配只读取参数、局部槽、实例/静态字段和数组元素，Windows PDB 提供当前 IL 作用域的变量名。
+- 默认深度 1、成员 100、字符串 256；上限分别为 8、1024、32768。成员预算覆盖根节点及后代，数组分页直接按索引取值；继续、退出和 Detach 清理引用表。引用 ID 仅在当前停止有效。
+- Null、OptimizedAway、Unavailable 明确区分；只有 CLR 的 IL_VAR_NOT_AVAILABLE 映射为优化掉，读取失败保留错误码，不凭 Release 配置猜测。字符串读取使用有界缓冲区，不通过 Getter 或任何目标格式化方法。
+- `eng/verify-stage1-7.ps1 -Configuration Debug|Release` 覆盖双架构参数/局部变量、静态字段、循环引用、十万元素数组尾页及目标格式化副作用为零。
+
 ## ClrDebug 依赖结论（阶段0-2）
 
 - NuGet 包固定为 `ClrDebug` **0.4.2**；包内仓库提交为 `9628778ff761b2e466ca3199392cbd3de6de5bc5`，本次验证下载的 nupkg SHA-256 为 `880276A4D34EAA32EF6FB3598B7464E16C133B1184E9963D59398607BB5EDFBA`。
