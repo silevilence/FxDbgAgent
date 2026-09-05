@@ -88,12 +88,12 @@
     - 验收：用短期限覆盖受理前取消、等待中取消/超时、成功竞争、未知/重复取消和启动失败；验证每次最终状态与目标实际状态一致。饱和调用下 status/pause/detach 可用、另一会话不被误取消；缓存过期和容量上限可自动断言。
     - 验证记录：Debug 全前序回归、70 项单元测试及双架构资源专项通过；见 docs/validation/stage2-2c-resources.md。
 
-- [ ] **阶段2-3 Agent 使用文档与 SKILL**
-    - [ ] `docs/agent-skill.md` 与 `docs/mcp-tools.md` 提供构建/发布、MCP command/args/env 配置、13 个工具示例、默认限额、错误恢复、异步轮询及断开清理说明；运行路径不能绑定开发者个人目录
-    - [ ] 提供 `skills/fxdbg-agent/SKILL.md`，含 name=fxdbg-agent 与 description 的 YAML frontmatter；技能自带必要流程及随包 references，不依赖安装后不可达的仓库相对路径，文档与技能示例保持一致
-    - [ ] 固定验证用 skills CLI 精确版本，在临时项目目录运行 `npx --yes skills@<固定版本> add <仓库绝对路径> --skill fxdbg-agent --agent <验证客户端> --yes`，再检查实际安装文件与引用；记录展开后的命令，不修改用户全局 Agent 配置。安装方式依据 [skills 官方说明](https://github.com/vercel-labs/skills)
-    - [ ] 文档流程明确：stopAtEntry=true 启动 → 设置断点 → 继续并等待 → 取实际 threadId/frameId → 查看变量 → 单步/继续 → detach 或允许的 terminate；说明运行后引用失效、first-chance 默认关闭，以及禁用求值、Getter 和 ToString
-    - [ ] 由独立子代理完成同一流程，记录代理身份、可获取的模型信息、隔离配置、提示词、实际 MCP 工具调用和结果；子代理根据每次真实响应自主决定下一步，可使用透明 stdio 客户端桥接，不能以 Inspector 或固定脚本执行记录冒充自主验收。禁止使用 Claude Code
+- [x] **阶段2-3 Agent 使用文档与 SKILL**
+    - [x] `docs/agent-skill.md` 与 `docs/mcp-tools.md` 提供构建/发布、MCP command/args/env 配置、13 个工具示例、默认限额、错误恢复、异步轮询及断开清理说明；运行路径不能绑定开发者个人目录
+    - [x] 提供 `skills/fxdbg-agent/SKILL.md`，含 name=fxdbg-agent 与 description 的 YAML frontmatter；技能自带必要流程及随包 references，不依赖安装后不可达的仓库相对路径，文档与技能示例保持一致
+    - [x] 固定验证用 skills CLI 精确版本，在临时项目目录运行 `npx --yes skills@<固定版本> add <仓库绝对路径> --skill fxdbg-agent --agent <验证客户端> --yes`，再检查实际安装文件与引用；记录展开后的命令，不修改用户全局 Agent 配置。安装方式依据 [skills 官方说明](https://github.com/vercel-labs/skills)
+    - [x] 文档流程明确：stopAtEntry=true 启动 → 设置断点 → 继续并等待 → 取实际 threadId/frameId → 查看变量 → 单步/继续 → detach 或允许的 terminate；说明运行后引用失效、first-chance 默认关闭，以及禁用求值、Getter 和 ToString
+    - [x] 由独立子代理完成同一流程，记录代理身份、可获取的模型信息、隔离配置、提示词、实际 MCP 工具调用和结果；子代理根据每次真实响应自主决定下一步，可使用透明 stdio 客户端桥接，不能以 Inspector 或固定脚本执行记录冒充自主验收。禁止使用 Claude Code
     - 验收：技能通过 npx skills 非交互安装且安装后引用完整；真实 Agent 仅凭文档和技能完成工具链并正确解释一次结构化错误，输出可复核证据到 `docs/validation/stage2-3-agent.md`，敏感内容脱敏。
 
 - [x] **阶段2-4 生命周期与安全清理**

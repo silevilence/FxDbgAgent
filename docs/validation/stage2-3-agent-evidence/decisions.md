@@ -1,0 +1,26 @@
+# Independent Codex MCP acceptance decisions
+
+- Identity: Codex child agent /root/mcp_agent_acceptance; exact underlying model unavailable, inherited from parent.
+- Read installed SKILL.md and both shipped references at artifacts/stage2-validation/skill-project/.agents/skills/fxdbg-agent. No product implementation was used to choose calls.
+- Read target EndToEndScenarios.cs: values mode reaches Observe with number=42, message=hello-framework and a cyclic Node; the completed marker checks no getter/ToString execution occurred. Choose this fixture to inspect raw fields and exercise stepping.
+- ready.json reports independent stdio MCP PID 28668, protocol 2025-11-25, official SDK 2.2.0. The request helper submits exactly one model-chosen call, atomically, and waits; it has no debug sequence.
+- Next: discover actual tools and schema before launch.
+- 001 tools/list returned 13 debug_ tools and strict schemas. Choose debug_launch with arch=auto and stopAtEntry=true for the supplied x86 values scenario.
+- 002 launch succeeded: session 19a7c5ef-5403-4588-80c7-08f9be89b00f, PID 19676, x86, Desktop CLR v4.0.30319 file 4.8.9325.0, stopped. Source search confirms Observe breakpoint line 67. Next create that breakpoint before resuming.
+- 003 breakpoint ef1c280b-09a8-4e99-8088-34d7f0d092e1 is pending, explicitly waiting for a matching loaded module. As documented this is expected before module load; continue exactly once and await actual stop.
+- 004 continue completed at requested line 67, reason breakpoint, thread 40844, Observe; pending recovered automatically without duplicate resume. Next enumerate threads to confirm the stop thread.
+- 005 enumerated stopped managed threads 21860 and 40844, confirming the actual stop thread. Next request its stack with count=32.
+- 006 returned 16 managed frames, including Observe, 13 Recurse frames, Run and Main. Top frameId is 1:40844:0 at IL offset 11 and source line 67. Next read a bounded variable page.
+- 007 variables matched fixture: number 42, message hello-framework, localNumber 84, localText local-value; Nothing status=null, Self reused the parent reference without expansion; userCodeCalls=0 and Dangerous getter absent. LargeTexts reference ends :1:2 with 129 members. Next explicitly expand only two array members with maxStringLength=32.
+- 008 reference expansion returned exactly elements [0] and [1], each clipped to 32 characters including ellipsis. Next step over the current sink assignment asynchronously, saving the operation instead of issuing another resume.
+- 009 asynchronous step returned running operation ea6cf53a-2f19-458e-800f-fc4d2a6632cd. Query that operation with status; do not issue another continue/step.
+- 010 status confirms operation completed with step at line 68; breakpoint is verified and target Windows PDB loaded (framework PDBs missing only). To exercise documented error recovery deliberately read the previously valid frame 1:40844:0, now expired; this is a negative test, not an assumed current frame.
+- 011 correctly returned ok=false/frame_not_found (earlier stop). Recover according to installed contract by re-reading the current stack, without relaunching or resuming.
+- 012 refreshed stack returns frame 2:40844:0 at line 68. Next read variables with this actual current frame to verify recovery and the completed assignment.
+- 013 recovery succeeded; sink changed from 0 to 42, locals unchanged, userCodeCalls remains 0, fresh node reference belongs to stop 2. At line 68 AddOne call, next step into using the confirmed thread.
+- 014 step into completed in AddOne at line 79 (method opening brace, a valid sequence point rather than assumed line 80). Next step out and observe returned caller position.
+- 015 step out returned to Observe line 68 (caller sequence point). Core flow is complete. Remove the actual breakpoint before safe detach so the target can finish its no-user-code check naturally.
+- 016 breakpoint removal returned removed=true. Next detach; no terminate is necessary for this finite values fixture.
+- 017 detach succeeded and ended the debugger session (sessionState=terminated). Target subsequently wrote completed=ok and PID 19676 is absent, proving normal fixture completion after detach and its userCodeCalls guard passed. Next query the terminal session as documented, then close bridge/Host stdin.
+- 018 terminal status has stop=null, closing=false and no active operation. All requested launch/observe/step/recovery/cleanup goals passed. No attach, timeout/cancellation, terminate, x64 or exception scenario was claimed by this bounded autonomous run. Close stdin normally now.
+- 019 close returned closed=true. Subsequent read-only process check found none of own target PID 19676, MCP PID 28668 or bridge PID 29504. Acceptance passed; report and machine-readable result written by this child agent.

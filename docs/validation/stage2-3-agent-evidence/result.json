@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "agent": "/root/mcp_agent_acceptance (independent Codex child agent)",
+  "model": "Exact model unavailable; inherited from parent",
+  "toolsUsed": [
+    "debug_launch",
+    "debug_set_breakpoint",
+    "debug_continue",
+    "debug_threads",
+    "debug_stack",
+    "debug_variables",
+    "debug_step",
+    "debug_status",
+    "debug_remove_breakpoint",
+    "debug_detach"
+  ],
+  "findings": [
+    {
+      "severity": "info",
+      "blocking": false,
+      "message": "No product or documentation blocker observed in the bounded x86 values workflow."
+    },
+    {
+      "severity": "info",
+      "blocking": false,
+      "message": "Installed tool contract retains future-tense stage 2-3 wording although workflow examples already support the run."
+    }
+  ],
+  "toolCallCount": 17,
+  "requestCount": 19,
+  "sessionId": "19a7c5ef-5403-4588-80c7-08f9be89b00f",
+  "processId": 19676,
+  "completedMarker": "ok",
+  "cleanup": "Breakpoint removed; detach succeeded; target completed naturally; bridge close acknowledged; target, MCP Host and bridge PIDs absent.",
+  "report": "docs/validation/stage2-3-agent-acceptance.md",
+  "completedAtUtc": "2026-09-05T07:20:06.8147813Z"
+}

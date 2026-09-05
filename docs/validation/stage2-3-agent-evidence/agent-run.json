@@ -1,0 +1,9 @@
+{
+  "agent": "/root/mcp_agent_acceptance",
+  "userConstraint": "Independent Codex sub-agent; Claude Code forbidden",
+  "installedSkill": "C:/code/dotnet/FxDbgAgent/artifacts/stage2-validation/skill-project/.agents/skills/fxdbg-agent/SKILL.md",
+  "model": "Exact model identifier not independently exposed; inherited parent configuration",
+  "repositoryCommit": "a4dc778",
+  "startedAtUtc": "2026-09-05T07:16:20.3822891+00:00",
+  "bridge": "official MCP SDK 2.2.0 over real stdio; no debugger workflow in bridge"
+}
