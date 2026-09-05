@@ -45,14 +45,16 @@
 > 执行顺序：阶段2-1 → 阶段2-2a → 阶段2-2b → 阶段2-2c → 阶段2-4 → 阶段2-3 → 阶段2-5；保留原任务编号，阶段2-2拆为三个约 1～3 天的交付单元。前置任务验收通过后才启动后继任务。
 > 统一约束：复用 `FxDbg.Host` / Engine；共享的操作跟踪、停止等待和会话清理放在 Host，MCP 只做协议适配，不调用 CLI 子进程实现工具、不加载 Interop / ClrDebug / mscordbi。保留阶段 1 的只读观察、双架构路由、单调度线程和 Continue 配对规则，不提前实现阶段 3/4。
 > 完成纪律：每项记录验收命令、配置、结果和证据路径后才勾选；失败先修复再继续。缺少真实外部 Agent、登录凭据或运行权限时记录阻塞及所需条件，继续不依赖它的本地验证，不以跳过代替通过，也不自动改写需求 §16 的决策。
+> Agent 验收口径更新（2026-09-05，用户明确指定）：本轮由独立子代理读取文档与安装后的技能，自主调用真实 MCP stdio 服务并留存请求/结果，作为下文 Agent 验收证据；禁止使用 Claude Code，不要求外部账号登录。固定脚本回归仍不可冒充子代理自主验收。此指定覆盖本节原有外部客户端选择条件。
 
-- [ ] **阶段2-1 MCP stdio Host 骨架**
-    - [ ] 新建 `src/FxDbg.McpHost` 并加入解决方案；使用官方 C# `ModelContextProtocol` SDK 的 stdio 宿主，实施时选择支持下述协议且兼容当前目标框架的最新稳定版，固定精确包版本并记录许可证与支持的协议版本，后续任务不浮动升级
-    - [ ] 以 MCP `2025-11-25` 为验收基线，完成 initialize 版本协商、`notifications/initialized`、tools/list、tools/call、ping、`notifications/cancelled`；不支持的版本、未初始化调用和非法请求按协议处理；仅声明实际支持的 tools 能力
-    - [ ] MCP 外部 stdio 使用逐行 UTF-8 JSON-RPC；内部 Named Pipe 继续使用既有长度前缀帧，两种帧格式不得混用。stdout 仅协议内容，SDK/Host/Engine 日志及目标程序输出均不得混入
-    - [ ] 定义启动与发布布局：MCP 入口旁 `engines/` 包含完整双架构 Engine 及其托管/本机依赖；支持显式 `--engine-dir`，路径含空格、任意工作目录均可启动；缺少依赖时 stderr 给出可操作错误并非零退出
-    - [ ] 建立 `docs/mcp-tools.md`：列明 13 个工具名称、输入/输出 schema、字段类型、必填项、默认值、范围、合法状态及错误示例；launch/attach 由 Host 生成 sessionId，其余工具必须显式携带 sessionId；未知字段或错误类型在进入 Engine 前拒绝
+- [x] **阶段2-1 MCP stdio Host 骨架**
+    - [x] 新建 `src/FxDbg.McpHost` 并加入解决方案；使用官方 C# `ModelContextProtocol` SDK 的 stdio 宿主，实施时选择支持下述协议且兼容当前目标框架的最新稳定版，固定精确包版本并记录许可证与支持的协议版本，后续任务不浮动升级
+    - [x] 以 MCP `2025-11-25` 为验收基线，完成 initialize 版本协商、`notifications/initialized`、tools/list、tools/call、ping、`notifications/cancelled`；不支持的版本、未初始化调用和非法请求按协议处理；仅声明实际支持的 tools 能力
+    - [x] MCP 外部 stdio 使用逐行 UTF-8 JSON-RPC；内部 Named Pipe 继续使用既有长度前缀帧，两种帧格式不得混用。stdout 仅协议内容，SDK/Host/Engine 日志及目标程序输出均不得混入
+    - [x] 定义启动与发布布局：MCP 入口旁 `engines/` 包含完整双架构 Engine 及其托管/本机依赖；支持显式 `--engine-dir`，路径含空格、任意工作目录均可启动；缺少依赖时 stderr 给出可操作错误并非零退出
+    - [x] 建立 `docs/mcp-tools.md`：列明 13 个工具名称、输入/输出 schema、字段类型、必填项、默认值、范围、合法状态及错误示例；launch/attach 由 Host 生成 sessionId，其余工具必须显式携带 sessionId；未知字段或错误类型在进入 Engine 前拒绝
     - 验收：自动化标准 MCP 客户端完成握手、列出 13 个完整 schema、调用不存在会话的 debug_status 并得到结构化错误；覆盖未初始化、版本协商、畸形 JSON、未知方法/工具和 EOF。捕获 stdout 逐行解析，证明启动信息、异常日志和目标输出均未污染协议；不得将占位成功响应作为工具完成证据。
+    - 验证记录：Debug 验收通过，快速审核阻塞项已修复；见 docs/validation/stage2-1-stdio.md。
 
 - [ ] **阶段2-2 13 个 MCP 工具实现（需求 §8，下列三个子任务全部通过后勾选）**
     - 任务描述：需求 §8 实际列出 13 个工具，原“14 个”为计数错误。工具使用完整 `debug_` 前缀；操作轮询通过 debug_status 完成，不为凑数量增加工具。
@@ -88,7 +90,7 @@
     - [ ] 提供 `skills/fxdbg-agent/SKILL.md`，含 name=fxdbg-agent 与 description 的 YAML frontmatter；技能自带必要流程及随包 references，不依赖安装后不可达的仓库相对路径，文档与技能示例保持一致
     - [ ] 固定验证用 skills CLI 精确版本，在临时项目目录运行 `npx --yes skills@<固定版本> add <仓库绝对路径> --skill fxdbg-agent --agent <验证客户端> --yes`，再检查实际安装文件与引用；记录展开后的命令，不修改用户全局 Agent 配置。安装方式依据 [skills 官方说明](https://github.com/vercel-labs/skills)
     - [ ] 文档流程明确：stopAtEntry=true 启动 → 设置断点 → 继续并等待 → 取实际 threadId/frameId → 查看变量 → 单步/继续 → detach 或允许的 terminate；说明运行后引用失效、first-chance 默认关闭，以及禁用求值、Getter 和 ToString
-    - [ ] 至少一种真实外部 Agent 完成同一流程，记录客户端/模型版本、隔离配置、提示词、实际 MCP 工具调用和结果。实施前探测已安装且已授权的客户端，优先使用可非交互运行的一种；若均不可用，明确列为外部验收阻塞，不能以 Inspector 或自制 MCP 客户端冒充 Agent 验收
+    - [ ] 由独立子代理完成同一流程，记录代理身份、可获取的模型信息、隔离配置、提示词、实际 MCP 工具调用和结果；子代理根据每次真实响应自主决定下一步，可使用透明 stdio 客户端桥接，不能以 Inspector 或固定脚本执行记录冒充自主验收。禁止使用 Claude Code
     - 验收：技能通过 npx skills 非交互安装且安装后引用完整；真实 Agent 仅凭文档和技能完成工具链并正确解释一次结构化错误，输出可复核证据到 `docs/validation/stage2-3-agent.md`，敏感内容脱敏。
 
 - [ ] **阶段2-4 生命周期与安全清理**
