@@ -114,6 +114,8 @@ public sealed partial class FrameworkDebugSession
 
     private void StopAt(CorDebugThread? thread, StopReason reason)
     {
+        stopGeneration++;
+        framesById.Clear();
         if (stepper is not null)
         {
             stepper.Deactivate();
@@ -122,24 +124,10 @@ public sealed partial class FrameworkDebugSession
         int threadId = thread?.Id ?? 0;
         StoppedThreadId = threadId == 0 ? null : threadId;
         string? appDomain = thread?.AppDomain.Name;
-        SourceLocation? location = null;
-        string? methodName = null;
-        string? moduleName = null;
-        CorDebugFrame? frame = thread?.ActiveFrame;
-        if (frame?.Raw is ICorDebugILFrame raw)
-        {
-            var ilFrame = new CorDebugILFrame(raw);
-            CorDebugFunction function = frame.Function;
-            int token = unchecked((int)function.Token.Value);
-            moduleName = function.Module.Name;
-            if (modules.TryGetValue(function.Module.Raw, out DebugModule? module))
-            {
-                location = module.Resolve(token, ilFrame.IP.pnOffset);
-                methodName = module.GetMethodName(token);
-            }
-        }
-        CurrentStop = new StopInfo(reason, Target.ProcessId, threadId, appDomain, location,
-            HitBreakpointId, moduleName: moduleName, methodName: methodName);
+        IReadOnlyList<StackFrameInfo> stack = thread is null ? Array.Empty<StackFrameInfo>() : CaptureStack(thread, 0, 5);
+        StackFrameInfo? first = stack.FirstOrDefault();
+        CurrentStop = new StopInfo(reason, Target.ProcessId, threadId, appDomain, first?.SourceLocation,
+            HitBreakpointId, moduleName: first?.ModuleName, methodName: first?.MethodName, briefStack: stack);
         domain.MarkStopped(CurrentStop);
     }
 

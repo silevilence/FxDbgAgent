@@ -14,6 +14,24 @@ namespace FxDbg.Debuggees.ConsoleX86
 
         private static void Main(string[] args)
         {
+            if (args.Length == 1 && (args[0] == "--stack-threads" || args[0] == "--stack-threads-windbg"))
+            {
+                Thread.CurrentThread.Name = "FxDbg-main";
+                breakForNativeDebugger = args[0] == "--stack-threads-windbg";
+                using (var finished = new ManualResetEvent(false))
+                using (var ready = new ManualResetEvent(false))
+                {
+                    var worker = new Thread(() => { ready.Set(); finished.WaitOne(); });
+                    worker.Name = "FxDbg-worker";
+                    worker.Start();
+                    ready.WaitOne();
+                    StackLevel01();
+                    finished.Set();
+                    worker.Join();
+                }
+                return;
+            }
+
             if (args.Length == 1 && string.Equals(args[0], "--probe", StringComparison.Ordinal))
             {
                 return;

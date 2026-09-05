@@ -35,6 +35,13 @@
 - 复现：`eng/verify-stage1-5.ps1 -Configuration Debug|Release`，覆盖双架构源码单步、非法状态/线程、超时/取消、活动断点清理、启动/附加 Detach、停止/运行中 Terminate，并回归阶段 1-4。
 - 单步范围语义参考 [Microsoft ICorDebugStepper::StepRange](https://learn.microsoft.com/en-us/dotnet/core/unmanaged-api/debugging/icordebug/icordebugstepper-steprange-method)。
 
+## 托管线程与调用栈（阶段1-6）
+
+- 线程及栈读取要求可观察停止，均在命令线程执行。线程返回 CLR 调试线程 ID、AppDomain、停止状态；名称直接读取 Thread 对象的 `m_Name` / `_name` 字段，不求值 Getter，无可读名称时返回 null。
+- 只枚举指定线程的托管链和 IL 帧，使用原生枚举器逐项读取，跳过纯原生及内部帧；每次返回最多 1024 帧。模块缺少 PDB 时仍从 CLR 元数据取得方法全名，源位置允许为空。
+- 帧 ID 包含停止代次、线程及托管帧深度，同一停止中分页稳定；继续运行、退出或 Detach 清理帧引用。栈帧 AppDomain 使用帧所属模块的 Assembly/AppDomain，避免把跨域调用的所有帧误标为活动线程的域。
+- 停止摘要仅读取当前线程前 5 个托管帧，完整栈按请求读取。`eng/verify-stage1-6.ps1 -Configuration Debug|Release` 对 x86/x64 14 层托管栈进行 CDB/SOS 独立逐帧对照；CDB 使用本地符号路径，30 秒超时后清理测试进程树。
+
 ## ClrDebug 依赖结论（阶段0-2）
 
 - NuGet 包固定为 `ClrDebug` **0.4.2**；包内仓库提交为 `9628778ff761b2e466ca3199392cbd3de6de5bc5`，本次验证下载的 nupkg SHA-256 为 `880276A4D34EAA32EF6FB3598B7464E16C133B1184E9963D59398607BB5EDFBA`。

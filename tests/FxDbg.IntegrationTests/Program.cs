@@ -17,6 +17,12 @@ internal static partial class Program
     {
         try
         {
+            if (args.Length > 2 && args[2] == "stack")
+            {
+                RunStackInspection(Path.GetFullPath(args[0]), args[1]);
+                Console.WriteLine("PASS: named managed threads and paged 14-frame source stack (" + (IntPtr.Size * 8) + " bit).");
+                return 0;
+            }
             if (args.Length > 2 && args[2] == "execution")
             {
                 RunExecutionControl(Path.GetFullPath(args[0]), args[1]);
