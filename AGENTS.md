@@ -7,6 +7,7 @@
 - 阶段 0-1～0-6 已完成真实 Windows 验证；阶段 0-7 报告见 `docs/stage0-validation-report.md`，并已于 2026-09-04 获用户确认。
 - 可行性结论：**技术上可行**。ICorDebug 双架构启动/附加、回调线程纪律、Windows PDB、源码断点和 14 层托管栈均已实测。
 - 阶段 1 已完成，依据为 `docs/validation/stage1-final-review.md`。阶段 2 的实现、独立 Agent 调用证据与完整回归见 `docs/validation/stage2-mvp.md`；按 `ROADMAP.md` 原地勾选保留任务位置。
+- 阶段3-1/3-2/3-3已完成；阶段3-5提供可选DAP入口与VS Code/Cursor扩展，真实客户端证据见 `docs/validation/stage3-5-dap.md`。阶段3-4按用户决定跳过，不能视为已验收。
 
 ## 项目是什么
 
@@ -60,6 +61,7 @@ FxDbg.sln
 ## 构建与测试
 
 - MVP 一键验收：`./eng/verify-stage2.ps1`，默认 Debug/Release，支持 `-Configuration Debug|Release`。包括真实 MCP、技能安装/独立 Agent 证据检查和 `eng/verify-stage1.ps1`；记录源码哈希、超时、日志及自有进程退出，任何失败不得标记通过。
+- 阶段3本轮一键验收：`./eng/verify-stage3.ps1 -NodePath <node.exe> -CodePath <Code.exe>`，默认 Debug/Release，包含3-1/2/3/5、真实VS Code、VSIX打包及阶段2/1全回归；需要Node/npm、VS Code和.NET 8/10运行时。3-4保持跳过。DAP发布：`./eng/publish-dap.ps1`，扩展打包：`./eng/package-extension.ps1`，配置见 `docs/dap.md`。
 - 发布 MCP：`./eng/publish-mcp.ps1 -Configuration Release`，入口为 `dotnet <发布目录>/fxdbg-mcp.dll`；必须携带相邻 `engines/` 的完整双架构依赖，不依赖当前目录。
 - SDK 由 `global.json` 固定为 .NET SDK 10.0.301（允许同一 feature band 的最新补丁）。
 - `net40` 使用 SDK 风格项目；`Directory.Build.targets` 固定引用 `Microsoft.NETFramework.ReferenceAssemblies` 1.0.3，因此构建机无需预装 .NET Framework 4.0 targeting pack。

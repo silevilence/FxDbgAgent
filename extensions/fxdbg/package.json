@@ -1,0 +1,42 @@
+{
+  "name": "fxdbg",
+  "displayName": "FxDbg Agent",
+  "description": "Read-only local .NET Framework debugging through FxDbg Host and Engine.",
+  "version": "0.1.0",
+  "publisher": "fxdbg",
+  "license": "UNLICENSED",
+  "private": true,
+  "engines": { "vscode": "^1.85.0" },
+  "categories": ["Debuggers"],
+  "main": "./extension.js",
+  "files": ["extension.js", "README.md"],
+  "activationEvents": ["onDebugResolve:fxdbg", "onDebugInitialConfigurations:fxdbg"],
+  "contributes": {
+    "configuration": { "title": "FxDbg", "properties": {
+      "fxdbg.adapterPath": { "type": "string", "default": "", "description": "Absolute path to published fxdbg-dap.dll." },
+      "fxdbg.dotnetPath": { "type": "string", "default": "dotnet", "description": "Path to dotnet with the .NET 10 runtime." }
+    } },
+    "breakpoints": [{ "language": "csharp" }],
+    "debuggers": [{
+      "type": "fxdbg", "label": "FxDbg (.NET Framework)", "languages": ["csharp"],
+      "configurationAttributes": {
+        "launch": { "required": ["program"], "properties": {
+          "program": { "type": "string", "description": "Absolute path to a .NET Framework executable." },
+          "args": { "type": "array", "items": { "type": "string" }, "default": [] },
+          "cwd": { "type": "string" }, "env": { "type": "object", "additionalProperties": { "type": "string" } },
+          "arch": { "enum": ["auto", "x86", "x64"], "default": "auto" },
+          "stopAtEntry": { "type": "boolean", "default": false },
+          "adapterPath": { "type": "string" }, "dotnetPath": { "type": "string" },
+          "sourceMappings": { "type": "array", "items": { "type": "object", "required": ["buildRoot", "localRoot"], "properties": { "buildRoot": { "type": "string" }, "localRoot": { "type": "string" }, "module": { "type": "string" } }, "additionalProperties": false } }
+        } },
+        "attach": { "required": ["processId"], "properties": {
+          "processId": { "type": "integer", "minimum": 1 },
+          "arch": { "enum": ["auto", "x86", "x64"], "default": "auto" },
+          "adapterPath": { "type": "string" }, "dotnetPath": { "type": "string" },
+          "sourceMappings": { "type": "array", "items": { "type": "object", "required": ["buildRoot", "localRoot"], "properties": { "buildRoot": { "type": "string" }, "localRoot": { "type": "string" }, "module": { "type": "string" } }, "additionalProperties": false } }
+        } }
+      },
+      "initialConfigurations": [{ "name": "FxDbg launch", "type": "fxdbg", "request": "launch", "program": "${workspaceFolder}\\bin\\Debug\\MyApp.exe" }]
+    }]
+  }
+}

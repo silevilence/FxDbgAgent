@@ -111,6 +111,17 @@ public sealed partial class DebugSessionService : IAsyncDisposable
             "threads" => "threads", "stack" => "stack", "variables" => "variables",
             _ => throw Invalid("This command is not implemented in the current stage.")
         };
+        if (method is "threads" or "stack" or "variables")
+        {
+            // Editor refreshes routinely cancel obsolete reads after continue. Cancelling the
+            // RPC wait would close the Engine pipe even though the read cannot alter execution.
+            // Keep its original Engine deadline and admission lease until the read finishes.
+            Task<JToken> query = engine.InvokeAsync(id, command, arguments, timeout, lifetime.Token);
+            lease.HoldUntil(query);
+            _ = query.ContinueWith(task => _ = task.Exception, TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously);
+            try { return Envelope(id, await query.WaitAsync(timeout, linked.Token).ConfigureAwait(false)); }
+            catch (TimeoutException) { throw new FxDbgException(FxDbgErrorCode.OperationTimedOut, "Observation timed out; query status before retrying."); }
+        }
         JToken result = await engine.InvokeAsync(id, command, arguments, timeout, linked.Token).ConfigureAwait(false);
         return Envelope(id, result);
     }

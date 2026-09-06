@@ -74,7 +74,7 @@ stdin EOF、输出断开或 Host 退出均结束所属会话，默认尝试 Deta
 
 诊断参数：`--log-level off|error|info|debug`（默认 info）、`--log-file <本地路径>`（省略则 stderr）、`--value-logs off`（唯一允许值，任何级别都禁止值日志）。日志 API 仅接收完成状态、稳定错误码、命令、合法 sessionId、可用 PID 及 debug 级 Host 线程 ID，不接受原始请求、目标变量、环境/参数内容或异常消息；SDK 原始帧日志不启用。文件为最多约 1 MiB 的单个日志，满后清空最老记录重新写入。日志写入失败不改变已执行工具的结果。stdout 始终只有协议，业务响应仍可包含调用方请求的变量与异常数据。
 
-阶段3分页补充：count预算涵盖本次全部顶层与递归子项；超过totalMembers返回空页。每次停止最多保留10000个对象引用，达到上限会明确报告不可获取；恢复运行后重新获取frameId/referenceId。数组直接读取请求页，不遍历完整对象图。取消沿用共享Host安全分离语义，不能假定旧停止仍有效。
+阶段3分页补充：count预算涵盖本次全部顶层与递归子项；超过totalMembers返回空页。每次停止最多保留10000个对象引用，达到上限会明确报告不可获取；恢复运行后重新获取frameId/referenceId。数组直接读取请求页，不遍历完整对象图。status/threads/stack/variables只读调用取消会立即结束调用方等待，后台读取保留原期限和并发名额直到收尾，不因取消过时刷新而关闭调试连接；取消后仍应查询status，不能假定目标或旧停止保持有效。执行控制与写入类命令保持既有安全恢复语义。
 
 阶段3源码映射：debug_launch/debug_attach可选sourceMappings数组（最多128项），每项为buildRoot、localRoot及可选module。根目录必须是绝对Windows路径；module为模块文件名或完整模块路径。匹配完整路径段、忽略大小写，匹配当前路径的模块规则优先，同级最长前缀优先；冲突明确报错。断点file用本地路径，栈/停止/绑定位置返回本地filePath及可空originalFilePath（原PDB路径）。省略配置保持原行为；配置在会话创建时固定，延迟模块共享配置。
 
