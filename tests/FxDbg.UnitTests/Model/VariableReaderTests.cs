@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using FxDbg.Core.Errors;
 using FxDbg.Core.Model;
 using FxDbg.Core.Variables;
@@ -9,6 +10,65 @@ namespace FxDbg.UnitTests.Model;
 
 public sealed class VariableReaderTests
 {
+    [Fact]
+    public void Huge_pages_only_read_requested_members_and_honor_cancellation()
+    {
+        using var cancellation = new CancellationTokenSource();
+        var value = new PageValue();
+        var reader = new VariableReader("page-stop");
+        var root = Assert.Single(reader.Read(new[] { new VariableMember("root", VariableKind.Local, value) }, 0, 100, 256));
+        Assert.Equal(0, value.ReadCount);
+        Assert.Equal(100001, root.TotalMembers);
+        Assert.Equal(100, reader.Expand(root.ReferenceId!, 50000, 100, 0, 256).Count);
+        Assert.Equal(100, value.ReadCount);
+        Assert.Single(reader.Expand(root.ReferenceId!, 100000, 100, 0, 256));
+        Assert.Empty(reader.Expand(root.ReferenceId!, int.MaxValue, 100, 0, 256));
+        value.BeforeMember = cancellation.Cancel;
+        Assert.Throws<System.OperationCanceledException>(() => reader.Expand(root.ReferenceId!, 0, 100, 0, 256, cancellation.Token));
+        Assert.Equal(101, value.ReadCount);
+        value.BeforeMember = null;
+        Assert.Single(reader.Expand(root.ReferenceId!, 100000, 100, 0, 256));
+    }
+
+    [Fact]
+    public void Reference_capacity_is_explicit_and_existing_references_remain_usable()
+    {
+        var reader = new VariableReader("bounded-stop");
+        VariableInfo? first = null;
+        for (int index = 0; index < 10001; index++)
+        {
+            var value = new ObjectValue { Identity = "object-" + index };
+            var item = Assert.Single(reader.Read(new[] { new VariableMember("v", VariableKind.Local, value) }, 0, 1, 10));
+            first ??= item;
+            Assert.Equal(index < 10000 ? VariableStatus.Available : VariableStatus.Unavailable, item.Status);
+        }
+        Assert.Empty(reader.Expand(first!.ReferenceId!, 0, 1, 0, 10));
+    }
+
+    private sealed class PageValue : IVariableValue
+    {
+        internal int ReadCount;
+        internal System.Action? BeforeMember;
+        public VariableStatus Status => VariableStatus.Available;
+        public string TypeName => "int[]";
+        public string? Diagnostic => null;
+        public string ReferenceIdentity => "large-array";
+        public int GetMemberCount(CancellationToken cancellationToken = default) => 100001;
+        public string Format(int maxStringLength) => "int[100001]";
+        public IReadOnlyList<VariableMember> GetMembers(int start, int count, CancellationToken cancellationToken = default)
+        {
+            var result = new List<VariableMember>();
+            for (int i = start; i < (long)start + count; i++)
+            {
+                BeforeMember?.Invoke();
+                cancellationToken.ThrowIfCancellationRequested();
+                ReadCount++;
+                result.Add(new VariableMember("[" + i + "]", VariableKind.ArrayElement, new ObjectValue { Status = VariableStatus.Null }));
+            }
+            return result;
+        }
+    }
+
     [Fact]
     public void Member_budget_preserves_roots_and_bounds_all_descendants()
     {
@@ -75,8 +135,8 @@ public sealed class VariableReaderTests
         public string? Diagnostic => null;
         internal string Identity { get; set; } = "object-1";
         public string? ReferenceIdentity => Identity;
-        public int TotalMembers => Members.Count;
+        public int GetMemberCount(CancellationToken cancellationToken = default) => Members.Count;
         public string Format(int maxStringLength) => "{Sample.Node}";
-        public IReadOnlyList<VariableMember> GetMembers(int start, int count) => Members.GetRange(start, System.Math.Min(count, Members.Count - start));
+        public IReadOnlyList<VariableMember> GetMembers(int start, int count, CancellationToken cancellationToken = default) => Members.GetRange(start, System.Math.Min(count, Members.Count - start));
     }
 }

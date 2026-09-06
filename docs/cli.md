@@ -24,3 +24,5 @@ $stack = & $cli stack --session $session --thread $thread | ConvertFrom-Json
 每个会话持有一个后台 Host 和匹配架构的 Engine，CLI 命令之间不重复附加。Host 由显式不继承句柄的 detached 进程启动，避免阻塞 PowerShell 的输出捕获。控制管道限同一用户、本机访问；30 分钟没有 CLI 连接则自动清理。Detach 结束会话并让后台进程退出；CLI 在请求期间被取消或异常断开时，尝试安全分离。
 
 后台服务位于 FxDbg.Host，CLI 仅解析参数和传递消息；所有执行控制、断点、栈与变量逻辑都由同一 Host/Engine 提供。MCP 外壳按阶段 2 实施，本阶段没有第二套调试后端。生命周期的实测边界见 [Engine 协议](engine-protocol.md)。
+
+对象与数组分页沿用共享读取器，边界和取消语义见 [对象与数组分页](variable-paging.md)。

@@ -24,14 +24,14 @@ public sealed partial class FrameworkDebugSession
             throw new FxDbgException(FxDbgErrorCode.FrameNotFound, "Frame ID is unknown or belongs to an earlier stop.");
         cancellationToken.ThrowIfCancellationRequested();
         variableReader ??= new VariableReader(SessionId + ":" + stopGeneration);
-        if (referenceId is not null) return variableReader.Expand(referenceId, start, count, maxDepth, maxStringLength);
+        if (referenceId is not null) return variableReader.Expand(referenceId, start, count, maxDepth, maxStringLength, cancellationToken);
         var roots = new List<VariableMember>();
         foreach (RootVariable root in DescribeRoots(handle.Frame).Skip(start).Take(count))
         {
             cancellationToken.ThrowIfCancellationRequested();
-            roots.Add(new VariableMember(root.Name, root.Kind, NativeVariableValue.Capture(root.Read, handle.Frame)));
+            roots.Add(new VariableMember(root.Name, root.Kind, NativeVariableValue.Capture(root.Read, handle.Frame, cancellationToken)));
         }
-        return variableReader.Read(roots, maxDepth, count, maxStringLength);
+        return variableReader.Read(roots, maxDepth, count, maxStringLength, cancellationToken);
     }
 
     private IEnumerable<RootVariable> DescribeRoots(CorDebugILFrame frame)

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using FxDbg.Core.Model;
 
 namespace FxDbg.Core.Variables;
@@ -11,9 +12,9 @@ public interface IVariableValue
     string TypeName { get; }
     string? Diagnostic { get; }
     string? ReferenceIdentity { get; }
-    int TotalMembers { get; }
+    int GetMemberCount(CancellationToken cancellationToken = default);
     string Format(int maxStringLength);
-    IReadOnlyList<VariableMember> GetMembers(int start, int count);
+    IReadOnlyList<VariableMember> GetMembers(int start, int count, CancellationToken cancellationToken = default);
 }
 
 public sealed class VariableMember

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using FxDbg.Core.Errors;
 using FxDbg.Core.Model;
 
@@ -15,33 +16,37 @@ public sealed class VariableReader
 
     public VariableReader(string scope) => this.scope = scope;
 
-    public IReadOnlyList<VariableInfo> Read(IReadOnlyList<VariableMember> members, int maxDepth, int maxMembers, int maxStringLength)
+    public IReadOnlyList<VariableInfo> Read(IReadOnlyList<VariableMember> members, int maxDepth, int maxMembers, int maxStringLength, CancellationToken cancellationToken = default)
     {
         Validate(maxDepth, maxMembers, maxStringLength);
+        cancellationToken.ThrowIfCancellationRequested();
         VariableMember[] roots = members.Take(maxMembers).ToArray();
         int remaining = maxMembers - roots.Length;
         var results = new List<VariableInfo>();
         foreach (VariableMember member in roots)
-            results.Add(ReadOne(member, maxDepth, maxStringLength, new HashSet<string>(StringComparer.Ordinal), ref remaining));
+            results.Add(ReadOne(member, maxDepth, maxStringLength, new HashSet<string>(StringComparer.Ordinal), ref remaining, cancellationToken));
         return results;
     }
 
-    public IReadOnlyList<VariableInfo> Expand(VariableReferenceId referenceId, int start, int count, int maxDepth, int maxStringLength)
+    public IReadOnlyList<VariableInfo> Expand(VariableReferenceId referenceId, int start, int count, int maxDepth, int maxStringLength, CancellationToken cancellationToken = default)
     {
         Validate(maxDepth, count, maxStringLength);
+        cancellationToken.ThrowIfCancellationRequested();
         if (start < 0) throw new FxDbgException(FxDbgErrorCode.InvalidRequest, "Variable page start must be nonnegative.");
         if (!references.TryGetValue(referenceId, out IVariableValue? value))
             throw new FxDbgException(FxDbgErrorCode.ValueUnavailable, "Variable reference is unknown or belongs to an earlier stop.");
-        if (start >= value.TotalMembers) return Array.Empty<VariableInfo>();
-        IReadOnlyList<VariableMember> members = value.GetMembers(start, Math.Min(count, value.TotalMembers - start));
+        int totalMembers = value.GetMemberCount(cancellationToken);
+        if (start >= totalMembers) return Array.Empty<VariableInfo>();
+        IReadOnlyList<VariableMember> members = value.GetMembers(start, Math.Min(count, totalMembers - start), cancellationToken);
         var ancestors = new HashSet<string>(StringComparer.Ordinal);
         if (value.ReferenceIdentity is not null) ancestors.Add(value.ReferenceIdentity);
         int remaining = count - members.Count;
-        return members.Select(member => ReadOne(member, maxDepth, maxStringLength, ancestors, ref remaining)).ToArray();
+        return members.Select(member => ReadOne(member, maxDepth, maxStringLength, ancestors, ref remaining, cancellationToken)).ToArray();
     }
 
-    private VariableInfo ReadOne(VariableMember member, int depth, int maxStringLength, HashSet<string> ancestors, ref int remaining)
+    private VariableInfo ReadOne(VariableMember member, int depth, int maxStringLength, HashSet<string> ancestors, ref int remaining, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         try
         {
             IVariableValue value = member.Value;
@@ -61,17 +66,18 @@ public sealed class VariableReader
                     references.Add(reference, value);
                 }
             }
+            int totalMembers = value.GetMemberCount(cancellationToken);
             var children = new List<VariableInfo>();
             bool cyclic = identity is not null && ancestors.Contains(identity);
-            if (depth > 0 && remaining > 0 && !cyclic && value.TotalMembers > 0)
+            if (depth > 0 && remaining > 0 && !cyclic && totalMembers > 0)
             {
-                IReadOnlyList<VariableMember> members = value.GetMembers(0, Math.Min(remaining, value.TotalMembers));
+                IReadOnlyList<VariableMember> members = value.GetMembers(0, Math.Min(remaining, totalMembers), cancellationToken);
                 remaining -= members.Count;
                 if (identity is not null) ancestors.Add(identity);
-                foreach (VariableMember child in members) children.Add(ReadOne(child, depth - 1, maxStringLength, ancestors, ref remaining));
+                foreach (VariableMember child in members) children.Add(ReadOne(child, depth - 1, maxStringLength, ancestors, ref remaining, cancellationToken));
                 if (identity is not null) ancestors.Remove(identity);
             }
-            return VariableInfo.Available(member.Name, member.Kind, value.TypeName, display, reference, children, value.TotalMembers);
+            return VariableInfo.Available(member.Name, member.Kind, value.TypeName, display, reference, children, totalMembers);
         }
         catch (FxDbgException exception) when (exception.Code == FxDbgErrorCode.ValueOptimizedAway || exception.Code == FxDbgErrorCode.ValueUnavailable)
         {

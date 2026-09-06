@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using ClrDebug;
 using FxDbg.Core.Errors;
 using FxDbg.Core.Model;
@@ -26,8 +27,9 @@ internal sealed class NativeVariableValue : IVariableValue
         typeName = value is null ? "object" : TypeNameOf(value.ExactType);
     }
 
-    internal static IVariableValue Capture(Func<CorDebugValue> read, CorDebugILFrame frame)
+    internal static IVariableValue Capture(Func<CorDebugValue> read, CorDebugILFrame frame, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         try { return new NativeVariableValue(read(), frame); }
         catch (DebugException exception) { return new FaultValue(exception); }
     }
@@ -39,8 +41,8 @@ internal sealed class NativeVariableValue : IVariableValue
     public string? ReferenceIdentity => Read(() => value is not null &&
         (value.Raw is ICorDebugArrayValue || HasFields)
         ? typeName + "@" + value.Address.Value.ToString("x", CultureInfo.InvariantCulture) : null);
-    public int TotalMembers => Read(() => value?.Raw is ICorDebugArrayValue array ? new CorDebugArrayValue(array).Count
-        : HasFields ? Fields.Count : 0);
+    public int GetMemberCount(CancellationToken cancellationToken = default) => Read(() => value?.Raw is ICorDebugArrayValue array ? new CorDebugArrayValue(array).Count
+        : HasFields ? GetFields(cancellationToken).Count : 0);
 
     public string Format(int maxStringLength) => Read(() =>
     {
@@ -71,8 +73,9 @@ internal sealed class NativeVariableValue : IVariableValue
         return "{" + typeName + "}";
     });
 
-    public IReadOnlyList<VariableMember> GetMembers(int start, int count) => Read<IReadOnlyList<VariableMember>>(() =>
+    public IReadOnlyList<VariableMember> GetMembers(int start, int count, CancellationToken cancellationToken = default) => Read<IReadOnlyList<VariableMember>>(() =>
     {
+        cancellationToken.ThrowIfCancellationRequested();
         var members = new List<VariableMember>();
         if (value?.Raw is ICorDebugArrayValue array)
         {
@@ -80,53 +83,55 @@ internal sealed class NativeVariableValue : IVariableValue
             int end = (int)Math.Min(items.Count, (long)start + count);
             for (int index = start; index < end; index++)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 int position = index;
-                members.Add(new VariableMember("[" + index + "]", VariableKind.ArrayElement, Capture(() => items.GetElementAtPosition(position), frame)));
+                members.Add(new VariableMember("[" + index + "]", VariableKind.ArrayElement, Capture(() => items.GetElementAtPosition(position), frame, cancellationToken)));
             }
         }
         else if (HasFields && value?.Raw is ICorDebugObjectValue raw)
         {
             var instance = new CorDebugObjectValue(raw);
-            foreach (FieldSlot field in Fields.Skip(start).Take(count))
+            foreach (FieldSlot field in GetFields(cancellationToken).Skip(start).Take(count))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
                 members.Add(new VariableMember(field.Name, field.IsStatic ? VariableKind.StaticField : VariableKind.InstanceField,
                     Capture(() => field.IsStatic ? field.Type.GetStaticFieldValue(field.Token, frame.Raw)
-                        : instance.GetFieldValue(field.Type.Class.Raw, field.Token), frame)));
+                        : instance.GetFieldValue(field.Type.Class.Raw, field.Token), frame, cancellationToken)));
+            }
         }
         return members;
     });
 
-    private List<FieldSlot> Fields
+    private List<FieldSlot> GetFields(CancellationToken cancellationToken)
     {
-        get
+        if (fields is not null) return fields;
+        var result = new List<FieldSlot>();
+        CorDebugType? type = value!.ExactType;
+        int hierarchyDepth = 0;
+        while (type is not null && type.Type != CorElementType.Object)
         {
-            if (fields is not null) return fields;
-            var result = new List<FieldSlot>();
-            CorDebugType? type = value!.ExactType;
-            int hierarchyDepth = 0;
-            while (type is not null && type.Type != CorElementType.Object)
+            if (++hierarchyDepth > 128) throw new FxDbgException(FxDbgErrorCode.ValueUnavailable, "Type hierarchy exceeds 128 levels.");
+            MetaDataImport metadata = type.Class.Module.GetMetaDataInterface().MetaDataImport;
+            var tokens = new mdFieldDef[64];
+            IntPtr enumeration = IntPtr.Zero;
+            try
             {
-                if (++hierarchyDepth > 128) throw new FxDbgException(FxDbgErrorCode.ValueUnavailable, "Type hierarchy exceeds 128 levels.");
-                MetaDataImport metadata = type.Class.Module.GetMetaDataInterface().MetaDataImport;
-                var tokens = new mdFieldDef[64];
-                IntPtr enumeration = IntPtr.Zero;
-                try
+                int count;
+                while ((count = MetadataNames.EnumFields(metadata, ref enumeration, type.Class.Token, tokens)) > 0)
                 {
-                    int count;
-                    while ((count = MetadataNames.EnumFields(metadata, ref enumeration, type.Class.Token, tokens)) > 0)
+                    cancellationToken.ThrowIfCancellationRequested();
+                    if (result.Count + count > 10000) throw new FxDbgException(FxDbgErrorCode.ValueUnavailable, "Type field count exceeds 10000.");
+                    for (int index = 0; index < count; index++)
                     {
-                        if (result.Count + count > 10000) throw new FxDbgException(FxDbgErrorCode.ValueUnavailable, "Type field count exceeds 10000.");
-                        for (int index = 0; index < count; index++)
-                        {
-                            GetFieldPropsResult fieldProperties = metadata.GetFieldProps(tokens[index]);
-                            result.Add(new FieldSlot(fieldProperties.szField, tokens[index], type, (fieldProperties.pdwAttr & CorFieldAttr.fdStatic) != 0));
-                        }
+                        GetFieldPropsResult fieldProperties = metadata.GetFieldProps(tokens[index]);
+                        result.Add(new FieldSlot(fieldProperties.szField, tokens[index], type, (fieldProperties.pdwAttr & CorFieldAttr.fdStatic) != 0));
                     }
                 }
-                finally { if (enumeration != IntPtr.Zero) metadata.CloseEnum(enumeration); }
-                type = type.Base;
             }
-            return fields = result;
+            finally { if (enumeration != IntPtr.Zero) metadata.CloseEnum(enumeration); }
+            type = type.Base;
         }
+        return fields = result;
     }
 
     private static T Read<T>(Func<T> action)
@@ -203,8 +208,8 @@ internal sealed class NativeVariableValue : IVariableValue
         public string TypeName => "unknown";
         public string? Diagnostic => "Value could not be read (" + error.HResult + ").";
         public string? ReferenceIdentity => null;
-        public int TotalMembers => 0;
+        public int GetMemberCount(CancellationToken cancellationToken = default) => 0;
         public string Format(int maxStringLength) => "";
-        public IReadOnlyList<VariableMember> GetMembers(int start, int count) => Array.Empty<VariableMember>();
+        public IReadOnlyList<VariableMember> GetMembers(int start, int count, CancellationToken cancellationToken = default) => Array.Empty<VariableMember>();
     }
 }

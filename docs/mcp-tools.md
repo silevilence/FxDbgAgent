@@ -73,3 +73,5 @@ stdin EOF、输出断开或 Host 退出均结束所属会话，默认尝试 Deta
 正常 EOF/Host 被强杀后，真实 x86/x64 launch/attach 目标均验证存活和可重附加。强杀 Engine 本身时，已实测 Desktop CLR 目标也退出；Host 隔离故障并继续服务。这是独立边界，不能将其称为安全分离成功。
 
 诊断参数：`--log-level off|error|info|debug`（默认 info）、`--log-file <本地路径>`（省略则 stderr）、`--value-logs off`（唯一允许值，任何级别都禁止值日志）。日志 API 仅接收完成状态、稳定错误码、命令、合法 sessionId、可用 PID 及 debug 级 Host 线程 ID，不接受原始请求、目标变量、环境/参数内容或异常消息；SDK 原始帧日志不启用。文件为最多约 1 MiB 的单个日志，满后清空最老记录重新写入。日志写入失败不改变已执行工具的结果。stdout 始终只有协议，业务响应仍可包含调用方请求的变量与异常数据。
+
+阶段3分页补充：count预算涵盖本次全部顶层与递归子项；超过totalMembers返回空页。每次停止最多保留10000个对象引用，达到上限会明确报告不可获取；恢复运行后重新获取frameId/referenceId。数组直接读取请求页，不遍历完整对象图。取消沿用共享Host安全分离语义，不能假定旧停止仍有效。

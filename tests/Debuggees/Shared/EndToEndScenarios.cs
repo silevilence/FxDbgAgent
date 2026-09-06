@@ -34,7 +34,8 @@ namespace FxDbg.Debuggees
                 System.Threading.Thread.Sleep(60000);
                 return;
             }
-            if (mode == "exception") ThrowScenario();
+            if (mode == "paging") PagingScenario();
+            else if (mode == "exception") ThrowScenario();
             else if (mode == "late")
             {
                 Assembly module = Assembly.LoadFrom(Path.Combine(directory, "Fx40.LateModule.dll"));
@@ -55,6 +56,29 @@ namespace FxDbg.Debuggees
             for (int index = 0; index < node.LargeTexts.Length; index++) node.LargeTexts[index] = longText;
             Observe(42, "hello-framework", node);
             return sink;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        private static void PagingScenario()
+        {
+            var values = new int[100001];
+            var graph = new PageNode();
+            graph.Self = graph;
+            for (int index = 0; index < values.Length; index++) values[index] = index;
+            for (int index = 0; index < graph.Branches.Length; index++) graph.Branches[index] = new int[1001];
+            sink = values.Length; // PAGING_BREAKPOINT
+            sink++;
+            GC.KeepAlive(values);
+            GC.KeepAlive(graph);
+        }
+
+        private sealed class PageNode
+        {
+            public PageNode Self;
+            public int[][] Branches = new int[101][];
+            public string Text = new string('p', 40000);
+            public int Dangerous { get { userCodeCalls++; throw new InvalidOperationException("Getter invoked"); } }
+            public override string ToString() { userCodeCalls++; return "must-not-run"; }
         }
 
         // Keep the basic-local acceptance fixture observable in both build configurations.
