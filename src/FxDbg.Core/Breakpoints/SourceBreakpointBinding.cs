@@ -7,6 +7,7 @@ namespace FxDbg.Core.Breakpoints;
 public interface ISourceBreakpointModule
 {
     string Id { get; }
+    string? AppDomainId { get; }
     SourceBreakpointResolution Resolve(SourceLocation location);
     ISourceBreakpointBinding Bind(BreakpointId breakpointId, BreakpointBindingLocation location);
 }

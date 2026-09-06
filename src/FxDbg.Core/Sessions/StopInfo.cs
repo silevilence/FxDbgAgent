@@ -17,7 +17,7 @@ public sealed class StopInfo
         ExceptionInfo? exception = null,
         string? moduleName = null,
         string? methodName = null,
-        IReadOnlyList<StackFrameInfo>? briefStack = null)
+        IReadOnlyList<StackFrameInfo>? briefStack = null, string? appDomainId = null)
     {
         if (processId <= 0)
         {
@@ -33,6 +33,7 @@ public sealed class StopInfo
         ProcessId = processId;
         ThreadId = threadId;
         AppDomain = appDomain;
+        AppDomainId = appDomainId;
         Location = location;
         BreakpointId = breakpointId;
         Exception = exception;
@@ -49,6 +50,7 @@ public sealed class StopInfo
     public int ThreadId { get; }
 
     public string? AppDomain { get; }
+    public string? AppDomainId { get; }
 
     public SourceLocation? Location { get; }
 

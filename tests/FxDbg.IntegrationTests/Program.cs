@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using FxDbg.Core.Breakpoints;
+using FxDbg.Core.Events;
 using FxDbg.Core.Model;
 using FxDbg.Core.Requests;
 using FxDbg.Interop;
@@ -111,6 +112,13 @@ internal static partial class Program
             Require(verified >= 0 && states.Skip(verified + 1).Contains(BreakpointState.Pending), "Unload must produce a pending event.");
             Require(states.Count(state => state == BreakpointState.Verified) >= 2, "Reload must produce a verified event.");
             Require(changes.Count(change => change.Removed) == 1, "Removal must produce exactly one event.");
+            var domainEvents = session.Events.OfType<AppDomainChangedEvent>().ToArray();
+            var unloaded = domainEvents.Where(item => item.Change == AppDomainChangeKind.Exited).ToArray();
+            Require(unloaded.Length >= 3 && unloaded.Select(item => item.AppDomain.AppDomainId).Distinct().Count() == unloaded.Length,
+                "Each unloaded AppDomain has a distinct lifetime identity.");
+            Require(unloaded.All(item => domainEvents.Any(created => created.Change == AppDomainChangeKind.Created && created.AppDomain.AppDomainId == item.AppDomain.AppDomainId)),
+                "Each domain exit corresponds to its observed creation.");
+            Require(session.Events.OfType<ModuleChangedEvent>().All(item => item.Module.AppDomainId is not null), "Module events carry domain identities.");
         }
         finally
         {

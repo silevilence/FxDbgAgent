@@ -12,18 +12,27 @@ namespace FxDbg.Interop;
 
 public sealed partial class FrameworkDebugSession
 {
-    private VariableReader? variableReader;
+    private readonly Dictionary<string, VariableReader> variableReaders = new();
+    private VariableReferenceBudget variableReferenceBudget = new();
+    private void ClearVariableReferences() { variableReaders.Clear(); variableReferenceBudget = new VariableReferenceBudget(); }
 
     public IReadOnlyList<VariableInfo> GetVariables(FrameId frameId, VariableReferenceId? referenceId = null,
-        int start = 0, int count = 100, int maxDepth = 1, int maxStringLength = 256, CancellationToken cancellationToken = default)
+        int start = 0, int count = 100, int maxDepth = 1, int maxStringLength = 256, CancellationToken cancellationToken = default, string? appDomainId = null)
     {
         RequireStopped();
+        RequireAppDomain(appDomainId);
         VariableReader.Validate(maxDepth, count, maxStringLength);
         if (start < 0) throw new FxDbgException(FxDbgErrorCode.InvalidRequest, "Variable page start must be nonnegative.");
         if (!framesById.TryGetValue(frameId, out FrameHandle? handle))
             throw new FxDbgException(FxDbgErrorCode.FrameNotFound, "Frame ID is unknown or belongs to an earlier stop.");
         cancellationToken.ThrowIfCancellationRequested();
-        variableReader ??= new VariableReader(SessionId + ":" + stopGeneration);
+        if (appDomainId is not null && appDomainId != handle.AppDomain.AppDomainId)
+            throw new FxDbgException(FxDbgErrorCode.InvalidRequest, "Frame does not belong to the selected AppDomain.");
+        if (!variableReaders.TryGetValue(handle.AppDomain.AppDomainId, out VariableReader? variableReader))
+        {
+            variableReader = new VariableReader(SessionId + ":" + stopGeneration + ":" + handle.AppDomain.AppDomainId, handle.AppDomain, variableReferenceBudget);
+            variableReaders.Add(handle.AppDomain.AppDomainId, variableReader);
+        }
         if (referenceId is not null) return variableReader.Expand(referenceId, start, count, maxDepth, maxStringLength, cancellationToken);
         var roots = new List<VariableMember>();
         foreach (RootVariable root in DescribeRoots(handle.Frame).Skip(start).Take(count))

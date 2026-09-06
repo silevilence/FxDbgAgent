@@ -18,10 +18,10 @@ public sealed class BreakpointManager : IDisposable
 
     public BreakpointInfo Get(BreakpointId id) => Require(id).Info;
 
-    public BreakpointInfo Set(SourceLocation location, bool enabled = true)
+    public BreakpointInfo Set(SourceLocation location, bool enabled = true, string? appDomainId = null)
     {
         var entry = new Entry(new BreakpointInfo(BreakpointId.New(), location, null, BreakpointState.Pending, enabled,
-            "Waiting for a loaded module with matching source symbols."));
+            "Waiting for a loaded module with matching source symbols.", appDomainId));
         entries.Add(entry.Info.BreakpointId, entry);
         Changed?.Invoke(new BreakpointChange(entry.Info));
         foreach (ISourceBreakpointModule module in modules.Values)
@@ -114,6 +114,7 @@ public sealed class BreakpointManager : IDisposable
 
     private static void Bind(Entry entry, ISourceBreakpointModule module)
     {
+        if (entry.Info.AppDomainId is not null && entry.Info.AppDomainId != module.AppDomainId) return;
         var bindings = new List<Bound>();
         try
         {
@@ -148,6 +149,8 @@ public sealed class BreakpointManager : IDisposable
 
     private void Publish(Entry entry)
     {
+        string[] boundDomains = entry.Bindings.Where(pair => pair.Value.Count > 0).Select(pair => modules[pair.Key].AppDomainId)
+            .Where(id => id is not null).Cast<string>().Distinct().OrderBy(id => id, StringComparer.Ordinal).ToArray();
         SourceLocation? location = entry.Bindings.Values.SelectMany(value => value)
             .Select(bound => bound.Source).OrderBy(source => Math.Abs((long)source.Line - entry.Info.RequestedLocation.Line))
             .ThenBy(source => source.Line).FirstOrDefault();
@@ -165,8 +168,9 @@ public sealed class BreakpointManager : IDisposable
         if (entry.Info.State == state && entry.Info.BoundLocation?.Line == location?.Line &&
             entry.Info.BoundLocation?.FilePath == location?.FilePath && entry.Info.BoundLocation?.Column == location?.Column &&
             entry.Info.BoundLocation?.OriginalFilePath == location?.OriginalFilePath &&
+            entry.Info.BoundAppDomainIds.SequenceEqual(boundDomains) &&
             entry.Info.Diagnostic == diagnostic) return;
-        entry.Info = new BreakpointInfo(entry.Info.BreakpointId, entry.Info.RequestedLocation, location, state, entry.Info.Enabled, diagnostic);
+        entry.Info = new BreakpointInfo(entry.Info.BreakpointId, entry.Info.RequestedLocation, location, state, entry.Info.Enabled, diagnostic, entry.Info.AppDomainId, boundDomains);
         Changed?.Invoke(new BreakpointChange(entry.Info));
     }
 
@@ -174,7 +178,7 @@ public sealed class BreakpointManager : IDisposable
         throw new FxDbgException(FxDbgErrorCode.BreakpointNotFound, "Source breakpoint does not exist: " + id);
 
     private static BreakpointInfo Copy(BreakpointInfo info, bool enabled) =>
-        new(info.BreakpointId, info.RequestedLocation, info.BoundLocation, info.State, enabled, info.Diagnostic);
+        new(info.BreakpointId, info.RequestedLocation, info.BoundLocation, info.State, enabled, info.Diagnostic, info.AppDomainId, info.BoundAppDomainIds);
 
     private sealed class Entry
     {

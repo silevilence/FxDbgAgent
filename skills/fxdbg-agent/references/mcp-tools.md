@@ -79,3 +79,5 @@ stdin EOF、输出断开或 Host 退出均结束所属会话，默认尝试 Deta
 阶段3源码映射：debug_launch/debug_attach可选sourceMappings数组（最多128项），每项为buildRoot、localRoot及可选module。根目录必须是绝对Windows路径；module为模块文件名或完整模块路径。匹配完整路径段、忽略大小写，匹配当前路径的模块规则优先，同级最长前缀优先；冲突明确报错。断点file用本地路径，栈/停止/绑定位置返回本地filePath及可空originalFilePath（原PDB路径）。省略配置保持原行为；配置在会话创建时固定，延迟模块共享配置。
 
 示例sourceMappings：[{"buildRoot":"C:\\build\\src","localRoot":"D:\\workspace\\src"},{"buildRoot":"C:\\build\\src","localRoot":"D:\\workspace\\plugin","module":"Plugin.dll"}]。源码映射不会复制文件或代替PDB匹配校验。
+
+阶段3 AppDomain：status返回appDomains数组，字段appDomainId/name/runtimeId。status、threads、stack、variables以及创建set_breakpoint可选appDomainId，省略观察全部域。未知/卸载/跨会话ID返回invalid_request。线程按当前域筛选，栈按帧所属模块的域筛选再分页；变量携带读取帧的域上下文，所选域必须匹配frameId。status仅筛选域/模块/适用断点，保留进程级停止与操作信息。断点附boundAppDomainIds；限定域卸载后回pending，不自动绑定同名新域。用新ID创建新断点，更新enabled不能改变域范围。变量引用按域隔离，但所有域共用每次停止10000引用上限；恢复运行或域卸载使旧引用失效。

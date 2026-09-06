@@ -49,6 +49,11 @@ internal static class OutputSchemas
                 ("eventSequence", Integer()), ("snapshotAtUtc", Text()), ("activeOperationId", Text(true)))
         };
         void Optional(string definition, string field, JsonObject schema) => definitions[definition]!["properties"]![field] = schema;
+        definitions["appDomain"] = Object(("appDomainId", Text()), ("name", Text()), ("runtimeId", Integer()));
+        foreach (string definition in new[] { "frame", "thread", "stop", "module", "variable", "breakpoint" }) Optional(definition, "appDomainId", Text(true));
+        Optional("variable", "appDomain", Text(true));
+        Optional("breakpoint", "boundAppDomainIds", Array(Text()));
+        Optional("status", "appDomains", Array(Ref("appDomain")));
         Optional("error", "retryAfterMs", Integer());
         Optional("operation", "finishedAtUtc", Text());
         Optional("operation", "stop", Nullable(Ref("stop")));

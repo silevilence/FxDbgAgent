@@ -97,14 +97,23 @@ internal sealed class EngineServer
         {
             case "state":
                 PublishEvents();
-                result = new JObject { ["target"] = WireJson.Value(current.Target), ["stop"] = WireJson.Value(current.CurrentStop), ["eventSequence"] = eventSequence };
+                result = new JObject { ["target"] = WireJson.Value(current.Target), ["stop"] = WireJson.Value(current.CurrentStop), ["eventSequence"] = eventSequence,
+                    ["appDomains"] = WireJson.Value(current.GetAppDomains()) };
                 if (Boolean(args, "includeDetails", false))
                 {
                     ((JObject)result)["breakpoints"] = WireJson.Value(current.GetBreakpoints());
                     ((JObject)result)["modules"] = WireJson.Value(current.GetModules());
+                    if (args["appDomainId"] is not null)
+                    {
+                        string selected = Text(args, "appDomainId");
+                        if (!current.GetAppDomains().Any(item => item.AppDomainId == selected)) throw Invalid("AppDomain is unknown or unloaded.");
+                        ((JObject)result)["appDomains"] = WireJson.Value(current.GetAppDomains().Where(item => item.AppDomainId == selected).ToArray());
+                        ((JObject)result)["modules"] = WireJson.Value(current.GetModules().Where(item => item.AppDomainId == selected).ToArray());
+                        ((JObject)result)["breakpoints"] = WireJson.Value(current.GetBreakpoints().Where(item => item.AppDomainId == selected || item.AppDomainId is null).ToArray());
+                    }
                 }
                 break;
-            case "break.set": result = current.SetBreakpoint(new SourceLocation(Text(args, "file"), Integer(args, "line", 0)), Boolean(args, "enabled", true)); break;
+            case "break.set": result = current.SetBreakpoint(new SourceLocation(Text(args, "file"), Integer(args, "line", 0)), Boolean(args, "enabled", true), OptionalText(args, "appDomainId")); break;
             case "break.list": result = current.GetBreakpoints(); break;
             case "break.remove": current.RemoveBreakpoint(new BreakpointId(Text(args, "breakpointId"))); result = new { removed = true }; break;
             case "break.enable": result = current.SetBreakpointEnabled(new BreakpointId(Text(args, "breakpointId")), Boolean(args, "enabled", true)); break;
@@ -114,11 +123,11 @@ internal sealed class EngineServer
                 if (!Enum.TryParse(Text(args, "kind"), true, out StepKind kind) || !Enum.IsDefined(typeof(StepKind), kind)) throw Invalid("Step kind must be into, over or out.");
                 current.Step(Integer(args, "threadId", 0), kind, token); result = current.Target; break;
             case "wait": result = current.WaitForStop(timeout, token); break;
-            case "threads": result = current.GetThreads(token); break;
-            case "stack": result = current.GetStack(Integer(args, "threadId", 0), Integer(args, "start", 0), Integer(args, "count", 32), token); break;
+            case "threads": result = current.GetThreads(token, OptionalText(args, "appDomainId")); break;
+            case "stack": result = current.GetStack(Integer(args, "threadId", 0), Integer(args, "start", 0), Integer(args, "count", 32), token, OptionalText(args, "appDomainId")); break;
             case "variables":
                 result = current.GetVariables(new FrameId(Text(args, "frameId")), args["referenceId"]?.Type == JTokenType.String ? new VariableReferenceId(Text(args, "referenceId")) : null,
-                    Integer(args, "start", 0), Integer(args, "count", 100), Integer(args, "maxDepth", 1), Integer(args, "maxStringLength", 256), token); break;
+                    Integer(args, "start", 0), Integer(args, "count", 100), Integer(args, "maxDepth", 1), Integer(args, "maxStringLength", 256), token, OptionalText(args, "appDomainId")); break;
             case "exceptions.configure": current.ConfigureExceptionStops(Boolean(args, "firstChance", false)); result = new { configured = true }; break;
             case "modules": result = current.GetModules(); break;
             case "symbols.refresh": current.RefreshSymbols(); result = current.GetModules(); break;
@@ -153,7 +162,7 @@ internal sealed class EngineServer
         {
             if (item.Sequence != lastDomainSequence + 1) { peer.Dispose(); return; }
             lastDomainSequence = item.Sequence;
-            string kind = item is StoppedEvent ? "stopped" : item is ModuleChangedEvent ? "moduleChanged" : "stateChanged";
+            string kind = item is StoppedEvent ? "stopped" : item is ModuleChangedEvent ? "moduleChanged" : item is AppDomainChangedEvent ? "appDomainChanged" : item is ThreadChangedEvent ? "threadChanged" : "stateChanged";
             JToken data = WireJson.Value(item);
             if (item is SessionStateChangedEvent changed && changed.CurrentState == DebugSessionState.Terminated
                 && session.CurrentStop?.Reason == StopReason.ProcessExit)
@@ -179,6 +188,7 @@ internal sealed class EngineServer
 
     private static string Text(JObject args, string name) => args[name]?.Type == JTokenType.String && !string.IsNullOrWhiteSpace((string?)args[name])
         ? (string)args[name]! : throw Invalid("Required string parameter: " + name);
+    private static string? OptionalText(JObject args, string name) => args[name] is null ? null : Text(args, name);
     private static int Integer(JObject args, string name, int fallback) => args[name] is null ? fallback : args[name]!.Type == JTokenType.Integer
         ? (int)args[name]! : throw Invalid("Integer parameter required: " + name);
     private static bool Boolean(JObject args, string name, bool fallback) => args[name] is null ? fallback : args[name]!.Type == JTokenType.Boolean

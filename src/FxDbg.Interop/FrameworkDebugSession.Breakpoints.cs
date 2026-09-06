@@ -49,7 +49,11 @@ public sealed partial class FrameworkDebugSession
         return breakpoints.List();
     }
 
-    public BreakpointInfo SetBreakpoint(SourceLocation source, bool enabled = true) => WithSynchronizedTarget(() => breakpoints.Set(source, enabled));
+    public BreakpointInfo SetBreakpoint(SourceLocation source, bool enabled = true, string? appDomainId = null) => WithSynchronizedTarget(() =>
+    {
+        RequireAppDomain(appDomainId);
+        return breakpoints.Set(source, enabled, appDomainId);
+    });
 
     public BreakpointInfo SetBreakpointEnabled(BreakpointId id, bool enabled) =>
         WithSynchronizedTarget(() => breakpoints.SetEnabled(id, enabled));
@@ -71,7 +75,7 @@ public sealed partial class FrameworkDebugSession
         callbackPairing.Continue(() => (pendingEntryController ?? process).Continue(false));
         pendingEntryController = null;
         framesById.Clear();
-        variableReader = null;
+        ClearVariableReferences();
         HitBreakpointId = null;
         StoppedThreadId = null;
         CurrentStop = null;
@@ -95,7 +99,7 @@ public sealed partial class FrameworkDebugSession
         switch (envelope.EventArgs)
         {
             case LoadModuleCorDebugManagedCallbackEventArgs loaded:
-                var module = new DebugModule(loaded.Module) { SourceMapper = sourceMapper };
+                var module = new DebugModule(loaded.Module, GetAppDomain(loaded.Module.Assembly.AppDomain)) { SourceMapper = sourceMapper };
                 modules.Add(loaded.Module.Raw, module);
                 breakpoints.ModuleLoaded(module);
                 domain.RecordModuleChange(ModuleChangeKind.Loaded, module.Snapshot);
@@ -141,7 +145,7 @@ public sealed partial class FrameworkDebugSession
     private void ClearModules()
     {
         framesById.Clear();
-        variableReader = null;
+        ClearVariableReferences();
         foreach (DebugModule module in modules.Values)
         {
             breakpoints.ModuleUnloaded(module.Id);
@@ -149,6 +153,8 @@ public sealed partial class FrameworkDebugSession
             module.Dispose();
         }
         modules.Clear();
+        appDomains.Clear();
+        observedThreads.Clear();
     }
 
     private void PollSymbolFiles()

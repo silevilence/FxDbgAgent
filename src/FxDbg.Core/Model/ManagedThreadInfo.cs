@@ -4,7 +4,7 @@ namespace FxDbg.Core.Model;
 
 public sealed class ManagedThreadInfo
 {
-    public ManagedThreadInfo(int threadId, string? name, string? appDomain, bool isStopped)
+    public ManagedThreadInfo(int threadId, string? name, string? appDomain, bool isStopped, string? appDomainId = null)
     {
         if (threadId <= 0)
         {
@@ -15,6 +15,7 @@ public sealed class ManagedThreadInfo
         Name = name;
         AppDomain = appDomain;
         IsStopped = isStopped;
+        AppDomainId = appDomainId;
     }
 
     public int ThreadId { get; }
@@ -22,6 +23,7 @@ public sealed class ManagedThreadInfo
     public string? Name { get; }
 
     public string? AppDomain { get; }
+    public string? AppDomainId { get; }
 
     public bool IsStopped { get; }
 }

@@ -10,6 +10,25 @@ namespace FxDbg.UnitTests.Breakpoints;
 public sealed class BreakpointManagerTests
 {
     [Fact]
+    public void Scoped_breakpoint_never_binds_another_or_recreated_domain()
+    {
+        var manager = new BreakpointManager();
+        var selected = new SampleModule("selected-module") { AppDomainId = "session:domain:1" };
+        var other = new SampleModule("other-module") { AppDomainId = "session:domain:2" };
+        manager.ModuleLoaded(selected);
+        manager.ModuleLoaded(other);
+        var breakpoint = manager.Set(new SourceLocation("sample.cs", 10), appDomainId: selected.AppDomainId);
+        Assert.NotNull(selected.LastBinding);
+        Assert.Null(other.LastBinding);
+        Assert.Equal(new[] { selected.AppDomainId }, breakpoint.BoundAppDomainIds);
+        manager.ModuleUnloaded(selected.Id);
+        manager.ModuleLoaded(new SampleModule("replacement-module") { AppDomainId = "session:domain:3" });
+        var pending = manager.Get(breakpoint.BreakpointId);
+        Assert.Equal(BreakpointState.Pending, pending.State);
+        Assert.Empty(pending.BoundAppDomainIds);
+        Assert.Equal(selected.AppDomainId, pending.AppDomainId);
+    }
+    [Fact]
     public void Rebinding_same_line_publishes_changed_source_path()
     {
         var manager = new BreakpointManager();
@@ -58,6 +77,7 @@ public sealed class BreakpointManagerTests
     {
         public SampleModule(string id) => Id = id;
         public string Id { get; }
+        public string? AppDomainId { get; set; }
         public bool SymbolsReady { get; set; } = true;
         public bool BindingFails { get; set; }
         public int Line { get; set; } = 10;

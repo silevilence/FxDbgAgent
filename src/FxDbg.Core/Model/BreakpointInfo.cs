@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace FxDbg.Core.Model;
 
@@ -18,7 +20,7 @@ public sealed class BreakpointInfo
         SourceLocation? boundLocation,
         BreakpointState state,
         bool enabled,
-        string? diagnostic)
+        string? diagnostic, string? appDomainId = null, IReadOnlyList<string>? boundAppDomainIds = null)
     {
         BreakpointId = breakpointId ?? throw new ArgumentNullException(nameof(breakpointId));
         RequestedLocation = requestedLocation ?? throw new ArgumentNullException(nameof(requestedLocation));
@@ -26,6 +28,8 @@ public sealed class BreakpointInfo
         State = state;
         Enabled = enabled;
         Diagnostic = diagnostic;
+        AppDomainId = appDomainId;
+        BoundAppDomainIds = new ReadOnlyCollection<string>(boundAppDomainIds is null ? Array.Empty<string>() : new List<string>(boundAppDomainIds));
     }
 
     public BreakpointId BreakpointId { get; }
@@ -39,4 +43,6 @@ public sealed class BreakpointInfo
     public bool Enabled { get; }
 
     public string? Diagnostic { get; }
+    public string? AppDomainId { get; }
+    public IReadOnlyList<string> BoundAppDomainIds { get; }
 }

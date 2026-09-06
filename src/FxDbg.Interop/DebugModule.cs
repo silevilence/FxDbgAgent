@@ -18,22 +18,30 @@ internal sealed class DebugModule : ISourceBreakpointModule, IDisposable
     private DateTime symbolWriteTime;
     private long symbolLength;
     private readonly Dictionary<int, string> methodNames = new();
-    private readonly string appDomain;
+    private string appDomain;
     private ModuleInfo? snapshot;
     internal SourcePathMapper SourceMapper { get; set; } = new();
 
-    internal DebugModule(CorDebugModule module)
+    internal DebugModule(CorDebugModule module, AppDomainInfo appDomainInfo)
     {
         this.module = module;
         path = module.Name;
-        appDomain = module.Assembly.AppDomain.Name;
+        appDomain = appDomainInfo.Name;
+        AppDomainId = appDomainInfo.AppDomainId;
         Id = Guid.NewGuid().ToString("D");
         ReloadSymbols();
     }
 
     public string Id { get; }
+    public string AppDomainId { get; }
     internal ModuleInfo Snapshot => snapshot!;
     internal bool HasSymbols => symbols?.Status == SymbolStatus.Loaded;
+    internal void UpdateAppDomainName(string name)
+    {
+        appDomain = name;
+        if (snapshot is not null) snapshot = new ModuleInfo(snapshot.ModuleId, snapshot.Name, snapshot.Path, name,
+            snapshot.SymbolStatus, snapshot.PdbPath, snapshot.Diagnostic, AppDomainId);
+    }
 
     internal SourceLocation? Resolve(int token, int offset)
     {
@@ -80,13 +88,13 @@ internal sealed class DebugModule : ISourceBreakpointModule, IDisposable
             symbolWriteTime = file.Exists ? file.LastWriteTimeUtc : DateTime.MinValue;
             symbolLength = file.Exists ? file.Length : 0;
             snapshot = new ModuleInfo(Id, Path.GetFileName(path), path, appDomain, symbols?.Status ?? SymbolStatus.Missing,
-                symbols?.PdbPath, symbols?.Diagnostic ?? (symbols is null ? "This module has no local PE/PDB files." : null));
+                symbols?.PdbPath, symbols?.Diagnostic ?? (symbols is null ? "This module has no local PE/PDB files." : null), AppDomainId);
         }
         catch (Exception error) when (error is IOException || error is UnauthorizedAccessException || error is ArgumentException || error is NotSupportedException)
         {
             symbolWriteTime = DateTime.MinValue;
             symbolLength = -1;
-            snapshot = new ModuleInfo(Id, path, path, appDomain, SymbolStatus.ReadFailed, null, "Cannot inspect symbol files: " + error.Message);
+            snapshot = new ModuleInfo(Id, path, path, appDomain, SymbolStatus.ReadFailed, null, "Cannot inspect symbol files: " + error.Message, AppDomainId);
         }
     }
 

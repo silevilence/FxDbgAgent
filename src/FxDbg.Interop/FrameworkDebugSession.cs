@@ -379,6 +379,7 @@ public sealed partial class FrameworkDebugSession : IDisposable
         {
             try
             {
+                HandleAppDomainCallback(envelope);
                 if (HandleBreakpointCallback(envelope) || HandleExceptionCallback(envelope)) return;
             }
             catch

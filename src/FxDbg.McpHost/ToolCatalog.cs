@@ -51,6 +51,7 @@ public static class ToolCatalog
 
     private static Tool Define(string name, string description, JsonObject properties, string[] required, bool session = true, bool readOnly = false)
     {
+        if (name is "status" or "threads" or "stack" or "variables" or "set_breakpoint") properties["appDomainId"] = Text();
         if (name is "launch" or "attach") properties["sourceMappings"] = new JsonObject
         {
             ["type"] = "array", ["maxItems"] = 128,
@@ -67,7 +68,7 @@ public static class ToolCatalog
             ["required"] = new JsonArray((session ? required.Prepend("sessionId") : required).Select(x => (JsonNode?)JsonValue.Create(x)).ToArray())
         };
         if (name == "set_breakpoint")
-            schema["oneOf"] = JsonNode.Parse("""[{"required":["file","line"],"not":{"required":["breakpointId"]}},{"required":["breakpointId","enabled"],"not":{"anyOf":[{"required":["file"]},{"required":["line"]}]}}]""");
+            schema["oneOf"] = JsonNode.Parse("""[{"required":["file","line"],"not":{"required":["breakpointId"]}},{"required":["breakpointId","enabled"],"not":{"anyOf":[{"required":["file"]},{"required":["line"]},{"required":["appDomainId"]}]}}]""");
         return new Tool
         {
             Name = "debug_" + name, Description = description, InputSchema = JsonSerializer.SerializeToElement(schema), OutputSchema = OutputSchemas.For(name),
@@ -85,7 +86,7 @@ public static class ToolCatalog
         {
             bool update = arguments.TryGetProperty("breakpointId", out _);
             bool file = arguments.TryGetProperty("file", out _), line = arguments.TryGetProperty("line", out _);
-            if (update ? file || line || !arguments.TryGetProperty("enabled", out _) : !file || !line)
+            if (update ? file || line || arguments.TryGetProperty("appDomainId", out _) || !arguments.TryGetProperty("enabled", out _) : !file || !line)
                 throw new ArgumentException("Use file + line to create, or breakpointId + enabled to update a breakpoint.");
         }
     }

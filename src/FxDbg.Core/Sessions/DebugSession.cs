@@ -32,6 +32,10 @@ public sealed class DebugSession
 
     public void RecordModuleChange(ModuleChangeKind change, ModuleInfo module)
         => Append(new ModuleChangedEvent(Id, ++eventSequence, DateTimeOffset.UtcNow, change, module));
+    public void RecordAppDomainChange(AppDomainChangeKind change, AppDomainInfo appDomain)
+        => Append(new AppDomainChangedEvent(Id, ++eventSequence, DateTimeOffset.UtcNow, change, appDomain));
+    public void RecordThreadChange(ThreadChangeKind change, ManagedThreadInfo thread)
+        => Append(new ThreadChangedEvent(Id, ++eventSequence, DateTimeOffset.UtcNow, change, thread));
 
     public SessionStateChangedEvent Start()
     {

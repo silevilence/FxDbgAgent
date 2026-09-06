@@ -62,7 +62,8 @@ public sealed partial class DebugSessionService : IAsyncDisposable
                 try
                 {
                     // Cancelling a read-only status request must not close a running operation's pipe.
-                    Task<JToken> query = engine.InvokeAsync(id, "state", new JObject { ["includeDetails"] = true }, timeout, lifetime.Token);
+                    var queryArgs = new JObject { ["includeDetails"] = true };
+                    Task<JToken> query = engine.InvokeAsync(id, "state", queryArgs, timeout, lifetime.Token);
                     lease.HoldUntil(query);
                     _ = query.ContinueWith(task => _ = task.Exception, TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously);
                     snapshot = (JObject)await query.WaitAsync(timeout, linked.Token).ConfigureAwait(false);
@@ -88,6 +89,15 @@ public sealed partial class DebugSessionService : IAsyncDisposable
                 if (requestedOperation is not null) snapshot["operation"] = requestedOperation.Snapshot();
                 snapshot["activeOperationId"] = observation.ActiveOperation is { IsCompleted: false } active ? active.Id : null;
                 observation.LastSnapshot = (JObject)snapshot.DeepClone();
+            }
+            if (arguments["appDomainId"] is not null)
+            {
+                string selected = (string)arguments["appDomainId"]!;
+                if (snapshot["appDomains"] is not JArray domains || !domains.Any(item => (string?)item["appDomainId"] == selected))
+                    throw Invalid("AppDomain ID is unknown or unloaded; query status again.");
+                snapshot["appDomains"] = new JArray(domains.Where(item => (string?)item["appDomainId"] == selected));
+                if (snapshot["modules"] is JArray modules) snapshot["modules"] = new JArray(modules.Where(item => (string?)item["appDomainId"] == selected));
+                if (snapshot["breakpoints"] is JArray breakpoints) snapshot["breakpoints"] = new JArray(breakpoints.Where(item => item["appDomainId"]?.Type is null or JTokenType.Null || (string?)item["appDomainId"] == selected));
             }
             return Envelope(id, snapshot);
         }

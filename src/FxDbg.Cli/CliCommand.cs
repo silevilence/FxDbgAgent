@@ -58,6 +58,7 @@ public sealed class CliCommand
                     if (separator <= 0) throw Invalid("Environment assignment must be NAME=VALUE.");
                     environment[value[..separator]] = value[(separator + 1)..]; break;
                 case "--pid": values["processId"] = Positive(value, option); break;
+                case "--app-domain": values["appDomainId"] = value; break;
                 case "--source-maps":
                     var mappings = JArray.Parse(File.ReadAllText(RequiredPath(value)));
                     _ = new SourcePathMapper(mappings.ToObject<SourcePathMapping[]>());
@@ -96,6 +97,7 @@ public sealed class CliCommand
     private static bool Allowed(string method, string option)
     {
         if (option is "--session" or "--timeout-ms") return true;
+        if (option == "--app-domain" && method is "threads" or "stack" or "variables" or "break.set") return true;
         if (method is "launch" or "attach" && option is "--engine-dir" or "--arch" or "--source-maps") return true;
         return method switch
         {

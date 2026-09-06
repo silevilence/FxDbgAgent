@@ -120,7 +120,7 @@ public sealed partial class FrameworkDebugSession
     {
         stopGeneration++;
         framesById.Clear();
-        variableReader = null;
+        ClearVariableReferences();
         if (stepper is not null)
         {
             stepper.Deactivate();
@@ -128,13 +128,13 @@ public sealed partial class FrameworkDebugSession
         }
         int threadId = thread?.Id ?? 0;
         StoppedThreadId = threadId == 0 ? null : threadId;
-        string? appDomain = thread?.AppDomain.Name;
+        AppDomainInfo? appDomain = thread is null ? null : GetAppDomain(thread.AppDomain);
         IReadOnlyList<StackFrameInfo> stack = thread is null ? Array.Empty<StackFrameInfo>() : CaptureStack(thread, 0, 5);
         StackFrameInfo? first = stack.FirstOrDefault();
         ExceptionInfo? exception = reason == StopReason.Exception && thread is not null
             ? CaptureException(thread, unhandledException) : null;
-        CurrentStop = new StopInfo(reason, Target.ProcessId, threadId, appDomain, first?.SourceLocation,
-            HitBreakpointId, exception, moduleName: first?.ModuleName, methodName: first?.MethodName, briefStack: stack);
+        CurrentStop = new StopInfo(reason, Target.ProcessId, threadId, appDomain?.Name, first?.SourceLocation,
+            HitBreakpointId, exception, moduleName: first?.ModuleName, methodName: first?.MethodName, briefStack: stack, appDomainId: appDomain?.AppDomainId);
         domain.MarkStopped(CurrentStop);
     }
 

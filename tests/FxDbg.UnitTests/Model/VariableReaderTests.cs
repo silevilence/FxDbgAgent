@@ -11,6 +11,22 @@ namespace FxDbg.UnitTests.Model;
 public sealed class VariableReaderTests
 {
     [Fact]
+    public void Domain_views_keep_references_separate_and_share_the_stop_budget()
+    {
+        var budget = new VariableReferenceBudget();
+        var first = new VariableReader("one", new AppDomainInfo("one", "SameName", 1), budget);
+        var second = new VariableReader("two", new AppDomainInfo("two", "SameName", 2), budget);
+        var root = Assert.Single(first.Read(new[] { new VariableMember("root", VariableKind.Local, new ObjectValue()) }, 0, 1, 10));
+        Assert.Equal("one", root.AppDomainId);
+        Assert.Equal("SameName", root.AppDomain);
+        Assert.Throws<FxDbgException>(() => second.Expand(root.ReferenceId!, 0, 1, 0, 10));
+        for (int i = 0; i < 9999; i++)
+            Assert.Equal(VariableStatus.Available, Assert.Single(second.Read(new[] { new VariableMember("v", VariableKind.Local, new ObjectValue { Identity = "other" + i }) }, 0, 1, 10)).Status);
+        var limited = Assert.Single(first.Read(new[] { new VariableMember("v", VariableKind.Local, new ObjectValue { Identity = "extra" }) }, 0, 1, 10));
+        Assert.Equal(VariableStatus.Unavailable, limited.Status);
+        Assert.Equal("one", limited.AppDomainId);
+    }
+    [Fact]
     public void Huge_pages_only_read_requested_members_and_honor_cancellation()
     {
         using var cancellation = new CancellationTokenSource();

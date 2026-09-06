@@ -7,4 +7,5 @@
     <RootNamespace>FxDbg.Debuggees.ConsoleX86</RootNamespace>
   </PropertyGroup>
   <ItemGroup><Compile Include="..\Shared\EndToEndScenarios.cs" Link="EndToEndScenarios.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="..\Shared\AppDomainScenarios.cs" Link="AppDomainScenarios.cs" /></ItemGroup>
 </Project>

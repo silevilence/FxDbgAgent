@@ -12,7 +12,7 @@ public sealed class StackFrameInfo
         string assemblyName,
         uint ilOffset,
         SourceLocation? sourceLocation,
-        string? appDomain)
+        string? appDomain, string? appDomainId = null)
     {
         FrameId = frameId ?? throw new ArgumentNullException(nameof(frameId));
         ThreadId = threadId;
@@ -22,6 +22,7 @@ public sealed class StackFrameInfo
         IlOffset = ilOffset;
         SourceLocation = sourceLocation;
         AppDomain = appDomain;
+        AppDomainId = appDomainId;
     }
 
     public FrameId FrameId { get; }
@@ -39,4 +40,5 @@ public sealed class StackFrameInfo
     public SourceLocation? SourceLocation { get; }
 
     public string? AppDomain { get; }
+    public string? AppDomainId { get; }
 }

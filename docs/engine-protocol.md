@@ -39,3 +39,5 @@ Core 标识序列化为字符串，枚举为 camelCase。`start` 要求 protocol
 旧 Engine launch/attach 命令入口仅用于已有阶段 1-2/1-3 验证，仍复用相同 bootstrap、调度器和 Interop。产品 Host 使用 serve + Named Pipe。Engine serve 的 stdout 不承担日志，帧与诊断日志隔离；不记录参数帧或变量值。
 
 阶段3启动扩展：start请求可附sourceMappings数组（buildRoot/localRoot/module），缺省为空；Host与Engine在目标创建前校验不可变配置。源码位置附originalFilePath保留映射前PDB路径；模块延迟加载沿用同一配置。
+
+阶段3多域扩展：state详情包含appDomains；break.set、threads、stack、variables可带appDomainId。appDomainChanged和threadChanged事件承载域身份，模块/停止/帧/变量同样携带appDomainId；事件继续使用原序号与有界队列。

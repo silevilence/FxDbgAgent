@@ -28,3 +28,5 @@ $stack = & $cli stack --session $session --thread $thread | ConvertFrom-Json
 对象与数组分页沿用共享读取器，边界和取消语义见 [对象与数组分页](variable-paging.md)。
 
 launch/attach 支持 --source-maps <JSON文件>，数组字段与MCP的sourceMappings一致，详见 [源码映射](source-mapping.md)。
+
+threads、stack、variables、break支持 --app-domain <status中的appDomainId>；详细语义见 [AppDomain识别](appdomains.md)。CLI通过state的域列表及events查看生命周期。

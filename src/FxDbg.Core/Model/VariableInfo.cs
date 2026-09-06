@@ -18,7 +18,7 @@ public sealed class VariableInfo
         VariableReferenceId? referenceId,
         IReadOnlyList<VariableInfo> children,
         int totalMembers,
-        string? diagnostic)
+        string? diagnostic, string? appDomainId = null, string? appDomain = null)
     {
         Name = string.IsNullOrWhiteSpace(name)
             ? throw new ArgumentException("A variable name is required.", nameof(name))
@@ -31,6 +31,8 @@ public sealed class VariableInfo
         Children = children;
         TotalMembers = totalMembers;
         Diagnostic = diagnostic;
+        AppDomainId = appDomainId;
+        AppDomain = appDomain;
     }
 
     public string Name { get; }
@@ -50,6 +52,11 @@ public sealed class VariableInfo
     public int TotalMembers { get; }
 
     public string? Diagnostic { get; }
+    public string? AppDomainId { get; }
+    public string? AppDomain { get; }
+
+    internal VariableInfo InAppDomain(AppDomainInfo? domain) => domain is null ? this :
+        new(Name, Kind, Status, TypeName, DisplayValue, ReferenceId, Children, TotalMembers, Diagnostic, domain.AppDomainId, domain.Name);
 
     public bool HasChildren => Status == VariableStatus.Available && TotalMembers > 0;
 

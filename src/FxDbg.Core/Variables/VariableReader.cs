@@ -11,10 +11,13 @@ namespace FxDbg.Core.Variables;
 public sealed class VariableReader
 {
     private readonly string scope;
+    private readonly AppDomainInfo? appDomain;
+    private readonly VariableReferenceBudget referenceBudget;
     private readonly Dictionary<string, VariableReferenceId> identities = new(StringComparer.Ordinal);
     private readonly Dictionary<VariableReferenceId, IVariableValue> references = new();
 
-    public VariableReader(string scope) => this.scope = scope;
+    public VariableReader(string scope, AppDomainInfo? appDomain = null, VariableReferenceBudget? referenceBudget = null)
+    { this.scope = scope; this.appDomain = appDomain; this.referenceBudget = referenceBudget ?? new VariableReferenceBudget(); }
 
     public IReadOnlyList<VariableInfo> Read(IReadOnlyList<VariableMember> members, int maxDepth, int maxMembers, int maxStringLength, CancellationToken cancellationToken = default)
     {
@@ -45,6 +48,9 @@ public sealed class VariableReader
     }
 
     private VariableInfo ReadOne(VariableMember member, int depth, int maxStringLength, HashSet<string> ancestors, ref int remaining, CancellationToken cancellationToken)
+        => ReadValue(member, depth, maxStringLength, ancestors, ref remaining, cancellationToken).InAppDomain(appDomain);
+
+    private VariableInfo ReadValue(VariableMember member, int depth, int maxStringLength, HashSet<string> ancestors, ref int remaining, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         try
@@ -60,7 +66,7 @@ public sealed class VariableReader
             {
                 if (!identities.TryGetValue(identity, out reference))
                 {
-                    if (identities.Count == 10000) throw new FxDbgException(FxDbgErrorCode.ValueUnavailable, "This stop's reference limit has been reached.");
+                    if (!referenceBudget.TryReserve()) throw new FxDbgException(FxDbgErrorCode.ValueUnavailable, "This stop's reference limit has been reached.");
                     reference = new VariableReferenceId(scope + ":" + (identities.Count + 1));
                     identities.Add(identity, reference);
                     references.Add(reference, value);

@@ -12,6 +12,7 @@ namespace FxDbg.Debuggees
 
         internal static void Run(string mode, string directory)
         {
+            if (mode == "domains") { AppDomainScenarios.Run(directory); return; }
             if (mode == "gated")
             {
                 File.WriteAllText(Path.Combine(directory, "ready"), Environment.GetEnvironmentVariable("FXDBG_MCP_TEST") + "|" + Environment.CurrentDirectory);
