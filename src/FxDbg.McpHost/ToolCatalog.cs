@@ -51,6 +51,13 @@ public static class ToolCatalog
 
     private static Tool Define(string name, string description, JsonObject properties, string[] required, bool session = true, bool readOnly = false)
     {
+        if (name is "launch" or "attach") properties["sourceMappings"] = new JsonObject
+        {
+            ["type"] = "array", ["maxItems"] = 128,
+            ["items"] = new JsonObject { ["type"] = "object", ["additionalProperties"] = false,
+                ["properties"] = Fields(("buildRoot", Text()), ("localRoot", Text()), ("module", Text())),
+                ["required"] = new JsonArray("buildRoot", "localRoot") }
+        };
         properties["timeoutMs"] = Number(1, 240000, 10000);
         if (session) properties["sessionId"] = Text();
         if (properties["arch"] is JsonObject arch) arch["default"] = "auto";
@@ -102,7 +109,11 @@ public static class ToolCatalog
             throw new ArgumentException("Tool argument is outside the advertised enum.");
         if (type == "integer" && (value.GetInt32() < schema.GetProperty("minimum").GetInt32() || value.GetInt32() > schema.GetProperty("maximum").GetInt32()))
             throw new ArgumentException("Tool integer argument is outside the advertised limits.");
-        if (type == "array") foreach (var item in value.EnumerateArray()) ValidateValue(schema.GetProperty("items"), item);
+        if (type == "array")
+        {
+            if (schema.TryGetProperty("maxItems", out var maximum) && value.GetArrayLength() > maximum.GetInt32()) throw new ArgumentException("Tool array exceeds its item limit.");
+            foreach (var item in value.EnumerateArray()) ValidateValue(schema.GetProperty("items"), item);
+        }
         if (type != "object") return;
         bool hasProperties = schema.TryGetProperty("properties", out var properties);
         if (schema.TryGetProperty("required", out var required))

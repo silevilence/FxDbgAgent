@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using FxDbg.Core.Errors;
+using FxDbg.Core.Model;
 using FxDbg.Core.Sessions;
 using Newtonsoft.Json.Linq;
 
@@ -57,6 +58,10 @@ public sealed class CliCommand
                     if (separator <= 0) throw Invalid("Environment assignment must be NAME=VALUE.");
                     environment[value[..separator]] = value[(separator + 1)..]; break;
                 case "--pid": values["processId"] = Positive(value, option); break;
+                case "--source-maps":
+                    var mappings = JArray.Parse(File.ReadAllText(RequiredPath(value)));
+                    _ = new SourcePathMapper(mappings.ToObject<SourcePathMapping[]>());
+                    values["sourceMappings"] = mappings; break;
                 case "--thread": values["threadId"] = Positive(value, option); break;
                 case "--line": values["line"] = Positive(value, option); break;
                 case "--file": values["file"] = RequiredPath(value); break;
@@ -91,7 +96,7 @@ public sealed class CliCommand
     private static bool Allowed(string method, string option)
     {
         if (option is "--session" or "--timeout-ms") return true;
-        if (method is "launch" or "attach" && option is "--engine-dir" or "--arch") return true;
+        if (method is "launch" or "attach" && option is "--engine-dir" or "--arch" or "--source-maps") return true;
         return method switch
         {
             "launch" => option is "--exe" or "--cwd" or "--arg" or "--args" or "--env" or "--stop-at-entry" or "--stopAtEntry",

@@ -5,6 +5,11 @@ using ModelContextProtocol.Client;
 try
 {
 string bundle = Path.GetFullPath(args[0]);
+if (args.Length > 1 && args[1] == "source-mappings")
+{
+    await SourceMappingSuite.Run(bundle, Path.GetFullPath(args[2]), args[3]);
+    return 0;
+}
 if (args.Length > 1 && args[1] == "paging")
 {
     await PagingSuite.Run(bundle, Path.GetFullPath(args[2]), args[3]);

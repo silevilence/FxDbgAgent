@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using FxDbg.Core.Errors;
+using FxDbg.Core.Model;
 using FxDbg.Core.Sessions;
 
 namespace FxDbg.Core.Requests;
@@ -16,7 +17,8 @@ public sealed class LaunchRequest : EngineRequest
         IReadOnlyDictionary<string, string>? environment,
         TargetArchitecture architecture,
         bool stopAtEntry,
-        TimeSpan timeout)
+        TimeSpan timeout,
+        IReadOnlyList<SourcePathMapping>? sourceMappings = null)
         : base(sessionId, timeout)
     {
         ExecutablePath = string.IsNullOrWhiteSpace(executablePath)
@@ -31,6 +33,7 @@ public sealed class LaunchRequest : EngineRequest
                 : CopyEnvironment(environment));
         Architecture = architecture;
         StopAtEntry = stopAtEntry;
+        SourceMappings = new SourcePathMapper(sourceMappings).Mappings;
     }
 
     public string ExecutablePath { get; }
@@ -44,6 +47,7 @@ public sealed class LaunchRequest : EngineRequest
     public TargetArchitecture Architecture { get; }
 
     public bool StopAtEntry { get; }
+    public IReadOnlyList<SourcePathMapping> SourceMappings { get; }
 
     private static Dictionary<string, string> CopyEnvironment(IReadOnlyDictionary<string, string> source)
     {
@@ -59,7 +63,7 @@ public sealed class LaunchRequest : EngineRequest
 
 public sealed class AttachRequest : EngineRequest
 {
-    public AttachRequest(SessionId sessionId, int processId, TargetArchitecture architecture, TimeSpan timeout)
+    public AttachRequest(SessionId sessionId, int processId, TargetArchitecture architecture, TimeSpan timeout, IReadOnlyList<SourcePathMapping>? sourceMappings = null)
         : base(sessionId, timeout)
     {
         if (processId <= 0)
@@ -69,9 +73,11 @@ public sealed class AttachRequest : EngineRequest
 
         ProcessId = processId;
         Architecture = architecture;
+        SourceMappings = new SourcePathMapper(sourceMappings).Mappings;
     }
 
     public int ProcessId { get; }
+    public IReadOnlyList<SourcePathMapping> SourceMappings { get; }
 
     public TargetArchitecture Architecture { get; }
 }

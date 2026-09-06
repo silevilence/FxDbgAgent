@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FxDbg.Core.Errors;
+using FxDbg.Core.Model;
 using FxDbg.Core.Requests;
 using FxDbg.Core.Sessions;
 using FxDbg.Engine.Protocol;
@@ -122,8 +123,8 @@ public sealed partial class DebugSessionService : IAsyncDisposable
                 ? parsed : throw Invalid("Invalid architecture.");
             var target = method == "launch"
                 ? await engine.LaunchAsync(new LaunchRequest(id, (string?)args["exe"] ?? throw Invalid("exe is required."), args["args"]?.ToObject<string[]>(),
-                    (string?)args["cwd"], args["env"]?.ToObject<Dictionary<string, string>>(), architecture, (bool?)args["stopAtEntry"] ?? false, timeout), token).ConfigureAwait(false)
-                : await engine.AttachAsync(new AttachRequest(id, (int?)args["pid"] ?? 0, architecture, timeout), token).ConfigureAwait(false);
+                    (string?)args["cwd"], args["env"]?.ToObject<Dictionary<string, string>>(), architecture, (bool?)args["stopAtEntry"] ?? false, timeout, args["sourceMappings"]?.ToObject<SourcePathMapping[]>()), token).ConfigureAwait(false)
+                : await engine.AttachAsync(new AttachRequest(id, (int?)args["pid"] ?? 0, architecture, timeout, args["sourceMappings"]?.ToObject<SourcePathMapping[]>()), token).ConfigureAwait(false);
             lock (observation.Gate) { observation.Target = (JObject)WireJson.Value(target); observation.Started = true; }
             return Envelope(id, WireJson.Value(target));
         }

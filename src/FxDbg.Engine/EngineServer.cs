@@ -84,7 +84,9 @@ internal sealed class EngineServer
             EngineOptions parsed = EngineOptions.Parse(options);
             if (parsed.SessionId.ToString() != sessionId) throw new FxDbgException(FxDbgErrorCode.SessionNotFound, "Start session ID mismatch.");
             EngineTargetValidator.RequireCurrentArchitecture(parsed.Architecture);
+            var sourceMapper = new SourcePathMapper(args["sourceMappings"]?.ToObject<SourcePathMapping[]>());
             session = parsed.Mode == EngineMode.Launch ? Program.Launch(parsed, token) : Program.Attach(parsed, token);
+            session.ConfigureSourceMappings(sourceMapper);
             started = true;
             session.BreakpointChanged += change => QueueEvent("breakpointChanged", WireJson.Value(change));
             return new JObject { ["protocolVersion"] = WireJson.ProtocolVersion, ["target"] = WireJson.Value(session.Target) };

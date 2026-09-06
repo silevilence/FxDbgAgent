@@ -10,6 +10,17 @@ namespace FxDbg.UnitTests.Breakpoints;
 public sealed class BreakpointManagerTests
 {
     [Fact]
+    public void Rebinding_same_line_publishes_changed_source_path()
+    {
+        var manager = new BreakpointManager();
+        var module = new SampleModule("mapped") { FilePath = @"D:\first\sample.cs" };
+        manager.ModuleLoaded(module);
+        var breakpoint = manager.Set(new SourceLocation("sample.cs", 10));
+        module.FilePath = @"D:\second\sample.cs";
+        manager.SymbolsChanged(module.Id);
+        Assert.Equal(module.FilePath, manager.Get(breakpoint.BreakpointId).BoundLocation!.FilePath);
+    }
+    [Fact]
     public void Creating_disabled_breakpoint_never_publishes_or_activates_enabled_state()
     {
         var manager = new BreakpointManager();
@@ -50,9 +61,10 @@ public sealed class BreakpointManagerTests
         public bool SymbolsReady { get; set; } = true;
         public bool BindingFails { get; set; }
         public int Line { get; set; } = 10;
+        public string FilePath { get; set; } = "sample.cs";
         public Binding? LastBinding { get; private set; }
         public SourceBreakpointResolution Resolve(SourceLocation location) => SymbolsReady
-            ? new(true, new[] { new BreakpointBindingLocation(0x06000001, 3, new SourceLocation("sample.cs", Line)) }, null)
+            ? new(true, new[] { new BreakpointBindingLocation(0x06000001, 3, new SourceLocation(FilePath, Line)) }, null)
             : new(false, Array.Empty<BreakpointBindingLocation>(), "PDB not ready");
         public ISourceBreakpointBinding Bind(BreakpointId breakpointId, BreakpointBindingLocation location)
         {

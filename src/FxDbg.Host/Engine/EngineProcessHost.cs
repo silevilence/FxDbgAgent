@@ -44,7 +44,7 @@ public sealed class EngineProcessHost : IDisposable, IEngineSessionHost
         foreach (KeyValuePair<string, string> pair in request.Environment) arguments.AddRange(new[] { "--env", pair.Key + "=" + pair.Value });
         foreach (string argument in request.Arguments) arguments.AddRange(new[] { "--arg", argument });
         if (request.StopAtEntry) arguments.Add("--stop-at-entry");
-        return RunAsync(paths.For(architecture), arguments, request.SessionId, architecture, request.Timeout, cancellationToken);
+        return RunAsync(paths.For(architecture), arguments, request.SessionId, architecture, request.Timeout, cancellationToken, request.SourceMappings);
     }
 
     public Task<DebugTargetInfo> AttachAsync(AttachRequest request, CancellationToken cancellationToken)
@@ -53,7 +53,7 @@ public sealed class EngineProcessHost : IDisposable, IEngineSessionHost
         TargetArchitecture architecture = router.Resolve(request);
         var arguments = CommonArguments("attach", request.SessionId, architecture, request.Timeout);
         arguments.AddRange(new[] { "--pid", request.ProcessId.ToString(CultureInfo.InvariantCulture) });
-        return RunAsync(paths.For(architecture), arguments, request.SessionId, architecture, request.Timeout, cancellationToken);
+        return RunAsync(paths.For(architecture), arguments, request.SessionId, architecture, request.Timeout, cancellationToken, request.SourceMappings);
     }
 
     public async Task<JToken> InvokeAsync(SessionId sessionId, string method, JObject? arguments = null,
@@ -130,7 +130,7 @@ public sealed class EngineProcessHost : IDisposable, IEngineSessionHost
     };
 
     private async Task<DebugTargetInfo> RunAsync(string enginePath, IReadOnlyList<string> arguments, SessionId id,
-        TargetArchitecture architecture, TimeSpan timeout, CancellationToken cancellationToken)
+        TargetArchitecture architecture, TimeSpan timeout, CancellationToken cancellationToken, IReadOnlyList<SourcePathMapping> sourceMappings)
     {
         lock (gate)
         {
@@ -169,6 +169,7 @@ public sealed class EngineProcessHost : IDisposable, IEngineSessionHost
             LocalPipeIdentity.RequireEngine(pipe, process.Id);
             connection = new EngineConnection(process, pipe, id.ToString());
             JObject start = new() { ["protocolVersion"] = WireJson.ProtocolVersion, ["arguments"] = new JArray(arguments), ["commandTimeoutMs"] = (int)Math.Ceiling(timeout.TotalMilliseconds) };
+            start["sourceMappings"] = WireJson.Value(sourceMappings);
             JToken response = await connection.Peer.CallAsync("start", start, timeout + TimeSpan.FromSeconds(2), deadline.Token).ConfigureAwait(false);
             if ((int?)response["protocolVersion"] != WireJson.ProtocolVersion) throw new FxDbgException(FxDbgErrorCode.TransportDisconnected, "Engine protocol version mismatch.");
             DebugTargetInfo target = response["target"]!.ToObject<DebugTargetInfo>(WireJson.CreateSerializer())!;

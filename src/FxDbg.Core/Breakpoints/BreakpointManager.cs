@@ -163,6 +163,8 @@ public sealed class BreakpointManager : IDisposable
             _ => null
         };
         if (entry.Info.State == state && entry.Info.BoundLocation?.Line == location?.Line &&
+            entry.Info.BoundLocation?.FilePath == location?.FilePath && entry.Info.BoundLocation?.Column == location?.Column &&
+            entry.Info.BoundLocation?.OriginalFilePath == location?.OriginalFilePath &&
             entry.Info.Diagnostic == diagnostic) return;
         entry.Info = new BreakpointInfo(entry.Info.BreakpointId, entry.Info.RequestedLocation, location, state, entry.Info.Enabled, diagnostic);
         Changed?.Invoke(new BreakpointChange(entry.Info));

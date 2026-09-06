@@ -26,7 +26,7 @@ internal static class OutputSchemas
         var definitions = new JsonObject
         {
             ["error"] = Object(("code", Text()), ("message", Text())),
-            ["source"] = Object(("filePath", Text()), ("line", Integer()), ("column", Integer(true))),
+            ["source"] = Object(("filePath", Text()), ("line", Integer()), ("column", Integer(true)), ("originalFilePath", Text(true))),
             ["target"] = Object(("processId", Integer()), ("architecture", Choice("x86", "x64")), ("runtimeVersion", Text()),
                 ("runtimeFileVersion", Text(true)), ("launchedByDebugger", Type("boolean")), ("sessionState", Choice("created", "starting", "running", "stopped", "detaching", "terminated", "failed"))),
             ["frame"] = Object(("frameId", Text()), ("threadId", Integer()), ("methodName", Text()), ("moduleName", Text()),

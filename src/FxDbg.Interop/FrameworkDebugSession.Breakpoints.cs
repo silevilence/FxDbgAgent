@@ -13,6 +13,16 @@ public sealed partial class FrameworkDebugSession
     private readonly BreakpointManager breakpoints = new();
     private readonly Dictionary<object, DebugModule> modules = new();
     private DateTime nextSymbolPoll;
+    private SourcePathMapper sourceMapper = new();
+
+    public void ConfigureSourceMappings(SourcePathMapper mapper)
+    {
+        ThrowIfDisposed();
+        ThrowIfWrongThread();
+        if (breakpoints.List().Count != 0) throw new FxDbg.Core.Errors.FxDbgException(FxDbg.Core.Errors.FxDbgErrorCode.InvalidRequest, "Source mappings must be configured before breakpoints.");
+        sourceMapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        foreach (DebugModule module in modules.Values) module.SourceMapper = mapper;
+    }
 
     public event Action<BreakpointChange> BreakpointChanged
     {
@@ -85,7 +95,7 @@ public sealed partial class FrameworkDebugSession
         switch (envelope.EventArgs)
         {
             case LoadModuleCorDebugManagedCallbackEventArgs loaded:
-                var module = new DebugModule(loaded.Module);
+                var module = new DebugModule(loaded.Module) { SourceMapper = sourceMapper };
                 modules.Add(loaded.Module.Raw, module);
                 breakpoints.ModuleLoaded(module);
                 domain.RecordModuleChange(ModuleChangeKind.Loaded, module.Snapshot);

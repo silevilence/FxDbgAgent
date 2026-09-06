@@ -20,6 +20,7 @@ internal sealed class DebugModule : ISourceBreakpointModule, IDisposable
     private readonly Dictionary<int, string> methodNames = new();
     private readonly string appDomain;
     private ModuleInfo? snapshot;
+    internal SourcePathMapper SourceMapper { get; set; } = new();
 
     internal DebugModule(CorDebugModule module)
     {
@@ -34,7 +35,11 @@ internal sealed class DebugModule : ISourceBreakpointModule, IDisposable
     internal ModuleInfo Snapshot => snapshot!;
     internal bool HasSymbols => symbols?.Status == SymbolStatus.Loaded;
 
-    internal SourceLocation? Resolve(int token, int offset) => symbols?.Resolve(token, offset);
+    internal SourceLocation? Resolve(int token, int offset)
+    {
+        SourceLocation? source = symbols?.Resolve(token, offset);
+        return source is null ? null : SourceMapper.ToLocal(source, path);
+    }
     internal IReadOnlyList<LocalVariableSlot> GetLocals(int token, int offset) => symbols?.GetLocals(token, offset) ?? Array.Empty<LocalVariableSlot>();
     internal string GetMethodName(int token)
     {
@@ -45,8 +50,13 @@ internal sealed class DebugModule : ISourceBreakpointModule, IDisposable
     }
     internal int GetStepRangeEnd(int token, int offset, int codeSize) => symbols?.GetStepRangeEnd(token, offset, codeSize) ?? codeSize;
 
-    public SourceBreakpointResolution Resolve(SourceLocation location) => symbols?.Resolve(location)
-        ?? new SourceBreakpointResolution(false, Array.Empty<BreakpointBindingLocation>(), "This module has no local PE/PDB files.");
+    public SourceBreakpointResolution Resolve(SourceLocation location)
+    {
+        if (symbols is null) return new SourceBreakpointResolution(false, Array.Empty<BreakpointBindingLocation>(), "This module has no local PE/PDB files.");
+        SourceBreakpointResolution result = symbols.Resolve(SourceMapper.ToBuild(location, path));
+        return new SourceBreakpointResolution(result.DocumentFound, result.Locations.Select(point =>
+            new BreakpointBindingLocation(point.MethodToken, point.IlOffset, SourceMapper.ToLocal(point.Source, path))).ToArray(), result.Diagnostic);
+    }
 
     public ISourceBreakpointBinding Bind(BreakpointId breakpointId, BreakpointBindingLocation location)
     {

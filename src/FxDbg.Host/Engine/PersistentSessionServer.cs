@@ -5,6 +5,7 @@ using System.IO.Pipes;
 using System.Threading;
 using System.Threading.Tasks;
 using FxDbg.Core.Errors;
+using FxDbg.Core.Model;
 using FxDbg.Core.Requests;
 using FxDbg.Core.Sessions;
 using FxDbg.Engine.Protocol;
@@ -56,8 +57,8 @@ public static class PersistentSessionServer
                         var target = method == "launch"
                             ? await host.LaunchAsync(new LaunchRequest(id, (string)parameters["executablePath"]!, parameters["arguments"]?.ToObject<string[]>(),
                                 (string?)parameters["workingDirectory"], parameters["environment"]?.ToObject<Dictionary<string, string>>(), architecture,
-                                (bool?)parameters["stopAtEntry"] ?? false, timeout), token).ConfigureAwait(false)
-                            : await host.AttachAsync(new AttachRequest(id, (int)parameters["processId"]!, architecture, timeout), token).ConfigureAwait(false);
+                                (bool?)parameters["stopAtEntry"] ?? false, timeout, parameters["sourceMappings"]?.ToObject<SourcePathMapping[]>()), token).ConfigureAwait(false)
+                            : await host.AttachAsync(new AttachRequest(id, (int)parameters["processId"]!, architecture, timeout, parameters["sourceMappings"]?.ToObject<SourcePathMapping[]>()), token).ConfigureAwait(false);
                         Volatile.Write(ref lifecycle, 1);
                         return new JObject { ["target"] = WireJson.Value(target), ["hostProcessId"] = Environment.ProcessId, ["engineProcessId"] = host.GetEngineProcessId(id) };
                     }

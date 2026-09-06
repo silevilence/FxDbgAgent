@@ -26,3 +26,5 @@ $stack = & $cli stack --session $session --thread $thread | ConvertFrom-Json
 后台服务位于 FxDbg.Host，CLI 仅解析参数和传递消息；所有执行控制、断点、栈与变量逻辑都由同一 Host/Engine 提供。MCP 外壳按阶段 2 实施，本阶段没有第二套调试后端。生命周期的实测边界见 [Engine 协议](engine-protocol.md)。
 
 对象与数组分页沿用共享读取器，边界和取消语义见 [对象与数组分页](variable-paging.md)。
+
+launch/attach 支持 --source-maps <JSON文件>，数组字段与MCP的sourceMappings一致，详见 [源码映射](source-mapping.md)。

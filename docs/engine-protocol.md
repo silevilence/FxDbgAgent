@@ -37,3 +37,5 @@ Core 标识序列化为字符串，枚举为 camelCase。`start` 要求 protocol
 - Engine 硬崩溃会被 Host 隔离、移除活动会话并报告进程/传输错误；Host 可继续建立会话。**实测直接强杀 Engine 时，Desktop CLR 目标也退出（x86/x64，退出码 0）**。因此不保证 Engine 本体硬崩溃后的目标存活；正常 Detach、客户端取消和 Host 崩溃均验证附加目标存活且可重新附加。
 
 旧 Engine launch/attach 命令入口仅用于已有阶段 1-2/1-3 验证，仍复用相同 bootstrap、调度器和 Interop。产品 Host 使用 serve + Named Pipe。Engine serve 的 stdout 不承担日志，帧与诊断日志隔离；不记录参数帧或变量值。
+
+阶段3启动扩展：start请求可附sourceMappings数组（buildRoot/localRoot/module），缺省为空；Host与Engine在目标创建前校验不可变配置。源码位置附originalFilePath保留映射前PDB路径；模块延迟加载沿用同一配置。

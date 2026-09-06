@@ -4,7 +4,7 @@ namespace FxDbg.Core.Model;
 
 public sealed class SourceLocation
 {
-    public SourceLocation(string filePath, int line, int? column = null)
+    public SourceLocation(string filePath, int line, int? column = null, string? originalFilePath = null)
     {
         if (string.IsNullOrWhiteSpace(filePath))
         {
@@ -19,6 +19,7 @@ public sealed class SourceLocation
         FilePath = filePath;
         Line = line;
         Column = column;
+        OriginalFilePath = originalFilePath;
     }
 
     public string FilePath { get; }
@@ -26,4 +27,5 @@ public sealed class SourceLocation
     public int Line { get; }
 
     public int? Column { get; }
+    public string? OriginalFilePath { get; }
 }
