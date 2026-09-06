@@ -42,7 +42,7 @@ namespace FxDbg.Debuggees
                 Assembly module = Assembly.LoadFrom(Path.Combine(directory, "Fx40.LateModule.dll"));
                 module.GetType("FxDbg.Debuggees.LateCode").GetMethod("Run").Invoke(null, null);
             }
-            else Recurse(12);
+            else Recurse(mode == "deep" ? 180 : 12);
             if (userCodeCalls != 0) throw new InvalidOperationException("Debugger evaluated target formatting code.");
             File.WriteAllText(Path.Combine(directory, "completed"), "ok");
         }

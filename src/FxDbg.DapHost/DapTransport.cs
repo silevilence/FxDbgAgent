@@ -9,9 +9,21 @@ internal sealed class DapTransport(Stream input, Stream output)
 {
     private const int MaximumBytes = 4 * 1024 * 1024;
     private readonly SemaphoreSlim writing = new(1, 1);
+    private readonly CancellationTokenSource disconnected = new();
+    internal CancellationToken Disconnected => disconnected.Token;
+    internal bool Failed => disconnected.IsCancellationRequested;
     private int sequence;
 
     internal async Task<JObject?> ReadAsync(CancellationToken token)
+    {
+        Task<JObject?> read = ReadCoreAsync(token);
+        _ = read.ContinueWith(task => _ = task.Exception, TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously);
+        // Windows standard input may retain an uninterruptible ReadFile. Session cleanup
+        // must be able to finish while that background read waits for the client.
+        return await read.WaitAsync(token);
+    }
+
+    private async Task<JObject?> ReadCoreAsync(CancellationToken token)
     {
         var header = new List<byte>();
         byte[] one = new byte[1];
@@ -44,16 +56,27 @@ internal sealed class DapTransport(Stream input, Stream output)
 
     internal async Task SendAsync(JObject packet, CancellationToken token)
     {
-        await writing.WaitAsync(token);
+        using var deadline = CancellationTokenSource.CreateLinkedTokenSource(token, disconnected.Token);
+        deadline.CancelAfter(TimeSpan.FromSeconds(3));
+        bool entered = false;
         try
         {
+            await writing.WaitAsync(deadline.Token); entered = true;
             packet["seq"] = checked(++sequence);
             byte[] data = Encoding.UTF8.GetBytes(packet.ToString(Formatting.None));
             if (data.Length > MaximumBytes) throw new ArgumentException("Result exceeds 4 MiB; request a smaller page.");
-            await output.WriteAsync(Encoding.ASCII.GetBytes($"Content-Length: {data.Length}\r\n\r\n"), token);
-            await output.WriteAsync(data, token);
-            await output.FlushAsync(token);
+            await Write(Encoding.ASCII.GetBytes($"Content-Length: {data.Length}\r\n\r\n"));
+            await Write(data);
+            await output.FlushAsync(deadline.Token).WaitAsync(deadline.Token);
+            async Task Write(byte[] bytes)
+            {
+                Task write = output.WriteAsync(bytes, deadline.Token).AsTask();
+                _ = write.ContinueWith(task => _ = task.Exception, TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously);
+                await write.WaitAsync(deadline.Token);
+            }
         }
-        finally { writing.Release(); }
+        catch (ArgumentException) { throw; } // No bytes were written for an oversized result.
+        catch { disconnected.Cancel(); throw; }
+        finally { if (entered) writing.Release(); }
     }
 }

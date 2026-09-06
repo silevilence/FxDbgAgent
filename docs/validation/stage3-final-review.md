@@ -1,0 +1,34 @@
+# 阶段3最终双轴审核
+
+范围：用户2026-09-06确认的3-1、3-2、3-3、3-5；3-4明确跳过。固定准备基线 `63ef4e73e7851f49cc95e710bee6892e9e816bd0`。初审比较 `git diff 63ef4e7...bc0cbdd`，涵盖 `bd6592e`、`038e338`、`8848424`、`bc0cbdd` 四项独立任务提交。
+
+按 code-review 流程，两位独立代理分别读取完整差异、AGENTS.md规范和ROADMAP/需求规格；代理只读审核，不与主代理并行构建。以下保留两个轴，不合并或重排其发现。
+
+## Standards
+
+初审：1项P1阻塞、1项P3维护性建议。
+
+- P1：DAP输出写锁/写入只有生命周期令牌；保持stdin开启且不消费stdout时，写满管道会阻塞清理，绕过30秒请求期限。独立无目标复现35秒后仍存活、输出缓冲65822字节。
+- P3：MCP/DAP发布脚本重复，未来Engine依赖清单容易不同步。
+
+修复：输出全过程独立3秒期限并通知断开；读取等待可取消，不受Windows阻塞ReadFile影响；标准输出FileStream报告Broken Pipe，不吞错误。真实附加测试覆盖输出关闭和背压，要求Host有界退出、目标继续。两个发布入口复用 `eng/publish-host.ps1`。
+
+独立复核：两项均修复，未发现新阻塞。另检查管道FileStream的Dispose路径，未发现重新同步冲刷正文导致退出阻塞。未发现新增回调线程违规、重复Continue、Getter/ToString执行、Host加载COM或终止附加目标。
+
+## Spec
+
+初审：1项P2。
+
+- DAP把 `levels=0` 和大于128的请求静默裁剪为128帧，客户端可能误认为栈结束；声明延迟栈加载却未提供 `totalFrames`。
+
+修复：超预算和未分页深栈请求明确报错；合法分页有界多读一帧，返回请求数量和单调增长的totalFrames提示；每次停止/恢复清空提示。真实184帧场景验证连续分页、末页总数及拒绝路径。
+
+独立复核：P2已修复，未发现新增需求缺陷；3-4跳过符合用户决定。协议依据为[官方DAP schema](https://raw.githubusercontent.com/microsoft/debug-adapter-protocol/main/debugAdapterProtocol.json)的stackTrace及延迟加载定义。
+
+## 验证与最终状态
+
+修复后Release真实DAP全套协议及新增184帧/输出故障回归通过，记录 `artifacts/stage3-validation/review-dap-protocol-Release.log`，监督器exit=0、timedOut=false、forcedOwnedCleanup为空。静态审核不替代运行时验收。
+
+修复后的完整Debug/Release回归待完成后补充到本报告与阶段3验收报告；运行期间源码有变化的先前尝试不得标记为最终通过。
+
+审核计数：Standards初始2项、复核遗留0项；Spec初始1项、复核遗留0项。

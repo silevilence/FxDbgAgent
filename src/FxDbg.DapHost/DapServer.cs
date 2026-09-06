@@ -23,6 +23,7 @@ internal sealed partial class DapServer(DebugSessionService sessions, Stream inp
 
     internal async Task RunAsync()
     {
+        using var disconnected = transport.Disconnected.Register(lifetime.Cancel);
         Task poll = PollAsync();
         try
         {
@@ -58,6 +59,7 @@ internal sealed partial class DapServer(DebugSessionService sessions, Stream inp
             lifetime.Dispose();
             commands.Dispose();
         }
+        if (transport.Failed) throw new IOException("DAP output disconnected or stalled.");
     }
 
     private async Task ProcessAsync(JObject packet, CancellationTokenSource cancellation)

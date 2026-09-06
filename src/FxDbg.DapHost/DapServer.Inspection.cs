@@ -11,9 +11,10 @@ internal sealed partial class DapServer
     private readonly Dictionary<string, List<string>> sourceBreakpoints = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, int> breakpointNumbers = new(StringComparer.Ordinal);
     private JArray knownThreads = new();
+    private readonly Dictionary<int, int> stackTotals = [];
     private int nextHandle, nextBreakpoint;
 
-    private void ClearHandles() { frames.Clear(); variables.Clear(); }
+    private void ClearHandles() { frames.Clear(); variables.Clear(); stackTotals.Clear(); }
     private int Handle()
     {
         if (frames.Count + variables.Count >= 10000 || nextHandle == int.MaxValue) throw Invalid("DAP handle limit reached; resume before reading more values.");
@@ -84,9 +85,16 @@ internal sealed partial class DapServer
     {
         int start = Integer(args, "startFrame", 0), count = Integer(args, "levels", 0);
         if (start < 0 || count < 0) throw Invalid("Invalid stack page.");
-        count = count == 0 ? 128 : Math.Min(count, 128);
+        if (count > 128) throw Invalid("Stack pages are limited to 128 frames; use startFrame/levels paging.");
+        bool unpaged = count == 0;
+        if (unpaged) count = 128;
+        int thread = Integer(args, "threadId");
+        var page = (JArray)await Invoke("stack", new() { ["threadId"] = thread, ["start"] = start, ["count"] = count + 1 }, token);
+        if (unpaged && page.Count > count) throw Invalid("Too many frames for an unpaged request; use startFrame/levels paging.");
+        int total = Math.Max(stackTotals.GetValueOrDefault(thread), checked(start + page.Count));
+        stackTotals[thread] = total;
         var result = new JArray();
-        foreach (var frame in await Invoke("stack", new() { ["threadId"] = Integer(args, "threadId"), ["start"] = start, ["count"] = count }, token))
+        foreach (var frame in page.Take(count))
         {
             string native = (string)frame["frameId"]!;
             int id = frames.FirstOrDefault(entry => entry.Value == native).Key;
@@ -100,8 +108,8 @@ internal sealed partial class DapServer
             }
             result.Add(item);
         }
-        // Omit totalFrames: the backend intentionally reads a bounded page, not the entire stack.
-        return new() { ["stackFrames"] = result };
+        // DAP explicitly permits monotonically increasing totalFrames hints for lazy stacks.
+        return new() { ["stackFrames"] = result, ["totalFrames"] = total };
     }
 
     private JObject Scopes(JObject args)

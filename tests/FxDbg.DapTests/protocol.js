@@ -128,10 +128,58 @@ async function boundaries(bundle, root, configuration) {
   }
   console.log('DAP oversized/duplicate headers fail cleanly without stdout pollution.');
 }
+async function deepStack(bundle, root, configuration) {
+  const fix = fixture(root, configuration, 'x64', 'dap-deep'); const client = new Client(bundle);
+  try {
+    await client.request('initialize');
+    const launch = client.send('launch', { program: fix.exe, args: ['--scenario', 'deep', fix.directory] });
+    await client.event('initialized');
+    await client.request('setBreakpoints', { source: { path: fix.source }, breakpoints: [{ line: fix.line('E2E_BREAKPOINT') }] });
+    await client.request('configurationDone'); await launch.completion;
+    const stopped = await client.event('stopped'); const threadId = stopped.body.threadId;
+    await assert.rejects(client.request('stackTrace', { threadId, levels: 0 }), /paging/);
+    await assert.rejects(client.request('stackTrace', { threadId, levels: 200 }), /paging/);
+    let start = 0, total = 0;
+    while (true) {
+      const page = await client.request('stackTrace', { threadId, startFrame: start, levels: 64 });
+      assert.ok(page.totalFrames >= total); total = page.totalFrames;
+      if (page.stackFrames.length === 64) assert.ok(total >= start + 64);
+      start += page.stackFrames.length;
+      if (page.stackFrames.length < 64) break;
+    }
+    assert.ok(start > 180); assert.equal(total, start);
+    await client.request('continue'); await client.event('terminated');
+    console.log(`DAP ${start}-frame stack: bounded pages and monotonic totalFrames, oversized/unpaged rejection passed.`);
+  } finally { await client.close(); }
+}
+async function outputFailure(bundle, root, configuration, stalled) {
+  const fix = fixture(root, configuration, 'x64', stalled ? 'dap-backpressure' : 'dap-output-closed');
+  const target = startTarget(fix); const client = new Client(bundle);
+  try {
+    await until(() => fs.existsSync(path.join(fix.directory, 'ready')), 'output failure target ready');
+    await client.request('initialize');
+    const attach = client.send('attach', { processId: target.pid, stopAtEntry: true });
+    await client.event('initialized'); await client.request('configurationDone'); await attach.completion;
+    client.child.stdout.removeAllListeners('data');
+    if (stalled) client.child.stdout.pause(); else client.child.stdout.destroy();
+    client.send('x'.repeat(stalled ? 1024 * 1024 : 1));
+    await until(() => client.child.exitCode !== null, 'bounded output failure cleanup with stdin open', 12000);
+    assert.equal(client.child.exitCode, 1); assert.equal(target.exitCode, null, 'attached target remains alive');
+    client.child.stdin.end(); client.child.stdout.destroy();
+    fs.writeFileSync(path.join(fix.directory, 'go'), 'go');
+    await until(() => target.exitCode !== null, 'output failure safe detach'); assert.equal(target.exitCode, 0);
+    console.log(`DAP ${stalled ? 'stdout backpressure' : 'stdout closed'} with stdin open: bounded adapter exit and safe attached target continuation passed.`);
+  } finally {
+    if (client.child.exitCode === null) { client.child.stdin.end(); await until(() => client.child.exitCode !== null, 'output test EOF cleanup', 12000); }
+    await cleanTarget(target, fix);
+  }
+}
 async function main() {
   const [bundle, root, configuration] = process.argv.slice(2);
   for (const architecture of ['x86', 'x64']) for (const attach of [false, true]) await session(bundle, root, configuration, architecture, attach);
   await cancellation(bundle, root, configuration); await eof(bundle, root, configuration); await boundaries(bundle, root, configuration);
+  await deepStack(bundle, root, configuration);
+  await outputFailure(bundle, root, configuration, false); await outputFailure(bundle, root, configuration, true);
 }
 if (require.main === module) main().catch(error => { console.error(error); process.exitCode = 1; });
 module.exports = { Client };
