@@ -1,0 +1,971 @@
+{
+  "client": "VS Code",
+  "version": "1.136.1",
+  "configuration": "Debug",
+  "startedAtUtc": "2026-09-06T05:07:21.001Z",
+  "cases": [
+    {
+      "architecture": "x86",
+      "mode": "launch",
+      "passed": true,
+      "requests": [
+        "initialize",
+        "launch",
+        "setBreakpoints",
+        "configurationDone",
+        "threads",
+        "pause",
+        "threads",
+        "stackTrace",
+        "continue",
+        "threads",
+        "stackTrace",
+        "threads",
+        "stackTrace",
+        "scopes",
+        "stackTrace",
+        "scopes",
+        "variables",
+        "variables",
+        "variables",
+        "variables",
+        "next",
+        "threads",
+        "scopes",
+        "stackTrace",
+        "variables",
+        "stackTrace",
+        "stepIn",
+        "threads",
+        "stackTrace",
+        "stackTrace",
+        "stepOut",
+        "threads",
+        "stackTrace",
+        "stackTrace",
+        "evaluate",
+        "disconnect",
+        "disconnect"
+      ],
+      "responses": [
+        {
+          "command": "initialize",
+          "success": true
+        },
+        {
+          "command": "setBreakpoints",
+          "success": true
+        },
+        {
+          "command": "configurationDone",
+          "success": true
+        },
+        {
+          "command": "launch",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "pause",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "continue",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "scopes",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "scopes",
+          "success": true
+        },
+        {
+          "command": "variables",
+          "success": true
+        },
+        {
+          "command": "variables",
+          "success": true
+        },
+        {
+          "command": "variables",
+          "success": true
+        },
+        {
+          "command": "variables",
+          "success": true
+        },
+        {
+          "command": "next",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "scopes",
+          "success": false
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "variables",
+          "success": false
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "stepIn",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "stepOut",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "evaluate",
+          "success": false
+        },
+        {
+          "command": "disconnect",
+          "success": true
+        },
+        {
+          "command": "disconnect",
+          "success": true
+        }
+      ],
+      "events": [
+        {
+          "event": "process"
+        },
+        {
+          "event": "initialized"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "breakpoint",
+          "reason": "changed"
+        },
+        {
+          "event": "stopped",
+          "reason": "pause"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "stopped",
+          "reason": "breakpoint"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "stopped",
+          "reason": "step"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "stopped",
+          "reason": "step"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "stopped",
+          "reason": "step"
+        },
+        {
+          "event": "terminated"
+        }
+      ]
+    },
+    {
+      "architecture": "x86",
+      "mode": "attach",
+      "passed": true,
+      "requests": [
+        "initialize",
+        "attach",
+        "setBreakpoints",
+        "configurationDone",
+        "threads",
+        "pause",
+        "threads",
+        "stackTrace",
+        "continue",
+        "threads",
+        "stackTrace",
+        "threads",
+        "stackTrace",
+        "scopes",
+        "variables",
+        "variables",
+        "variables",
+        "variables",
+        "next",
+        "threads",
+        "scopes",
+        "stackTrace",
+        "variables",
+        "stackTrace",
+        "stepIn",
+        "threads",
+        "stackTrace",
+        "stackTrace",
+        "stepOut",
+        "threads",
+        "stackTrace",
+        "stackTrace",
+        "evaluate",
+        "terminate",
+        "disconnect",
+        "disconnect"
+      ],
+      "responses": [
+        {
+          "command": "initialize",
+          "success": true
+        },
+        {
+          "command": "setBreakpoints",
+          "success": true
+        },
+        {
+          "command": "configurationDone",
+          "success": true
+        },
+        {
+          "command": "attach",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "pause",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "continue",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "scopes",
+          "success": true
+        },
+        {
+          "command": "variables",
+          "success": true
+        },
+        {
+          "command": "variables",
+          "success": true
+        },
+        {
+          "command": "variables",
+          "success": true
+        },
+        {
+          "command": "variables",
+          "success": true
+        },
+        {
+          "command": "next",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "scopes",
+          "success": false
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "variables",
+          "success": false
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "stepIn",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "stepOut",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "evaluate",
+          "success": false
+        },
+        {
+          "command": "terminate",
+          "success": false
+        },
+        {
+          "command": "disconnect",
+          "success": true
+        },
+        {
+          "command": "disconnect",
+          "success": true
+        }
+      ],
+      "events": [
+        {
+          "event": "process"
+        },
+        {
+          "event": "initialized"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "stopped",
+          "reason": "pause"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "breakpoint",
+          "reason": "changed"
+        },
+        {
+          "event": "stopped",
+          "reason": "breakpoint"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "stopped",
+          "reason": "step"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "stopped",
+          "reason": "step"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "stopped",
+          "reason": "step"
+        },
+        {
+          "event": "terminated"
+        }
+      ]
+    },
+    {
+      "architecture": "x64",
+      "mode": "launch",
+      "passed": true,
+      "requests": [
+        "initialize",
+        "launch",
+        "setBreakpoints",
+        "configurationDone",
+        "threads",
+        "pause",
+        "threads",
+        "stackTrace",
+        "continue",
+        "threads",
+        "stackTrace",
+        "threads",
+        "stackTrace",
+        "scopes",
+        "variables",
+        "variables",
+        "variables",
+        "variables",
+        "next",
+        "threads",
+        "stackTrace",
+        "scopes",
+        "variables",
+        "stackTrace",
+        "stepIn",
+        "threads",
+        "stackTrace",
+        "stackTrace",
+        "stepOut",
+        "threads",
+        "stackTrace",
+        "stackTrace",
+        "evaluate",
+        "disconnect",
+        "disconnect"
+      ],
+      "responses": [
+        {
+          "command": "initialize",
+          "success": true
+        },
+        {
+          "command": "setBreakpoints",
+          "success": true
+        },
+        {
+          "command": "configurationDone",
+          "success": true
+        },
+        {
+          "command": "launch",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "pause",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "continue",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "scopes",
+          "success": true
+        },
+        {
+          "command": "variables",
+          "success": true
+        },
+        {
+          "command": "variables",
+          "success": true
+        },
+        {
+          "command": "variables",
+          "success": true
+        },
+        {
+          "command": "variables",
+          "success": true
+        },
+        {
+          "command": "next",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "scopes",
+          "success": false
+        },
+        {
+          "command": "variables",
+          "success": false
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "stepIn",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "stepOut",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "evaluate",
+          "success": false
+        },
+        {
+          "command": "disconnect",
+          "success": true
+        },
+        {
+          "command": "disconnect",
+          "success": true
+        }
+      ],
+      "events": [
+        {
+          "event": "process"
+        },
+        {
+          "event": "initialized"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "breakpoint",
+          "reason": "changed"
+        },
+        {
+          "event": "stopped",
+          "reason": "pause"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "stopped",
+          "reason": "breakpoint"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "stopped",
+          "reason": "step"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "stopped",
+          "reason": "step"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "stopped",
+          "reason": "step"
+        },
+        {
+          "event": "terminated"
+        }
+      ]
+    },
+    {
+      "architecture": "x64",
+      "mode": "attach",
+      "passed": true,
+      "requests": [
+        "initialize",
+        "attach",
+        "setBreakpoints",
+        "configurationDone",
+        "threads",
+        "pause",
+        "threads",
+        "continue",
+        "stackTrace",
+        "cancel",
+        "threads",
+        "stackTrace",
+        "threads",
+        "stackTrace",
+        "scopes",
+        "variables",
+        "variables",
+        "variables",
+        "variables",
+        "next",
+        "threads",
+        "stackTrace",
+        "scopes",
+        "variables",
+        "stackTrace",
+        "stepIn",
+        "threads",
+        "stackTrace",
+        "stackTrace",
+        "stepOut",
+        "threads",
+        "stackTrace",
+        "stackTrace",
+        "evaluate",
+        "terminate",
+        "disconnect",
+        "disconnect"
+      ],
+      "responses": [
+        {
+          "command": "initialize",
+          "success": true
+        },
+        {
+          "command": "setBreakpoints",
+          "success": true
+        },
+        {
+          "command": "configurationDone",
+          "success": true
+        },
+        {
+          "command": "attach",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "pause",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "continue",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": false
+        },
+        {
+          "command": "cancel",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "scopes",
+          "success": true
+        },
+        {
+          "command": "variables",
+          "success": true
+        },
+        {
+          "command": "variables",
+          "success": true
+        },
+        {
+          "command": "variables",
+          "success": true
+        },
+        {
+          "command": "variables",
+          "success": true
+        },
+        {
+          "command": "next",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "scopes",
+          "success": false
+        },
+        {
+          "command": "variables",
+          "success": false
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "stepIn",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "stepOut",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "evaluate",
+          "success": false
+        },
+        {
+          "command": "terminate",
+          "success": false
+        },
+        {
+          "command": "disconnect",
+          "success": true
+        },
+        {
+          "command": "disconnect",
+          "success": true
+        }
+      ],
+      "events": [
+        {
+          "event": "process"
+        },
+        {
+          "event": "initialized"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "stopped",
+          "reason": "pause"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "breakpoint",
+          "reason": "changed"
+        },
+        {
+          "event": "stopped",
+          "reason": "breakpoint"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "stopped",
+          "reason": "step"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "stopped",
+          "reason": "step"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "stopped",
+          "reason": "step"
+        },
+        {
+          "event": "terminated"
+        }
+      ]
+    }
+  ],
+  "passed": true,
+  "finishedAtUtc": "2026-09-06T05:07:31.334Z"
+}

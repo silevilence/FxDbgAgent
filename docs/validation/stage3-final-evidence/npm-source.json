@@ -1,0 +1,13 @@
+{
+  "shasum": "784b3e2194fc151d5709a14692cf49c4afc60dfe",
+  "tarball": "https://registry.npmjs.org/npm/-/npm-10.9.2.tgz",
+  "fileCount": 2408,
+  "integrity": "sha512-iriPEPIkoMYUy3F6f3wwSZAU93E0Eg6cHwIR6jzzOXWSy+SD/rOODEs74cVONHKSx2obXtuUoyidVEhISrisgQ==",
+  "signatures": [
+    {
+      "sig": "MEUCIGBf8LLj7uGRPw50XB3r+nicWu/CELUoMZBBQtQQ/5xRAiEAi1wsO2lVOELyiSeYllTfvuWwkike9d4Q7w2SDDb7igY=",
+      "keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA"
+    }
+  ],
+  "unpackedSize": 11745533
+}

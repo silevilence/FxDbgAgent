@@ -29,7 +29,7 @@
 
 修复后Release真实DAP全套协议及新增184帧/输出故障回归通过，记录 `artifacts/stage3-validation/review-dap-protocol-Release.log`，监督器exit=0、timedOut=false、forcedOwnedCleanup为空。静态审核不替代运行时验收。
 
-修复后的完整Debug/Release回归待完成后补充到本报告与阶段3验收报告；运行期间源码有变化的先前尝试不得标记为最终通过。
+修复后实现 `b9d779a` 的完整Debug/Release回归于2026-09-06 05:23:48 UTC通过：3-1/2/3/5、真实VS Code以及全部阶段2/1/0回归成功，235项源码/测试/发布/技能输入前后一致。监督记录均exit=0、无超时、无强制清理残留；记录的自有进程全部退出。结论与固定机器证据见[阶段3验收报告](stage3-usability.md)。运行期间源码有变化的先前尝试不作为最终通过依据。
 
 首次全量尝试在既有阶段1 CDB/SOS对照处失败：本机没有默认WindowsKits调试工具。已从微软官方SDK10.0.26100.9169以layout下载并通过MSI /a仅展开到artifacts，核验双架构CDB的Microsoft有效签名。新增显式绝对工具目录配置和提前预检，原对照命令/断言不变；两位代理只读复核确认无验收弱化。独立Debug/Release×x86/x64的14帧CDB/SOS对照已全部通过（`cdb-preflight-*.log`）。首轮失败结果保留在 `artifacts/stage3-validation/first-full-attempt/`。
 

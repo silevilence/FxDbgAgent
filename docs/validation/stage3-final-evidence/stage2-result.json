@@ -1,0 +1,37 @@
+{
+  "outcomes": [
+    {
+      "log": "E:\\code\\Github\\FxDbgAgent\\artifacts\\stage2-validation\\stage2-3-install-evidence.log",
+      "exitCode": 0,
+      "name": "stage2-3-install-evidence"
+    },
+    {
+      "log": "E:\\code\\Github\\FxDbgAgent\\artifacts\\stage2-validation\\stage2-Debug.log",
+      "exitCode": 0,
+      "name": "stage2-Debug"
+    },
+    {
+      "log": "E:\\code\\Github\\FxDbgAgent\\artifacts\\stage2-validation\\stage2-mvp-Debug.log",
+      "exitCode": 0,
+      "name": "stage2-mvp-Debug"
+    },
+    {
+      "log": "E:\\code\\Github\\FxDbgAgent\\artifacts\\stage2-validation\\stage2-Release.log",
+      "exitCode": 0,
+      "name": "stage2-Release"
+    },
+    {
+      "log": "E:\\code\\Github\\FxDbgAgent\\artifacts\\stage2-validation\\stage2-mvp-Release.log",
+      "exitCode": 0,
+      "name": "stage2-mvp-Release"
+    },
+    {
+      "log": "E:\\code\\Github\\FxDbgAgent\\artifacts\\stage2-validation\\stage1-full-regression.log",
+      "exitCode": 0,
+      "name": "stage1-full-regression"
+    }
+  ],
+  "passed": true,
+  "atUtc": "2026-09-06T05:23:47.6692000+00:00",
+  "configuration": "Debug+Release"
+}

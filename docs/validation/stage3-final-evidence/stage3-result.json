@@ -1,0 +1,40 @@
+{
+  "passed": true,
+  "atUtc": "2026-09-06T05:23:48.2260061+00:00",
+  "skipped": [
+    "3-4"
+  ],
+  "configuration": "Debug+Release",
+  "outcomes": [
+    {
+      "log": "E:\\code\\Github\\FxDbgAgent\\artifacts\\stage3-validation\\final-package.log",
+      "name": "final-package",
+      "exitCode": 0
+    },
+    {
+      "log": "E:\\code\\Github\\FxDbgAgent\\artifacts\\stage3-validation\\final-appdomains.log",
+      "name": "final-appdomains",
+      "exitCode": 0
+    },
+    {
+      "log": "E:\\code\\Github\\FxDbgAgent\\artifacts\\stage3-validation\\final-paging.log",
+      "name": "final-paging",
+      "exitCode": 0
+    },
+    {
+      "log": "E:\\code\\Github\\FxDbgAgent\\artifacts\\stage3-validation\\final-source-mappings.log",
+      "name": "final-source-mappings",
+      "exitCode": 0
+    },
+    {
+      "log": "E:\\code\\Github\\FxDbgAgent\\artifacts\\stage3-validation\\final-dap.log",
+      "name": "final-dap",
+      "exitCode": 0
+    },
+    {
+      "log": "E:\\code\\Github\\FxDbgAgent\\artifacts\\stage3-validation\\final-stage2-regression.log",
+      "name": "final-stage2-regression",
+      "exitCode": 0
+    }
+  ]
+}

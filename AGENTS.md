@@ -7,7 +7,7 @@
 - 阶段 0-1～0-6 已完成真实 Windows 验证；阶段 0-7 报告见 `docs/stage0-validation-report.md`，并已于 2026-09-04 获用户确认。
 - 可行性结论：**技术上可行**。ICorDebug 双架构启动/附加、回调线程纪律、Windows PDB、源码断点和 14 层托管栈均已实测。
 - 阶段 1 已完成，依据为 `docs/validation/stage1-final-review.md`。阶段 2 的实现、独立 Agent 调用证据与完整回归见 `docs/validation/stage2-mvp.md`；按 `ROADMAP.md` 原地勾选保留任务位置。
-- 阶段3-1/3-2/3-3已完成；阶段3-5提供可选DAP入口与VS Code/Cursor扩展，真实客户端证据见 `docs/validation/stage3-5-dap.md`。阶段3-4按用户决定跳过，不能视为已验收。
+- 阶段3-1/3-2/3-3/3-5已完成；阶段3-5提供可选DAP入口与VS Code/Cursor扩展。完整Debug/Release回归、真实VS Code证据和独立双轴审核见 `docs/validation/stage3-usability.md`、`docs/validation/stage3-final-review.md`。阶段3-4按用户决定跳过，不能视为已验收。
 
 ## 项目是什么
 

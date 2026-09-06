@@ -1,0 +1,157 @@
+{
+  "implementationCommit": "b9d779ae97d06c56e91ab53aa1933b3a3c275897",
+  "atUtc": "2026-09-06T05:23:48.2260061+00:00",
+  "passed": true,
+  "stage3InputManifestSha256": "0D33C03321BAAF4B0D2C20C5AC87BE1A0DE01D56A7191543E3449649FDAD2562",
+  "stage3InputCount": 235,
+  "logs": [
+    {
+      "name": "final-package",
+      "log": "artifacts\\stage3-validation\\final-package.log",
+      "logSha256": "47F64C765165CBC2D7F029EF00C88582FD2A3DE7595058EEE82958DFF6FED6E5",
+      "supervisorResults": [
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup="
+      ],
+      "processesSha256": "208F12D1708C8125F367AA9BF4EA7A9C15DE9481C36B65FEF00F850AC95125A9",
+      "ownedProcessRecords": 6,
+      "allRecordedProcessesExited": true
+    },
+    {
+      "name": "final-appdomains",
+      "log": "artifacts\\stage3-validation\\final-appdomains.log",
+      "logSha256": "C631047573148D70B416B1A0E67FF9C4093B201C4B41C59D479A43F4B9FA2ED7",
+      "supervisorResults": [
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=",
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=",
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup="
+      ],
+      "processesSha256": "A9F86B95388B60978378C5D49ECE642FA1B0E4B469919945D8A200968B9B8F96",
+      "ownedProcessRecords": 261,
+      "allRecordedProcessesExited": true
+    },
+    {
+      "name": "final-paging",
+      "log": "artifacts\\stage3-validation\\final-paging.log",
+      "logSha256": "1DE171D008834DAD02A6172902022F93CDAC46746F8BD965FCE9F3C8927387AF",
+      "supervisorResults": [
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=",
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=",
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup="
+      ],
+      "processesSha256": "8382817496112E3964FB064D39AE3301574C47BF2B7864B0D82F34372E2D8048",
+      "ownedProcessRecords": 130,
+      "allRecordedProcessesExited": true
+    },
+    {
+      "name": "final-source-mappings",
+      "log": "artifacts\\stage3-validation\\final-source-mappings.log",
+      "logSha256": "9DCE3E9145503A65CFCACBA6D5FA24A3BD880BA1480B705133CA5337DB5367DE",
+      "supervisorResults": [
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=",
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=",
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup="
+      ],
+      "processesSha256": "080FC08EDA40D5B56475964E19AB8DEC80ACFDFBF195B0E94250F4D68584A347",
+      "ownedProcessRecords": 150,
+      "allRecordedProcessesExited": true
+    },
+    {
+      "name": "final-dap",
+      "log": "artifacts\\stage3-validation\\final-dap.log",
+      "logSha256": "F63843468C4624C25D9D3305E255847FBE9510FDE2672282CD5376018F31D479",
+      "supervisorResults": [
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=",
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=",
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=",
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=",
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup="
+      ],
+      "processesSha256": "6B0260DCFCAA9CA30D511772A10DB743DBC5DD886D2E9FE5434B0E51195AAFA1",
+      "ownedProcessRecords": 438,
+      "allRecordedProcessesExited": true
+    },
+    {
+      "name": "final-stage2-regression",
+      "log": "artifacts\\stage3-validation\\final-stage2-regression.log",
+      "logSha256": "13DE50CC713E7DEA92350C5066FDCE422F6B4E473B2533D46F507E68A4E6AAC3",
+      "supervisorResults": [
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=",
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=",
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=",
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=",
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=",
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=",
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup="
+      ],
+      "processesSha256": "18190E0EF894E3BB2F6021BB6AD5D8FA132BF633505B87DFF592996F022F2053",
+      "ownedProcessRecords": 2875,
+      "allRecordedProcessesExited": true
+    },
+    {
+      "name": "stage2-3-install-evidence",
+      "log": "artifacts\\stage2-validation\\stage2-3-install-evidence.log",
+      "logSha256": "99B25849203586DED12249349DCE3BAB589A99F9CB993117987D1FCDE86EDC8B",
+      "supervisorResults": [
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup="
+      ],
+      "processesSha256": "C841EA2449FEFFA5D1252ABE280B9943C62D4E179EFC8A3245DB3E11F9D7BCE3",
+      "ownedProcessRecords": 6,
+      "allRecordedProcessesExited": true
+    },
+    {
+      "name": "stage2-Debug",
+      "log": "artifacts\\stage2-validation\\stage2-Debug.log",
+      "logSha256": "B156616E4FECB888B13D2B44CE38DB585E8A2DB7AC684F408EBC5E80D8E412F2",
+      "supervisorResults": [
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup="
+      ],
+      "processesSha256": "A247307F81CFA3B1F35AA71DEA2C78A2AAD0C2E0D399BC0C06DF5CB6411A0852",
+      "ownedProcessRecords": 655,
+      "allRecordedProcessesExited": true
+    },
+    {
+      "name": "stage2-mvp-Debug",
+      "log": "artifacts\\stage2-validation\\stage2-mvp-Debug.log",
+      "logSha256": "45944CB92D229F9659B0F830456F1A64DCFCCFA88EF3D8E2ADDFCC16E1E3610D",
+      "supervisorResults": [
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup="
+      ],
+      "processesSha256": "021221EC1DCEB492EE75C514EAFDB77FCC8089EDE012FCCA3D55DEF9681998BC",
+      "ownedProcessRecords": 72,
+      "allRecordedProcessesExited": true
+    },
+    {
+      "name": "stage2-Release",
+      "log": "artifacts\\stage2-validation\\stage2-Release.log",
+      "logSha256": "41ECB0781FDBA5E1F24A7CB255A217382A3FFFB6EEFE99E3F31D967C294DB883",
+      "supervisorResults": [
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup="
+      ],
+      "processesSha256": "843BC220F26A7375FDB23FD0AA3686234D2FF3F299CA7676188C887429C99A89",
+      "ownedProcessRecords": 659,
+      "allRecordedProcessesExited": true
+    },
+    {
+      "name": "stage2-mvp-Release",
+      "log": "artifacts\\stage2-validation\\stage2-mvp-Release.log",
+      "logSha256": "B768EF8C797000DB08FC144A4153F1975FAE9E330429DB49C109A9C056EB03AC",
+      "supervisorResults": [
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup="
+      ],
+      "processesSha256": "86B016D7EE190C2937F22655E37C560FA05F06876AEC1249A453094F43D99D15",
+      "ownedProcessRecords": 72,
+      "allRecordedProcessesExited": true
+    },
+    {
+      "name": "stage1-full-regression",
+      "log": "artifacts\\stage2-validation\\stage1-full-regression.log",
+      "logSha256": "0A574888503D6E9D6D26EFED89C5D5384AFE96EAA9A8EB705BA48F9F7EC35961",
+      "supervisorResults": [
+        "Supervisor: exit=0, timedOut=False, forcedOwnedCleanup="
+      ],
+      "processesSha256": "ACABE2A517A184995A41D2686EA566CC3297B4F18C32595A3319863CB0B34BD1",
+      "ownedProcessRecords": 1415,
+      "allRecordedProcessesExited": true
+    }
+  ]
+}

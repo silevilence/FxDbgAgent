@@ -1,0 +1,23 @@
+{
+  "files": [
+    {
+      "sha256": "42E2DCD933F4B298BDF0945949F545E183C7930FDFF3CC0DE6E58D74D5CB9DD9",
+      "signature": "Valid",
+      "version": "10.0.26100.9169 (WinBuild.160101.0800)",
+      "arch": "x86",
+      "path": "E:\\code\\Github\\FxDbgAgent\\artifacts\\windows-debuggers\\x86\\cdb.exe",
+      "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+    },
+    {
+      "sha256": "B27BEEAB332294D3B043095D727DC5ACA2A53AE609EEC9223BC4276531595B6E",
+      "signature": "Valid",
+      "version": "10.0.26100.9169 (WinBuild.160101.0800)",
+      "arch": "x64",
+      "path": "E:\\code\\Github\\FxDbgAgent\\artifacts\\windows-debuggers\\x64\\cdb.exe",
+      "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+    }
+  ],
+  "sdk": "10.1.26100.9169",
+  "mode": "layout and MSI /a administrative image, no /i installation",
+  "source": "https://go.microsoft.com/fwlink/?linkid=2376216"
+}
