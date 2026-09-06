@@ -13,8 +13,7 @@ try {
         $runner = Join-Path $repoRoot "tests/FxDbg.IntegrationTests/bin/$Configuration/net48/FxDbg.IntegrationTests.$architecture.exe"
         & $runner $repoRoot $Configuration stack
         if ($LASTEXITCODE -ne 0) { throw "Real $architecture thread/stack test failed." }
-        $cdb = "C:/Program Files (x86)/Windows Kits/10/Debuggers/$architecture/cdb.exe"
-        if (-not (Test-Path -LiteralPath $cdb)) { throw "The $architecture Windows debugger is required for independent stack comparison." }
+        $cdb = & (Join-Path $PSScriptRoot 'find-windows-debugger.ps1') -Architecture $architecture
         $framework = if ($architecture -eq 'x86') { 'Framework' } else { 'Framework64' }
         $target = Join-Path $repoRoot "tests/Debuggees/Fx40.Console.$architecture/bin/$Configuration/net40/Fx40.Console.$architecture.exe"
         $start = [System.Diagnostics.ProcessStartInfo]::new($cdb)

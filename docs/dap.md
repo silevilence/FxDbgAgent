@@ -84,4 +84,6 @@ code --install-extension ./artifacts/dap/fxdbg-0.1.0.vsix
 
 默认 Debug/Release，协议测试覆盖双架构启动/附加、断点、暂停/继续、三种单步、14层栈、变量首尾页和过期引用、取消与EOF。真实 VS Code 通过独立 user-data/extensions 目录、扩展测试入口和原生调试API执行同一矩阵，记录版本、请求/响应/事件摘要；不保存变量值。Cursor 使用同一扩展接口，当前真实客户端验收记录为 VS Code，不将其冒充 Cursor 实测。
 
+完整 `eng/verify-stage3.ps1` 还运行阶段2/1/0回归，需要 .NET 8/10运行时和双架构 Windows Debugging Tools 做独立CDB/SOS对照。默认查找Windows Kits安装位置，也可把 `FXDBG_DEBUGGERS_DIRECTORY` 设为含 `x86/cdb.exe`、`x64/cdb.exe` 的官方工具展开目录绝对路径；缺失时在全量测试开始即报错，不跳过对照。
+
 协议依据：[DAP 概述](https://github.com/microsoft/debug-adapter-protocol/blob/main/overview.md)、[VS Code 调试扩展接口](https://code.visualstudio.com/api/extension-guides/debugger-extension)、[激活事件](https://code.visualstudio.com/api/references/activation-events)。

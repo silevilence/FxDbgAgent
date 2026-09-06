@@ -31,4 +31,6 @@
 
 修复后的完整Debug/Release回归待完成后补充到本报告与阶段3验收报告；运行期间源码有变化的先前尝试不得标记为最终通过。
 
+首次全量尝试在既有阶段1 CDB/SOS对照处失败：本机没有默认WindowsKits调试工具。已从微软官方SDK10.0.26100.9169以layout下载并通过MSI /a仅展开到artifacts，核验双架构CDB的Microsoft有效签名。新增显式绝对工具目录配置和提前预检，原对照命令/断言不变；两位代理只读复核确认无验收弱化。独立Debug/Release×x86/x64的14帧CDB/SOS对照已全部通过（`cdb-preflight-*.log`）。首轮失败结果保留在 `artifacts/stage3-validation/first-full-attempt/`。
+
 审核计数：Standards初始2项、复核遗留0项；Spec初始1项、复核遗留0项。

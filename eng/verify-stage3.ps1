@@ -29,6 +29,7 @@ function Invoke-Validation([string]$Name, [string[]]$Arguments, [int]$Seconds) {
 $configurationArguments = if ($Configuration) { @('-Configuration',$Configuration) } else { @() }
 $passed = $false
 try {
+    foreach ($architecture in @('x86','x64')) { $null = & (Join-Path $PSScriptRoot 'find-windows-debugger.ps1') -Architecture $architecture }
     Invoke-Validation 'final-package' @('-NoProfile','-File',(Join-Path $PSScriptRoot 'package-extension.ps1')) 240
     # The multi-domain script includes both architectures of native lifecycle/event verification.
     Invoke-Validation 'final-appdomains' (@('-NoProfile','-File',(Join-Path $PSScriptRoot 'verify-stage3-3.ps1')) + $configurationArguments) 1200

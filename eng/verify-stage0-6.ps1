@@ -171,10 +171,7 @@ try {
     $pending | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $reportDirectory "pending-$($Configuration.ToLowerInvariant()).json") -Encoding utf8
     $unresolved | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $reportDirectory "unresolved-$($Configuration.ToLowerInvariant()).json") -Encoding utf8
 
-    $cdbPath = 'C:/Program Files (x86)/Windows Kits/10/Debuggers/x86/cdb.exe'
-    if (-not (Test-Path -LiteralPath $cdbPath)) {
-        throw 'The x86 Windows debugger is required for the independent stack comparison.'
-    }
+    $cdbPath = & (Join-Path $PSScriptRoot 'find-windows-debugger.ps1') -Architecture x86
 
     $start = [Diagnostics.ProcessStartInfo]::new($cdbPath)
     $start.UseShellExecute = $false
