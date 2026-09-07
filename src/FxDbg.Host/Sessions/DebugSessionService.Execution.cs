@@ -216,7 +216,12 @@ public sealed partial class DebugSessionService
 
     private static void RequireActive(Observation observation)
     {
-        if (observation.ClosedAtUtc.HasValue || observation.Closing)
+        // State RPCs and event draining run independently. Once a terminal state
+        // has been returned, stale-handle requests must not race Engine shutdown
+        // while the exit event is still waiting for the event pump.
+        if (observation.ClosedAtUtc.HasValue || observation.Closing ||
+            (string?)observation.Target?["sessionState"] is "terminated" or "failed" ||
+            (string?)observation.LastSnapshot?["target"]?["sessionState"] is "terminated" or "failed")
             throw new FxDbgException(FxDbgErrorCode.InvalidSessionState, "Session is closing or ended.");
     }
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FxDbg.Core.Model;
+using FxDbg.Core.Errors;
 using FxDbg.Core.Requests;
 using FxDbg.Core.Sessions;
 using FxDbg.Engine.Protocol;
@@ -16,6 +17,24 @@ namespace FxDbg.UnitTests.Host;
 
 public sealed class SessionRaceTests
 {
+    [Theory]
+    [InlineData("threads")]
+    [InlineData("stack")]
+    [InlineData("variables")]
+    public async Task Terminal_status_prevents_reads_before_exit_event_is_drained(string method)
+    {
+        using var engine = new OrderedEngine();
+        engine.ReadResponse.SetResult();
+        await using var service = new DebugSessionService(engine);
+        string session = (string)(await service.InvokeAsync("launch", new JObject { ["exe"] = "fixture.exe" }))["sessionId"]!;
+        engine.State = "terminated"; // State RPC is ahead of the independently drained exit event.
+        JObject Args() => new() { ["sessionId"] = session };
+        Assert.Equal("terminated", (string?)(await service.InvokeAsync("status", Args()))["result"]?["target"]?["sessionState"]);
+        var error = await Assert.ThrowsAsync<FxDbgException>(() => service.InvokeAsync(method, Args()));
+        Assert.Equal(FxDbgErrorCode.InvalidSessionState, error.Code);
+        Assert.False(engine.Reading.Task.IsCompleted);
+    }
+
     [Theory]
     [InlineData("threads")]
     [InlineData("stack")]
@@ -117,7 +136,7 @@ public sealed class SessionRaceTests
         internal CancellationToken ReadToken;
         private JObject? stop;
         private DebugTargetInfo Target => new(123, TargetArchitecture.X86, "v4.0.30319", true,
-            State == "running" ? DebugSessionState.Running : DebugSessionState.Stopped);
+            Enum.Parse<DebugSessionState>(State, true));
         public Task<DebugTargetInfo> LaunchAsync(LaunchRequest request, CancellationToken cancellationToken) => Task.FromResult(Target);
         public Task<DebugTargetInfo> AttachAsync(AttachRequest request, CancellationToken cancellationToken) => Task.FromResult(Target);
         public async Task<JToken> InvokeAsync(SessionId sessionId, string method, JObject? arguments = null, TimeSpan? timeout = null, CancellationToken cancellationToken = default)
