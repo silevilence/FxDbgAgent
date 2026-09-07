@@ -74,3 +74,13 @@ npx --yes skills@1.5.23 add <FxDbg源码绝对路径> --skill fxdbg-agent --agen
 采用项目级安装，不加 --global，不修改用户全局配置。安装方式依据 [skills 官方说明](https://github.com/vercel-labs/skills)。技能自带 references，安装后不依赖源码相对引用。可在没有源码的机器上使用已部署 MCP 服务；只有构建服务时才需要源代码仓库。
 
 本项目按用户指定由独立 Codex 子代理验收，禁止使用 Claude Code。子代理先读取安装后的技能与引用，自主决定每次真实调用，保留身份、提示词、请求/响应与结论。透明 stdio 桥仅转发工具，不实现调试或预编排流程；固定脚本回归的通过结果单独记录，不能替代 Agent 自主验收。
+
+## Windows Service 与 IIS
+
+先核对SCM服务名/应用池及当前PID、创建时间；IIS先请求托管页面预热，再用appcmd list wp列出目标池全部候选。禁止按w3wp进程名任取目标，回收后不得复用历史PID。Host/Engine只按需启用已有SeDebugPrivilege并恢复；遇access_denied，用有权限的客户端重新启动Host后重新附加，工具不会自行弹UAC。native-only worker的not_managed_process需要预热并重新定位。
+
+使用debug_attach保存sessionId和实际architecture，在可重复业务方法设置断点，再触发请求或等待服务周期。停止时获取实际threadId、frameId和变量；只读观察不执行Getter或业务函数。暂停影响整个进程及其所有请求。结束用debug_detach，附加目标禁止terminate；不要杀进程树代替分离。
+
+保留IIS影子复制。status.modules的path/pdbPath/symbolStatus/diagnostic给出实际模块与相邻Windows PDB；仅该相邻路径是符号候选，匹配PE/PDB身份后才绑定，不扫描磁盘。missing/mismatch需正确部署匹配PDB；readFailed需修复读取权限或占用，权限恢复即使未改变文件元数据也会每五秒重试。pending会在模块/PDB就绪后自动重绑定。sourceMappings只转换源码路径；动态页面可使用部署根到本地根映射，业务DLL已有本地源码路径时使用精确module范围的同路径映射，避免被页面映射反向改写。
+
+多域断点可限定appDomainId；域卸载后该ID及帧/引用失效，限定断点不跟随同名新域，未限定断点可在新模块重新绑定。纯内存/Reflection.Emit模块无可用PDB时明确报告符号不可用。服务重启/IIS回收使旧session结束；重新预热、列出候选、核对PID并显式attach，新会话不继承旧引用。正常EOF与Host退出会尝试安全detach；Engine硬崩溃的目标存活仍受CLR/操作系统约束。

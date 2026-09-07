@@ -103,6 +103,7 @@
     - [ ] 编写 `docs/service-iis.md`，同步CLI/MCP/DAP、Agent技能及随包引用，说明管理员启动、PID定位、预热、符号诊断、回收后重附加、暂停对服务/请求的影响与安全分离；按实现事实更新AGENTS.md，保留先前跳过的历史验收记录
     - [ ] 原始证据写入 `artifacts/stage3-4-validation/`，报告写入 `docs/validation/stage3-4-service-iis.md`，补充阶段3最终报告；记录命令、OS/IIS/CLR版本、身份/权限、配置、源码哈希、结果和自有资源恢复证据，日志保持脱敏
     - 验收：专项与完整回归Debug/Release全部通过；以实施前固定基线完成规范/需求双轴独立审核并修复、复核阻塞项；报告逐条关联3-4a～3-4f。所有真实环境证据与清理证据齐全后才原地勾选，历史3-1/2/3/5通过记录不得替代3-4证据。
+    - 实现记录：一键脚本、显式子集标识、CLI/DAP/真实VS Code的双配置Service/IIS入口矩阵及随包文档已完成快速审核并本地提交；整体验收保持待办，见 `docs/validation/stage3-4-service-iis.md`。
 
 阶段3-4的技术边界参考Microsoft官方文档：[调试Windows Service](https://learn.microsoft.com/en-us/dotnet/framework/windows-services/how-to-debug-windows-service-applications)、[令牌权限调整及ERROR_NOT_ALL_ASSIGNED](https://learn.microsoft.com/en-us/windows/win32/api/securitybaseapi/nf-securitybaseapi-adjusttokenprivileges)、[程序集影子复制](https://learn.microsoft.com/en-us/dotnet/framework/app-domains/shadow-copy-assemblies)、[IIS应用池进程模型与ping设置](https://learn.microsoft.com/en-us/iis/configuration/system.applicationhost/applicationpools/add/processmodel)。上述范围、工期和验收矩阵为本项目规划约定。
 

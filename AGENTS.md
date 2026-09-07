@@ -7,7 +7,7 @@
 - 阶段 0-1～0-6 已完成真实 Windows 验证；阶段 0-7 报告见 `docs/stage0-validation-report.md`，并已于 2026-09-04 获用户确认。
 - 可行性结论：**技术上可行**。ICorDebug 双架构启动/附加、回调线程纪律、Windows PDB、源码断点和 14 层托管栈均已实测。
 - 阶段 1 已完成，依据为 `docs/validation/stage1-final-review.md`。阶段 2 的实现、独立 Agent 调用证据与完整回归见 `docs/validation/stage2-mvp.md`；按 `ROADMAP.md` 原地勾选保留任务位置。
-- 阶段3-1/3-2/3-3/3-5已完成；阶段3-5提供可选DAP入口与VS Code/Cursor扩展。完整Debug/Release回归、真实VS Code证据和独立双轴审核见 `docs/validation/stage3-usability.md`、`docs/validation/stage3-final-review.md`。阶段3-4在该轮按用户决定跳过；2026-09-07按用户要求完成本机Service/IIS测试环境准备，见 `docs/service-iis-environment.md`、`docs/validation/stage3-4-environment.md`，附加增强与阶段3-4整体验收仍未完成。
+- 阶段3-1/3-2/3-3/3-5已完成；阶段3-5提供可选DAP入口与VS Code/Cursor扩展。历史Debug/Release回归、真实VS Code证据和独立双轴审核见 `docs/validation/stage3-usability.md`、`docs/validation/stage3-final-review.md`。2026-09-06的3-4跳过是历史决定；当前3-4a～3-4e已完成，3-4f整体验收进行中，不能以旧记录代替本轮Service/IIS证据。
 
 ## 项目是什么
 
@@ -61,7 +61,7 @@ FxDbg.sln
 ## 构建与测试
 
 - MVP 一键验收：`./eng/verify-stage2.ps1`，默认 Debug/Release，支持 `-Configuration Debug|Release`。包括真实 MCP、技能安装/独立 Agent 证据检查和 `eng/verify-stage1.ps1`；记录源码哈希、超时、日志及自有进程退出，任何失败不得标记通过。
-- 阶段3本轮一键验收：`./eng/verify-stage3.ps1 -NodePath <node.exe> -CodePath <Code.exe>`，默认 Debug/Release，包含3-1/2/3/5、真实VS Code、VSIX打包及阶段2/1全回归；需要Node/npm、VS Code和.NET 8/10运行时。3-4保持跳过。DAP发布：`./eng/publish-dap.ps1`，扩展打包：`./eng/package-extension.ps1`，配置见 `docs/dap.md`。
+- 阶段3一键验收：管理员64位PowerShell运行 `./eng/verify-stage3.ps1 -NodePath <node.exe> -CodePath <Code.exe>`，默认Debug/Release，包含3-1/2/3/4/5、真实VS Code、VSIX及阶段2/1/0全回归；需要完整IIS/ASP.NET 4.x、Node/npm、VS Code、.NET 8/10和双架构CDB。显式 `-SkipServiceIis` 仅运行既有子集，结果列出skipped、完整passed=false；不能标记阶段3全验收通过。Service/IIS专项为 `./eng/verify-stage3-4.ps1`，使用独立资源并验证恢复，流程见 `docs/service-iis.md`。DAP发布：`./eng/publish-dap.ps1`，扩展打包：`./eng/package-extension.ps1`，配置见 `docs/dap.md`。
 - 发布 MCP：`./eng/publish-mcp.ps1 -Configuration Release`，入口为 `dotnet <发布目录>/fxdbg-mcp.dll`；必须携带相邻 `engines/` 的完整双架构依赖，不依赖当前目录。
 - SDK 由 `global.json` 固定为 .NET SDK 10.0.301（允许同一 feature band 的最新补丁）。
 - `net40` 使用 SDK 风格项目；`Directory.Build.targets` 固定引用 `Microsoft.NETFramework.ReferenceAssemblies` 1.0.3，因此构建机无需预装 .NET Framework 4.0 targeting pack。

@@ -120,8 +120,19 @@ internal static class ServiceSuite
                 health=await ReadHeartbeat(heartbeat,token);
                 await AssertHealthy(service,heartbeat,pid,token);
                 cases.Add(new JsonObject{["architecture"]=architecture,["mode"]="cli-breakpoint-detach",["pid"]=pid});
+                using var http=new HttpClient { Timeout=TimeSpan.FromSeconds(45) };
+                string url=(string)resource["url"]!;
+                int worker=(int)JsonNode.Parse(await http.GetStringAsync(url,token))!["pid"]!;
+                string webSource=Path.GetFullPath(Path.Combine(root,"tests/Debuggees/Fx40.Environment.Web/Health.cs"));
+                int webLine=File.ReadAllLines(webSource).Select((text,index)=>(text,index)).Single(row=>row.text.Contains("// ENV_WEB_CALL")).index+1;
+                Task<string>? request=null;
+                try { await CliSmoke(root,configuration,worker,webSource,webLine,token,()=>request=http.GetStringAsync(url,token)); }
+                finally { if(request is not null) await request; }
+                var webHealth=JsonNode.Parse(await http.GetStringAsync(url,token))!;
+                ObservationSuite.Require((int)webHealth["pid"]! ==worker && (int)webHealth["result"]! ==85,"CLI detach preserves the IIS worker and resumes requests.");
+                cases.Add(new JsonObject{["architecture"]=architecture,["mode"]="cli-iis-breakpoint-detach",["pid"]=worker});
             }
-            ObservationSuite.Require(cases.Count==14,"All Service MCP/CLI scenarios completed for both architectures.");
+            ObservationSuite.Require(cases.Count==16,"All Service MCP and Service/IIS CLI scenarios completed for both architectures.");
             evidence["passed"]=true;
         }
         catch(Exception error) { evidence["error"]=error.ToString(); throw; }
@@ -164,7 +175,7 @@ internal static class ServiceSuite
         ObservationSuite.Require(process.ExitCode==0,$"Fixture command {Path.GetFileName(exe)} failed ({process.ExitCode}): {await output} {await error}");
         return await output;
     }
-    private static async Task CliSmoke(string root,string configuration,int pid,string source,int line,CancellationToken token)
+    private static async Task CliSmoke(string root,string configuration,int pid,string source,int line,CancellationToken token,Action? trigger=null)
     {
         string cli=Path.Combine(root,$"src/FxDbg.Cli/bin/{configuration}/net10.0-windows/fxdbg.dll");
         async Task<JsonNode> Call(params string[] args) => JsonNode.Parse(await Command("dotnet",new[]{cli}.Concat(args),root,token))!;
@@ -174,10 +185,12 @@ internal static class ServiceSuite
             await Call("pause","--session",session);
             await Call("break","--session",session,"--file",source,"--line",line.ToString());
             await Call("continue","--session",session);
+            trigger?.Invoke();
             var stop=(await Call("wait","--session",session))["result"]!;
             ObservationSuite.Require((string?)stop["reason"]=="breakpoint","CLI service breakpoint.");
             var stack=(await Call("stack","--session",session,"--thread",((int)stop["threadId"]!).ToString()))["result"]!.AsArray();
             ObservationSuite.Require((int)stack[0]!["sourceLocation"]!["line"]! == line,"CLI service source location.");
+            ObservationSuite.Require(string.Equals((string?)stack[0]!["sourceLocation"]!["filePath"],source,StringComparison.OrdinalIgnoreCase),"CLI source path matches the selected fixture.");
         }
         finally
         {

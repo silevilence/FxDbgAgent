@@ -1,6 +1,6 @@
 ---
 name: fxdbg-agent
-description: Debug local Windows .NET Framework 4.x applications through FxDbg MCP. Use for managed source breakpoints, threads, stacks, raw fields and safe exception inspection in Desktop CLR Console or WinForms processes, including x86/x64 routing and safe detach. 不适用于 CoreCLR、远程调试或函数求值。
+description: Debug local Windows .NET Framework 4.x applications through FxDbg MCP. Use for managed source breakpoints, threads, stacks, raw fields and safe exception inspection in Desktop CLR Console, WinForms, SCM Windows Service or full IIS ASP.NET processes, including x86/x64 routing and safe detach. 不适用于 CoreCLR、远程调试或函数求值。
 ---
 
 # FxDbg Agent

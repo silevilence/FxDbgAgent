@@ -87,3 +87,5 @@ code --install-extension ./artifacts/dap/fxdbg-0.1.0.vsix
 完整 `eng/verify-stage3.ps1` 还运行阶段2/1/0回归，需要 .NET 8/10运行时和双架构 Windows Debugging Tools 做独立CDB/SOS对照。默认查找Windows Kits安装位置，也可把 `FXDBG_DEBUGGERS_DIRECTORY` 设为含 `x86/cdb.exe`、`x64/cdb.exe` 的官方工具展开目录绝对路径；缺失时在全量测试开始即报错，不跳过对照。
 
 协议依据：[DAP 概述](https://github.com/microsoft/debug-adapter-protocol/blob/main/overview.md)、[VS Code 调试扩展接口](https://code.visualstudio.com/api/extension-guides/debugger-extension)、[激活事件](https://code.visualstudio.com/api/references/activation-events)。
+
+Service与完整IIS使用现有processId附加配置；适配器继承编辑器令牌，权限、PID核对、影子PDB和回收后重新附加见[Service/IIS指南](service-iis.md)。完整阶段3脚本默认包含3-4并需管理员；显式-SkipServiceIis只运行子集，结果passed=false、subsetPassed单独报告且列出skipped。真实VS Code另覆盖Service/IIS各双架构附加、源码断点和安全分离。

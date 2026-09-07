@@ -81,3 +81,5 @@ stdin EOF、输出断开或 Host 退出均结束所属会话，默认尝试 Deta
 示例sourceMappings：[{"buildRoot":"C:\\build\\src","localRoot":"D:\\workspace\\src"},{"buildRoot":"C:\\build\\src","localRoot":"D:\\workspace\\plugin","module":"Plugin.dll"}]。源码映射不会复制文件或代替PDB匹配校验。
 
 阶段3 AppDomain：status返回appDomains数组，字段appDomainId/name/runtimeId。status、threads、stack、variables以及创建set_breakpoint可选appDomainId，省略观察全部域。未知/卸载/跨会话ID返回invalid_request。线程按当前域筛选，栈按帧所属模块的域筛选再分页；变量携带读取帧的域上下文，所选域必须匹配frameId。status仅筛选域/模块/适用断点，保留进程级停止与操作信息。断点附boundAppDomainIds；限定域卸载后回pending，不自动绑定同名新域。用新ID创建新断点，更新enabled不能改变域范围。变量引用按域隔离，但所有域共用每次停止10000引用上限；恢复运行或域卸载使旧引用失效。
+
+阶段3-4继续使用现有13工具，无新增必填字段。真实SCM服务与完整IIS按PID附加，跨身份权限不足返回access_denied，未加载CLR的native worker返回not_managed_process（预热后重新定位）。Host/Engine按需启用已有SeDebugPrivilege并恢复，不自动提权。status.modules报告实际影子路径和相邻PDB候选；readFailed每五秒重试，缺失/失配/就绪按真实状态报告并自动重绑定。回收后的旧session不转移到新PID，显式重新attach。详细可执行流程在随包workflow的“Windows Service与IIS”章节；源码仓库另有docs/service-iis.md。

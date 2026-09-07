@@ -30,3 +30,5 @@ $stack = & $cli stack --session $session --thread $thread | ConvertFrom-Json
 launch/attach 支持 --source-maps <JSON文件>，数组字段与MCP的sourceMappings一致，详见 [源码映射](source-mapping.md)。
 
 threads、stack、variables、break支持 --app-domain <status中的appDomainId>；详细语义见 [AppDomain识别](appdomains.md)。CLI通过state的域列表及events查看生命周期。
+
+Service/IIS使用同一个attach入口；先核对服务/应用池的当前PID并为IIS请求预热，权限、影子符号、回收及安全分离见[Service/IIS指南](service-iis.md)。CLI已纳入两类目标的双架构真实断点/分离验收。
