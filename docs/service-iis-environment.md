@@ -33,9 +33,13 @@ foreach ($sample in @('Fx40.Environment.Service.x86', 'Fx40.Environment.Service.
 
 `-Action Preflight`可在普通权限下只读运行，不创建目录或改变配置；组件详情需要管理员令牌，权限不足会明确返回unknown。默认环境沿用上表名称，也支持`-EnvironmentName Stage3-4-<小写字母数字后缀> -PortBase <端口>`建立独立测试环境；清单及部署目录按后缀隔离，Verify/Remove须使用同一EnvironmentName。
 
+预检同时列出部署目录（不存在时为最近现存父目录）的Owner/SDDL、调用者与LocalService/双应用池的具体身份、端口占用，以及计划创建的服务/应用池/回环站点和目录授权。尚未创建的应用池SID等无法查询值标记unknown，计划变更与当前事实分开输出。
+
 服务写入`data/late.request`后按需加载独立`late/Fx40.Environment.Late.dll`，后续心跳的`lateResult=85`；IIS访问`health.aspx?action=late`触发同一库，默认健康请求不加载该库。样例业务入口和嵌套方法有稳定的源码标记，供后续产品断点与单步测试使用。
 
 管理员执行`eng/verify-stage3-4a.ps1`可进行Debug/Release环境验收：使用独立`Stage3-4-check`资源及58342/58343端口，验证真实部署、延迟加载、DLL/PDB身份和源码行、清理、安装进程突然退出后按清单恢复，以及IIS配置完全回到基线。每个子进程均有限期；不清理默认环境。
+
+Remove通过句柄和创建时间记录自有服务及worker的实际进程实例；只有这些实例退出且SCM/IIS资源均消失后才标记removed。删除后的等待默认30秒，可用`-CleanupTimeoutSeconds 1..120`调整；超时保留清单并失败，可解除阻塞后重试，不强杀目标。验收包含持有ServiceHandle导致SCM延迟删除的反例，验证第一次清理失败、释放句柄后恢复成功。
 
 安装先记录Windows组件基线，再仅启用所需IIS/ASP.NET组件及其依赖，不安装.NET 3.5、FTP或远程管理服务。若Windows要求重启，记录`restartRequired`并失败退出，不自动重启或宣称安装完成。失败时保留安装日志、状态与已创建资源清单供诊断，不执行全局IIS配置回滚或终止无关进程。
 

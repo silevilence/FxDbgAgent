@@ -3,7 +3,8 @@ param(
     [ValidateSet('Debug','Release')][string]$Configuration = 'Debug',
     [ValidatePattern('^Stage3-4(-[a-z0-9]{1,20})?$')][string]$EnvironmentName = 'Stage3-4',
     [ValidateRange(1024,65534)][int]$PortBase = 58340,
-    [ValidateSet('None','AfterFirstSite')][string]$InterruptAt = 'None'
+    [ValidateSet('None','AfterFirstSite')][string]$InterruptAt = 'None',
+    [ValidateRange(1,120)][int]$CleanupTimeoutSeconds = 30
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
@@ -32,10 +33,31 @@ if ($Action -eq 'Preflight') {
     } else { @('unknown: component inspection needs an elevated token') }
     $clr = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full' -ErrorAction SilentlyContinue
     $ports = @(Get-NetTCPConnection -LocalPort $PortBase,($PortBase+1) -State Listen -ErrorAction SilentlyContinue | Select-Object -ExpandProperty LocalPort -Unique)
+    $aclInspection = try {
+        $aclPath=$deploymentRoot
+        while(-not (Test-Path -LiteralPath $aclPath)) { $aclPath=Split-Path -Parent $aclPath }
+        $acl=Get-Acl -LiteralPath $aclPath
+        @{status='known';path=$aclPath;isExistingParent=($aclPath -ne $deploymentRoot);owner=$acl.Owner;sddl=$acl.Sddl}
+    } catch { @{status='unknown';reason=$_.Exception.Message} }
+    $identities=@(@{kind='caller';name=[Security.Principal.WindowsIdentity]::GetCurrent().Name;sid=[Security.Principal.WindowsIdentity]::GetCurrent().User.Value},
+        @{kind='service';name='NT AUTHORITY\LocalService';sid='S-1-5-19'})
+    $changes=@()
+    foreach($architecture in @('x86','x64')) {
+        $name="$namePrefix-$architecture"
+        $poolIdentity=@{kind='applicationPool';name="IIS AppPool\$name";status='known'}
+        try { $poolIdentity.sid=[Security.Principal.NTAccount]::new($poolIdentity.name).Translate([Security.Principal.SecurityIdentifier]).Value }
+        catch { $poolIdentity.status='unknown';$poolIdentity.reason='Pool identity is unavailable until its dedicated pool exists: '+$_.Exception.Message }
+        $identities+=@($poolIdentity)
+        $changes+=@(@{service=$name;serviceIdentity='LocalService';startup='Manual';pool=$name;site=$name;managedRuntime='v4.0';pipeline='Integrated';
+            enable32Bit=($architecture -eq 'x86');binding="127.0.0.1:$($PortBase+$(if($architecture -eq 'x86'){0}else{1})):";
+            aclGrants=@(@{path=(Join-Path $deploymentRoot "service-$architecture/data");identity='S-1-5-19';rights='Modify'},
+                @{path=(Join-Path $deploymentRoot "web-$architecture");identity=$poolIdentity.name;rights='ReadAndExecute'})})
+    }
     [pscustomobject]@{ elevated=$elevated; os=[Environment]::OSVersion.Version.ToString(); x64=[Environment]::Is64BitOperatingSystem;
         frameworkRelease=$(if($clr) {$clr.Release} else {$null}); appcmdExists=(Test-Path -LiteralPath $appcmd);
         missingFeatures=$missingFeatures; occupiedPorts=$ports; deploymentExists=(Test-Path -LiteralPath $deploymentRoot);
-        deploymentRoot=$deploymentRoot; names=@("$namePrefix-x86","$namePrefix-x64") } | ConvertTo-Json -Depth 4
+        deploymentRoot=$deploymentRoot; names=@("$namePrefix-x86","$namePrefix-x64");directoryAcl=$aclInspection;testIdentities=$identities;
+        plannedChanges=@{resources=$changes;enableFeatures=$missingFeatures;createFirewallRules=$false;restartMachine=$false;preserveExistingResources=$true} } | ConvertTo-Json -Depth 8
     return
 }
 $null = New-Item -ItemType Directory -Path $evidence -Force
@@ -150,8 +172,40 @@ try {
             if (Test-Path -LiteralPath $deploymentRoot) { Assert-OwnedRoot }
             elseif ($state.ownedServices.Count -or $state.ownedSites.Count -or $state.ownedPools.Count) { throw 'Owned resources exist but their directory marker is missing.' }
             Add-Type -Path (Join-Path $env:windir 'System32/inetsrv/Microsoft.Web.Administration.dll')
+            $ownedProcesses=[Collections.Generic.List[object]]::new()
+            $completedProcesses=[Collections.Generic.List[object]]::new()
+            function Remember-Process([int]$ProcessId,[string]$Kind,[string]$Name,[string]$ExpectedStart='') {
+                $process=Get-Process -Id $ProcessId -ErrorAction SilentlyContinue
+                if(-not $process) { return }
+                try {
+                    $null=$process.Handle # Pin this instance; a reused PID must never stand in for it.
+                    $started=$process.StartTime.ToUniversalTime().ToString('o')
+                    if($ExpectedStart -and $ExpectedStart -ne $started) { $process.Dispose();return }
+                    if(@($ownedProcesses | Where-Object {$_.pid -eq $ProcessId -and $_.startedAtUtc -eq $started}).Count) { $process.Dispose();return }
+                    $ownedProcesses.Add(@{pid=$ProcessId;startedAtUtc=$started;kind=$Kind;name=$Name;process=$process})
+                } catch { $process.Dispose();throw }
+            }
+            function Save-CleanupProcesses {
+                $records=@($completedProcesses.ToArray())+@($ownedProcesses | ForEach-Object { @{pid=$_.pid;startedAtUtc=$_.startedAtUtc;kind=$_.kind;name=$_.name;exited=$_.process.HasExited} })
+                $state | Add-Member -Force -NotePropertyName cleanupProcesses -NotePropertyValue $records
+                Save-State
+            }
+            if($state.PSObject.Properties['cleanupProcesses']) {
+                foreach($previousProcess in $state.cleanupProcesses) {
+                    Remember-Process $previousProcess.pid $previousProcess.kind $previousProcess.name $previousProcess.startedAtUtc
+                    if(-not @($ownedProcesses | Where-Object {$_.pid -eq $previousProcess.pid -and $_.startedAtUtc -eq $previousProcess.startedAtUtc}).Count) {
+                        # The recorded instance is gone, including when its PID has been reused.
+                        $completedProcesses.Add(@{pid=$previousProcess.pid;startedAtUtc=$previousProcess.startedAtUtc;kind=$previousProcess.kind;name=$previousProcess.name;exited=$true})
+                    }
+                }
+            }
+            try {
             $manager = [Microsoft.Web.Administration.ServerManager]::new()
             try {
+                foreach($worker in $manager.WorkerProcesses) {
+                    if($worker.AppPoolName -in $state.ownedPools) { Remember-Process $worker.ProcessId 'worker' $worker.AppPoolName }
+                }
+                Save-CleanupProcesses
                 foreach ($resource in $state.resources) {
                     if ($resource.site -notin @("$namePrefix-x86","$namePrefix-x64") -or $resource.pool -ne $resource.site) { throw 'Unexpected IIS resource name.' }
                     if ($resource.site -notin $state.ownedSites) { continue }
@@ -173,6 +227,7 @@ try {
                         foreach ($site in $manager.Sites) { foreach ($application in $site.Applications) {
                             if ($application.ApplicationPoolName -eq $resource.pool) { throw 'Another site now uses the test pool.' }
                         } }
+                        if($pool.State -ne 'Stopped') { $null=$pool.Stop() }
                         $manager.ApplicationPools.Remove($pool)
                     }
                 }
@@ -183,23 +238,50 @@ try {
                 $service = Get-ServiceRecord $resource.service
                 if ($service) {
                     if ($service.PathName -ne $resource.binaryPath) { throw 'Service path changed; refusing removal.' }
+                    if($service.ProcessId -ne 0) { Remember-Process $service.ProcessId 'service' $resource.service;Save-CleanupProcesses }
                     $controller = Get-Service -Name $resource.service
+                    try {
                     if ($controller.Status -ne 'Stopped') {
                         $controller.Stop()
                         $controller.WaitForStatus('Stopped', [TimeSpan]::FromSeconds(20))
                     }
-                    $controller.Dispose()
+                    } finally { $controller.Dispose() }
                     & sc.exe delete $resource.service
-                    if ($LASTEXITCODE -ne 0) { throw 'Service removal failed.' }
+                    if ($LASTEXITCODE -notin @(0,1072)) { throw 'Service removal failed.' }
                 }
             }
+            $cleanupDeadline=[DateTimeOffset]::UtcNow.AddSeconds($CleanupTimeoutSeconds)
+            do {
+                $remaining=[Collections.Generic.List[string]]::new()
+                $check=[Microsoft.Web.Administration.ServerManager]::new()
+                try {
+                    foreach($worker in $check.WorkerProcesses) {
+                        if($worker.AppPoolName -in $state.ownedPools) { Remember-Process $worker.ProcessId 'worker' $worker.AppPoolName;$remaining.Add('worker:'+ $worker.ProcessId) }
+                    }
+                    foreach($name in $state.ownedSites) { if($check.Sites[$name]) { $remaining.Add('site:'+ $name) } }
+                    foreach($name in $state.ownedPools) { if($check.ApplicationPools[$name]) { $remaining.Add('pool:'+ $name) } }
+                } finally { $check.Dispose() }
+                foreach($name in $state.ownedServices) {
+                    $null=& sc.exe query $name 2>&1
+                    if($LASTEXITCODE -in @(0,1072)) { $remaining.Add('service:'+ $name) }
+                    elseif($LASTEXITCODE -ne 1060) { throw "Cannot confirm removal of service $name (Win32 $LASTEXITCODE)." }
+                }
+                foreach($instance in $ownedProcesses) { if(-not $instance.process.HasExited) { $remaining.Add('process:'+ $instance.pid) } }
+                if($remaining.Count -eq 0) { break }
+                if([DateTimeOffset]::UtcNow -ge $cleanupDeadline) { Save-CleanupProcesses;throw "Cleanup incomplete: $($remaining -join ', ')" }
+                Start-Sleep -Milliseconds 100
+            } while($true)
+            Save-CleanupProcesses
             if (Test-Path -LiteralPath $deploymentRoot) {
                 Assert-OwnedRoot
                 Remove-Item -LiteralPath ([IO.Path]::GetFullPath($deploymentRoot)) -Recurse -Force
             }
             $state.status = 'removed'
+            $state.error = $null
+            $state | Add-Member -Force -NotePropertyName removalVerifiedAtUtc -NotePropertyValue ([DateTimeOffset]::UtcNow.ToString('o'))
             Save-State
             Write-Host 'Removed owned services, sites, pools and deployment files. Windows components are retained; see features-before/after.json.'
+            } finally { foreach($instance in $ownedProcesses) { $instance.process.Dispose() } }
         }
     }
     else {

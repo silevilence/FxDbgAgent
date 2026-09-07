@@ -1,4 +1,4 @@
-param([ValidateSet('Debug','Release')][string]$Configuration)
+param([ValidateSet('Debug','Release')][string]$Configuration,[switch]$CollectCoverage)
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $report = Join-Path $repoRoot 'artifacts/stage3-4-validation'
@@ -27,6 +27,9 @@ try {
             Run-Check "permissions-install-$current" $shell ($setup+@('-Action','Install')) 240
             Run-Check "permissions-mcp-$current" 'dotnet' @((Join-Path $repoRoot "tests/FxDbg.McpIntegrationTests/bin/$current/net10.0-windows/FxDbg.McpIntegrationTests.dll"),
                 (Join-Path $repoRoot "artifacts/mcp/$current"),'permissions',$repoRoot,$current,$manifest) 240
+            if($CollectCoverage) {
+                Run-Check "permissions-coverage-$current" $shell @('-NoProfile','-File',(Join-Path $PSScriptRoot 'collect-stage3-4-coverage.ps1'),'-Suite','permissions','-Configuration',$current) 600
+            }
             Run-Check "permissions-health-$current" $shell ($setup+@('-Action','Verify')) 120
         }
         finally {

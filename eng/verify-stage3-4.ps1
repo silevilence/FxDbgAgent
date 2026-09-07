@@ -25,6 +25,7 @@ try {
         $arguments=@('-NoProfile','-File',(Join-Path $PSScriptRoot "verify-stage3-4$task.ps1"))
         if($Configuration) { $arguments+=@('-Configuration',$Configuration) }
         if($task -eq 'c') { $arguments+=@('-NodePath',$NodePath,'-CodePath',$CodePath) }
+        if($task -in @('b','d')) { $arguments+='-CollectCoverage' }
         $log=Join-Path $report "stage3-4$task.log"
         Write-Host "Running stage3-4$task..."
         $exit=[FxDbg.Validation.ValidationProcess]::Run($shell,$arguments,$repoRoot,$log,1800)

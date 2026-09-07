@@ -39,6 +39,9 @@ $passed = $false
 try {
     Assert-Clean
     Run-Setup 'Preflight' 'Debug' 'environment-preflight'
+    $preflightText=Get-Content -LiteralPath (Join-Path $report 'environment-preflight.log') -Raw
+    $preflight=$preflightText.Substring($preflightText.IndexOf('{'),$preflightText.LastIndexOf('}')-$preflightText.IndexOf('{')+1) | ConvertFrom-Json
+    if(-not $preflight.directoryAcl.status -or $preflight.testIdentities.Count -ne 4 -or $preflight.plannedChanges.resources.Count -ne 2) { throw 'Preflight omitted ACL, identities or planned configuration changes.' }
     foreach ($current in $configurations) {
         foreach ($project in @('Fx40.Environment.Service.x86','Fx40.Environment.Service.x64','Fx40.Environment.Web','Fx40.Environment.Late')) {
             $code = [FxDbg.Validation.ValidationProcess]::Run('dotnet',
@@ -69,9 +72,22 @@ try {
                 if ($heartbeat.lateResult -ne 85) { throw 'Service late module did not execute.' }
             }
             Run-Setup 'Verify' $current "environment-verify-$current"
+            # An SCM deletion is pending while any caller holds the service handle.
+            # Removal must fail rather than claim complete until this handle closes.
+            $held=Get-Service -Name 'FxDbgStage34-check-x86'
+            $heldHandle=$null
+            try {
+                $heldHandle=$held.ServiceHandle
+                Run-Setup 'Remove' $current "environment-delayed-remove-$current" @('-CleanupTimeoutSeconds','1') 1
+                $incomplete=Get-Content -LiteralPath $manifest -Raw | ConvertFrom-Json
+                if($incomplete.status -eq 'removed' -or $incomplete.error -notlike '*Cleanup incomplete*') { throw 'Deferred SCM deletion was incorrectly accepted as complete.' }
+                $incomplete | ConvertTo-Json -Depth 12 | Set-Content -LiteralPath (Join-Path $report "environment-delayed-state-$current.json")
+            } finally { if($heldHandle) { $heldHandle.Dispose() };$held.Dispose() }
         }
         finally { if (Test-Path -LiteralPath $manifest) { Run-Setup 'Remove' $current "environment-remove-$current" } }
         Assert-Clean
+        $removed=Get-Content -LiteralPath $manifest -Raw | ConvertFrom-Json
+        if(-not $removed.removalVerifiedAtUtc -or @($removed.cleanupProcesses).Count -lt 4 -or @($removed.cleanupProcesses | Where-Object {-not $_.exited}).Count) { throw 'Owned process exit evidence is incomplete.' }
     }
     try { Run-Setup 'Install' $configurations[0] 'environment-interrupted' @('-InterruptAt','AfterFirstSite') 197 }
     finally { if (Test-Path -LiteralPath $manifest) { Run-Setup 'Remove' $configurations[0] 'environment-recover-interrupted' } }
