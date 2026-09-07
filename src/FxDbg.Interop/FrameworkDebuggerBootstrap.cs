@@ -52,6 +52,11 @@ public sealed class FrameworkDebuggerBootstrap
     private static CorDebugProcess AttachProcess(CorDebug debugger, int processId)
     {
         try { return debugger.DebugActiveProcess(processId, false); }
+        catch (DebugException error) when (error.HResult == HRESULT.E_ACCESSDENIED)
+        {
+            throw new FxDbgException(FxDbgErrorCode.AccessDenied,
+                "Engine CLR attach to target " + processId + " was denied. Start the Host with permission to debug this target and attach again.", error);
+        }
         catch (DebugException error) when (error.HResult == HRESULT.CORDBG_E_DEBUGGER_ALREADY_ATTACHED)
         {
             throw new FxDbgException(FxDbgErrorCode.AlreadyDebugged,

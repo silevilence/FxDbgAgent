@@ -6,6 +6,9 @@ using FxDbg.Core.Model;
 using FxDbg.Core.Requests;
 using FxDbg.Engine.Scheduling;
 using FxDbg.Interop;
+using FxDbg.Platform;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
 
 namespace FxDbg.Engine;
 
@@ -16,6 +19,7 @@ internal static class Program
     {
         try
         {
+            WindowsDebugPrivilege.InitializeProcessDiagnostics();
             if (args.Length > 0 && args[0] == "serve") return EngineServer.Run(args);
             EngineOptions options = EngineOptions.Parse(args);
             EngineTargetValidator.RequireCurrentArchitecture(options.Architecture);
@@ -71,7 +75,7 @@ internal static class Program
                     scheduler.EnqueueAsync(
                             _ =>
                             {
-                                captured.Dispose();
+                                DisposeSession(captured);
                                 return true;
                             },
                             TimeSpan.FromSeconds(5))
@@ -112,9 +116,24 @@ internal static class Program
     internal static FrameworkDebugSession Attach(EngineOptions options, CancellationToken cancellationToken = default)
     {
         int processId = options.ProcessId!.Value;
-        EngineTargetValidator.ValidateAttachRuntime(processId, options.Architecture);
-        var bootstrap = new FrameworkDebuggerBootstrap();
-        return bootstrap.Attach(processId, options.Architecture, options.Timeout, options.SessionId, cancellationToken);
+        return WindowsDebugPrivilege.Execute(() =>
+        {
+            EngineTargetValidator.ValidateAttachRuntime(processId, options.Architecture);
+            var bootstrap = new FrameworkDebuggerBootstrap();
+            try { return bootstrap.Attach(processId, options.Architecture, options.Timeout, options.SessionId, cancellationToken); }
+            catch (COMException error) when (error.HResult == unchecked((int)0x80070005)) { throw AttachDenied(processId, error); }
+            catch (Win32Exception error) when (error.NativeErrorCode == 5) { throw AttachDenied(processId, error); }
+        });
+    }
+
+    private static FxDbgException AttachDenied(int processId, Exception error) => new(FxDbgErrorCode.AccessDenied,
+        $"Engine CLR attach to target {processId} was denied. Start the Host with permission to debug this target and attach again.", error);
+
+    internal static void DisposeSession(FrameworkDebugSession? current)
+    {
+        if (current is null) return;
+        if (current.Target.LaunchedByDebugger) current.Dispose();
+        else WindowsDebugPrivilege.Execute(() => { current.Dispose(); return true; });
     }
 
     private static void WaitUntilInputCloses()

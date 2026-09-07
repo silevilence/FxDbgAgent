@@ -13,6 +13,7 @@ using FxDbg.Core.Requests;
 using FxDbg.Core.Sessions;
 using FxDbg.Engine.Protocol;
 using FxDbg.Host.Architecture;
+using FxDbg.Platform;
 using Newtonsoft.Json.Linq;
 
 namespace FxDbg.Host.Engine;
@@ -32,6 +33,7 @@ public sealed class EngineProcessHost : IDisposable, IEngineSessionHost
     {
         this.router = router ?? throw new ArgumentNullException(nameof(router));
         this.paths = paths ?? throw new ArgumentNullException(nameof(paths));
+        WindowsDebugPrivilege.InitializeProcessDiagnostics();
     }
 
     public Task<DebugTargetInfo> LaunchAsync(LaunchRequest request, CancellationToken cancellationToken)
@@ -155,7 +157,7 @@ public sealed class EngineProcessHost : IDisposable, IEngineSessionHost
                 ArgumentList = { "serve", pipeName, id.ToString() }
             };
             process = new Process { StartInfo = startInfo };
-            if (!process.Start()) throw new FxDbgException(FxDbgErrorCode.EngineExited, "Engine process failed to start.");
+            if (!WindowsDebugPrivilege.WithoutAdjustment(process.Start)) throw new FxDbgException(FxDbgErrorCode.EngineExited, "Engine process failed to start.");
             _ = DrainOutput(process.StandardOutput);
             _ = DrainOutput(process.StandardError);
             Task connected = pipe.WaitForConnectionAsync(deadline.Token);

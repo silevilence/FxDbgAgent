@@ -17,6 +17,7 @@
     <Compile Include="EngineOptions.cs" />
     <Compile Include="EngineTargetValidator.cs" />
     <Compile Include="..\Shared\WindowsProcessArchitecture.cs" Link="WindowsProcessArchitecture.cs" />
+    <Compile Include="..\Shared\WindowsDebugPrivilege.cs" Link="WindowsDebugPrivilege.cs" />
     <ProjectReference Include="..\FxDbg.Core\FxDbg.Core.csproj" />
     <ProjectReference Include="..\FxDbg.Engine.Protocol\FxDbg.Engine.Protocol.csproj" />
     <ProjectReference Include="FxDbg.Engine.Runtime.csproj" />

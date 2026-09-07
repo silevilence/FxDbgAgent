@@ -20,6 +20,7 @@ public sealed partial class FrameworkDebugSession : IDisposable
     private readonly object callbackGate;
     private readonly int owningThreadId;
     private readonly ContinueStopCoordinator callbackPairing;
+    private readonly TargetProcessLifetime targetLifetime;
     private CorDebugController? pendingEntryController;
     private CallbackEnvelope? pendingCallbackContinue;
     private bool processExited;
@@ -53,6 +54,7 @@ public sealed partial class FrameworkDebugSession : IDisposable
             domain.MarkStopped(CurrentStop);
         }
         else domain.MarkRunning("process_started");
+        targetLifetime = new TargetProcessLifetime(process.Handle);
     }
 
     private readonly DebugTargetInfo initialTarget;
@@ -153,6 +155,7 @@ public sealed partial class FrameworkDebugSession : IDisposable
         }
         finally
         {
+            targetLifetime.Dispose();
             GC.KeepAlive(callback);
             if (debuggerCanTerminate)
             {
@@ -407,15 +410,7 @@ public sealed partial class FrameworkDebugSession : IDisposable
 
     private bool HasTargetExited()
     {
-        try
-        {
-            using System.Diagnostics.Process target = System.Diagnostics.Process.GetProcessById(Target.ProcessId);
-            return target.HasExited;
-        }
-        catch (ArgumentException)
-        {
-            return true;
-        }
+        return targetLifetime.HasExited;
     }
 
     private void DrainDetachedCallbacks()

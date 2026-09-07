@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
-using System.Diagnostics;
+using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
 using FxDbg.Platform;
 using FxDbg.Core.Errors;
 using FxDbg.Core.Requests;
@@ -18,8 +19,11 @@ public sealed class ProcessArchitectureDetector
 
         try
         {
-            using Process process = Process.GetProcessById(processId);
-            return WindowsProcessArchitecture.Detect(process.Handle);
+            try { return DetectWithQueryHandle(processId); }
+            catch (Win32Exception exception) when (exception.NativeErrorCode == 5)
+            {
+                return WindowsDebugPrivilege.Execute(() => DetectWithQueryHandle(processId));
+            }
         }
         catch (ArgumentException exception)
         {
@@ -31,8 +35,20 @@ public sealed class ProcessArchitectureDetector
         }
         catch (Win32Exception exception) when (exception.NativeErrorCode == 5)
         {
-            throw new FxDbgException(FxDbgErrorCode.AccessDenied, $"Access to target process {processId} was denied.", exception);
+            throw new FxDbgException(FxDbgErrorCode.AccessDenied, $"Host architecture inspection of target {processId} was denied. Start the Host with a token permitted to debug that process and attach again.", exception);
+        }
+        catch (Win32Exception exception) when (exception.NativeErrorCode == 87)
+        {
+            throw new FxDbgException(FxDbgErrorCode.TargetNotFound, $"Target process {processId} was not found or has exited.", exception);
         }
     }
 
+    private static TargetArchitecture DetectWithQueryHandle(int processId)
+    {
+        using SafeProcessHandle handle = OpenProcess(0x1000, false, processId); // QUERY_LIMITED_INFORMATION, never ALL_ACCESS.
+        if (handle.IsInvalid) throw new Win32Exception(Marshal.GetLastWin32Error());
+        return WindowsProcessArchitecture.Detect(handle.DangerousGetHandle());
+    }
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern SafeProcessHandle OpenProcess(uint access, [MarshalAs(UnmanagedType.Bool)] bool inherit, int processId);
 }

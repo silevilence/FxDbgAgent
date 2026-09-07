@@ -78,7 +78,7 @@ internal static class EngineTargetValidator
         }
         catch (Win32Exception exception) when (exception.NativeErrorCode == 5)
         {
-            throw new FxDbgException(FxDbgErrorCode.AccessDenied, $"Access to target process {processId} was denied.", exception);
+            throw new FxDbgException(FxDbgErrorCode.AccessDenied, $"Engine runtime inspection of target {processId} was denied. Start the Host with a token permitted to debug that process and attach again.", exception);
         }
     }
 

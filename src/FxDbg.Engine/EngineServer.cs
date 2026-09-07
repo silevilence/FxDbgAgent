@@ -46,7 +46,7 @@ internal sealed class EngineServer
                 // The callback owner performs Detach even if the Host disappeared mid-command.
                 try
                 {
-                    Task<bool> cleanup = server.scheduler.EnqueueAsync(_ => { server.session?.Dispose(); server.session = null; return true; }, TimeSpan.FromSeconds(5));
+                    Task<bool> cleanup = server.scheduler.EnqueueAsync(_ => { Program.DisposeSession(server.session); server.session = null; return true; }, TimeSpan.FromSeconds(5));
                     if (!cleanup.Wait(TimeSpan.FromSeconds(6))) throw new TimeoutException("Engine cleanup exceeded its deadline.");
                     cleanup.GetAwaiter().GetResult();
                 }
@@ -132,8 +132,7 @@ internal sealed class EngineServer
             case "modules": result = current.GetModules(); break;
             case "symbols.refresh": current.RefreshSymbols(); result = current.GetModules(); break;
             case "detach":
-                if (current.State == DebugSessionState.Terminated) current.Dispose();
-                else current.Detach();
+                Program.DisposeSession(current);
                 result = current.Target; break;
             case "terminate": current.Terminate(timeout, token); result = current.Target; break;
             default: throw Invalid("Unknown Engine command.");
@@ -151,7 +150,7 @@ internal sealed class EngineServer
         }
         catch (Exception)
         {
-            try { session?.Dispose(); } finally { session = null; peer?.Dispose(); }
+            try { Program.DisposeSession(session); } finally { session = null; peer?.Dispose(); }
         }
     }
 

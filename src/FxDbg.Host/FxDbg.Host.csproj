@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Compile Include="..\Shared\WindowsProcessArchitecture.cs" Link="Architecture\WindowsProcessArchitecture.cs" />
+    <Compile Include="..\Shared\WindowsDebugPrivilege.cs" Link="Architecture\WindowsDebugPrivilege.cs" />
     <ProjectReference Include="..\FxDbg.Core\FxDbg.Core.csproj" />
     <ProjectReference Include="..\FxDbg.Engine.Protocol\FxDbg.Engine.Protocol.csproj" />
   </ItemGroup>
