@@ -1,5 +1,7 @@
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using FxDbg.Core.Model;
 using FxDbg.Symbols.Windows;
 using Xunit;
@@ -8,6 +10,40 @@ namespace FxDbg.UnitTests.Breakpoints;
 
 public sealed class WindowsModuleSymbolsTests
 {
+    [Fact]
+    public void Denied_pdb_is_read_failed_and_recovers_without_a_timestamp_change()
+    {
+        string root=FindRoot();
+        string configuration=new DirectoryInfo(System.AppContext.BaseDirectory).Parent!.Name;
+        string assembly=Path.Combine(root,$"tests/Debuggees/Fx40.Environment.Web/bin/{configuration}/net40/Fx40.Environment.Web.dll");
+        string directory=Path.Combine(root,"artifacts/stage3-4-validation","pdb-acl-"+System.Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(directory);
+        var pdb=new FileInfo(Path.Combine(directory,"fixture.pdb"));
+        File.Copy(Path.ChangeExtension(assembly,".pdb"),pdb.FullName);
+        string original=pdb.GetAccessControl().GetSecurityDescriptorSddlForm(AccessControlSections.Access);
+        var denied=pdb.GetAccessControl();
+        denied.AddAccessRule(new FileSystemAccessRule(WindowsIdentity.GetCurrent().User!,FileSystemRights.Read,AccessControlType.Deny));
+        var timestamp=File.GetLastWriteTimeUtc(pdb.FullName);
+        try
+        {
+            try
+            {
+                pdb.SetAccessControl(denied);
+                using(var symbols=WindowsModuleSymbols.Open(assembly,pdb.FullName)) Assert.Equal(SymbolStatus.ReadFailed,symbols.Status);
+            }
+            finally
+            {
+                var restore=new FileSecurity();
+                restore.SetSecurityDescriptorSddlForm(original,AccessControlSections.Access);
+                pdb.SetAccessControl(restore);
+            }
+            Assert.Equal(timestamp,File.GetLastWriteTimeUtc(pdb.FullName));
+            using var recovered=WindowsModuleSymbols.Open(assembly,pdb.FullName);
+            Assert.True(recovered.Status==SymbolStatus.Loaded,recovered.Diagnostic);
+        }
+        finally { pdb.Delete(); Directory.Delete(directory); }
+    }
+
     [Theory]
     [InlineData("Fx40.Environment.Service.x86", "exe", "Environment.Shared/EnvironmentService.cs", "ENV_SERVICE_CALL")]
     [InlineData("Fx40.Environment.Service.x64", "exe", "Environment.Shared/EnvironmentService.cs", "ENV_SERVICE_CALL")]

@@ -17,6 +17,7 @@ internal sealed class DebugModule : ISourceBreakpointModule, IDisposable
     private readonly string path;
     private DateTime symbolWriteTime;
     private long symbolLength;
+    private DateTime symbolReadRetryAt;
     private readonly Dictionary<int, string> methodNames = new();
     private string appDomain;
     private ModuleInfo? snapshot;
@@ -79,6 +80,9 @@ internal sealed class DebugModule : ISourceBreakpointModule, IDisposable
 
     internal void ReloadSymbols()
     {
+        // ACL or sharing failures can recover without changing length/mtime.
+        // Retry on the existing dispatcher, bounded to once per five seconds.
+        symbolReadRetryAt = DateTime.UtcNow.AddSeconds(5);
         symbols?.Dispose();
         symbols = null;
         try
@@ -100,6 +104,7 @@ internal sealed class DebugModule : ISourceBreakpointModule, IDisposable
 
     internal bool SymbolsFileChanged()
     {
+        if (snapshot?.SymbolStatus == SymbolStatus.ReadFailed && DateTime.UtcNow >= symbolReadRetryAt) return true;
         try
         {
             if (!File.Exists(path)) return false;
