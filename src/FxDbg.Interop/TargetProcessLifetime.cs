@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Text;
 using Microsoft.Win32.SafeHandles;
 
 namespace FxDbg.Interop;
@@ -27,6 +28,17 @@ internal sealed class TargetProcessLifetime : IDisposable
         }
     }
     public void Dispose() => handle.Dispose();
+    internal static string ReadImagePath(IntPtr clrHandle)
+    {
+        var path = new StringBuilder(32768);
+        int length = path.Capacity;
+        if (!QueryFullProcessImageName(clrHandle, 0, path, ref length))
+            throw new Win32Exception(Marshal.GetLastWin32Error());
+        return System.IO.Path.GetFullPath(path.ToString());
+    }
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool QueryFullProcessImageName(IntPtr process, uint flags, StringBuilder path, ref int length);
     [DllImport("kernel32.dll")] private static extern IntPtr GetCurrentProcess();
     [DllImport("kernel32.dll", SetLastError = true)] [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool DuplicateHandle(IntPtr sourceProcess, IntPtr source, IntPtr targetProcess,

@@ -72,7 +72,7 @@ public sealed partial class FrameworkDebugSession
     public void Continue()
     {
         RequireStopped();
-        callbackPairing.Continue(() => (pendingEntryController ?? process).Continue(false));
+        ContinueCallback(() => (pendingEntryController ?? process).Continue(false));
         pendingEntryController = null;
         framesById.Clear();
         ClearVariableReferences();

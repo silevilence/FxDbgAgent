@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="Code Coverage">
+        <Configuration>
+          <Format>Cobertura</Format>
+          <CodeCoverage>
+            <ModulePaths>
+              <Exclude>
+                <!-- Observe the debugger, without injecting coverage into its FX targets. -->
+                <ModulePath>.*[\\/]Fx40\..*</ModulePath>
+              </Exclude>
+            </ModulePaths>
+            <CollectFromChildProcesses>True</CollectFromChildProcesses>
+          </CodeCoverage>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

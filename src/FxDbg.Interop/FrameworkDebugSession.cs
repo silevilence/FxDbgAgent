@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.IO;
 using System.Threading;
 using ClrDebug;
 using FxDbg.Core.Errors;
@@ -23,6 +24,8 @@ public sealed partial class FrameworkDebugSession : IDisposable
     private readonly TargetProcessLifetime targetLifetime;
     private CorDebugController? pendingEntryController;
     private CallbackEnvelope? pendingCallbackContinue;
+    private string? startupModulePath;
+    private bool startupModuleContinuePending;
     private bool processExited;
     private bool disposed;
 
@@ -50,6 +53,7 @@ public sealed partial class FrameworkDebugSession : IDisposable
         this.pendingEntryController = pendingEntryController;
         if (pendingEntryController is not null)
         {
+            if (target.LaunchedByDebugger) startupModulePath = TargetProcessLifetime.ReadImagePath(process.Handle);
             CurrentStop = new StopInfo(StopReason.Entry, target.ProcessId, 0, null, null);
             domain.MarkStopped(CurrentStop);
         }
@@ -182,7 +186,7 @@ public sealed partial class FrameworkDebugSession : IDisposable
 
         try
         {
-            callbackPairing.Continue(() => entryController.Continue(false));
+            ContinueCallback(() => entryController.Continue(false));
             pendingEntryController = null;
         }
         catch (Exception)
@@ -193,6 +197,7 @@ public sealed partial class FrameworkDebugSession : IDisposable
 
     private void SynchronizeAndDetach()
     {
+        if (processExited) return;
         DateTime deadline = DateTime.UtcNow.Add(ShutdownTimeout);
         bool manualStopOutstanding = false;
         bool awaitingQueuedCallback = false;
@@ -204,7 +209,7 @@ public sealed partial class FrameworkDebugSession : IDisposable
             {
                 try
                 {
-                    callbackPairing.Continue(() => pendingEntryController.Continue(false));
+                    ContinueCallback(() => pendingEntryController.Continue(false));
                     pendingEntryController = null;
                 }
                 catch (Exception exception)
@@ -226,7 +231,7 @@ public sealed partial class FrameworkDebugSession : IDisposable
                 try
                 {
                     CallbackEnvelope pending = pendingCallbackContinue;
-                    callbackPairing.Continue(() => pending.Controller.Continue(false));
+                    ContinueCallback(() => pending.Controller.Continue(false));
                     pendingCallbackContinue = null;
                 }
                 catch (Exception exception)
@@ -255,7 +260,9 @@ public sealed partial class FrameworkDebugSession : IDisposable
                 continue;
             }
 
-            if (awaitingQueuedCallback)
+            // CreateProcess is earlier than the CLR startup module handshake. Let that
+            // callback complete before introducing a manual Stop followed by Detach.
+            if (awaitingQueuedCallback || startupModulePath is not null)
             {
                 if (callbacks.TryTake(out envelope, 25))
                 {
@@ -370,6 +377,9 @@ public sealed partial class FrameworkDebugSession : IDisposable
         {
             processExited = true;
             pendingEntryController = null;
+            pendingCallbackContinue = null;
+            startupModulePath = null;
+            startupModuleContinuePending = false;
             callbackPairing.MarkTerminated();
             CurrentStop = new StopInfo(StopReason.ProcessExit, Target.ProcessId, 0, null, null);
             if (domain.State != DebugSessionState.Terminated && domain.State != DebugSessionState.Failed) domain.MarkTerminated("process_exited");
@@ -378,34 +388,35 @@ public sealed partial class FrameworkDebugSession : IDisposable
         }
 
         callbackPairing.RecordCallbackStop(envelope.Sequence);
-        if (!suppressContinueFailure)
+        try
         {
-            try
+            startupModuleContinuePending = startupModulePath is not null &&
+                envelope.EventArgs is LoadModuleCorDebugManagedCallbackEventArgs loaded &&
+                string.Equals(Path.GetFullPath(loaded.Module.Name), startupModulePath, StringComparison.OrdinalIgnoreCase);
+            if (!suppressContinueFailure)
             {
                 HandleAppDomainCallback(envelope);
                 if (HandleBreakpointCallback(envelope) || HandleExceptionCallback(envelope)) return;
             }
-            catch
+            ContinueCallback(() => envelope.Controller.Continue(false));
+        }
+        catch (Exception)
+        {
+            if (!suppressContinueFailure)
             {
                 // Preserve the single outstanding stop when command-thread processing fails.
                 pendingEntryController = envelope.Controller;
                 throw;
             }
-        }
-        if (!suppressContinueFailure)
-        {
-            callbackPairing.Continue(() => envelope.Controller.Continue(false));
-            return;
-        }
-
-        try
-        {
-            callbackPairing.Continue(() => envelope.Controller.Continue(false));
-        }
-        catch (Exception)
-        {
             pendingCallbackContinue = envelope;
         }
+    }
+
+    private void ContinueCallback(Action resume)
+    {
+        callbackPairing.Continue(resume);
+        if (startupModuleContinuePending) startupModulePath = null;
+        startupModuleContinuePending = false;
     }
 
     private bool HasTargetExited()

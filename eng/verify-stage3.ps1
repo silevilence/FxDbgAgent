@@ -9,7 +9,7 @@ $CodePath = & (Join-Path $PSScriptRoot 'find-vscode.ps1') -CodePath $CodePath
 function Get-ValidationInputs {
     foreach ($directory in @('src','tests','eng','extensions','skills')) {
         Get-ChildItem -LiteralPath (Join-Path $repoRoot $directory) -Recurse -File |
-            Where-Object { $_.FullName -notmatch '[\\/](bin|obj|node_modules)[\\/]' -and $_.Extension -in @('.cs','.csproj','.props','.targets','.ps1','.mjs','.js','.json','.md','.aspx','.config') } |
+            Where-Object { $_.FullName -notmatch '[\\/](bin|obj|node_modules)[\\/]' -and $_.Extension -in @('.cs','.csproj','.props','.targets','.ps1','.mjs','.js','.json','.md','.aspx','.config','.runsettings') } |
             Sort-Object FullName | ForEach-Object { "$([IO.Path]::GetRelativePath($repoRoot,$_.FullName)) $((Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash)" }
     }
     foreach ($file in @('global.json','Directory.Build.props','Directory.Build.targets','FxDbg.sln')) {

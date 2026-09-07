@@ -53,42 +53,65 @@ public sealed class EngineProcessHostTests
         }
     }
 
-    [Fact]
-    public async Task Launch_forwards_stop_at_entry_and_returns_stopped_state()
+    [Theory]
+    [InlineData("x86")]
+    [InlineData("x64")]
+    public async Task Launch_forwards_stop_at_entry_and_returns_stopped_state(string architecture)
     {
-        (EngineProcessHost host, string root, string configuration) = CreateHost();
-        using (host)
+        // Repeat the early detach: a single launch rarely exposes the CLR startup race.
+        for (int iteration = 0; iteration < 20; iteration++)
         {
-            string executable = Path.Combine(
-                root,
-                "tests",
-                "Debuggees",
-                "Fx40.Console.x86",
-                "bin",
-                configuration,
-                "net40",
-                "Fx40.Console.x86.exe");
-            string observation = Path.Combine(Path.GetTempPath(), "fxdbg-stop-at-entry-" + Guid.NewGuid().ToString("N") + ".txt");
-            var request = new LaunchRequest(
-                SessionId.New(),
-                executable,
-                new List<string> { "--launch-observation", observation, "must-not-run-before-return" },
-                null,
-                null,
-                TargetArchitecture.Auto,
-                true,
-                TimeSpan.FromSeconds(10));
+            (EngineProcessHost host, string root, string configuration) = CreateHost();
+            using (host)
+            {
+                string executable = Path.Combine(
+                    root,
+                    "tests",
+                    "Debuggees",
+                    "Fx40.Console." + architecture,
+                    "bin",
+                    configuration,
+                    "net40",
+                    "Fx40.Console." + architecture + ".exe");
+                string observation = Path.Combine(Path.GetTempPath(), "fxdbg-stop-at-entry-" + Guid.NewGuid().ToString("N") + ".txt");
+                var request = new LaunchRequest(
+                    SessionId.New(),
+                    executable,
+                    new List<string> { "--launch-observation", observation, "must-not-run-before-return" },
+                    null,
+                    null,
+                    TargetArchitecture.Auto,
+                    true,
+                    TimeSpan.FromSeconds(10));
 
-            DebugTargetInfo target = await host.LaunchAsync(request, CancellationToken.None);
+                DebugTargetInfo target = await host.LaunchAsync(request, CancellationToken.None);
+                using var targetProcess = System.Diagnostics.Process.GetProcessById(target.ProcessId);
+                using var engineProcess = System.Diagnostics.Process.GetProcessById(host.GetEngineProcessId(request.SessionId));
+                _ = targetProcess.Handle;
+                _ = engineProcess.Handle;
+                try
+                {
+                    Assert.Equal(DebugSessionState.Stopped, target.SessionState);
+                    Assert.False(File.Exists(observation));
 
-            Assert.Equal(DebugSessionState.Stopped, target.SessionState);
-            Assert.False(File.Exists(observation));
-
-            host.Dispose();
-            Assert.True(SpinWait.SpinUntil(
-                () => ObservationCompleted(observation, "must-not-run-before-return"),
-                TimeSpan.FromSeconds(2)));
-            Assert.True(SpinWait.SpinUntil(() => TryDelete(observation), TimeSpan.FromSeconds(2)));
+                    var cleanup = System.Diagnostics.Stopwatch.StartNew();
+                    host.Dispose();
+                    Assert.True(SpinWait.SpinUntil(
+                        () => ObservationCompleted(observation, "must-not-run-before-return"),
+                        TimeSpan.FromSeconds(2)), $"Iteration {iteration}, cleanup/observation {cleanup.ElapsedMilliseconds}ms; " +
+                        $"Engine exited={engineProcess.HasExited}, code={(engineProcess.HasExited ? engineProcess.ExitCode : null)}; " +
+                        $"target exited={targetProcess.HasExited}, code={(targetProcess.HasExited ? targetProcess.ExitCode : null)}, observation exists={File.Exists(observation)}.");
+                    Assert.True(SpinWait.SpinUntil(() => TryDelete(observation), TimeSpan.FromSeconds(2)));
+                    Assert.True(targetProcess.WaitForExit(2000), "The detached launch did not exit naturally.");
+                }
+                finally
+                {
+                    host.Dispose();
+                    // Only this test's launched sample is owned; attach targets are never killed.
+                    if (!targetProcess.HasExited) { targetProcess.Kill(); targetProcess.WaitForExit(5000); }
+                    TryDelete(observation);
+                }
+            }
         }
     }
 

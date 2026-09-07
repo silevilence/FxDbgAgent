@@ -8,7 +8,7 @@ $env:FXDBG_COVERAGE_CONFIGURATION=$Configuration
 $env:FXDBG_COVERAGE_SUITE=$Suite
 $results=Join-Path $repoRoot "artifacts/stage3-4-validation/coverage-$Suite-$Configuration/$([Guid]::NewGuid().ToString('N'))"
 dotnet test (Join-Path $repoRoot 'tests/FxDbg.ServiceIisCoverageTests/FxDbg.ServiceIisCoverageTests.csproj') -c $Configuration `
-    --collect 'Code Coverage;Format=cobertura' --results-directory $results
+    --settings (Join-Path $PSScriptRoot 'coverage.runsettings') --collect 'Code Coverage;Format=cobertura' --results-directory $results
 if($LASTEXITCODE -ne 0) { throw "Measured real $Suite matrix failed." }
 $files=@(Get-ChildItem -LiteralPath $results -Recurse -Filter '*.cobertura.xml')
 if($files.Count -eq 0) { throw 'The collector produced no Cobertura evidence.' }
