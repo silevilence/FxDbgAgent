@@ -23,13 +23,19 @@
 在仓库根目录用SDK 10.0.301构建；Debug或Release均可，默认安装Debug。项目继承仓库固定的net40引用程序集与Windows PDB配置。
 
 ```powershell
-foreach ($sample in @('Fx40.Environment.Service.x86', 'Fx40.Environment.Service.x64', 'Fx40.Environment.Web')) {
+foreach ($sample in @('Fx40.Environment.Service.x86', 'Fx40.Environment.Service.x64', 'Fx40.Environment.Web', 'Fx40.Environment.Late')) {
     dotnet build "tests/Debuggees/$sample/$sample.csproj" -c Debug
     if ($LASTEXITCODE -ne 0) { throw "Build failed: $sample" }
 }
 # 以下在64位管理员PowerShell中运行：
 ./eng/setup-stage3-4-environment.ps1 -Action Install -Configuration Debug
 ```
+
+`-Action Preflight`可在普通权限下只读运行，不创建目录或改变配置；组件详情需要管理员令牌，权限不足会明确返回unknown。默认环境沿用上表名称，也支持`-EnvironmentName Stage3-4-<小写字母数字后缀> -PortBase <端口>`建立独立测试环境；清单及部署目录按后缀隔离，Verify/Remove须使用同一EnvironmentName。
+
+服务写入`data/late.request`后按需加载独立`late/Fx40.Environment.Late.dll`，后续心跳的`lateResult=85`；IIS访问`health.aspx?action=late`触发同一库，默认健康请求不加载该库。样例业务入口和嵌套方法有稳定的源码标记，供后续产品断点与单步测试使用。
+
+管理员执行`eng/verify-stage3-4a.ps1`可进行Debug/Release环境验收：使用独立`Stage3-4-check`资源及58342/58343端口，验证真实部署、延迟加载、DLL/PDB身份和源码行、清理、安装进程突然退出后按清单恢复，以及IIS配置完全回到基线。每个子进程均有限期；不清理默认环境。
 
 安装先记录Windows组件基线，再仅启用所需IIS/ASP.NET组件及其依赖，不安装.NET 3.5、FTP或远程管理服务。若Windows要求重启，记录`restartRequired`并失败退出，不自动重启或宣称安装完成。失败时保留安装日志、状态与已创建资源清单供诊断，不执行全局IIS配置回滚或终止无关进程。
 
