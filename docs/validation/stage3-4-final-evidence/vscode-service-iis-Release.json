@@ -1,0 +1,342 @@
+{
+  "client": "VS Code",
+  "version": "1.136.1",
+  "configuration": "Release",
+  "cases": [
+    {
+      "kind": "service",
+      "architecture": "x86",
+      "pid": 28720,
+      "line": 71,
+      "requests": [
+        "initialize",
+        "attach",
+        "setBreakpoints",
+        "configurationDone",
+        "threads",
+        "threads",
+        "stackTrace",
+        "stackTrace",
+        "disconnect",
+        "scopes",
+        "disconnect",
+        "stackTrace"
+      ],
+      "responses": [
+        {
+          "command": "initialize",
+          "success": true
+        },
+        {
+          "command": "setBreakpoints",
+          "success": true
+        },
+        {
+          "command": "configurationDone",
+          "success": true
+        },
+        {
+          "command": "attach",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "disconnect",
+          "success": true
+        },
+        {
+          "command": "scopes",
+          "success": false
+        },
+        {
+          "command": "disconnect",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": false
+        }
+      ],
+      "events": [
+        {
+          "event": "process"
+        },
+        {
+          "event": "initialized"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "breakpoint",
+          "reason": "changed"
+        },
+        {
+          "event": "stopped",
+          "reason": "breakpoint"
+        },
+        {
+          "event": "terminated"
+        }
+      ]
+    },
+    {
+      "kind": "iis",
+      "architecture": "x86",
+      "pid": 31060,
+      "line": 51,
+      "requests": [
+        "initialize",
+        "attach",
+        "setBreakpoints",
+        "configurationDone",
+        "threads",
+        "threads",
+        "stackTrace",
+        "disconnect",
+        "disconnect"
+      ],
+      "responses": [
+        {
+          "command": "initialize",
+          "success": true
+        },
+        {
+          "command": "setBreakpoints",
+          "success": true
+        },
+        {
+          "command": "configurationDone",
+          "success": true
+        },
+        {
+          "command": "attach",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": false
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "disconnect",
+          "success": true
+        },
+        {
+          "command": "disconnect",
+          "success": true
+        }
+      ],
+      "events": [
+        {
+          "event": "process"
+        },
+        {
+          "event": "initialized"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "breakpoint",
+          "reason": "changed"
+        },
+        {
+          "event": "stopped",
+          "reason": "breakpoint"
+        },
+        {
+          "event": "terminated"
+        }
+      ]
+    },
+    {
+      "kind": "service",
+      "architecture": "x64",
+      "pid": 33632,
+      "line": 71,
+      "requests": [
+        "initialize",
+        "attach",
+        "setBreakpoints",
+        "configurationDone",
+        "threads",
+        "threads",
+        "stackTrace",
+        "stackTrace",
+        "disconnect",
+        "disconnect"
+      ],
+      "responses": [
+        {
+          "command": "initialize",
+          "success": true
+        },
+        {
+          "command": "setBreakpoints",
+          "success": true
+        },
+        {
+          "command": "configurationDone",
+          "success": true
+        },
+        {
+          "command": "attach",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "disconnect",
+          "success": true
+        },
+        {
+          "command": "disconnect",
+          "success": true
+        }
+      ],
+      "events": [
+        {
+          "event": "process"
+        },
+        {
+          "event": "initialized"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "breakpoint",
+          "reason": "changed"
+        },
+        {
+          "event": "stopped",
+          "reason": "breakpoint"
+        },
+        {
+          "event": "terminated"
+        }
+      ]
+    },
+    {
+      "kind": "iis",
+      "architecture": "x64",
+      "pid": 22216,
+      "line": 51,
+      "requests": [
+        "initialize",
+        "attach",
+        "setBreakpoints",
+        "configurationDone",
+        "threads",
+        "threads",
+        "stackTrace",
+        "stackTrace",
+        "disconnect",
+        "disconnect"
+      ],
+      "responses": [
+        {
+          "command": "initialize",
+          "success": true
+        },
+        {
+          "command": "setBreakpoints",
+          "success": true
+        },
+        {
+          "command": "configurationDone",
+          "success": true
+        },
+        {
+          "command": "attach",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "threads",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "stackTrace",
+          "success": true
+        },
+        {
+          "command": "disconnect",
+          "success": true
+        },
+        {
+          "command": "disconnect",
+          "success": true
+        }
+      ],
+      "events": [
+        {
+          "event": "process"
+        },
+        {
+          "event": "initialized"
+        },
+        {
+          "event": "continued"
+        },
+        {
+          "event": "breakpoint",
+          "reason": "changed"
+        },
+        {
+          "event": "stopped",
+          "reason": "breakpoint"
+        },
+        {
+          "event": "terminated"
+        }
+      ]
+    }
+  ],
+  "passed": true,
+  "finishedAtUtc": "2026-09-07T07:53:29.164Z"
+}

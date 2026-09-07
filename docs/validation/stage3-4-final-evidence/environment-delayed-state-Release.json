@@ -1,0 +1,82 @@
+{
+  "id": "3d20de0b-63d3-4cba-8926-6a0e820f3da4",
+  "status": "ready",
+  "deploymentRoot": "C:\\ProgramData\\FxDbgAgent\\Stage3-4-check",
+  "configuration": "Release",
+  "installedAtUtc": "2026-09-07T15:40:41.7764287+08:00",
+  "verifiedAtUtc": "2026-09-07T15:41:06.9100123+08:00",
+  "resources": [
+    {
+      "architecture": "x86",
+      "bits": 32,
+      "service": "FxDbgStage34-check-x86",
+      "pool": "FxDbgStage34-check-x86",
+      "site": "FxDbgStage34-check-x86",
+      "port": 58342,
+      "webRoot": "C:\\ProgramData\\FxDbgAgent\\Stage3-4-check\\web-x86",
+      "serviceRoot": "C:\\ProgramData\\FxDbgAgent\\Stage3-4-check\\service-x86",
+      "heartbeat": "C:\\ProgramData\\FxDbgAgent\\Stage3-4-check\\service-x86\\data\\heartbeat.json",
+      "binaryPath": "\"C:\\ProgramData\\FxDbgAgent\\Stage3-4-check\\service-x86\\Fx40.Environment.Service.x86.exe\" \"FxDbgStage34-check-x86\" \"C:\\ProgramData\\FxDbgAgent\\Stage3-4-check\\service-x86\\data\\heartbeat.json\"",
+      "url": "http://127.0.0.1:58342/health.aspx"
+    },
+    {
+      "architecture": "x64",
+      "bits": 64,
+      "service": "FxDbgStage34-check-x64",
+      "pool": "FxDbgStage34-check-x64",
+      "site": "FxDbgStage34-check-x64",
+      "port": 58343,
+      "webRoot": "C:\\ProgramData\\FxDbgAgent\\Stage3-4-check\\web-x64",
+      "serviceRoot": "C:\\ProgramData\\FxDbgAgent\\Stage3-4-check\\service-x64",
+      "heartbeat": "C:\\ProgramData\\FxDbgAgent\\Stage3-4-check\\service-x64\\data\\heartbeat.json",
+      "binaryPath": "\"C:\\ProgramData\\FxDbgAgent\\Stage3-4-check\\service-x64\\Fx40.Environment.Service.x64.exe\" \"FxDbgStage34-check-x64\" \"C:\\ProgramData\\FxDbgAgent\\Stage3-4-check\\service-x64\\data\\heartbeat.json\"",
+      "url": "http://127.0.0.1:58343/health.aspx"
+    }
+  ],
+  "ownedServices": [
+    "FxDbgStage34-check-x86",
+    "FxDbgStage34-check-x64"
+  ],
+  "ownedSites": [
+    "FxDbgStage34-check-x86",
+    "FxDbgStage34-check-x64"
+  ],
+  "ownedPools": [
+    "FxDbgStage34-check-x86",
+    "FxDbgStage34-check-x64"
+  ],
+  "restartNeeded": false,
+  "addedFeatures": [],
+  "error": "Cleanup incomplete: service:FxDbgStage34-check-x86",
+  "iisPreviouslyEnabled": true,
+  "cleanupProcesses": [
+    {
+      "kind": "worker",
+      "name": "FxDbgStage34-check-x64",
+      "exited": true,
+      "pid": 50672,
+      "startedAtUtc": "2026-09-07T07:40:57.5019618Z"
+    },
+    {
+      "kind": "worker",
+      "name": "FxDbgStage34-check-x86",
+      "exited": true,
+      "pid": 37696,
+      "startedAtUtc": "2026-09-07T07:40:53.8638604Z"
+    },
+    {
+      "kind": "service",
+      "name": "FxDbgStage34-check-x86",
+      "exited": true,
+      "pid": 47304,
+      "startedAtUtc": "2026-09-07T07:40:50.100266Z"
+    },
+    {
+      "kind": "service",
+      "name": "FxDbgStage34-check-x64",
+      "exited": true,
+      "pid": 1128,
+      "startedAtUtc": "2026-09-07T07:40:51.1620107Z"
+    }
+  ]
+}

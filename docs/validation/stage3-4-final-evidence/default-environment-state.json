@@ -1,0 +1,52 @@
+{
+  "id": "6e4559a4-8253-47d2-bc5d-16b2076caf79",
+  "status": "ready",
+  "deploymentRoot": "C:\\ProgramData\\FxDbgAgent\\Stage3-4",
+  "configuration": "Debug",
+  "installedAtUtc": "2026-09-07T16:26:49.5835585+08:00",
+  "verifiedAtUtc": "2026-09-07T08:29:21.6355758+00:00",
+  "resources": [
+    {
+      "architecture": "x86",
+      "bits": 32,
+      "service": "FxDbgStage34-x86",
+      "pool": "FxDbgStage34-x86",
+      "site": "FxDbgStage34-x86",
+      "port": 58340,
+      "webRoot": "C:\\ProgramData\\FxDbgAgent\\Stage3-4\\web-x86",
+      "serviceRoot": "C:\\ProgramData\\FxDbgAgent\\Stage3-4\\service-x86",
+      "heartbeat": "C:\\ProgramData\\FxDbgAgent\\Stage3-4\\service-x86\\data\\heartbeat.json",
+      "binaryPath": "\"C:\\ProgramData\\FxDbgAgent\\Stage3-4\\service-x86\\Fx40.Environment.Service.x86.exe\" \"FxDbgStage34-x86\" \"C:\\ProgramData\\FxDbgAgent\\Stage3-4\\service-x86\\data\\heartbeat.json\"",
+      "url": "http://127.0.0.1:58340/health.aspx"
+    },
+    {
+      "architecture": "x64",
+      "bits": 64,
+      "service": "FxDbgStage34-x64",
+      "pool": "FxDbgStage34-x64",
+      "site": "FxDbgStage34-x64",
+      "port": 58341,
+      "webRoot": "C:\\ProgramData\\FxDbgAgent\\Stage3-4\\web-x64",
+      "serviceRoot": "C:\\ProgramData\\FxDbgAgent\\Stage3-4\\service-x64",
+      "heartbeat": "C:\\ProgramData\\FxDbgAgent\\Stage3-4\\service-x64\\data\\heartbeat.json",
+      "binaryPath": "\"C:\\ProgramData\\FxDbgAgent\\Stage3-4\\service-x64\\Fx40.Environment.Service.x64.exe\" \"FxDbgStage34-x64\" \"C:\\ProgramData\\FxDbgAgent\\Stage3-4\\service-x64\\data\\heartbeat.json\"",
+      "url": "http://127.0.0.1:58341/health.aspx"
+    }
+  ],
+  "ownedServices": [
+    "FxDbgStage34-x86",
+    "FxDbgStage34-x64"
+  ],
+  "ownedSites": [
+    "FxDbgStage34-x86",
+    "FxDbgStage34-x64"
+  ],
+  "ownedPools": [
+    "FxDbgStage34-x86",
+    "FxDbgStage34-x64"
+  ],
+  "restartNeeded": false,
+  "addedFeatures": [],
+  "error": null,
+  "iisPreviouslyEnabled": true
+}

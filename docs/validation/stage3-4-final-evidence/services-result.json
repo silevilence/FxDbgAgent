@@ -1,0 +1,96 @@
+{
+  "passed": true,
+  "outcomes": [
+    {
+      "name": "services-build-Debug",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\services-build-Debug.log"
+    },
+    {
+      "name": "services-dap-build-Debug",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\services-dap-build-Debug.log"
+    },
+    {
+      "name": "services-unit-Debug",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\services-unit-Debug.log"
+    },
+    {
+      "name": "services-install-Debug",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\services-install-Debug.log"
+    },
+    {
+      "name": "services-mcp-Debug",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\services-mcp-Debug.log"
+    },
+    {
+      "name": "services-dap-Debug",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\services-dap-Debug.log"
+    },
+    {
+      "name": "services-vscode-Debug",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\services-vscode-Debug.log"
+    },
+    {
+      "name": "services-health-Debug",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\services-health-Debug.log"
+    },
+    {
+      "name": "services-cleanup-Debug",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\services-cleanup-Debug.log"
+    },
+    {
+      "name": "services-build-Release",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\services-build-Release.log"
+    },
+    {
+      "name": "services-dap-build-Release",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\services-dap-build-Release.log"
+    },
+    {
+      "name": "services-unit-Release",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\services-unit-Release.log"
+    },
+    {
+      "name": "services-install-Release",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\services-install-Release.log"
+    },
+    {
+      "name": "services-mcp-Release",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\services-mcp-Release.log"
+    },
+    {
+      "name": "services-dap-Release",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\services-dap-Release.log"
+    },
+    {
+      "name": "services-vscode-Release",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\services-vscode-Release.log"
+    },
+    {
+      "name": "services-health-Release",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\services-health-Release.log"
+    },
+    {
+      "name": "services-cleanup-Release",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\services-cleanup-Release.log"
+    }
+  ],
+  "atUtc": "2026-09-07T07:53:38.1814289+00:00"
+}

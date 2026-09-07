@@ -1,0 +1,39 @@
+{
+  "reviewedCommit": "a0b4a2c6851b25414d247da75bc0bff755eccea5",
+  "jobId": "8183476133644ecd9d46e7b5114573bc",
+  "inputs": [
+    {
+      "sha256": "2A5CF8D7B59066C43A9620B76EDC519DED6EC856F3F0B706E50BCF0830037F57",
+      "path": "artifacts/stage3-4-validation/coverage-permissions-Debug/e4631cbb588940f6965c59150776fe74/9b30d217-fcd5-4b39-831b-669f988fdd72/silev_SILSURFACE10_2026-09-07.15_43_57.cobertura.xml",
+      "length": 1810535
+    },
+    {
+      "sha256": "E769C7CDD13B9341542D511B1EFF83701EA4656D84D71A9D0FCAF887E8855034",
+      "path": "artifacts/stage3-4-validation/coverage-permissions-Release/1bf2cbef176f4cfca9cff0c17a1d8821/52adafc2-fbc7-4201-9843-572f22320c3a/silev_SILSURFACE10_2026-09-07.15_46_33.cobertura.xml",
+      "length": 1635424
+    },
+    {
+      "sha256": "A6E6B5CD0257DD1CE91FC37CF51817A28B83BF72477631FC5E8C8878A1DA888F",
+      "path": "artifacts/stage3-4-validation/coverage-iis-Debug/544537663fe44607a2ad0bdfc1fc35a7/1857a821-8427-4bdb-bff7-c17bd3cc3a34/silev_SILSURFACE10_2026-09-07.15_56_00.cobertura.xml",
+      "length": 1812491
+    },
+    {
+      "sha256": "2A167BCC13167ED7B885F8154C467D01381CF58AD2D8CD1060A3F4288A197874",
+      "path": "artifacts/stage3-4-validation/coverage-iis-Release/b1692306cab444e4a745bc9fe42af082/15cd245c-ee72-4347-a185-05b8c1428cf7/silev_SILSURFACE10_2026-09-07.15_58_33.cobertura.xml",
+      "length": 1637438
+    },
+    {
+      "sha256": "92F4937C18AFB780DDDFE61B7BBCD92BCC2D0B52290A6B35C35286EF524A5FCA",
+      "path": "artifacts/stage3-4-validation/coverage-unit-a0-final/d2d6353c-2f9d-4648-956b-d43a27846e8a/silev_SILSURFACE10_2026-09-07.16_26_09.cobertura.xml",
+      "length": 1547343
+    },
+    {
+      "sha256": "14DC8083CCABB4FC07C192B3DBB310AE64D7464A20C6CC13B32D6CB5993F1DCF",
+      "path": "artifacts/stage3-4-validation/coverage-acl-a0-final/1db35ee1-cb40-46e1-adeb-0822aaf207b6/silev_SILSURFACE10_2026-09-07.16_26_16.cobertura.xml",
+      "length": 468708
+    }
+  ],
+  "baseline": "cda481eea0d3ac1d4b27bab2ba858838a844c7ec",
+  "sourceRoot": "C:\\code\\dotnet\\FxDbgAgent",
+  "atUtc": "2026-09-07T08:26:50.1704868+00:00"
+}

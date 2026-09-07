@@ -1,0 +1,1 @@
+{"passed":true,"cases":[{"architecture":"x86","kind":"service","pid":28720,"line":71},{"architecture":"x86","kind":"iis","pid":31060,"line":51},{"architecture":"x64","kind":"service","pid":33632,"line":71},{"architecture":"x64","kind":"iis","pid":22216,"line":51}]}

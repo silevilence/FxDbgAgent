@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0-windows</TargetFramework><Nullable>enable</Nullable></PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FxDbg.Host"><HintPath>$(FxDbgRoot)/artifacts/mcp/Debug/FxDbg.Host.dll</HintPath></Reference>
+    <Reference Include="FxDbg.Core"><HintPath>$(FxDbgRoot)/artifacts/mcp/Debug/FxDbg.Core.dll</HintPath></Reference>
+    <Reference Include="FxDbg.Engine.Protocol"><HintPath>$(FxDbgRoot)/artifacts/mcp/Debug/FxDbg.Engine.Protocol.dll</HintPath></Reference>
+    <Reference Include="Newtonsoft.Json"><HintPath>$(FxDbgRoot)/artifacts/mcp/Debug/Newtonsoft.Json.dll</HintPath></Reference>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,105 @@
+{
+  "deploymentId": "6e4559a4-8253-47d2-bc5d-16b2076caf79",
+  "atUtc": "2026-09-07T08:36:43.1636454+00:00",
+  "configuration": "Debug",
+  "files": [
+    {
+      "matches": true,
+      "architecture": "x86",
+      "sha256": "C67E8EE96BA8F09A8B042322973FD4ED8BB24AF783519570FB0EE080D756208D",
+      "source": "tests/Debuggees/Fx40.Environment.Web/late.aspx",
+      "deployed": "C:\\ProgramData\\FxDbgAgent\\Stage3-4\\web-x86\\late.aspx"
+    },
+    {
+      "matches": true,
+      "architecture": "x86",
+      "sha256": "17C0C6A83C98C89C112CF9EE41908873971B9C142397F3EBB004D42C9DC99124",
+      "source": "tests/Debuggees/Fx40.Environment.Web/bin/Debug/net40/Fx40.Environment.Web.dll",
+      "deployed": "C:\\ProgramData\\FxDbgAgent\\Stage3-4\\web-x86\\bin\\Fx40.Environment.Web.dll"
+    },
+    {
+      "matches": true,
+      "architecture": "x86",
+      "sha256": "A5EEB8FDCC532396212CCBA4AE2A22DEC786CF22F60A2F4D250B9885EE34E110",
+      "source": "tests/Debuggees/Fx40.Environment.Late/bin/Debug/net40/Fx40.Environment.Late.dll",
+      "deployed": "C:\\ProgramData\\FxDbgAgent\\Stage3-4\\web-x86\\late\\Fx40.Environment.Late.dll"
+    },
+    {
+      "matches": true,
+      "architecture": "x86",
+      "sha256": "BCA2C5E7B2D49CC49B3581005C6DA17EE181065E40988E32DE3FD2495847A8FF",
+      "source": "tests/Debuggees/Fx40.Environment.Web/bin/Debug/net40/Fx40.Environment.Web.pdb",
+      "deployed": "C:\\ProgramData\\FxDbgAgent\\Stage3-4\\web-x86\\bin\\Fx40.Environment.Web.pdb"
+    },
+    {
+      "matches": true,
+      "architecture": "x86",
+      "sha256": "E32543209BC917C79AC9B5DC11EE28906B90A5A08E10159AF124439EDC602D1F",
+      "source": "tests/Debuggees/Fx40.Environment.Late/bin/Debug/net40/Fx40.Environment.Late.pdb",
+      "deployed": "C:\\ProgramData\\FxDbgAgent\\Stage3-4\\web-x86\\late\\Fx40.Environment.Late.pdb"
+    },
+    {
+      "matches": true,
+      "architecture": "x86",
+      "sha256": "7CBE226C2B02D9CE4C2330F1AB3CF4009B527B7B50B89BA66F62C90806CEC041",
+      "source": "tests/Debuggees/Fx40.Environment.Service.x86/bin/Debug/net40/Fx40.Environment.Service.x86.exe",
+      "deployed": "C:\\ProgramData\\FxDbgAgent\\Stage3-4\\service-x86\\Fx40.Environment.Service.x86.exe"
+    },
+    {
+      "matches": true,
+      "architecture": "x86",
+      "sha256": "C54FF5AD117215A8C047743F98FFDFC3C5204823DAC0752E056034D58B0A88EC",
+      "source": "tests/Debuggees/Fx40.Environment.Service.x86/bin/Debug/net40/Fx40.Environment.Service.x86.pdb",
+      "deployed": "C:\\ProgramData\\FxDbgAgent\\Stage3-4\\service-x86\\Fx40.Environment.Service.x86.pdb"
+    },
+    {
+      "matches": true,
+      "architecture": "x64",
+      "sha256": "C67E8EE96BA8F09A8B042322973FD4ED8BB24AF783519570FB0EE080D756208D",
+      "source": "tests/Debuggees/Fx40.Environment.Web/late.aspx",
+      "deployed": "C:\\ProgramData\\FxDbgAgent\\Stage3-4\\web-x64\\late.aspx"
+    },
+    {
+      "matches": true,
+      "architecture": "x64",
+      "sha256": "17C0C6A83C98C89C112CF9EE41908873971B9C142397F3EBB004D42C9DC99124",
+      "source": "tests/Debuggees/Fx40.Environment.Web/bin/Debug/net40/Fx40.Environment.Web.dll",
+      "deployed": "C:\\ProgramData\\FxDbgAgent\\Stage3-4\\web-x64\\bin\\Fx40.Environment.Web.dll"
+    },
+    {
+      "matches": true,
+      "architecture": "x64",
+      "sha256": "A5EEB8FDCC532396212CCBA4AE2A22DEC786CF22F60A2F4D250B9885EE34E110",
+      "source": "tests/Debuggees/Fx40.Environment.Late/bin/Debug/net40/Fx40.Environment.Late.dll",
+      "deployed": "C:\\ProgramData\\FxDbgAgent\\Stage3-4\\web-x64\\late\\Fx40.Environment.Late.dll"
+    },
+    {
+      "matches": true,
+      "architecture": "x64",
+      "sha256": "BCA2C5E7B2D49CC49B3581005C6DA17EE181065E40988E32DE3FD2495847A8FF",
+      "source": "tests/Debuggees/Fx40.Environment.Web/bin/Debug/net40/Fx40.Environment.Web.pdb",
+      "deployed": "C:\\ProgramData\\FxDbgAgent\\Stage3-4\\web-x64\\bin\\Fx40.Environment.Web.pdb"
+    },
+    {
+      "matches": true,
+      "architecture": "x64",
+      "sha256": "E32543209BC917C79AC9B5DC11EE28906B90A5A08E10159AF124439EDC602D1F",
+      "source": "tests/Debuggees/Fx40.Environment.Late/bin/Debug/net40/Fx40.Environment.Late.pdb",
+      "deployed": "C:\\ProgramData\\FxDbgAgent\\Stage3-4\\web-x64\\late\\Fx40.Environment.Late.pdb"
+    },
+    {
+      "matches": true,
+      "architecture": "x64",
+      "sha256": "8D34AD5CD9C1BC93D0FDACD459E820F66F18D7A381F53625488226D8141EC2DF",
+      "source": "tests/Debuggees/Fx40.Environment.Service.x64/bin/Debug/net40/Fx40.Environment.Service.x64.exe",
+      "deployed": "C:\\ProgramData\\FxDbgAgent\\Stage3-4\\service-x64\\Fx40.Environment.Service.x64.exe"
+    },
+    {
+      "matches": true,
+      "architecture": "x64",
+      "sha256": "094473B45872ED175CE15F5E35148EEA5C784C5025B6780333A14A434E101BD6",
+      "source": "tests/Debuggees/Fx40.Environment.Service.x64/bin/Debug/net40/Fx40.Environment.Service.x64.pdb",
+      "deployed": "C:\\ProgramData\\FxDbgAgent\\Stage3-4\\service-x64\\Fx40.Environment.Service.x64.pdb"
+    }
+  ]
+}

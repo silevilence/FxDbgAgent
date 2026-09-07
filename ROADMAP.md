@@ -22,12 +22,14 @@
 
 ## 🚧 开发中 (In Progress)
 
-### 阶段 3：可用性增强（MVP 验收后启动）
+### 阶段 3：可用性增强（已验收，按约定保留原位置）
 
 > 无人值守实施约定（2026-09-06，用户已确认）：本轮顺序为阶段3-1 → 阶段3-2 → 阶段3-3 → 阶段3-5；阶段3-4暂时跳过，保持未勾选，不安装 IIS 或创建系统服务。本轮完成不代表阶段3-4完成。
 > 开始前将本节确认内容与既有分区调整单独本地提交，然后启动目标；每项测试与快速审核通过、阻塞修复后才原地勾选并独立本地提交。当前 main 分支执行，不推送。最终以准备提交为固定基线，两个独立子代理分别审核规范与需求，修复并复核；运行 Debug/Release 全量回归（含阶段2及共享后端），将命令、结果、源码哈希与清理证据记录到 docs/validation/ 和 artifacts/stage3-validation/。
 > 统一约束：保持现有13个MCP工具兼容，以可选参数和附加结果字段扩展；CLI、MCP、DAP复用 FxDbg.Host/Engine；保持双架构、回调仅入队、单调度线程、Continue配对、只读观察与安全分离纪律。未通过或缺失真实验收不得记为通过；测试进程有总期限且只清理自身创建的资源。
 > 本轮最终验收（2026-09-06）：四项已按顺序完成并独立提交；规范审核2项、需求审核1项均已修复并独立复核，遗留0项。修复版本b9d779a的Debug/Release全量回归及235项输入一致性检查通过，覆盖阶段3专项、真实VS Code和全部阶段2/1/0；报告与证据见 docs/validation/stage3-usability.md、docs/validation/stage3-final-review.md。阶段3-4仍未完成，阶段3保留在开发中。
+
+> 当前最终验收（2026-09-07）：3-4a～3-4f已按顺序开发、快速审核并本地提交，整体双轴审核与阻塞修复复核完成。a0b4a2c的Debug/Release完整回归于08:23:55Z通过，包含真实Service/IIS、3-1/2/3/5、真实VS Code及全部阶段2/1/0；269项输入一致、变更生产行覆盖率140/155（90.32%）。遗留阻塞0，保留1项非阻塞脚本维护建议。阶段3现已全部完成，按本轮约定原地保留条目；报告见 `docs/validation/stage3-4-final-review.md`、`docs/validation/stage3-4-service-iis.md`。
 
 - [x] **阶段3-1 对象与数组分页展开**——大对象/数组分页读取，深度、数量、字符串长度限制调优
     - [x] 超过10万元素数组及对象图按需读取，覆盖首/中/尾页、循环引用、运行后引用失效与有界资源；不得先遍历整个对象图再分页
@@ -47,7 +49,7 @@
     - 验收：真实双架构多域样例可定位指定域线程与断点，跨域栈与变量归属正确，卸载后不返回陈旧引用；未指定筛选时保持原行为。
     - 验证记录：Debug/Release各82项单元、多域及前序MCP回归、4组真实生命周期事件通过；快速审核已修复名称更新和退出线程生命周期，见 docs/validation/stage3-3-appdomains.md。
 
-- [ ] **阶段3-4 Windows Service 与 w3wp 附加增强**——SeDebugPrivilege 权限路径、IIS 影子复制与动态模块加载
+- [x] **阶段3-4 Windows Service 与 w3wp 附加增强**——SeDebugPrivilege 权限路径、IIS 影子复制与动态模块加载
     - 规划补充（2026-09-07）：本次细化待实施任务，保留阶段3-4编号与原位置；上方2026-09-06的跳过及回归结论为历史记录，不覆盖本项。以下3-4a～3-4f全部验收通过后才勾选父项。
     - 本轮实施约定（2026-09-07，用户授权）：先单独本地提交文档，再顺序完成3-4a～3-4f；每项完成后只做快速审核，修复阻塞项、记录证据后原地勾选并独立本地提交。全部完成后对3-4整体执行完成审核、修复及复核，运行Debug/Release完整回归；本次目标期间允许本地提交，继续使用main，不推送。
     - 执行顺序与工作量：3-4a（1～2天）→ 3-4b（2～3天）→ 3-4c（1～2天）→ 3-4d（2～3天）→ 3-4e（2～3天）→ 3-4f（2～3天），合计约10～16个工作日，不含测试环境安装与等待；复用已完成的3-2源码映射、3-3多域及3-5 DAP能力。
@@ -57,7 +59,7 @@
     - 总验收：真实Service与完整IIS × x86/x64 × Debug/Release均完成附加、源码断点、栈/变量、继续与安全分离，权限失败、影子复制、动态加载及回收场景证据齐全；3-4专项和包含3-1/2/3/5及阶段2/1/0的完整回归通过，缺环境或跳过不得记为阶段3全部通过。
 
 - [x] **阶段3-4a 真实Service/IIS样例与可恢复测试环境**——交付可重复部署、触发和清理的验收夹具（1～2天）
-    - 环境准备记录（2026-09-07）：本机IIS 10/ASP.NET 4.x、LocalService身份的x86/x64服务及两个回环站点已安装并通过心跳/HTTP/CLR位数/影子复制检查；提供安装、检查和自有资源卸载脚本，首次部分部署清理后重装成功。此为环境准备，不覆盖延迟加载、故障恢复及产品附加验收，3-4a保持未勾选；见 `docs/validation/stage3-4-environment.md`、`docs/service-iis-environment.md`。
+    - 环境准备记录（2026-09-07）：本机IIS 10/ASP.NET 4.x、LocalService身份的x86/x64服务及两个回环站点已安装并通过心跳/HTTP/CLR位数/影子复制检查；提供安装、检查和自有资源卸载脚本，首次部分部署清理后重装成功。此为环境准备，不覆盖延迟加载、故障恢复及产品附加验收，当时3-4a尚未勾选；见 `docs/validation/stage3-4-environment.md`、`docs/service-iis-environment.md`。
     - [x] 在 `tests/Debuggees/` 提供net40双架构Windows Service样例与ASP.NET/WebForms样例；均有可重复触发的业务方法、已知局部变量和延迟加载程序集，构建产物包含匹配的Windows PDB
     - [x] Service由SCM启动，覆盖Session 0及不同于调试器用户的服务身份；IIS使用专属站点和应用池，分别覆盖32位/64位worker、CLR v4、影子复制和请求预热。记录服务名/应用池、PID、创建时间、实际架构与运行时，确保测试选中自己的目标
     - [x] 提供只读环境预检及独立的部署/清理入口；优先在本机尝试部署，预检列出缺失Windows组件、目录ACL、测试身份、端口占用和配置变更。启用所需IIS/ASP.NET组件前记录原状态，已有组件保留；遇到系统重启要求报告待重启状态，不自动重启机器，不覆盖同名已有资源
@@ -96,14 +98,14 @@
     - 验收：真实IIS双架构、双配置完成延迟加载、页面首次编译、域重建、应用池回收和新PID重新附加；事件/断点状态顺序、旧引用拒绝及请求恢复均可自动断言，无重复Continue、死锁或陈旧模块；仅模拟回调或Console多域回归不足以标记通过。
     - 完成记录：Debug/Release各102项单元及真实IIS双架构延迟加载、首次页面编译、多域重建、内存模块和重叠回收通过；旧引用拒绝、新PID显式附加及池设置恢复均已断言，见 `docs/validation/stage3-4e-iis-lifecycle.md`。
 
-- [ ] **阶段3-4f 产品入口回归、文档与阶段3最终验收**——形成可复核的一键证据（2～3天，依赖3-4a～3-4e）
-    - [ ] 新增 `eng/verify-stage3-4.ps1`，默认Debug/Release并支持单配置，驱动真实发布MCP、SCM服务和完整IIS；环境缺失、权限不足、用例失败或清理不完整均非零退出，输出明确原因，不以跳过返回通过
-    - [ ] 扩展 `eng/verify-stage3.ps1` 纳入3-4；保留显式跳过选项供无IIS环境运行既有子集，结果必须列出skipped且不得宣称阶段3全验收通过。全验收覆盖3-1/2/3/5、真实VS Code及全部阶段2/1/0回归
-    - [ ] MCP完成全部Service/IIS行为矩阵；CLI和DAP各覆盖两类目标的双架构附加/断点/分离，真实VS Code补充Service与IIS附加会话。保持13工具契约及旧调用兼容，必要的新参数/schema/发布内容同步测试
-    - [ ] 编写 `docs/service-iis.md`，同步CLI/MCP/DAP、Agent技能及随包引用，说明管理员启动、PID定位、预热、符号诊断、回收后重附加、暂停对服务/请求的影响与安全分离；按实现事实更新AGENTS.md，保留先前跳过的历史验收记录
-    - [ ] 原始证据写入 `artifacts/stage3-4-validation/`，报告写入 `docs/validation/stage3-4-service-iis.md`，补充阶段3最终报告；记录命令、OS/IIS/CLR版本、身份/权限、配置、源码哈希、结果和自有资源恢复证据，日志保持脱敏
+- [x] **阶段3-4f 产品入口回归、文档与阶段3最终验收**——形成可复核的一键证据（2～3天，依赖3-4a～3-4e）
+    - [x] 新增 `eng/verify-stage3-4.ps1`，默认Debug/Release并支持单配置，驱动真实发布MCP、SCM服务和完整IIS；环境缺失、权限不足、用例失败或清理不完整均非零退出，输出明确原因，不以跳过返回通过
+    - [x] 扩展 `eng/verify-stage3.ps1` 纳入3-4；保留显式跳过选项供无IIS环境运行既有子集，结果必须列出skipped且不得宣称阶段3全验收通过。全验收覆盖3-1/2/3/5、真实VS Code及全部阶段2/1/0回归
+    - [x] MCP完成全部Service/IIS行为矩阵；CLI和DAP各覆盖两类目标的双架构附加/断点/分离，真实VS Code补充Service与IIS附加会话。保持13工具契约及旧调用兼容，必要的新参数/schema/发布内容同步测试
+    - [x] 编写 `docs/service-iis.md`，同步CLI/MCP/DAP、Agent技能及随包引用，说明管理员启动、PID定位、预热、符号诊断、回收后重附加、暂停对服务/请求的影响与安全分离；按实现事实更新AGENTS.md，保留先前跳过的历史验收记录
+    - [x] 原始证据写入 `artifacts/stage3-4-validation/`，报告写入 `docs/validation/stage3-4-service-iis.md`，补充阶段3最终报告；记录命令、OS/IIS/CLR版本、身份/权限、配置、源码哈希、结果和自有资源恢复证据，日志保持脱敏
     - 验收：专项与完整回归Debug/Release全部通过；以实施前固定基线完成规范/需求双轴独立审核并修复、复核阻塞项；报告逐条关联3-4a～3-4f。所有真实环境证据与清理证据齐全后才原地勾选，历史3-1/2/3/5通过记录不得替代3-4证据。
-    - 实现记录：一键脚本、显式子集标识、CLI/DAP/真实VS Code的双配置Service/IIS入口矩阵及随包文档已完成快速审核并本地提交；整体验收保持待办，见 `docs/validation/stage3-4-service-iis.md`。
+    - 实现记录：一键脚本、显式子集标识、CLI/DAP/真实VS Code的双配置Service/IIS入口矩阵及随包文档已完成快速审核并本地提交；完整双配置回归及整体审核已通过，见 `docs/validation/stage3-4-service-iis.md`。
 
 阶段3-4的技术边界参考Microsoft官方文档：[调试Windows Service](https://learn.microsoft.com/en-us/dotnet/framework/windows-services/how-to-debug-windows-service-applications)、[令牌权限调整及ERROR_NOT_ALL_ASSIGNED](https://learn.microsoft.com/en-us/windows/win32/api/securitybaseapi/nf-securitybaseapi-adjusttokenprivileges)、[程序集影子复制](https://learn.microsoft.com/en-us/dotnet/framework/app-domains/shadow-copy-assemblies)、[IIS应用池进程模型与ping设置](https://learn.microsoft.com/en-us/iis/configuration/system.applicationhost/applicationpools/add/processmodel)。上述范围、工期和验收矩阵为本项目规划约定。
 

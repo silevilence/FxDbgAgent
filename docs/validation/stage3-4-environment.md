@@ -41,4 +41,10 @@
 
 使用、健康检查和卸载步骤见 [环境说明](../service-iis-environment.md)。卸载仅移除自有测试资源，保留Windows组件与验收证据。首次部分部署的卸载路径已真实验证；没有将完整环境反复安装或异常中断恢复记为已验收。
 
-后续仍需实现和验收跨身份附加权限、产品断点/栈/变量、延迟模块/PDB重绑定、域重建/应用池回收及全量回归。阶段3-4与3-4a保持未勾选。
+上述为初始环境准备时的历史状态，当时跨身份附加、产品断点/栈/变量、延迟模块/PDB重绑定、域重建/回收及完整回归尚未验收，3-4与3-4a尚未勾选。
+
+## 2026-09-07完成后的环境刷新
+
+3-4a～3-4f及完整Debug/Release回归已通过，见[总验收](stage3-4-service-iis.md)和[完成审核](stage3-4-final-review.md)。默认Stage3-4环境随后用本轮Debug夹具重新部署，ID为`6e4559a4-8253-47d2-bc5d-16b2076caf79`，08:29:21Z独立健康复查通过；双架构服务、IIS站点、CLR位数、持续心跳和影子复制均有效，含最新late.aspx及匹配部署DLL。
+
+当前state/health见[最终环境快照](stage3-4-final-evidence/default-environment-state.json)及[健康记录](stage3-4-final-evidence/default-environment-health.json)。初始部署ID和日志仍为历史证据，运行时PID须重新查询。经用户授权的临时管理员工作进程于08:32:35Z停止，PID33084已退出；测试服务和站点保留供用户使用。

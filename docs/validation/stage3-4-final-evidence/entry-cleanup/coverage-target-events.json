@@ -1,0 +1,17 @@
+[
+  {
+    "TimeCreated": "2026-09-07T15:26:00.4294311+08:00",
+    "Id": 1026,
+    "Message": "应用程序: Fx40.Console.x86.exe\nFramework 版本: v4.0.30319\n说明: 由于未经处理的异常，进程终止。\n异常信息: System.IO.FileLoadException\n   在 FxDbg.Debuggees.ConsoleX86.Program.Main(System.String[])\n\n"
+  },
+  {
+    "TimeCreated": "2026-09-07T15:23:23.3913851+08:00",
+    "Id": 1000,
+    "Message": "出错应用程序名称： Fx40.Console.x86.exe，版本： 1.0.0.0，时间戳： 0xee58bc9a\r\n出错模块名称： KERNELBASE.dll， 版本： 10.0.26100.8655，时间戳： 0xd8b4f381\r\n异常代码： 0xe0434352\r\n错误偏移： 0x001659a4\r\n出错进程 ID： 0x7BA8\r\n出错应用程序开始时间： 0x1DD3E99C3DBFA25\r\nFaulting 应用程序路径： C:\\code\\dotnet\\FxDbgAgent\\tests\\Debuggees\\Fx40.Console.x86\\bin\\Debug\\net40\\Fx40.Console.x86.exe\r\nFaulting 模块路径： C:\\WINDOWS\\System32\\KERNELBASE.dll\r\nReport ID： 52cfec74-85cd-4900-b793-0592af976aed\r\nFaulting 包全名： \r\nFaulting 程序包相对应用程序 ID：  个"
+  },
+  {
+    "TimeCreated": "2026-09-07T15:23:23.016131+08:00",
+    "Id": 1026,
+    "Message": "应用程序: Fx40.Console.x86.exe\nFramework 版本: v4.0.30319\n说明: 由于未经处理的异常，进程终止。\n异常信息: System.IO.FileLoadException\n   在 FxDbg.Debuggees.ConsoleX86.Program.Main(System.String[])\n\n"
+  }
+]

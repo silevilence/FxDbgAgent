@@ -1,0 +1,5 @@
+Completed cycle 0
+Completed cycle 10
+{"cycle":12,"completed":false,"disposedMs":16,"elapsedMs":2027,"targetPid":48180,"enginePid":35344,"engineExited":true,"engineExitCode":0,"targetExited":false}
+51084:Running,50508:Wait:EventPairLow,50892:Wait:EventPairLow,34324:Wait:EventPairLow,37168:Wait:UserRequest,42344:Wait:UserRequest,41108:Wait:UserRequest
+Late completion=False Engine exited=True Exit=0

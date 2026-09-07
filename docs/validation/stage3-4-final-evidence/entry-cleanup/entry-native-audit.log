@@ -1,0 +1,8 @@
+Completed cycle 0
+Completed cycle 10
+Completed cycle 20
+Completed cycle 30
+Completed cycle 40
+{"cycle":47,"completed":false,"disposedMs":15,"elapsedMs":2011,"targetPid":40100,"enginePid":48960,"engineExited":true,"engineExitCode":0,"targetExited":false}
+43256:Running,30032:Wait:EventPairLow,34912:Wait:EventPairLow,40988:Wait:EventPairLow,26556:Wait:UserRequest,46460:Wait:UserRequest,44004:Wait:UserRequest
+Late completion=False Engine exited=True Exit=0

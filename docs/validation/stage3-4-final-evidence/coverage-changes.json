@@ -1,0 +1,243 @@
+{
+  "overallProduction": {
+    "total": 4990,
+    "covered": 3635,
+    "rate": 0.7284569138276553
+  },
+  "covered": 140,
+  "total": 155,
+  "rate": 0.9032258064516129,
+  "incompleteChangedMethods": [
+    {
+      "covered": 22,
+      "total": 42,
+      "name": "FxDbg.Engine.EngineTargetValidator.ValidateAttachRuntime",
+      "rate": 0.5238095238095238,
+      "file": "src/FxDbg.Engine/EngineTargetValidator.cs",
+      "uncoveredChangedLines": [
+        81
+      ]
+    },
+    {
+      "covered": 0,
+      "total": 2,
+      "name": "FxDbg.Engine.Program.AttachDenied",
+      "rate": 0,
+      "file": "src/FxDbg.Engine/Program.cs",
+      "uncoveredChangedLines": [
+        129,
+        130
+      ]
+    },
+    {
+      "covered": 13,
+      "total": 16,
+      "name": "FxDbg.Platform.WindowsDebugPrivilege.NativeAdjustment.Acquire",
+      "rate": 0.8125,
+      "file": "src/Shared/WindowsDebugPrivilege.cs",
+      "uncoveredChangedLines": [
+        68,
+        73,
+        83
+      ]
+    },
+    {
+      "covered": 8,
+      "total": 11,
+      "name": "FxDbg.Interop.FrameworkDebuggerBootstrap.AttachProcess",
+      "rate": 0.7272727272727273,
+      "file": "src/FxDbg.Interop/FrameworkDebuggerBootstrap.cs",
+      "uncoveredChangedLines": [
+        56,
+        57,
+        58
+      ]
+    },
+    {
+      "covered": 0,
+      "total": 1,
+      "name": "FxDbg.Interop.FrameworkDebugSession.<SynchronizeAndDetach>b__64_0",
+      "rate": 0,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.cs",
+      "uncoveredChangedLines": [
+        212
+      ]
+    },
+    {
+      "covered": 52,
+      "total": 110,
+      "name": "FxDbg.Interop.FrameworkDebugSession.SynchronizeAndDetach",
+      "rate": 0.4727272727272727,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.cs",
+      "uncoveredChangedLines": [
+        212,
+        234
+      ]
+    },
+    {
+      "covered": 0,
+      "total": 1,
+      "name": "FxDbg.Interop.FrameworkDebugSession.<>c__DisplayClass64_0.<SynchronizeAndDetach>b__1",
+      "rate": 0,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.cs",
+      "uncoveredChangedLines": [
+        234
+      ]
+    },
+    {
+      "covered": 0,
+      "total": 4,
+      "name": "FxDbg.Engine.Program.<>c__DisplayClass0_2.<Main>b__3",
+      "rate": 0,
+      "file": "src/FxDbg.Engine/Program.cs",
+      "uncoveredChangedLines": [
+        78
+      ]
+    },
+    {
+      "covered": 6,
+      "total": 7,
+      "name": "FxDbg.Interop.TargetProcessLifetime.ReadImagePath",
+      "rate": 0.8571428571428571,
+      "file": "src/FxDbg.Interop/TargetProcessLifetime.cs",
+      "uncoveredChangedLines": [
+        36
+      ]
+    },
+    {
+      "covered": 5,
+      "total": 6,
+      "name": "FxDbg.Interop.TargetProcessLifetime.get_HasExited",
+      "rate": 0.8333333333333334,
+      "file": "src/FxDbg.Interop/TargetProcessLifetime.cs",
+      "uncoveredChangedLines": [
+        27
+      ]
+    },
+    {
+      "covered": 5,
+      "total": 6,
+      "name": "FxDbg.Interop.TargetProcessLifetime..ctor",
+      "rate": 0.8333333333333334,
+      "file": "src/FxDbg.Interop/TargetProcessLifetime.cs",
+      "uncoveredChangedLines": [
+        18
+      ]
+    }
+  ],
+  "coverageFiles": [
+    "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\coverage-permissions-Debug\\e4631cbb588940f6965c59150776fe74\\9b30d217-fcd5-4b39-831b-669f988fdd72\\silev_SILSURFACE10_2026-09-07.15_43_57.cobertura.xml",
+    "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\coverage-permissions-Release\\1bf2cbef176f4cfca9cff0c17a1d8821\\52adafc2-fbc7-4201-9843-572f22320c3a\\silev_SILSURFACE10_2026-09-07.15_46_33.cobertura.xml",
+    "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\coverage-iis-Debug\\544537663fe44607a2ad0bdfc1fc35a7\\1857a821-8427-4bdb-bff7-c17bd3cc3a34\\silev_SILSURFACE10_2026-09-07.15_56_00.cobertura.xml",
+    "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\coverage-iis-Release\\b1692306cab444e4a745bc9fe42af082\\15cd245c-ee72-4347-a185-05b8c1428cf7\\silev_SILSURFACE10_2026-09-07.15_58_33.cobertura.xml",
+    "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\coverage-unit-a0-final\\d2d6353c-2f9d-4648-956b-d43a27846e8a\\silev_SILSURFACE10_2026-09-07.16_26_09.cobertura.xml",
+    "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\coverage-acl-a0-final\\1db35ee1-cb40-46e1-adeb-0822aaf207b6\\silev_SILSURFACE10_2026-09-07.16_26_16.cobertura.xml"
+  ],
+  "files": [
+    {
+      "uncovered": [],
+      "covered": 3,
+      "file": "src/FxDbg.Engine/EngineServer.cs",
+      "instrumented": true,
+      "executableChangedLines": 3
+    },
+    {
+      "uncovered": [
+        81
+      ],
+      "covered": 0,
+      "file": "src/FxDbg.Engine/EngineTargetValidator.cs",
+      "instrumented": true,
+      "executableChangedLines": 1
+    },
+    {
+      "uncovered": [
+        78,
+        129,
+        130
+      ],
+      "covered": 14,
+      "file": "src/FxDbg.Engine/Program.cs",
+      "instrumented": true,
+      "executableChangedLines": 17
+    },
+    {
+      "uncovered": [],
+      "covered": 13,
+      "file": "src/FxDbg.Host/Architecture/ProcessArchitectureDetector.cs",
+      "instrumented": true,
+      "executableChangedLines": 13
+    },
+    {
+      "uncovered": [],
+      "covered": 2,
+      "file": "src/FxDbg.Host/Engine/EngineProcessHost.cs",
+      "instrumented": true,
+      "executableChangedLines": 2
+    },
+    {
+      "uncovered": [],
+      "covered": 3,
+      "file": "src/FxDbg.Host/Sessions/DebugSessionService.Execution.cs",
+      "instrumented": true,
+      "executableChangedLines": 3
+    },
+    {
+      "uncovered": [],
+      "covered": 2,
+      "file": "src/FxDbg.Interop/DebugModule.cs",
+      "instrumented": true,
+      "executableChangedLines": 2
+    },
+    {
+      "uncovered": [
+        56,
+        57,
+        58
+      ],
+      "covered": 1,
+      "file": "src/FxDbg.Interop/FrameworkDebuggerBootstrap.cs",
+      "instrumented": true,
+      "executableChangedLines": 4
+    },
+    {
+      "uncovered": [],
+      "covered": 1,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Breakpoints.cs",
+      "instrumented": true,
+      "executableChangedLines": 1
+    },
+    {
+      "uncovered": [
+        212,
+        234
+      ],
+      "covered": 24,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.cs",
+      "instrumented": true,
+      "executableChangedLines": 26
+    },
+    {
+      "uncovered": [
+        18,
+        27,
+        36
+      ],
+      "covered": 17,
+      "file": "src/FxDbg.Interop/TargetProcessLifetime.cs",
+      "instrumented": true,
+      "executableChangedLines": 20
+    },
+    {
+      "uncovered": [
+        68,
+        73,
+        83
+      ],
+      "covered": 60,
+      "file": "src/Shared/WindowsDebugPrivilege.cs",
+      "instrumented": true,
+      "executableChangedLines": 63
+    }
+  ]
+}

@@ -24,4 +24,4 @@ dotnet test tests/FxDbg.UnitTests/FxDbg.UnitTests.csproj -c Release --no-build -
 
 机器证据位于 `artifacts/stage3-validation/`：`dap-protocol-{Debug,Release}.log`、`dap-vscode-{Debug,Release}.log`、`vscode-{Debug,Release}.json`、`dap-units-{Debug,Release}.log`、`dap-package.log`。JSON只记录客户端版本和请求/响应/事件摘要，不存变量值。独立VS Code的mutex/已有安装修改提示来自本机编辑器；验收以扩展测试、四组断言和进程退出证据为准。
 
-完整阶段审核及最终源码哈希另由 `eng/verify-stage3.ps1` 和阶段3最终报告记录。阶段3-4保持跳过。
+完整阶段审核及最终源码哈希另由 `eng/verify-stage3.ps1` 和阶段3最终报告记录。本报告原批次跳过3-4；2026-09-07已补齐Service/IIS及包含DAP/真实VS Code的完整回归，见[3-4总验收](stage3-4-service-iis.md)。

@@ -1,0 +1,76 @@
+{
+  "passed": true,
+  "atUtc": "2026-09-07T07:58:42.9239702+00:00",
+  "outcomes": [
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\iis-build-Debug.log",
+      "name": "iis-build-Debug",
+      "exitCode": 0
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\iis-unit-Debug.log",
+      "name": "iis-unit-Debug",
+      "exitCode": 0
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\iis-install-Debug.log",
+      "name": "iis-install-Debug",
+      "exitCode": 0
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\iis-mcp-Debug.log",
+      "name": "iis-mcp-Debug",
+      "exitCode": 0
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\iis-coverage-Debug.log",
+      "name": "iis-coverage-Debug",
+      "exitCode": 0
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\iis-health-Debug.log",
+      "name": "iis-health-Debug",
+      "exitCode": 0
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\iis-cleanup-Debug.log",
+      "name": "iis-cleanup-Debug",
+      "exitCode": 0
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\iis-build-Release.log",
+      "name": "iis-build-Release",
+      "exitCode": 0
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\iis-unit-Release.log",
+      "name": "iis-unit-Release",
+      "exitCode": 0
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\iis-install-Release.log",
+      "name": "iis-install-Release",
+      "exitCode": 0
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\iis-mcp-Release.log",
+      "name": "iis-mcp-Release",
+      "exitCode": 0
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\iis-coverage-Release.log",
+      "name": "iis-coverage-Release",
+      "exitCode": 0
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\iis-health-Release.log",
+      "name": "iis-health-Release",
+      "exitCode": 0
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\iis-cleanup-Release.log",
+      "name": "iis-cleanup-Release",
+      "exitCode": 0
+    }
+  ]
+}

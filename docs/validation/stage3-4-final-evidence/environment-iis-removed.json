@@ -1,0 +1,83 @@
+{
+  "id": "727d0cf5-d073-4a11-9138-869f15ff1f44",
+  "status": "removed",
+  "deploymentRoot": "C:\\ProgramData\\FxDbgAgent\\Stage3-4-iis",
+  "configuration": "Release",
+  "installedAtUtc": "2026-09-07T15:56:58.5845975+08:00",
+  "verifiedAtUtc": "2026-09-07T15:58:39.9510995+08:00",
+  "resources": [
+    {
+      "architecture": "x86",
+      "bits": 32,
+      "service": "FxDbgStage34-iis-x86",
+      "pool": "FxDbgStage34-iis-x86",
+      "site": "FxDbgStage34-iis-x86",
+      "port": 58350,
+      "webRoot": "C:\\ProgramData\\FxDbgAgent\\Stage3-4-iis\\web-x86",
+      "serviceRoot": "C:\\ProgramData\\FxDbgAgent\\Stage3-4-iis\\service-x86",
+      "heartbeat": "C:\\ProgramData\\FxDbgAgent\\Stage3-4-iis\\service-x86\\data\\heartbeat.json",
+      "binaryPath": "\"C:\\ProgramData\\FxDbgAgent\\Stage3-4-iis\\service-x86\\Fx40.Environment.Service.x86.exe\" \"FxDbgStage34-iis-x86\" \"C:\\ProgramData\\FxDbgAgent\\Stage3-4-iis\\service-x86\\data\\heartbeat.json\"",
+      "url": "http://127.0.0.1:58350/health.aspx"
+    },
+    {
+      "architecture": "x64",
+      "bits": 64,
+      "service": "FxDbgStage34-iis-x64",
+      "pool": "FxDbgStage34-iis-x64",
+      "site": "FxDbgStage34-iis-x64",
+      "port": 58351,
+      "webRoot": "C:\\ProgramData\\FxDbgAgent\\Stage3-4-iis\\web-x64",
+      "serviceRoot": "C:\\ProgramData\\FxDbgAgent\\Stage3-4-iis\\service-x64",
+      "heartbeat": "C:\\ProgramData\\FxDbgAgent\\Stage3-4-iis\\service-x64\\data\\heartbeat.json",
+      "binaryPath": "\"C:\\ProgramData\\FxDbgAgent\\Stage3-4-iis\\service-x64\\Fx40.Environment.Service.x64.exe\" \"FxDbgStage34-iis-x64\" \"C:\\ProgramData\\FxDbgAgent\\Stage3-4-iis\\service-x64\\data\\heartbeat.json\"",
+      "url": "http://127.0.0.1:58351/health.aspx"
+    }
+  ],
+  "ownedServices": [
+    "FxDbgStage34-iis-x86",
+    "FxDbgStage34-iis-x64"
+  ],
+  "ownedSites": [
+    "FxDbgStage34-iis-x86",
+    "FxDbgStage34-iis-x64"
+  ],
+  "ownedPools": [
+    "FxDbgStage34-iis-x86",
+    "FxDbgStage34-iis-x64"
+  ],
+  "restartNeeded": false,
+  "addedFeatures": [],
+  "error": null,
+  "iisPreviouslyEnabled": true,
+  "cleanupProcesses": [
+    {
+      "exited": true,
+      "startedAtUtc": "2026-09-07T07:57:14.1257022Z",
+      "pid": 48076,
+      "kind": "worker",
+      "name": "FxDbgStage34-iis-x64"
+    },
+    {
+      "exited": true,
+      "startedAtUtc": "2026-09-07T07:57:10.3866106Z",
+      "pid": 41340,
+      "kind": "worker",
+      "name": "FxDbgStage34-iis-x86"
+    },
+    {
+      "exited": true,
+      "startedAtUtc": "2026-09-07T07:57:07.1056336Z",
+      "pid": 47316,
+      "kind": "service",
+      "name": "FxDbgStage34-iis-x86"
+    },
+    {
+      "exited": true,
+      "startedAtUtc": "2026-09-07T07:57:07.6588791Z",
+      "pid": 43064,
+      "kind": "service",
+      "name": "FxDbgStage34-iis-x64"
+    }
+  ],
+  "removalVerifiedAtUtc": "2026-09-07T07:58:42.7003096+00:00"
+}

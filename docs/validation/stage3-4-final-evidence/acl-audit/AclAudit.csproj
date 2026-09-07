@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <IsTestProject>true</IsTestProject>
+    <IsPackable>false</IsPackable>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0"><PrivateAssets>all</PrivateAssets></PackageReference>
+    <Reference Include="FxDbg.Host"><HintPath>$(FxDbgRoot)/artifacts/mcp/Debug/FxDbg.Host.dll</HintPath></Reference>
+    <Reference Include="FxDbg.Core"><HintPath>$(FxDbgRoot)/artifacts/mcp/Debug/FxDbg.Core.dll</HintPath></Reference>
+  </ItemGroup>
+</Project>

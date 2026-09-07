@@ -1,0 +1,70 @@
+[
+  {
+    "architecture": "x86",
+    "service": "FxDbgStage34-x86",
+    "serviceStartedAtUtc": "2026-09-07T08:26:58.0734969Z",
+    "workerStartedAtUtc": "2026-09-07T08:27:01.3766518Z",
+    "serviceHealth": {
+      "pid": 18852,
+      "bits": 32,
+      "sessionId": 0,
+      "sequence": 140,
+      "result": 281,
+      "utc": "2026-09-07T08:29:18.2720155Z",
+      "runtime": "4.0.30319.42000",
+      "lateResult": 0
+    },
+    "site": "FxDbgStage34-x86",
+    "url": "http://127.0.0.1:58340/health.aspx",
+    "webHealth": {
+      "kind": "FxDbg-stage3-4-environment",
+      "pid": 30616,
+      "bits": 32,
+      "runtime": "4.0.30319.42000",
+      "appDomainId": 2,
+      "shadowCopy": true,
+      "assemblyPath": "C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\Temporary ASP.NET Files\\root\\5a91cbd8\\c1218c57\\assembly\\dl3\\f9192e30\\e70e7c44_a13edd01\\Fx40.Environment.Web.dll",
+      "originalAssembly": "file:///C:/ProgramData/FxDbgAgent/Stage3-4/web-x86/bin/Fx40.Environment.Web.DLL",
+      "result": 85,
+      "lateResult": 0,
+      "lifecycleResult": 0,
+      "activeHolds": 0,
+      "domains": {},
+      "lateLoaded": false
+    }
+  },
+  {
+    "architecture": "x64",
+    "service": "FxDbgStage34-x64",
+    "serviceStartedAtUtc": "2026-09-07T08:26:58.6542413Z",
+    "workerStartedAtUtc": "2026-09-07T08:27:05.0877080Z",
+    "serviceHealth": {
+      "pid": 52560,
+      "bits": 64,
+      "sessionId": 0,
+      "sequence": 142,
+      "result": 285,
+      "utc": "2026-09-07T08:29:20.8061966Z",
+      "runtime": "4.0.30319.42000",
+      "lateResult": 0
+    },
+    "site": "FxDbgStage34-x64",
+    "url": "http://127.0.0.1:58341/health.aspx",
+    "webHealth": {
+      "kind": "FxDbg-stage3-4-environment",
+      "pid": 68324,
+      "bits": 64,
+      "runtime": "4.0.30319.42000",
+      "appDomainId": 2,
+      "shadowCopy": true,
+      "assemblyPath": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\Temporary ASP.NET Files\\root\\8dc1cb62\\5e2fb4d4\\assembly\\dl3\\171ae654\\e70e7c44_a13edd01\\Fx40.Environment.Web.dll",
+      "originalAssembly": "file:///C:/ProgramData/FxDbgAgent/Stage3-4/web-x64/bin/Fx40.Environment.Web.DLL",
+      "result": 85,
+      "lateResult": 0,
+      "lifecycleResult": 0,
+      "activeHolds": 0,
+      "domains": {},
+      "lateLoaded": false
+    }
+  }
+]

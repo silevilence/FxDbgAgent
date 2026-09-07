@@ -1,0 +1,10 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  AclAudit -> C:\code\dotnet\FxDbgAgent\artifacts\stage3-4-validation\acl-audit\bin\Debug\net10.0-windows\AclAudit.dll
+C:\code\dotnet\FxDbgAgent\artifacts\stage3-4-validation\acl-audit\bin\Debug\net10.0-windows\AclAudit.dll (.NETCoreApp,Version=v10.0)的测试运行
+总共 1 个测试文件与指定模式相匹配。
+
+已通过! - 失败:     0，通过:     1，已跳过:     0，总计:     1，持续时间: 287 ms - AclAudit.dll (net10.0)
+
+附件:
+  C:\code\dotnet\FxDbgAgent\artifacts\stage3-4-validation\coverage-acl-a0-final\1db35ee1-cb40-46e1-adeb-0822aaf207b6\silev_SILSURFACE10_2026-09-07.16_26_16.cobertura.xml

@@ -1,0 +1,76 @@
+{
+  "outcomes": [
+    {
+      "expected": 0,
+      "name": "environment-preflight",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\environment-preflight.log"
+    },
+    {
+      "expected": 0,
+      "name": "environment-install-Debug",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\environment-install-Debug.log"
+    },
+    {
+      "expected": 0,
+      "name": "environment-verify-Debug",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\environment-verify-Debug.log"
+    },
+    {
+      "expected": 1,
+      "name": "environment-delayed-remove-Debug",
+      "exitCode": 1,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\environment-delayed-remove-Debug.log"
+    },
+    {
+      "expected": 0,
+      "name": "environment-remove-Debug",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\environment-remove-Debug.log"
+    },
+    {
+      "expected": 0,
+      "name": "environment-install-Release",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\environment-install-Release.log"
+    },
+    {
+      "expected": 0,
+      "name": "environment-verify-Release",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\environment-verify-Release.log"
+    },
+    {
+      "expected": 1,
+      "name": "environment-delayed-remove-Release",
+      "exitCode": 1,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\environment-delayed-remove-Release.log"
+    },
+    {
+      "expected": 0,
+      "name": "environment-remove-Release",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\environment-remove-Release.log"
+    },
+    {
+      "expected": 197,
+      "name": "environment-interrupted",
+      "exitCode": 197,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\environment-interrupted.log"
+    },
+    {
+      "expected": 0,
+      "name": "environment-recover-interrupted",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\environment-recover-interrupted.log"
+    }
+  ],
+  "atUtc": "2026-09-07T07:41:36.5228526+00:00",
+  "passed": true,
+  "configurations": [
+    "Debug",
+    "Release"
+  ]
+}

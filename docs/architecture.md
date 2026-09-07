@@ -152,3 +152,11 @@
 新增可选 `FxDbg.DapHost`，仅通过 `DebugSessionService` 调用现有 Host/Engine。DAP 层负责 Content-Length stdio、初始化/配置状态、整数引用及编辑器事件，不接触 COM、ClrDebug 或 PDB 读取实现。VS Code/Cursor 扩展只启动 DAP 进程。共享Host保护只读观察取消：调用方立即返回，实际读取在原期限内收尾，原并发名额持有到完成；不会因编辑器取消过时栈刷新而关闭正在运行的会话。
 
 Service/IIS 附加增强（3-4）按本轮用户决定跳过，不改变权限、安全范围或部署环境。没有推翻需求§16的决策。
+
+## Service/IIS增量实现（2026-09-07）
+
+用户随后授权实施3-4a～3-4f及本机测试环境，上节跳过结论仅属于2026-09-06。附加继续复用同一Host/Engine：Host先按目标实际位数路由，对必要的跨身份查询和CLR附加使用有界SeDebugPrivilege作用域并恢复原令牌状态；启动Engine时不继承临时权限调整。Engine保存原目标进程的同步句柄，清理不依赖重新打开可能复用的PID。
+
+IIS业务模块通过实际加载路径定位Windows PDB；校验部署DLL与实际影子副本的身份后，再尝试对应符号文件。符号读取失败按现有调度轮询重试；动态模块、多域卸载和worker回收复用原断点、域身份及会话生命周期。旧worker退出后必须显式附加新PID，不自动转移调试会话。
+
+Service/IIS测试资源由独立清单管理，记录身份、目录ACL、配置基线及进程实例；移除须确认SCM/WAS资源与记录进程均退出。调试协议仍只有stdio/Named Pipe，夹具HTTP仅绑定回环地址；未增加求值、状态修改、附加目标终止或远程调试能力，没有推翻需求§16决策。操作流程与验收依据见[Service/IIS指南](service-iis.md)和[本轮审核](validation/stage3-4-final-review.md)。

@@ -1,5 +1,7 @@
 # 阶段3可用性增强验收
 
+> 本文主体保留2026-09-06的历史范围。2026-09-07已完成3-4a～3-4f及阶段3全部Debug/Release回归，最新结论见文末补充。
+
 范围为用户确认的阶段3-1 → 3-2 → 3-3 → 3-5，阶段3-4明确跳过且保持原地未勾选。本轮全部变更仅本地提交，未推送。准备确认独立提交为 `63ef4e7`；最终实现及验收脚本版本为 `b9d779ae97d06c56e91ab53aa1933b3a3c275897`。
 
 ## 交付
@@ -58,3 +60,9 @@ $env:FXDBG_DEBUGGERS_DIRECTORY = Join-Path $PWD 'artifacts/windows-debuggers'
 DAP成品为 `artifacts/dap/Release/` 完整目录和 `artifacts/dap/fxdbg-0.1.0.vsix`，使用说明见[配置文档](../dap.md)。MCP入口与13个工具保持兼容，新增可选参数与归属字段。真实编辑器验收为VS Code；Cursor交付共用扩展，未冒充Cursor实测。
 
 不提供求值、变量修改、条件断点、HTTP/远程调试；附加目标不能终止。3-4的Service/IIS、权限与影子复制仍未实施或验收。本轮通过只覆盖明确确认的四项任务。
+
+## 2026-09-07完整阶段3补充验收
+
+实现`a0b4a2c6851b25414d247da75bc0bff755eccea5`的完整Debug/Release回归于08:23:55Z通过，新增真实Service/IIS的权限、符号、动态模块/多域/回收矩阵，并重新执行3-1/2/3/5、真实VS Code及全部阶段2/1/0。269项输入前后一致，监督记录无超时或强制清理，自有验收资源已恢复/移除。单元测试每配置103项；Service/IIS入口每配置16项MCP/CLI、4项DAP及4项真实VS Code。
+
+当前阶段3全部完成；上文跳过结论不再代表现状。完整命令、环境版本、独立审核、覆盖率和机器证据见[Service/IIS总验收](stage3-4-service-iis.md)、[完成审核](stage3-4-final-review.md)及[本轮证据](stage3-4-final-evidence/README.md)。旧分页性能和外部Agent记录仍标识其原批次，不冒充本轮重新测量。
