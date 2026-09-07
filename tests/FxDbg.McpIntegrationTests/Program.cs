@@ -5,6 +5,11 @@ using ModelContextProtocol.Client;
 try
 {
 string bundle = Path.GetFullPath(args[0]);
+if (args.Length > 1 && args[1] == "iis-lifecycle")
+{
+    await IisLifecycleSuite.Run(bundle, Path.GetFullPath(args[2]), args[3], Path.GetFullPath(args[4]));
+    return 0;
+}
 if (args.Length > 1 && args[1] == "iis")
 {
     await IisSuite.Run(bundle, Path.GetFullPath(args[2]), args[3], Path.GetFullPath(args[4]));

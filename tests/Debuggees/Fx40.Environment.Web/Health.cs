@@ -15,6 +15,7 @@ namespace FxDbg.Debuggees.EnvironmentSetup
         {
             string action = HttpContext.Current.Request.QueryString["action"];
             int lateResult = 0;
+            int lifecycleResult = Lifecycle.Execute(action);
             if (action == "late")
             {
                 Assembly late = Assembly.LoadFrom(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "late", "Fx40.Environment.Late.dll"));
@@ -35,6 +36,9 @@ namespace FxDbg.Debuggees.EnvironmentSetup
                     originalAssembly = assembly.CodeBase,
                     result = DoWork(42),
                     lateResult,
+                    lifecycleResult,
+                    activeHolds = Lifecycle.ActiveHolds,
+                    domains = Lifecycle.Snapshot(),
                     lateLoaded = AppDomain.CurrentDomain.GetAssemblies().Any(item => item.GetName().Name == "Fx40.Environment.Late")
                 });
             }

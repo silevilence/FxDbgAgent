@@ -161,7 +161,7 @@ internal static class ServiceSuite
         var output=process.StandardOutput.ReadToEndAsync(token); var error=process.StandardError.ReadToEndAsync(token);
         try { await process.WaitForExitAsync(token); }
         finally { if(!process.HasExited) process.Kill(); }
-        ObservationSuite.Require(process.ExitCode==0,$"Fixture command {Path.GetFileName(exe)} failed: {await error}");
+        ObservationSuite.Require(process.ExitCode==0,$"Fixture command {Path.GetFileName(exe)} failed ({process.ExitCode}): {await output} {await error}");
         return await output;
     }
     private static async Task CliSmoke(string root,string configuration,int pid,string source,int line,CancellationToken token)

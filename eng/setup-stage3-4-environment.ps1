@@ -298,7 +298,7 @@ try {
                     Copy-Item -Destination $resource.serviceRoot
                 Get-ChildItem -LiteralPath (Join-Path $repoRoot "tests/Debuggees/Fx40.Environment.Web/bin/$Configuration/net40") -File |
                     Copy-Item -Destination $bin
-                foreach ($file in @('health.aspx','web.config')) {
+                foreach ($file in @('health.aspx','late.aspx','web.config')) {
                     Copy-Item -LiteralPath (Join-Path $repoRoot "tests/Debuggees/Fx40.Environment.Web/$file") -Destination $resource.webRoot
                 }
                 foreach ($targetRoot in @($resource.serviceRoot,$resource.webRoot)) {
