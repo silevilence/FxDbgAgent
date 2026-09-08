@@ -65,11 +65,22 @@ internal static class ExpressionNumbers
     }
     internal static object Abs(object? value)
     {
+        // Intrinsics with an exact overload do not use binary arithmetic promotion.
+        if (value is sbyte narrow) return Math.Abs(narrow);
+        if (value is short small) return Math.Abs(small);
         NumberKind kind = Kind(value);
         if (kind is NumberKind.UInt or NumberKind.ULong) throw EvaluationBudget.TypeError();
         if (kind == NumberKind.Float) return Math.Abs((float)value!);
         if (kind == NumberKind.Double) return Math.Abs((double)value!);
         return Box(Math.Abs(Convert.ToDecimal(Primitive(value!), CultureInfo.InvariantCulture)), kind);
+    }
+    internal static object MinMax(bool minimum, object? left, object? right)
+    {
+        if (left is sbyte a && right is sbyte b) return minimum ? Math.Min(a,b) : Math.Max(a,b);
+        if (left is byte c && right is byte d) return minimum ? Math.Min(c,d) : Math.Max(c,d);
+        if (left is short e && right is short f) return minimum ? Math.Min(e,f) : Math.Max(e,f);
+        if (left is ushort g && right is ushort h) return minimum ? Math.Min(g,h) : Math.Max(g,h);
+        return Binary(minimum ? "min" : "max", left, right);
     }
     private static object Box(decimal value, NumberKind kind)
     {

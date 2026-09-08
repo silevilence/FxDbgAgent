@@ -7,5 +7,6 @@
   {"name":"false","condition":"false && missing","stops":[]},
   {"name":"nonboolean","condition":"iteration","stops":[1],"diagnostic":true},
   {"name":"error","condition":"1 / 0 == iteration","stops":[1],"diagnostic":true},
-  {"name":"getter","condition":"node.Getter > 0","stops":[1],"diagnostic":true}
+  {"name":"getter","condition":"node.Getter > 0","stops":[1],"diagnostic":true},
+  {"name":"small-overflow","condition":"Math.Abs(node.Small) < 0","stops":[1],"diagnostic":true}
 ]

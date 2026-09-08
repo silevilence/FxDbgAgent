@@ -24,7 +24,8 @@ internal static partial class Program
             ("unconditional",null,null,new[]{1,2,3,4,5,6},false),("exact",null,"=3",new[]{3},false),
             ("threshold",null,">=3",new[]{3,4,5,6},false),("expression","iteration % 2 == 0 && node.Value == 7",null,new[]{2,4,6},false),
             ("combined","iteration % 2 == 0",">=3",new[]{4,6},false),("false","false && missing",null,Array.Empty<int>(),false),
-            ("nonboolean","iteration",null,new[]{1},true),("error","1 / 0 == iteration",null,new[]{1},true),("getter","node.Getter > 0",null,new[]{1},true)
+            ("nonboolean","iteration",null,new[]{1},true),("error","1 / 0 == iteration",null,new[]{1},true),("getter","node.Getter > 0",null,new[]{1},true),
+            ("small-overflow","Math.Abs(node.Small) < 0",null,new[]{1},true)
         };
         foreach(var test in cases)
         {

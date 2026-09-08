@@ -9,6 +9,31 @@ namespace FxDbg.UnitTests.Model;
 
 public sealed class RestrictedExpressionTests
 {
+    [Fact]
+    public void Math_exact_small_integer_overloads_preserve_type_and_overflow()
+    {
+        foreach (object number in new object[] { (sbyte)7, (byte)7, (short)7, (ushort)7 })
+        {
+            foreach (string operation in new[] { "Math.Min(value,value)", "Math.Max(value,value)" })
+            {
+                var result = Evaluate(operation, (_,_)=>new ExpressionValue(number));
+                Assert.Equal(number.GetType(),result.Scalar!.GetType()); Assert.Equal(number,result.Scalar);
+            }
+        }
+        foreach (object number in new object[] { (sbyte)-7, (short)-7 })
+        {
+            var result = Evaluate("Math.Abs(value)",(_,_)=>new ExpressionValue(number));
+            Assert.Equal(number.GetType(),result.Scalar!.GetType()); Assert.Equal("7",result.Variable.Format(10));
+        }
+        foreach (object minimum in new object[] { sbyte.MinValue, short.MinValue })
+            Assert.Equal(FxDbgErrorCode.ExpressionArithmeticError,Assert.Throws<FxDbgException>(
+                ()=>Evaluate("Math.Abs(value)",(_,_)=>new ExpressionValue(minimum))).Code);
+        foreach (object number in new object[] { (byte)7, (ushort)7, (char)7 })
+            Assert.IsType<int>(Evaluate("Math.Abs(value)",(_,_)=>new ExpressionValue(number)).Scalar);
+        Assert.IsType<int>(Evaluate("Math.Min(a,b)",(name,_)=>new ExpressionValue(name=="a"?(object)(sbyte)1:(short)2)).Scalar);
+        Assert.IsType<int>(Evaluate("Math.Max(value,value)",(_,_)=>new ExpressionValue('a')).Scalar);
+    }
+
     private static ExpressionValue Evaluate(string source, Func<string, EvaluationBudget, ExpressionValue>? resolve = null, EvaluationBudget? budget = null)
     {
         using EvaluationBudget? owned = budget is null ? new EvaluationBudget(1000) : null;

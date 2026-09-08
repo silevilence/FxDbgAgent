@@ -7,6 +7,7 @@ namespace FxDbg.Debuggees
     public sealed class ConditionalNode
     {
         public int Value = 7;
+        public short Small = short.MinValue;
         public int Getter { get { ConditionalBreakpointScenarios.FormattingCalls++; return Value; } }
         public override string ToString() { ConditionalBreakpointScenarios.FormattingCalls++; return "side effect"; }
     }

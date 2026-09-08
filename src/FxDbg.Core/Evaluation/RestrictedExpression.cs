@@ -81,7 +81,7 @@ public sealed class RestrictedExpression
                 switch (node.Text)
                 {
                     case "Math.Abs": RequireCount(values, 1); return new ExpressionValue(ExpressionNumbers.Abs(Scalar(values[0])));
-                    case "Math.Min": case "Math.Max": RequireCount(values, 2); return new ExpressionValue(ExpressionNumbers.Binary(node.Text == "Math.Min" ? "min" : "max", Scalar(values[0]), Scalar(values[1])));
+                    case "Math.Min": case "Math.Max": RequireCount(values, 2); return new ExpressionValue(ExpressionNumbers.MinMax(node.Text == "Math.Min", Scalar(values[0]), Scalar(values[1])));
                     case "String.IsNullOrEmpty": RequireCount(values, 1); return new ExpressionValue((object)string.IsNullOrEmpty(String(values[0])));
                     case "String.Equals": RequireCount(values, 2); return new ExpressionValue((object)string.Equals(String(values[0]), String(values[1]), StringComparison.Ordinal));
                     case "String.Concat": RequireCount(values, 2); return Concat(values[0], values[1], budget);

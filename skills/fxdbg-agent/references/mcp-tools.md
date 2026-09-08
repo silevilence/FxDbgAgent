@@ -46,6 +46,8 @@ debug_evaluate在指定当前帧解释表达式，线程由frameId确定；可�
 
 这是C#的明确子集：小整数/char算术提升int，uint与有符号整数按long提升，ulong与有符号整数混合拒绝（不实现常量隐式转换），float/double按基础提升，整数检查溢出，整数除法向零截断。十进制整数字面量无后缀依次选择int/long/ulong，支持u/l/ul、浮点f/d与指数；不支持十六进制、decimal、指针、强制转换、位运算、条件运算符或完整C#重载选择。字符串字面量支持引号、反斜杠及n/r/t/0转义；计算使用完整原始值，不用显示截断值。
 
+Math固有操作优先保留已支持的精确小整数重载：Abs(sbyte/short)保留返回类型且最小值溢出；Min/Max的同型sbyte/byte/short/ushort保留类型。其余使用上述基础提升规则，Abs(byte/ushort/char)返回int，Min/Max(char,char)及混合小整数按基础提升。这是解释器明确的子集，不声称与完整C#重载解析相同。
+
 输入4096个UTF-16代码单元，最多1024语法节点、32层、10000解释步骤、1024次值读取；单字符串32768、累计中间字符串65536个代码单元，超限拒绝，不能截断后继续计算。evaluationTimeoutMs包含Engine排队、解析、读取和计算；timeoutMs仍是Host调用期限。取消观察请求可先返回，后台只读工作在原期限内收尾；不会为求值Continue或使帧失效。不可中断原生COM故障沿用隔离清理，不能承诺此类故障后继续或强杀Engine后目标存活。
 
 错误分类为expression_syntax_error、expression_forbidden、expression_type_error、expression_name_not_found（包括未找到字段的Getter请求）、expression_index_out_of_range、expression_arithmetic_error、expression_limit_exceeded；上下文/读取/期限继续使用invalid_session_state、frame_not_found、value_unavailable、value_optimized_away、operation_timed_out/cancelled。错误不回显表达式、值或内部堆栈。正常结果固定name=result，对象referenceId仅在当前停止有效；恢复后重新取帧。求值失败先查status，修正表达式或预算后重试，无需额外Continue。

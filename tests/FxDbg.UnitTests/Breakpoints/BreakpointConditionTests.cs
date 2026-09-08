@@ -9,6 +9,14 @@ namespace FxDbg.UnitTests.Breakpoints;
 
 public sealed class BreakpointConditionTests
 {
+    [Fact]
+    public void Small_integer_Abs_overflow_fails_stop_instead_of_hiding_the_hit()
+    {
+        var policy=new BreakpointCondition("Math.Abs(value) < 0");
+        Assert.True(policy.ShouldStop(1,(parsed,budget)=>parsed.Evaluate((_,_)=>new ExpressionValue(short.MinValue),budget),out var diagnostic));
+        Assert.Contains("expression_arithmetic_error",diagnostic);
+    }
+
     [Theory]
     [InlineData(null, null, "1,2,3,4,5")]
     [InlineData(null, "=3", "3")]
