@@ -4,6 +4,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'validation-reuse.ps1')
 $repoRoot = Split-Path -Parent $PSScriptRoot
 
 function Invoke-Engine {
@@ -53,10 +54,10 @@ function Assert-Rejection {
 
 Push-Location $repoRoot
 try {
-    dotnet build FxDbg.sln --configuration $Configuration
+    & (Join-Path $PSScriptRoot 'validation-dotnet.ps1') build FxDbg.sln --configuration $Configuration
     if ($LASTEXITCODE -ne 0) { throw 'Solution build failed.' }
 
-    dotnet test tests/FxDbg.UnitTests/FxDbg.UnitTests.csproj `
+    & (Join-Path $PSScriptRoot 'validation-dotnet.ps1') test tests/FxDbg.UnitTests/FxDbg.UnitTests.csproj `
         --configuration $Configuration `
         --no-build `
         --filter 'FullyQualifiedName~PeArchitectureDetectorTests|FullyQualifiedName~EngineProcessHostTests'

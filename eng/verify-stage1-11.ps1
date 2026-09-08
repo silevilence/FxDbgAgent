@@ -1,5 +1,6 @@
 param([ValidateSet('Debug', 'Release')][string]$Configuration = 'Debug')
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'validation-reuse.ps1')
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $cliPath = Join-Path $repoRoot "src/FxDbg.Cli/bin/$Configuration/net10.0-windows/fxdbg.dll"
 function Invoke-FxCli([string[]]$CliArguments) {
@@ -17,9 +18,9 @@ function Process-FromId([int]$ProcessId) {
 }
 Push-Location $repoRoot
 try {
-    dotnet build FxDbg.sln --configuration $Configuration
+    & (Join-Path $PSScriptRoot 'validation-dotnet.ps1') build FxDbg.sln --configuration $Configuration
     if ($LASTEXITCODE -ne 0) { throw 'Build failed.' }
-    dotnet test tests/FxDbg.UnitTests/FxDbg.UnitTests.csproj --configuration $Configuration --no-build --no-restore --filter FullyQualifiedName~CliCommandTests
+    & (Join-Path $PSScriptRoot 'validation-dotnet.ps1') test tests/FxDbg.UnitTests/FxDbg.UnitTests.csproj --configuration $Configuration --no-build --no-restore --filter FullyQualifiedName~CliCommandTests
     if ($LASTEXITCODE -ne 0) { throw 'CLI parser tests failed.' }
     foreach ($architecture in @('x86','x64')) {
         $name = if ($architecture -eq 'x86') { 'Fx40.ModuleLifecycle.x86' } else { 'Fx40.ModuleLifecycle' }

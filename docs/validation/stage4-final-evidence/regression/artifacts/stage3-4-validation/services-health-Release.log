@@ -1,3 +1,0 @@
-Both Service architectures and both IIS workers are healthy, with CLR v4 and IIS shadow copying.
-
-Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=

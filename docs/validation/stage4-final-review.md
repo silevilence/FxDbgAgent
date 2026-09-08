@@ -24,11 +24,11 @@
 | Standards | 硬违反/阻塞 0，非阻塞维护建议 2 | 数值修复无新增阻塞，维护建议保留 |
 | Spec | 🟠 P2 阻塞 1 | 已修复并独立复核关闭，遗留阻塞 0 |
 
-🟠 P2 完全采纳：小整数 Math 重载原先错误地统一提升为 int，使 `Math.Abs(short.MinValue)` 返回 32768，条件断点可能静默跳过。现在精确匹配 sbyte/short 的 Abs 及同类型小整数 Min/Max，保留返回类型与溢出；其他已声明的基础提升边界同步文档和随包副本，不承诺完整 C# 重载解析。新增两项单元反例先失败再通过，相关 109 项通过；真实 `small-overflow` 条件验证算术错误保守停止及随后恢复。证据为 [红灯日志](stage4-final-evidence/math-red.log)、[绿灯日志](stage4-final-evidence/math-green.log) 和最终条件矩阵。
+🟠 P2 完全采纳：小整数 Math 重载原先错误地统一提升为 int，使 `Math.Abs(short.MinValue)` 返回 32768，条件断点可能静默跳过。现在精确匹配 sbyte/short 的 Abs 及同类型小整数 Min/Max，保留返回类型与溢出；其他已声明的基础提升边界同步文档和随包副本，不承诺完整 C# 重载解析。新增两项单元反例先失败再通过，相关 109 项通过；真实 `small-overflow` 条件验证算术错误保守停止及随后恢复。证据为 [红灯日志（原始归档）](raw-evidence.md)、[绿灯日志（原始归档）](raw-evidence.md) 和最终条件矩阵。
 
 🟡 两项维护建议本轮不采纳重构：三个验收脚本的输入/监督封装重复，以及 BreakpointManager 多处复制断点字段。当前没有行为差异或遗漏，后续可提取公共操作；本轮不扩大阻塞修复范围。不将这两项写成已修复或“零发现”。
 
-🟠 全回归另发现随包文档同步阻塞：主文档与 workflow 副本的 4-2/4-3 段落分别写了不同摘要，技能安装的逐字哈希检查失败。完全采纳修复，`6f497bf` 将主文档原样同步至副本；技能安装及独立 Agent 证据检查复验通过，两位审核代理补审均无阻塞，见 [复验日志](stage4-final-evidence/skill-resync.log)。此提交仅改一个 Markdown 副本，其相对于数值修复提交的历史差异见 [差异证明](stage4-final-evidence/documentation-only-fix.json)。
+🟠 全回归另发现随包文档同步阻塞：主文档与 workflow 副本的 4-2/4-3 段落分别写了不同摘要，技能安装的逐字哈希检查失败。完全采纳修复，`6f497bf` 将主文档原样同步至副本；技能安装及独立 Agent 证据检查复验通过，两位审核代理补审均无阻塞，见 [复验日志（原始归档）](raw-evidence.md)。此提交仅改一个 Markdown 副本，其相对于数值修复提交的历史差异见 [差异证明](stage4-final-evidence/documentation-only-fix.json)。
 
 🟠 完整回归第二次发现卸载期间分离阻塞：排队的 UnloadModule/ExitAppDomain 在清理路径未更新模块与断点状态，导致失效原生绑定、分离超时或目标后续 AppDomain 卸载失败。完全采纳修复，提交 `2aa8a9d` 复用既有卸载处理、等待相关域完成卸载及短暂卸载静默期，并在等待 CLR 进展前成对释放自身 Stop；连续异常不会延长该期限。独立复核发现的候选修复边界均已关闭。最终生产实现通过 100 次原生双配置双架构压力、40 次 MCP 双架构多域压力，以及四种配置/架构的持续异常检查；详见 [分离修复报告](stage4-detach-recovery.md)。
 
@@ -59,7 +59,7 @@
 
 唯一没有插桩条目的变更生产文件为枚举 `FxDbgErrorCode.cs`，其变更可执行行数为 0；没有借此排除未测的可执行改动。详细分母、未覆盖变更行及函数见 [汇总 JSON](stage4-final-evidence/coverage-changes.json)、[文件 CSV](stage4-final-evidence/coverage-files.csv) 和 [全部未完全覆盖生产函数 CSV](stage4-final-evidence/uncovered-methods.csv)。后者按函数全部测量行计算，不能与变更行分母混用；包括原生元数据失败转换、取消防御路径及 CLI 帮助分支等未覆盖路径。
 
-三份最终原始 XML 的路径、长度、SHA256 与提交固定在 [输入清单](stage4-final-evidence/coverage-inputs.json)，压缩原件见 [XML 归档](stage4-final-evidence/coverage-xml.zip)。汇总按文件/源码行合并命中，不将不同程序集或配置重复计行；全部重新采集于最终分离修复提交，没有混入更早版本的采集。可使用 [汇总脚本](stage4-final-evidence/summarize-coverage.ps1) 重算。完整采集日志见 `stage4-final-evidence/coverage-logs/`。
+三份最终原始 XML 的路径、长度、SHA256 与提交固定在 [输入清单](stage4-final-evidence/coverage-inputs.json)，压缩原件见 [XML 归档（原始归档）](raw-evidence.md)。汇总按文件/源码行合并命中，不将不同程序集或配置重复计行；全部重新采集于最终分离修复提交，没有混入更早版本的采集。可使用 [汇总脚本](stage4-final-evidence/summarize-coverage.ps1) 重算。完整采集日志见 `stage4-final-evidence/coverage-logs/`。
 
 ## 管理员全回归与恢复
 

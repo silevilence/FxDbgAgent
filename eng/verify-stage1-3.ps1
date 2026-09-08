@@ -4,13 +4,14 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'validation-reuse.ps1')
 $repoRoot = Split-Path -Parent $PSScriptRoot
 
 Push-Location $repoRoot
 try {
     & (Join-Path $PSScriptRoot 'verify-stage1-2.ps1') -Configuration $Configuration
 
-    dotnet test tests/FxDbg.UnitTests/FxDbg.UnitTests.csproj `
+    & (Join-Path $PSScriptRoot 'validation-dotnet.ps1') test tests/FxDbg.UnitTests/FxDbg.UnitTests.csproj `
         --configuration $Configuration `
         --no-build `
         --filter 'FullyQualifiedName~SingleThreadCommandSchedulerTests'

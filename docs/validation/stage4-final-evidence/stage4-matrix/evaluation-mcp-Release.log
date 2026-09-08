@@ -1,4 +1,0 @@
-PASS: MCP evaluation x86 Release, values, paging, rejection, stale frame, state oracle.
-PASS: MCP evaluation x64 Release, values, paging, rejection, stale frame, state oracle.
-
-Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=

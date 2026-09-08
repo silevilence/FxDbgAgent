@@ -1,5 +1,6 @@
 param([ValidateSet('Debug','Release')][string]$Configuration, [string]$NodePath='node', [string]$CodePath='code')
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'validation-reuse.ps1')
 $repoRoot=Split-Path -Parent $PSScriptRoot
 $report=Join-Path $repoRoot 'artifacts/stage3-4-validation'
 $null=New-Item -ItemType Directory -Path $report -Force
@@ -20,7 +21,9 @@ $inputs=@(Get-Inputs)
 $inputs | Set-Content -LiteralPath (Join-Path $report 'stage3-4-inputs.sha256') -Encoding utf8
 $outcomes=[Collections.Generic.List[object]]::new()
 $passed=$false
+$validationRun = Enter-ValidationRun
 try {
+    Initialize-ValidationBuilds $validationRun $Configuration
     foreach($task in @('a','b','c','d','e')) {
         $arguments=@('-NoProfile','-File',(Join-Path $PSScriptRoot "verify-stage3-4$task.ps1"))
         if($Configuration) { $arguments+=@('-Configuration',$Configuration) }
@@ -28,14 +31,16 @@ try {
         if($task -in @('b','d')) { $arguments+='-CollectCoverage' }
         $log=Join-Path $report "stage3-4$task.log"
         Write-Host "Running stage3-4$task..."
-        $exit=[FxDbg.Validation.ValidationProcess]::Run($shell,$arguments,$repoRoot,$log,1800)
+        $exit=(Invoke-ValidationProcess -Executable ($shell) -Arguments ($arguments) -Directory ($repoRoot) -Log ($log) -Seconds (1800))
         $outcomes.Add(@{task="3-4$task";exitCode=$exit;log=$log})
         if($exit -ne 0) { throw "Stage3-4$task failed ($exit): $log" }
     }
     if(Compare-Object $inputs @(Get-Inputs)) { throw 'Inputs changed during Service/IIS validation; rerun.' }
+    Confirm-ValidationRun $validationRun
     $passed=$true
 }
 finally {
+    Exit-ValidationRun $validationRun
     @{passed=$passed;configuration=$(if($Configuration){$Configuration}else{'Debug+Release'});skipped=@();
         atUtc=[DateTimeOffset]::UtcNow.ToString('o');identity=[Security.Principal.WindowsIdentity]::GetCurrent().Name;
         os=[Environment]::OSVersion.VersionString;outcomes=@($outcomes.ToArray())} |

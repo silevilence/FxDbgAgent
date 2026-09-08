@@ -1,4 +1,0 @@
-Paging x86 Release: cold=28.2ms P95=25.5ms max=38.4ms, graph=101101.
-Paging x64 Release: cold=35.2ms P95=16.7ms max=23.6ms, graph=101101.
-
-Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=

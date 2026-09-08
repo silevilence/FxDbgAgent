@@ -14,3 +14,35 @@ TestResults/
 
 # Logs
 *.log
+*.log.*
+
+# Validation: keep reports, small summaries, hashes and reproducible source only.
+# Existing frozen summaries remain tracked; new raw evidence belongs in artifacts/.
+/docs/validation/**/*-evidence/**
+!/docs/validation/**/*-evidence/**/
+!/docs/validation/**/*-evidence/**/*.md
+!/docs/validation/**/*-evidence/**/*.cs
+!/docs/validation/**/*-evidence/**/*.csproj
+!/docs/validation/**/*-evidence/**/*.ps1
+!/docs/validation/**/*-evidence/**/*.sha256
+!/docs/validation/**/*-evidence/**/*-result.json
+!/docs/validation/**/*-evidence/**/result.json
+!/docs/validation/**/*-evidence/**/summary.json
+!/docs/validation/**/*-evidence/**/run-summary.json
+!/docs/validation/**/*-evidence/**/manifest.json
+!/docs/validation/**/*-evidence/**/coverage-inputs.json
+!/docs/validation/**/*-evidence/**/coverage-changes.json
+!/docs/validation/**/*-evidence/**/coverage-files.csv
+!/docs/validation/**/*-evidence/**/uncovered-methods.csv
+# These five files are frozen fixtures read by eng/verify-agent-evidence.ps1.
+!/docs/validation/stage2-3-agent-evidence/agent-run.json
+!/docs/validation/stage2-3-agent-evidence/calls.jsonl
+!/docs/validation/stage2-3-agent-evidence/ready.json
+!/docs/validation/stage2-3-agent-evidence/result.json
+!/docs/validation/stage2-3-agent-evidence/decisions.md
+# Never reopen generated directories through the source/summary exceptions above.
+/docs/validation/**/bin/
+/docs/validation/**/obj/
+/docs/validation/**/artifacts/
+/docs/validation/**/TestResults/
+/docs/validation/**/node_modules/

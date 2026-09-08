@@ -1,3 +1,0 @@
-Removed owned services, sites, pools and deployment files. Windows components are retained; see features-before/after.json.
-
-Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=

@@ -1,3 +1,0 @@
-PASS: detach drains queued UnloadModule and invalidates native bindings (64 bit).
-PASS: detach drains queued ExitAppDomain and invalidates native bindings (64 bit).
-PASS: detach drains queued DelayedUnloadModule and invalidates native bindings (64 bit).

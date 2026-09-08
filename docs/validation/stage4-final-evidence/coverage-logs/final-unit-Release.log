@@ -1,7 +1,0 @@
-C:\code\dotnet\FxDbgAgent\tests\FxDbg.UnitTests\bin\Release\net10.0-windows\FxDbg.UnitTests.dll (.NETCoreApp,Version=v10.0)的测试运行
-总共 1 个测试文件与指定模式相匹配。
-
-已通过! - 失败:     0，通过:   233，已跳过:     0，总计:   233，持续时间: 25 s - FxDbg.UnitTests.dll (net10.0)
-
-附件:
-  C:\code\dotnet\FxDbgAgent\artifacts\stage4-coverage\accepted-unit-Release\bfdb057b-8a74-47b6-9f51-4f9b19e505c1\silev_SILSURFACE10_2026-09-08.13_37_55.cobertura.xml

@@ -5,6 +5,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'validation-reuse.ps1')
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $artifactsRoot = Join-Path $repositoryRoot 'artifacts'
 $env:DOTNET_CLI_HOME = Join-Path $artifactsRoot 'dotnet-home'
@@ -89,7 +90,7 @@ try {
         'tests/Probes/FxDbg.ClrDebug.Probe.x64/FxDbg.ClrDebug.Probe.x64.csproj'
     )
     foreach ($probeProject in $probeProjects) {
-        & dotnet build $probeProject --configuration $Configuration --no-incremental
+        & (Join-Path $PSScriptRoot 'validation-dotnet.ps1') build $probeProject --configuration $Configuration --no-incremental
         if ($LASTEXITCODE -ne 0) {
             throw "Probe build failed for $probeProject with exit code $LASTEXITCODE."
         }

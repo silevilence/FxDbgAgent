@@ -1,5 +1,6 @@
 param([ValidateSet('Debug','Release')][string]$Configuration)
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'validation-reuse.ps1')
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $report = Join-Path $repoRoot 'artifacts/stage3-4-validation'
 $null = New-Item -ItemType Directory -Path $report -Force
@@ -19,7 +20,7 @@ $configurations = if ($Configuration) { @($Configuration) } else { @('Debug','Re
 function Run-Setup([string]$Action,[string]$Config,[string]$Name,[string[]]$Extra=@(),[int]$Expected=0) {
     $arguments = @('-NoProfile','-File',$installer,'-Action',$Action,'-Configuration',$Config,'-EnvironmentName',$environmentName,'-PortBase','58342') + $Extra
     $log = Join-Path $report "$Name.log"
-    $code = [FxDbg.Validation.ValidationProcess]::Run($shell,$arguments,$repoRoot,$log,240)
+    $code = (Invoke-ValidationProcess -Executable ($shell) -Arguments ($arguments) -Directory ($repoRoot) -Log ($log) -Seconds (240))
     $outcomes.Add(@{name=$Name;exitCode=$code;expected=$Expected;log=$log})
     if ($code -ne $Expected) { throw "$Name failed with $code; see $log" }
 }
@@ -44,15 +45,11 @@ try {
     if(-not $preflight.directoryAcl.status -or $preflight.testIdentities.Count -ne 4 -or $preflight.plannedChanges.resources.Count -ne 2) { throw 'Preflight omitted ACL, identities or planned configuration changes.' }
     foreach ($current in $configurations) {
         foreach ($project in @('Fx40.Environment.Service.x86','Fx40.Environment.Service.x64','Fx40.Environment.Web','Fx40.Environment.Late')) {
-            $code = [FxDbg.Validation.ValidationProcess]::Run('dotnet',
-                @('build',(Join-Path $repoRoot "tests/Debuggees/$project/$project.csproj"),'-c',$current,'--nologo'),
-                $repoRoot,(Join-Path $report "$project-$current-build.log"),180)
+            $code = (Invoke-ValidationProcess -Executable ('dotnet') -Arguments (@('build',(Join-Path $repoRoot "tests/Debuggees/$project/$project.csproj"),'-c',$current,'--nologo')) -Directory ($repoRoot) -Log ((Join-Path $report "$project-$current-build.log")) -Seconds (180))
             if ($code -ne 0) { throw "Build failed: $project $current" }
         }
-        $code = [FxDbg.Validation.ValidationProcess]::Run('dotnet',
-            @('test',(Join-Path $repoRoot 'tests/FxDbg.UnitTests/FxDbg.UnitTests.csproj'),'-c',$current,
-              '--filter','FullyQualifiedName~Service_and_iis_fixtures','--nologo'),
-            $repoRoot,(Join-Path $report "environment-symbols-$current.log"),180)
+        $code = (Invoke-ValidationProcess -Executable ('dotnet') -Arguments (@('test',(Join-Path $repoRoot 'tests/FxDbg.UnitTests/FxDbg.UnitTests.csproj'),'-c',$current,
+              '--filter','FullyQualifiedName~Service_and_iis_fixtures','--nologo')) -Directory ($repoRoot) -Log ((Join-Path $report "environment-symbols-$current.log")) -Seconds (180))
         if ($code -ne 0) { throw "Fixture DLL/PDB identity tests failed: $current" }
         try {
             Run-Setup 'Install' $current "environment-install-$current"

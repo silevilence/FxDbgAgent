@@ -15,6 +15,7 @@ public static class ValidationProcess
 {
     public static int Run(string executable, string[] arguments, string directory, string log, int seconds)
     {
+        var startedUtc = DateTimeOffset.UtcNow;
         var start = new ProcessStartInfo(executable) { WorkingDirectory = directory, UseShellExecute = false, CreateNoWindow = true,
             RedirectStandardOutput = true, RedirectStandardError = true };
         foreach (string argument in arguments) start.ArgumentList.Add(argument);
@@ -61,6 +62,12 @@ public static class ValidationProcess
             File.WriteAllText(log, (drained ? stdout.Result + stderr.Result : "Output pipes did not close.\n") +
                 "\nSupervisor: exit=" + exit + ", timedOut=" + timedOut + ", forcedOwnedCleanup=" + string.Join(",", forced) + "\n");
             File.WriteAllLines(log + ".processes", owned.Values.Select(x => x.Id + " " + identities[x.Id] + " exited=" + x.HasExited));
+            var completedUtc = DateTimeOffset.UtcNow;
+            File.WriteAllText(log + ".timing.json", "{\"startedUtc\":\"" + startedUtc.ToString("o") +
+                "\",\"completedUtc\":\"" + completedUtc.ToString("o") + "\",\"durationSeconds\":" +
+                (completedUtc - startedUtc).TotalSeconds.ToString("F3", System.Globalization.CultureInfo.InvariantCulture) +
+                ",\"exitCode\":" + exit + ",\"timedOut\":" + (timedOut ? "true" : "false") +
+                ",\"forcedCleanupCount\":" + forced.Count + "}");
             foreach (var child in owned.Values.Where(x => !ReferenceEquals(x, process))) child.Dispose();
             if (!drained) throw new TimeoutException("Validation output pipes did not close: " + log);
         }

@@ -62,6 +62,12 @@ FxDbg.sln
 
 ## 构建与测试
 
+- 当前全量入口：管理员64位PowerShell运行 `./eng/verify-all.ps1 -NodePath <node.exe> -CodePath <Code.exe>`，默认Debug/Release，依次覆盖阶段4-1/2/3和完整阶段3/2/1/0。不提供跳过Service/IIS的参数；阶段4变更行覆盖率门槛仍需另外采集/汇总，不由这个入口替代。
+- 全量验收使用 `eng/validation-reuse.ps1` 的**单轮复用**：`verify-all.ps1`、`verify-stage3.ps1`、`verify-stage3-4.ps1`、`verify-stage2.ps1`、`verify-stage1.ps1` 创建本轮唯一上下文，嵌套脚本继承；每个配置只强制构建一次解决方案、执行一次完整普通单元测试，MCP/DAP各发布一次，同一阶段0-1和Service/IIS覆盖率harness构建也可复用。过滤单元测试由本轮完整单元套件覆盖。独立专项未进入全量上下文时保留原执行行为。
+- 复用必须绑定本轮存活进程、输入指纹、配置、已成功完成的准备记录和产物；每次复用检查输入及产物列表/大小/时间，结束前统一核对产物SHA256。输入或产物变动直接失败，不沿用旧结果，不自动重试混合批次。禁止手动设置 `FXDBG_VALIDATION_RUN` 来使用历史结果，禁止并行运行共享同一产物目录的验收。
+- 原生/MCP/DAP/CLI/VS Code真实场景、双架构、取消/超时/故障恢复、Service/IIS安装/健康/清理和覆盖率采集仍实际执行；不得把有不同环境、参数或插桩设置的调用当成重复测试跳过。Service/IIS各专项独占环境是隔离和恢复验收的一部分。
+- 本轮准备证据位于 `artifacts/validation-runs/<runId>/`：`run.json`、准备清单、原始日志、`reuse.jsonl` 和最终 `verification.json`；复用输出须明确标记 `REUSED` 并链接原记录。`ValidationProcess` 为监督步骤写入 `.log.timing.json`，包含起止时间、墙钟耗时和失败/清理信息。父子步骤耗时有包含关系，统计时不能重复相加。
+- 2026-09-08加入上述优化时只做静态检查，按用户要求未运行测试；旧阶段验收报告不能作为优化后脚本的运行通过证据，也不能声称实测提速。
 - MVP 一键验收：`./eng/verify-stage2.ps1`，默认 Debug/Release，支持 `-Configuration Debug|Release`。包括真实 MCP、技能安装/独立 Agent 证据检查和 `eng/verify-stage1.ps1`；记录源码哈希、超时、日志及自有进程退出，任何失败不得标记通过。
 - 阶段3一键验收：管理员64位PowerShell运行 `./eng/verify-stage3.ps1 -NodePath <node.exe> -CodePath <Code.exe>`，默认Debug/Release，包含3-1/2/3/4/5、真实VS Code、VSIX及阶段2/1/0全回归；需要完整IIS/ASP.NET 4.x、Node/npm、VS Code、.NET 8/10和双架构CDB。显式 `-SkipServiceIis` 仅运行既有子集，结果列出skipped、完整passed=false；不能标记阶段3全验收通过。Service/IIS专项为 `./eng/verify-stage3-4.ps1`，使用独立资源并验证恢复，流程见 `docs/service-iis.md`。DAP发布：`./eng/publish-dap.ps1`，扩展打包：`./eng/package-extension.ps1`，配置见 `docs/dap.md`。
 - 发布 MCP：`./eng/publish-mcp.ps1 -Configuration Release`，入口为 `dotnet <发布目录>/fxdbg-mcp.dll`；必须携带相邻 `engines/` 的完整双架构依赖，不依赖当前目录。
@@ -76,6 +82,11 @@ FxDbg.sln
 
 ## 文档纪律
 
+- **Git证据保留规则**：提交人工验收/审核报告、复现步骤、固定被测提交、输入哈希、精简结果/归档清单、覆盖率汇总及必要的可复现源码。结果摘要记录通过/失败/跳过、数量、配置、环境恢复和证据定位，不嵌入完整会话快照或进程树。新增单个机器摘要以64 KiB为上限，超过应拆出原始附件；输入/归档清单可因逐文件哈希超出此限。
+- **不提交原始产物**：stdout/stderr日志、`.log.processes`、`.log.timing.json`、TRX、原始coverage/XML、ZIP、逐调用JSONL、完整变量/模块/线程/生命周期快照、重复及失败调试批次均写入被忽略的 `artifacts/` 或 `TestResults/`。`docs/validation/*-evidence/` 对新增文件默认忽略，仅对白名单中的报告、源码、哈希及摘要放行；不得用 `git add -f` 绕过这些规则归档原始日志。
+- 唯一现有日志夹具例外：`docs/validation/stage2-3-agent-evidence/` 中的 `result.json`、`calls.jsonl`、`decisions.md`、`agent-run.json`、`ready.json` 是 `eng/verify-agent-evidence.ps1` 的冻结输入，继续提交；未经同步迁移读取契约不得删除或覆盖。
+- 清理已提交的原始证据前，先制作可恢复归档、逐文件校验SHA256并留下定位清单，再删除工作树中的原文件；保留历史提交，不重写Git历史。需要长期共享的归档放外部制品存储，提交下载位置和SHA256；仅存本机时必须明确说明，不能宣称其他机器已可下载。历史原始文件恢复规则见 `docs/validation/raw-evidence.md`。
+- 清理或迁移证据时同步更新Markdown链接和复现说明，保留历史JSON结果及哈希的原始含义；不把旧报告改写为新脚本的实测通过记录。
 - 推翻需求 §16 决策之前先写 `docs/architecture.md` 的 ADR 记录，并与用户确认；不要「顺手修正」需求文档本身。
 - ROADMAP.md 的任务条目按 roadmap 流程维护；不得跳过「阶段 0 技术验证」直接开发 MCP。
 - 本文件是权威事实来源的衍生物：与需求文档冲突时先确认，再修改本文件。

@@ -1,5 +1,6 @@
 param([ValidateSet('Debug','Release')][string]$Configuration,[string]$NodePath='C:\Program Files\nodejs\node.exe')
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'validation-reuse.ps1')
 $repoRoot=Split-Path -Parent $PSScriptRoot
 $report=Join-Path $repoRoot 'artifacts/stage4-validation'
 $null=New-Item -ItemType Directory -Path $report -Force
@@ -17,7 +18,7 @@ $inputs=@(Inputs)
 $inputs | Set-Content -LiteralPath (Join-Path $report 'stage4-3-inputs.sha256')
 function Run([string]$Name,[string]$Executable,[string[]]$Arguments,[int]$Seconds=300) {
     $log=Join-Path $report "$Name.log"
-    $code=[FxDbg.Validation.ValidationProcess]::Run($Executable,$Arguments,$repoRoot,$log,$Seconds)
+    $code=(Invoke-ValidationProcess -Executable ($Executable) -Arguments ($Arguments) -Directory ($repoRoot) -Log ($log) -Seconds ($Seconds))
     $outcomes.Add(@{name=$Name;exitCode=$code;log=$log})
     Get-Content -LiteralPath $log -Tail 12 | Write-Host
     if($code -ne 0) { throw "$Name failed: $code ($log)" }

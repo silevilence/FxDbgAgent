@@ -1,4 +1,0 @@
-69032 root name=FxDbg.IntegrationTests.x86.exe started=2026-09-08T05:15:55.2795912Z exited=True
-19512 parent=69032 name=conhost.exe started=2026-09-08T05:15:55.2877983Z exited=True
-49384 parent=69032 name=Fx40.ModuleLifecycle.x86.exe started=2026-09-08T05:15:55.3674114Z exited=True
-27720 parent=69032 name=Fx40.ModuleLifecycle.x86.exe started=2026-09-08T05:15:55.9426644Z exited=True

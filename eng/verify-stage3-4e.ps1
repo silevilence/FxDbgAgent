@@ -1,5 +1,6 @@
 param([ValidateSet('Debug','Release')][string]$Configuration)
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'validation-reuse.ps1')
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $report = Join-Path $repoRoot 'artifacts/stage3-4-validation'
 $null = New-Item -ItemType Directory -Path $report -Force
@@ -10,7 +11,7 @@ $configurations = if ($Configuration) { @($Configuration) } else { @('Debug','Re
 $outcomes = [Collections.Generic.List[object]]::new()
 function Run-Check([string]$Name,[string]$Executable,[string[]]$Arguments,[int]$Seconds) {
     $log = Join-Path $report "$Name.log"
-    $exit = [FxDbg.Validation.ValidationProcess]::Run($Executable,$Arguments,$repoRoot,$log,$Seconds)
+    $exit = (Invoke-ValidationProcess -Executable ($Executable) -Arguments ($Arguments) -Directory ($repoRoot) -Log ($log) -Seconds ($Seconds))
     $outcomes.Add(@{name=$Name;exitCode=$exit;log=$log})
     if ($exit -ne 0) { throw "$Name failed ($exit): $log" }
 }

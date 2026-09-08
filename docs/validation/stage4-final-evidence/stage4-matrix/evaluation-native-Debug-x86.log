@@ -1,3 +1,0 @@
-PASS: evaluation Debug 32 bit, 15 exact results, errors, cancellation/timeout, object paging, no Continue and target state oracle.
-
-Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=

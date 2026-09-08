@@ -1,2 +1,0 @@
-MCP execution: x86, three steps, sync/async stops, exit, 100 continue/pause cycles, concurrent sessions and exception passed.
-MCP execution: x64, three steps, sync/async stops, exit, 100 continue/pause cycles, concurrent sessions and exception passed.

@@ -5,6 +5,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'validation-reuse.ps1')
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $artifactsRoot = Join-Path $repositoryRoot 'artifacts'
 $env:DOTNET_CLI_HOME = Join-Path $artifactsRoot 'dotnet-home'
@@ -31,7 +32,7 @@ function Invoke-SymbolProbe {
 Push-Location $repositoryRoot
 try {
     & ./eng/verify-stage0-1.ps1 -Configuration $Configuration
-    & dotnet build 'tests/Probes/FxDbg.Symbols.Probe/FxDbg.Symbols.Probe.csproj' --configuration $Configuration --no-incremental
+    & (Join-Path $PSScriptRoot 'validation-dotnet.ps1') build 'tests/Probes/FxDbg.Symbols.Probe/FxDbg.Symbols.Probe.csproj' --configuration $Configuration --no-incremental
     if ($LASTEXITCODE -ne 0) {
         throw "Symbol probe build failed with exit code $LASTEXITCODE."
     }

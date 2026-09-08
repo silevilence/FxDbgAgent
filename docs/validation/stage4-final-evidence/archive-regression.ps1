@@ -8,7 +8,7 @@ $status=Get-Content -LiteralPath $statusPath -Raw | ConvertFrom-Json
 if($status.status -ne 'completed' -or $status.exitCode -ne 0) { throw 'Final administrator run has not completed successfully.' }
 $startRecord=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'admin-start.json') -Raw | ConvertFrom-Json
 $started=[DateTimeOffset]::Parse($startRecord.startedUtc).UtcDateTime
-$destination=Join-Path $PSScriptRoot 'regression'
+$destination=Join-Path $RepoRoot 'artifacts/evidence-archives/stage4-final-regression'
 $null=New-Item -ItemType Directory -Path $destination -Force
 $records=[Collections.Generic.List[object]]::new()
 function Archive([IO.FileInfo]$File) {

@@ -1,5 +1,6 @@
 param([ValidateSet('Debug','Release')][string]$Configuration)
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'validation-reuse.ps1')
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $report = Join-Path $repoRoot 'artifacts/stage2-validation'
 $null = New-Item -ItemType Directory -Path $report -Force
@@ -23,13 +24,15 @@ $shell = (Get-Process -Id $PID).Path
 function Invoke-Validation([string]$Name, [string]$Executable, [string[]]$Arguments, [int]$Seconds) {
     $log = Join-Path $report "$Name.log"
     Write-Host "Running $Name (deadline ${Seconds}s)..."
-    $code = [FxDbg.Validation.ValidationProcess]::Run($Executable, $Arguments, $repoRoot, $log, $Seconds)
+    $code = (Invoke-ValidationProcess -Executable ($Executable) -Arguments ($Arguments) -Directory ($repoRoot) -Log ($log) -Seconds ($Seconds))
     Get-Content -LiteralPath $log | Write-Host
     $outcomes.Add(@{ name = $Name; exitCode = $code; log = $log })
     if ($code -ne 0) { throw "$Name failed with exit $code. See $log" }
 }
 $passed = $false
+$validationRun = Enter-ValidationRun
 try {
+    Initialize-ValidationBuilds $validationRun $Configuration
     Invoke-Validation 'stage2-3-install-evidence' $shell @('-NoProfile','-File',(Join-Path $PSScriptRoot 'verify-stage2-3.ps1')) 120
     $configurations = if ($Configuration) { @($Configuration) } else { @('Debug','Release') }
     foreach ($current in $configurations) {
@@ -41,9 +44,11 @@ try {
     if ($Configuration) { $stage1Arguments += @('-Configuration',$Configuration) }
     Invoke-Validation 'stage1-full-regression' $shell $stage1Arguments 1800
     if (Compare-Object $inputs @(Get-ValidationInputs)) { throw 'Source/build/test inputs changed during validation; rerun before marking acceptance passed.' }
+    Confirm-ValidationRun $validationRun
     $passed = $true
 }
 finally {
+    Exit-ValidationRun $validationRun
     @{ passed = $passed; configuration = $(if ($Configuration) { $Configuration } else { 'Debug+Release' }); atUtc = [DateTimeOffset]::UtcNow.ToString('o'); outcomes = @($outcomes.ToArray()) } |
         ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $report 'stage2-result.json') -Encoding utf8
 }

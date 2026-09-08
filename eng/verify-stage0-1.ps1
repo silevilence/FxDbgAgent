@@ -5,6 +5,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'validation-reuse.ps1')
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $artifactsRoot = Join-Path $repositoryRoot 'artifacts'
 $env:DOTNET_CLI_HOME = Join-Path $artifactsRoot 'dotnet-home'
@@ -12,10 +13,11 @@ $env:NUGET_PACKAGES = Join-Path $artifactsRoot 'nuget-packages'
 
 Push-Location $repositoryRoot
 try {
-    & dotnet build 'FxDbg.sln' --configuration $Configuration --no-incremental
+    & (Join-Path $PSScriptRoot 'validation-dotnet.ps1') build 'FxDbg.sln' --configuration $Configuration --no-incremental
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet build failed with exit code $LASTEXITCODE."
     }
+    if (Test-ValidationPreparation "stage0-1-$Configuration") { return }
 
     $projectNames = @(
         'Fx40.Console.x86',
@@ -87,6 +89,12 @@ try {
     }
 
     Write-Host 'Stage 0-1 verification passed: all debuggees built, all PDBs are MSF 7.00, and both WinForms windows opened.'
+    if ($env:FXDBG_VALIDATION_RUN) {
+        $evidence = Join-Path $env:FXDBG_VALIDATION_RUN "stage0-1-$Configuration.txt"
+        'Windows PDB headers, both real WinForms windows and normal exits passed.' | Set-Content -LiteralPath $evidence
+        $outputs = @($projectNames | ForEach-Object { Join-Path $repositoryRoot "tests/Debuggees/$_/bin/$Configuration" })
+        Save-ValidationPreparation "stage0-1-$Configuration" $outputs $evidence
+    }
 }
 finally {
     Pop-Location

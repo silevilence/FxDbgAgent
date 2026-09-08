@@ -1,8 +1,0 @@
-PASS: detach drains queued UnloadModule and invalidates native bindings (64 bit).
-PASS: detach drains queued ExitAppDomain and invalidates native bindings (64 bit).
-FxDbg.Core.Errors.FxDbgException: The Engine could not synchronize and detach from the target within 4 seconds. ---> System.InvalidOperationException: Detach did not complete.
-   --- 内部异常堆栈跟踪的结尾 ---
-   在 FxDbg.Interop.FrameworkDebugSession.SynchronizeAndDetach() 位置 C:\code\dotnet\FxDbgAgent\src\FxDbg.Interop\FrameworkDebugSession.cs:行号 347
-   在 FxDbg.Interop.FrameworkDebugSession.Dispose() 位置 C:\code\dotnet\FxDbgAgent\src\FxDbg.Interop\FrameworkDebugSession.cs:行号 158
-   在 FxDbg.IntegrationTests.Program.RunQueuedUnloadDetach(String root, String configuration) 位置 C:\code\dotnet\FxDbgAgent\tests\FxDbg.IntegrationTests\QueuedUnloadDetachTests.cs:行号 86
-   在 FxDbg.IntegrationTests.Program.Main(String[] args) 位置 C:\code\dotnet\FxDbgAgent\tests\FxDbg.IntegrationTests\Program.cs:行号 21

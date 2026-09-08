@@ -2,6 +2,8 @@
 
 固定基线 `41c2274c49b0e63fa7a70f96964a158e38439c4a`，最终被测实现 `2aa8a9d4067646fecf0707760980ca629312396a`，包含数值、随包文档同步与真实卸载期间分离的阻塞修复。结论与限制见 [最终报告](../stage4-final-review.md)。本目录保存最终实现的证据；逐项早期批次保存在各任务报告对应目录，不混入最终覆盖率。
 
+2026-09-08清理说明：本页下文的原始日志/进程记录和覆盖率ZIP已移入[本机归档](../raw-evidence.md)，需按说明恢复后读取或重算；精简结果、原始哈希及源码仍保留。下文的采集数量和通过结论属于原冻结批次。
+
 | 文件/目录 | 内容 |
 | --- | --- |
 | [detach-recovery/summary.json](detach-recovery/summary.json) | 分离竞态的最终压力验证与候选失败诊断，详见 [修复报告](../stage4-detach-recovery.md) |
@@ -9,9 +11,9 @@
 | [review-fixes.md](review-fixes.md) | 逐项采纳决定与验证 |
 | [regression/manifest.json](regression/manifest.json) | 最终管理员双配置全回归，293份当前批次证据及输入/恢复核对 |
 | [admin-closed.json](admin-closed.json)、[admin-exit-check.json](admin-exit-check.json) | 已授权管理员后台进程关闭及退出证据 |
-| [stage4-matrix/summary.json](stage4-matrix/summary.json) | 3 个专项的双配置完整结果，日志及进程监督记录在同目录 |
+| [stage4-matrix/summary.json](stage4-matrix/summary.json) | 3 个专项的双配置完整结果，日志及进程监督记录见原始归档 |
 | [coverage-inputs.json](coverage-inputs.json) | 最终三份 XML 的路径、长度、SHA256 和版本 |
-| [coverage-xml.zip](coverage-xml.zip) | 未修改的原始 Cobertura XML，ZIP 内为文件 basename |
+| [coverage-xml.zip（原始归档）](../raw-evidence.md) | 未修改的原始 Cobertura XML，ZIP 内为文件 basename |
 | [coverage-changes.json](coverage-changes.json) | 文件/行/函数覆盖汇总及未覆盖变更行；实际程序集记录在原始 XML |
 | [coverage-files.csv](coverage-files.csv) | 文件级变更覆盖率 |
 | [uncovered-methods.csv](uncovered-methods.csv) | 所有未完全覆盖的已测量生产函数及覆盖率 |
@@ -23,7 +25,7 @@
 
 ## 覆盖率重算
 
-将 ZIP 三个文件分别恢复到 coverage-inputs.json 的对应路径后，在仓库根目录运行：
+先按[恢复说明](../raw-evidence.md)取得原 coverage-xml.zip，将其中三个文件分别恢复到 coverage-inputs.json 的对应路径后，在仓库根目录运行：
 
 ```powershell
 ./docs/validation/stage4-final-evidence/summarize-coverage.ps1 -RepoRoot $PWD.Path
