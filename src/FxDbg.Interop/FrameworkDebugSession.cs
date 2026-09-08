@@ -262,8 +262,15 @@ public sealed partial class FrameworkDebugSession : IDisposable
 
             // CreateProcess is earlier than the CLR startup module handshake. Let that
             // callback complete before introducing a manual Stop followed by Detach.
-            if (awaitingQueuedCallback || startupModulePath is not null)
+            if (awaitingQueuedCallback || startupModulePath is not null || unloadingBreakpointDomains.Count != 0 || DateTime.UtcNow < unloadQuietDeadline)
             {
+                if (manualStopOutstanding)
+                {
+                    // A callback may have arrived after Stop added its independent native count.
+                    // The CLR cannot finish unloading until that manual count is also released.
+                    process.Continue(false);
+                    manualStopOutstanding = false;
+                }
                 if (callbacks.TryTake(out envelope, 25))
                 {
                     awaitingQueuedCallback = false;
@@ -332,6 +339,13 @@ public sealed partial class FrameworkDebugSession : IDisposable
                     return;
                 }
 
+                if (exception is DebugException native && native.HResult == HRESULT.CORDBG_E_DETACH_FAILED_OUTSTANDING_BREAKPOINTS)
+                {
+                    // A module-unload callback can precede CLR removal of its native breakpoints.
+                    // Release only our manual Stop so that unload can finish before resynchronizing.
+                    process.Continue(false);
+                    manualStopOutstanding = false;
+                }
                 Thread.Sleep(10);
             }
         }
@@ -398,6 +412,12 @@ public sealed partial class FrameworkDebugSession : IDisposable
                 HandleAppDomainCallback(envelope);
                 if (HandleBreakpointCallback(envelope) || HandleExceptionCallback(envelope)) return;
             }
+            // Cleanup must still forget invalidated native bindings before its final Dispose.
+            // Do not process loads, bind symbols or publish stops while draining for Detach.
+            else if (envelope.EventArgs is UnloadModuleCorDebugManagedCallbackEventArgs)
+                HandleBreakpointCallback(envelope);
+            else if (envelope.EventArgs is ExitAppDomainCorDebugManagedCallbackEventArgs)
+                HandleAppDomainCallback(envelope);
             ContinueCallback(() => envelope.Controller.Continue(false));
         }
         catch (Exception)

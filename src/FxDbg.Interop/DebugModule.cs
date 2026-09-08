@@ -37,6 +37,7 @@ internal sealed class DebugModule : ISourceBreakpointModule, IDisposable
     public string AppDomainId { get; }
     internal ModuleInfo Snapshot => snapshot!;
     internal bool HasSymbols => symbols?.Status == SymbolStatus.Loaded;
+    internal bool HasNativeBindings => bindings.Count != 0;
     internal void UpdateAppDomainName(string name)
     {
         appDomain = name;

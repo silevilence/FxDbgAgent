@@ -59,7 +59,9 @@ public sealed partial class FrameworkDebugSession
                 GetAppDomain(created.AppDomain);
                 break;
             case ExitAppDomainCorDebugManagedCallbackEventArgs exited:
+                unloadQuietDeadline = DateTime.UtcNow.AddMilliseconds(100);
                 if (!appDomains.TryGetValue(exited.AppDomain.Raw, out AppDomainInfo? removed)) break;
+                unloadingBreakpointDomains.Remove(removed.AppDomainId);
                 foreach (var pair in modules.Where(pair => pair.Value.AppDomainId == removed.AppDomainId).ToArray())
                 {
                     breakpoints.ModuleUnloaded(pair.Value.Id);

@@ -15,6 +15,17 @@ namespace FxDbg.Debuggees.Filtering
     public static class ExceptionFilterScenarios
     {
         public static int FormattingCalls;
+        public static void RunDetachNoise(string directory)
+        {
+            File.WriteAllText(Path.Combine(directory, "noise-ready"), "ready");
+            DateTime deadline = DateTime.UtcNow.AddSeconds(15);
+            while (!File.Exists(Path.Combine(directory, "noise-done")))
+            {
+                if (DateTime.UtcNow >= deadline) throw new TimeoutException("Detach noise did not finish.");
+                Caught(new InvalidOperationException("detach-noise"));
+                Thread.Sleep(10);
+            }
+        }
         public static void Run(string directory)
         {
             Caught(new InvalidOperationException("ignored-before"));

@@ -12,6 +12,8 @@ public sealed partial class FrameworkDebugSession
 {
     private readonly BreakpointManager breakpoints = new();
     private readonly Dictionary<object, DebugModule> modules = new();
+    private readonly HashSet<string> unloadingBreakpointDomains = new(StringComparer.Ordinal);
+    private DateTime unloadQuietDeadline;
     private DateTime nextSymbolPoll;
     private SourcePathMapper sourceMapper = new();
 
@@ -105,8 +107,12 @@ public sealed partial class FrameworkDebugSession
                 domain.RecordModuleChange(ModuleChangeKind.Loaded, module.Snapshot);
                 break;
             case UnloadModuleCorDebugManagedCallbackEventArgs unloaded:
+                unloadQuietDeadline = DateTime.UtcNow.AddMilliseconds(100);
                 if (modules.TryGetValue(unloaded.Module.Raw, out DebugModule? removed))
                 {
+                    // FX source modules with native bindings unload with their owning AppDomain.
+                    // Do not detach halfway through CLR teardown of those breakpoint resources.
+                    if (removed.HasNativeBindings) unloadingBreakpointDomains.Add(removed.AppDomainId);
                     breakpoints.ModuleUnloaded(removed.Id);
                     modules.Remove(unloaded.Module.Raw);
                     domain.RecordModuleChange(ModuleChangeKind.Unloaded, removed.Snapshot);
@@ -155,6 +161,7 @@ public sealed partial class FrameworkDebugSession
             module.Dispose();
         }
         modules.Clear();
+        unloadingBreakpointDomains.Clear();
         appDomains.Clear();
         observedThreads.Clear();
     }
