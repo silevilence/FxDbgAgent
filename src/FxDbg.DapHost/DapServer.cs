@@ -104,7 +104,10 @@ internal sealed partial class DapServer(DebugSessionService sessions, Stream inp
             initialized = true;
             await Respond(packet, new JObject { ["supportsConfigurationDoneRequest"] = true, ["supportsTerminateRequest"] = true,
                 ["supportsCancelRequest"] = true, ["supportsDelayedStackTraceLoading"] = true, ["supportsEvaluateForHovers"] = true,
-                ["exceptionBreakpointFilters"] = new JArray() });
+                ["supportsExceptionFilterOptions"] = true,
+                ["exceptionBreakpointFilters"] = new JArray(new JObject { ["filter"] = "firstChance", ["label"] = "First-chance managed exceptions",
+                    ["default"] = false, ["supportsCondition"] = true,
+                    ["conditionDescription"] = "Type rules separated by semicolons: exact:Full.Type;namespace:Prefix;derived:Base.Type" }) });
             return;
         }
         if (!initialized) throw Invalid("initialize must complete first.");
@@ -150,10 +153,7 @@ internal sealed partial class DapServer(DebugSessionService sessions, Stream inp
         if (command == "setBreakpoints") { await Respond(packet, await SetBreakpoints(args, token)); return; }
         if (command == "setExceptionBreakpoints")
         {
-            if (args["filters"] is JArray filters && filters.Count != 0) throw Invalid("Only default unhandled-exception stops are supported.");
-            foreach (string field in new[] { "filterOptions", "exceptionOptions" })
-                if (args[field] is JArray options && options.Count != 0) throw Invalid("Exception options are not supported.");
-            await Respond(packet, new JObject { ["breakpoints"] = new JArray() }); return;
+            await Respond(packet, await SetExceptionBreakpoints(args, token)); return;
         }
         if (!configured) throw Invalid("configurationDone must complete first.");
         if ((bool?)args["singleThread"] == true) throw Invalid("Only all-thread execution control is supported.");

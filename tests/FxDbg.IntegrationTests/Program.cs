@@ -18,6 +18,7 @@ internal static partial class Program
     {
         try
         {
+            if (args.Length > 2 && args[2] == "exception-filters") { RunExceptionFilters(Path.GetFullPath(args[0]),args[1]); return 0; }
             if (args.Length > 2 && args[2] == "evaluation") { RunEvaluation(Path.GetFullPath(args[0]),args[1]); return 0; }
             if (args.Length > 2 && args[2] == "breakpoint-race")
             {

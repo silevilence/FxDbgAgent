@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using FxDbg.Core.Errors;
 using FxDbg.Core.Model;
 using FxDbg.Core.Sessions;
+using FxDbg.Engine.Protocol;
 using Newtonsoft.Json.Linq;
 
 namespace FxDbg.Cli;
@@ -68,6 +69,7 @@ public sealed class CliCommand
                 case "--file": values["file"] = RequiredPath(value); break;
                 case "--frame": values["frameId"] = value; break;
                 case "--expression": values["expression"] = value; break;
+                case "--exception-rules": values["rules"] = WireJson.Value(ExceptionStopConfiguration.ParseRules(value)); break;
                 case "--evaluation-timeout-ms": values["evaluationTimeoutMs"] = Positive(value, option); break;
                 case "--reference": values["referenceId"] = value; break;
                 case "--breakpoint": values["breakpointId"] = value; break;
@@ -113,7 +115,7 @@ public sealed class CliCommand
             "stack" => option is "--thread" or "--start" or "--count",
             "variables" => option is "--frame" or "--reference" or "--start" or "--count" or "--max-depth" or "--max-string-length",
             "evaluate" => option is "--frame" or "--expression" or "--evaluation-timeout-ms" or "--count" or "--max-depth" or "--max-string-length",
-            "exceptions.configure" => option == "--first-chance",
+            "exceptions.configure" => option is "--first-chance" or "--exception-rules",
             _ => false
         };
     }

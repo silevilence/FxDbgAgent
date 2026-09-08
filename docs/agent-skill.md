@@ -86,3 +86,5 @@ npx --yes skills@1.5.23 add <FxDbg源码绝对路径> --skill fxdbg-agent --agen
 保留IIS影子复制。status.modules的path/pdbPath/symbolStatus/diagnostic给出实际模块与相邻Windows PDB；仅该相邻路径是符号候选，匹配PE/PDB身份后才绑定，不扫描磁盘。missing/mismatch需正确部署匹配PDB；readFailed需修复读取权限或占用，权限恢复即使未改变文件元数据也会每五秒重试。pending会在模块/PDB就绪后自动重绑定。sourceMappings只转换源码路径；动态页面可使用部署根到本地根映射，业务DLL已有本地源码路径时使用精确module范围的同路径映射，避免被页面映射反向改写。
 
 多域断点可限定appDomainId；域卸载后该ID及帧/引用失效，限定断点不跟随同名新域，未限定断点可在新模块重新绑定。纯内存/Reflection.Emit模块无可用PDB时明确报告符号不可用。服务重启/IIS回收使旧session结束；重新预热、列出候选、核对PID并显式attach，新会话不继承旧引用。正常EOF与Host退出会尝试安全detach；Engine硬崩溃的目标存活仍受CLR/操作系统约束。
+
+阶段4-2新增debug_configure_exceptions：用sessionId和firstChance:true加rules数组限定异常类型（exact完整类型、namespace按点分隔的命名空间前缀、derived自身/基类匹配，多个规则OR）。运行中可动态更新；rules:[]或firstChance:false清空，true省略rules会停在所有first-chance。默认只停未处理异常，按需使用窄规则避免频繁停止；非法配置保留旧规则。不要用属性Getter、ToString或反射推断类型/消息。诊断提示无法过滤时会保守停止，可修正规则或关闭过滤再继续。

@@ -1,0 +1,2 @@
+PASS: MCP evaluation x86 Debug, values, paging, rejection, stale frame, state oracle.
+PASS: MCP evaluation x64 Debug, values, paging, rejection, stale frame, state oracle.

@@ -7,5 +7,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\Fx40.ModuleLifecycle\Program.cs" Link="Program.cs" />
+    <Compile Include="..\Fx40.ModuleLifecycle\ExceptionFilterScenarios.cs" Link="ExceptionFilterScenarios.cs" />
   </ItemGroup>
 </Project>

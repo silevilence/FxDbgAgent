@@ -66,7 +66,7 @@ code --install-extension ./artifacts/dap/fxdbg-0.1.0.vsix
 | disconnect | 默认安全分离、目标继续运行；terminateDebuggee=true 仅允许终止本入口启动的目标 |
 | terminate | 仅允许终止本入口启动的目标 |
 
-默认只停未处理异常，setExceptionBreakpoints仅接受空过滤配置。阶段4-1声明supportsEvaluateForHovers，evaluate必须携带当前stackTrace返回的frameId和expression，watch/hover/repl都使用同一只读子集，不执行任意C#或目标函数。对象结果variablesReference可通过variables分页，恢复后失效；默认计算期限250ms。具体语法、白名单、预算及错误见[MCP求值契约](mcp-tools.md#受限表达式阶段4-1)。不支持变量修改、条件/命中次数/日志断点、单线程运行、指令级单步、函数断点、restart、源文件传输或网络监听；对应能力不声明。标准错误响应携带稳定错误码；畸形帧/重复JSON字段关闭连接并清理会话。
+默认只停未处理异常，阶段4-2的setExceptionBreakpoints支持下文的firstChance类型过滤。阶段4-1声明supportsEvaluateForHovers，evaluate必须携带当前stackTrace返回的frameId和expression，watch/hover/repl都使用同一只读子集，不执行任意C#或目标函数。对象结果variablesReference可通过variables分页，恢复后失效；默认计算期限250ms。具体语法、白名单、预算及错误见[MCP求值契约](mcp-tools.md#受限表达式阶段4-1)。不支持变量修改、条件/命中次数/日志断点、单线程运行、指令级单步、函数断点、restart、源文件传输或网络监听；对应能力不声明。标准错误响应携带稳定错误码；畸形帧/重复JSON字段关闭连接并清理会话。
 
 输入头最大8 KiB，消息最大4 MiB，普通待处理请求最多32个，另为控制请求保留4个名额；请求（含配置等待）30秒截止。写锁和输出有独立3秒期限，客户端保持输入开启但不消费输出时会断开并清理会话；Windows上不可取消的输入读取不阻止Host收尾。底层继续/步进保留最长240秒运行期限，达到期限后共享后端尝试暂停，可再继续。EOF、客户端崩溃或输入错误均释放 Host/Engine 并尝试安全 Detach；不会终止附加目标。
 
@@ -89,3 +89,9 @@ code --install-extension ./artifacts/dap/fxdbg-0.1.0.vsix
 协议依据：[DAP 概述](https://github.com/microsoft/debug-adapter-protocol/blob/main/overview.md)、[VS Code 调试扩展接口](https://code.visualstudio.com/api/extension-guides/debugger-extension)、[激活事件](https://code.visualstudio.com/api/references/activation-events)。
 
 Service与完整IIS使用现有processId附加配置；适配器继承编辑器令牌，权限、PID核对、影子PDB和回收后重新附加见[Service/IIS指南](service-iis.md)。完整阶段3脚本默认包含3-4并需管理员；显式-SkipServiceIis只运行子集，结果passed=false、subsetPassed单独报告且列出skipped。真实VS Code另覆盖Service/IIS各双架构附加、源码断点和安全分离。
+
+## 异常类型条件（阶段4-2）
+
+initialize 声明 supportsExceptionFilterOptions，firstChance 过滤器支持 condition。`setExceptionBreakpoints({filters:[],filterOptions:[{filterId:"firstChance",condition:"exact:MyApp.Error;namespace:MyApp.Errors;derived:MyApp.BaseError"}]})` 使用共享类型规则，分号之间为 OR；类型名称、继承及上限见 [MCP契约](mcp-tools.md#会话异常类型过滤阶段4-2)。filters 必须为数组；exceptionOptions 仅接受空数组，未知过滤器和非法规则拒绝。
+
+DAP filters 与 filterOptions 是相加的 OR：filters:["firstChance"] 表示无条件全 first-chance，即使同时提供条件选项也保持全匹配。空/省略 condition 的 firstChance 选项同样全匹配。`filters:[]` 且无 filterOptions 清空，仅未处理异常停止。响应 breakpoints 按 filters 后 filterOptions 顺序返回 verified:true。可在运行中更新，不伪造 stopped 事件。实现不执行目标格式化或求值。

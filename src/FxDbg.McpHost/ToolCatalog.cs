@@ -49,6 +49,11 @@ public static class ToolCatalog
             Fields(("frameId", Text()), ("expression", new() { ["type"] = "string", ["minLength"] = 1, ["maxLength"] = 4096 }),
                 ("evaluationTimeoutMs", Number(1, 1000, 250)), ("count", Number(1, 1024, 100)), ("maxDepth", Number(0, 8, 1)),
                 ("maxStringLength", Number(1, 32768, 256))), ["frameId", "expression"], true, true),
+        Define("configure_exceptions", "Set first-chance exception type filters. Omitted rules with true retains legacy all-first-chance; empty rules or false restores unhandled-only. No target code executes.",
+            Fields(("firstChance", Flag(false)), ("rules", new() { ["type"] = "array", ["maxItems"] = 64,
+                ["items"] = new JsonObject { ["type"] = "object", ["additionalProperties"] = false,
+                    ["properties"] = Fields(("kind", Choice("exact", "namespace", "derived")), ("typeName", new() { ["type"] = "string", ["minLength"] = 1, ["maxLength"] = 1024 })),
+                    ["required"] = new JsonArray("kind", "typeName") } })), ["firstChance"]),
         Define("detach", "Safely detach and leave the target running. Ends the debugging session.", Fields(), []),
         Define("terminate", "Terminate only a target launched by this debugger. Attached targets are rejected.", Fields(), [])
     ];

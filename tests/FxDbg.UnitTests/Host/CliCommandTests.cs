@@ -1,3 +1,4 @@
+using System.Linq;
 using FxDbg.Cli;
 using FxDbg.Core.Errors;
 using Xunit;
@@ -6,6 +7,18 @@ namespace FxDbg.UnitTests.Host;
 
 public sealed class CliCommandTests
 {
+    [Fact]
+    public void Exception_rules_preserve_legacy_clear_and_multiple_match_kinds()
+    {
+        var legacy = CliCommand.Parse(new[] { "exceptions", "--session", "b8ba588d-d261-45aa-8cb0-68d63bd773a0", "--first-chance", "true" });
+        Assert.Null(legacy.Parameters["rules"]);
+        var clear = CliCommand.Parse(new[] { "exceptions", "--session", "b8ba588d-d261-45aa-8cb0-68d63bd773a0", "--first-chance", "true", "--exception-rules", "" });
+        Assert.Empty(clear.Parameters["rules"]!);
+        var rules = CliCommand.Parse(new[] { "exceptions", "--session", "b8ba588d-d261-45aa-8cb0-68d63bd773a0", "--first-chance", "true", "--exception-rules", "exact:A;namespace:B;derived:C" });
+        Assert.Equal(new[] { "exact", "namespace", "derived" }, rules.Parameters["rules"]!.Select(item => (string)item["kind"]!));
+        Assert.Throws<FxDbgException>(() => CliCommand.Parse(new[] { "exceptions", "--session", "b8ba588d-d261-45aa-8cb0-68d63bd773a0", "--exception-rules", "exact:*" }));
+    }
+
     [Fact]
     public void Windows_argument_string_preserves_quotes_and_empty_arguments()
     {

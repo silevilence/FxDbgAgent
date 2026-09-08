@@ -43,3 +43,5 @@ Core 标识序列化为字符串，枚举为 camelCase。`start` 要求 protocol
 阶段3启动扩展：start请求可附sourceMappings数组（buildRoot/localRoot/module），缺省为空；Host与Engine在目标创建前校验不可变配置。源码位置附originalFilePath保留映射前PDB路径；模块延迟加载沿用同一配置。
 
 阶段3多域扩展：state详情包含appDomains；break.set、threads、stack、variables可带appDomainId。appDomainChanged和threadChanged事件承载域身份，模块/停止/帧/变量同样携带appDomainId；事件继续使用原序号与有界队列。
+
+阶段4-2 `exceptions.configure` 参数 `{firstChance:bool,rules?:[{kind:"exact"|"namespace"|"derived",typeName:string}]}`；响应 `{configured:true,firstChance,rules}` 是规范化后的配置。省略规则且true保留全部first-chance；[]或false清空。运行中/停止态经同一调度线程原子替换，非法规则不更改配置；详见 [MCP契约](mcp-tools.md#会话异常类型过滤阶段4-2)。Host 对应 configure_exceptions；CLI/MCP/DAP 只做协议转换。

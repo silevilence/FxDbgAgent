@@ -1,0 +1,3 @@
+PASS: exception filters Debug 32 bit, exact/namespace/derived, dynamic/clear/default/legacy, 500 ignored throws 614 ms, sampled queue peak 1, paired Continue and zero formatting.
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=

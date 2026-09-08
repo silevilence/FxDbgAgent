@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ClrDebug;
+using FxDbg.Core.Errors;
 using FxDbg.Core.Model;
 using FxDbg.Core.Sessions;
 
@@ -9,22 +10,43 @@ namespace FxDbg.Interop;
 
 public sealed partial class FrameworkDebugSession
 {
-    private bool stopOnFirstChance;
+    private ExceptionStopConfiguration exceptionStops = new(false);
+    private string? exceptionFilterDiagnostic;
 
-    public void ConfigureExceptionStops(bool firstChance)
+    public ExceptionStopConfiguration ConfigureExceptionStops(bool firstChance, IReadOnlyList<ExceptionTypeRule>? rules = null)
     {
         RequireActive();
-        stopOnFirstChance = firstChance;
+        return exceptionStops = new ExceptionStopConfiguration(firstChance, rules);
     }
 
     private bool HandleExceptionCallback(CallbackEnvelope envelope)
     {
         if (envelope.EventArgs is not Exception2CorDebugManagedCallbackEventArgs exception) return false;
         bool unhandled = exception.EventType == CorDebugExceptionCallbackType.DEBUG_EXCEPTION_UNHANDLED;
-        if (!unhandled && !(stopOnFirstChance && exception.EventType == CorDebugExceptionCallbackType.DEBUG_EXCEPTION_FIRST_CHANCE)) return false;
+        exceptionFilterDiagnostic = null;
+        if (!unhandled)
+        {
+            if (!exceptionStops.FirstChance || exception.EventType != CorDebugExceptionCallbackType.DEBUG_EXCEPTION_FIRST_CHANCE) return false;
+            try { if (!exceptionStops.Matches(ExceptionTypeHierarchy(exception.Thread))) return false; }
+            catch (Exception error) when (error is DebugException or FxDbgException)
+            { exceptionFilterDiagnostic = "Exception type filtering was unavailable; stopped conservatively."; }
+        }
         pendingEntryController = envelope.Controller;
         StopAt(exception.Thread, StopReason.Exception, unhandled);
         return true;
+    }
+
+    private static IEnumerable<string> ExceptionTypeHierarchy(CorDebugThread thread)
+    {
+        CorDebugValue? value = MetadataNames.Dereference(thread.CurrentException);
+        if (value?.Raw is not ICorDebugObjectValue) throw new FxDbgException(FxDbgErrorCode.ValueUnavailable, "Exception object is unavailable.");
+        CorDebugType? type = value.ExactType ?? throw new FxDbgException(FxDbgErrorCode.ValueUnavailable, "Exception type is unavailable.");
+        for (int depth = 0; type is not null; depth++, type = type.Base)
+        {
+            if (depth == 128) throw new FxDbgException(FxDbgErrorCode.ValueUnavailable, "Exception type hierarchy exceeds its limit.");
+            if (type.Type == CorElementType.Object) { yield return "System.Object"; yield break; }
+            yield return NativeVariableValue.TypeNameOf(type);
+        }
     }
 
     private ExceptionInfo CaptureException(CorDebugThread thread, bool unhandled)
@@ -32,7 +54,8 @@ public sealed partial class FrameworkDebugSession
         IReadOnlyList<StackFrameInfo> stack = CaptureStack(thread, 0, 32);
         string typeName = "<exception type unavailable>";
         string? message = null;
-        string? diagnostic = null;
+        string? diagnostic = exceptionFilterDiagnostic;
+        exceptionFilterDiagnostic = null;
         try
         {
             CorDebugValue? value = MetadataNames.Dereference(thread.CurrentException);

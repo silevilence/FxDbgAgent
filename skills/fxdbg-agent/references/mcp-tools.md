@@ -1,6 +1,6 @@
 # MCP 工具契约
 
-公开契约以tools/list及本文件为准；当前14个工具（原13工具保持兼容，阶段4-1新增debug_evaluate）、操作跟踪、资源限流和生命周期清理均复用共享Host/Engine。实现验收状态以ROADMAP及对应验证报告为准。
+公开契约以tools/list及本文件为准；当前15个工具（原13工具保持兼容，阶段4新增debug_evaluate与debug_configure_exceptions）、操作跟踪、资源限流和生命周期清理均复用共享Host/Engine。实现验收状态以ROADMAP及对应验证报告为准。
 
 运行 `./eng/publish-mcp.ps1 -Configuration Debug`，用 `dotnet <发布目录>/fxdbg-mcp.dll` 作为 MCP command/args。发布目录默认 `artifacts/mcp/Debug`，其旁 `engines/` 放置完整 x86/x64 Engine 与 DIA/ClrDebug 等依赖。可使用 `--engine-dir <绝对路径>` 覆盖，不依赖当前工作目录。仅本机 stdio，无网络监听。
 
@@ -28,6 +28,7 @@
 | debug_stack | threadId*、start、count | start=0（0～100000），count=32（1～1024） | 托管栈数组，stopped |
 | debug_variables | frameId*、referenceId、start、count、maxDepth、maxStringLength | start=0，count=100（1～1024），maxDepth=1（0～8），maxStringLength=256（1～32768） | 参数/局部/对象字段数组，stopped；展开对象时再传 referenceId |
 | debug_evaluate | frameId*、expression*、evaluationTimeoutMs、count、maxDepth、maxStringLength、appDomainId | expression非空且≤4096字符；evaluationTimeoutMs=250（1～1000），其余显示上限同variables | 单个VariableInfo，stopped；对象结果referenceId可交给variables分页 |
+| debug_configure_exceptions | firstChance*、rules | rules可省略；最多64项，每项kind为exact/namespace/derived，typeName非空且≤1024字符 | configured、firstChance、rules；运行中或停止态动态更新 |
 | debug_detach | 无 | 安全分离，launch/attach 均适用 | 终态会话；目标继续运行 |
 | debug_terminate | 无 | 仅 launch 目标 | 终态会话；附加目标返回 invalid_request |
 
@@ -98,3 +99,11 @@ stdin EOF、输出断开或 Host 退出均结束所属会话，默认尝试 Deta
 阶段3 AppDomain：status返回appDomains数组，字段appDomainId/name/runtimeId。status、threads、stack、variables以及创建set_breakpoint可选appDomainId，省略观察全部域。未知/卸载/跨会话ID返回invalid_request。线程按当前域筛选，栈按帧所属模块的域筛选再分页；变量携带读取帧的域上下文，所选域必须匹配frameId。status仅筛选域/模块/适用断点，保留进程级停止与操作信息。断点附boundAppDomainIds；限定域卸载后回pending，不自动绑定同名新域。用新ID创建新断点，更新enabled不能改变域范围。变量引用按域隔离，但所有域共用每次停止10000引用上限；恢复运行或域卸载使旧引用失效。
 
 阶段3-4继续使用现有13工具，无新增必填字段。真实SCM服务与完整IIS按PID附加，跨身份权限不足返回access_denied，未加载CLR的native worker返回not_managed_process（预热后重新定位）。Host/Engine按需启用已有SeDebugPrivilege并恢复，不自动提权。status.modules报告实际影子路径和相邻PDB候选；readFailed每五秒重试，缺失/失配/就绪按真实状态报告并自动重绑定。回收后的旧session不转移到新PID，显式重新attach。详细可执行流程在随包workflow的“Windows Service与IIS”章节；源码仓库另有docs/service-iis.md。
+
+## 会话异常类型过滤（阶段4-2）
+
+`debug_configure_exceptions({sessionId,firstChance:true,rules:[{kind:"derived",typeName:"System.Exception"}]})` 配置会话过滤。规则之间为 OR：exact 区分大小写匹配实际完整类型名；namespace 匹配命名空间前缀及其子命名空间，按点边界匹配（A.B 不匹配 A.Beta）；derived 匹配自身或真实基类链，不把接口当作基类，不执行反射或用户代码。名称禁止控制字符、首尾空白和通配符 `*`；最多64项，基类遍历最多128层。
+
+`firstChance:true` 且省略 rules 保持旧行为（全部 first-chance）；显式 rules:[] 或 firstChance:false 恢复默认仅未处理异常。所有规则先验证再替换；非法配置返回 invalid_request 并保留之前配置。未处理异常始终停止。未知类型读取失败时保守停止，在 exception.diagnostic 给出脱敏诊断，便于检查、关闭过滤后继续。
+
+运行中更新经同一调度线程串行执行，不构成停止，也不完成当前运行操作；更新后处理的回调使用新规则。未匹配的 first-chance 内部继续，不产生停止事件或新的用户停止代次。高频回调与命令公平调度；原生回调只入队，每次原生停止仍恰好一次 Continue。停止信息沿用类型、原始 `_message`、线程、源码位置与栈，禁止调用自定义 Message/ToString。

@@ -1,0 +1,4 @@
+PASS: MCP exception filters x86 Debug, rule relations, running update, clear/default/legacy, operation continuity, 500 ignored throws 12398 ms and zero formatting.
+PASS: MCP exception filters x64 Debug, rule relations, running update, clear/default/legacy, operation continuity, 500 ignored throws 13603 ms and zero formatting.
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=

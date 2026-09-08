@@ -31,6 +31,7 @@ namespace FxDbg.Debuggees
 
         private static void Main(string[] args)
         {
+            if (args[0] == "--exception-filters") { Filtering.ExceptionFilterScenarios.Run(args[1]); return; }
             if (args[0] == "--evaluation")
             {
                 var node = new Node(); node.Self = node;

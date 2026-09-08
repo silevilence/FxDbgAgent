@@ -108,6 +108,7 @@ public sealed partial class DebugSessionService : IAsyncDisposable
         {
             "set_breakpoint" => arguments["breakpointId"] is null ? "break.set" : "break.enable",
             "remove_breakpoint" => "break.remove",
+            "configure_exceptions" => "exceptions.configure",
             "threads" => "threads", "stack" => "stack", "variables" => "variables", "evaluate" => "evaluate",
             _ => throw Invalid("This command is not implemented in the current stage.")
         };

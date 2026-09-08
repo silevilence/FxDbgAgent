@@ -63,7 +63,7 @@ try {
   client.send({ jsonrpc: '2.0', method: 'notifications/initialized', params: {} });
   assert.ok((await client.call('ping', {})).result);
   const listed = await client.call('tools/list', {});
-  assert.equal(listed.result?.tools.length, 14, JSON.stringify(listed));
+  assert.equal(listed.result?.tools.length, 15, JSON.stringify(listed));
   assert.ok(listed.result.tools.some(tool => tool.name === 'debug_evaluate'));
   assert.equal((await client.call('method/absent', {})).error.code, -32601);
   const missing = await client.call('tools/call', { name: 'debug_status', arguments: {} });
@@ -103,7 +103,7 @@ try {
     const after = race.call('tools/list', {});
     race.child.stdin.uncork();
     assert.equal((await before).error?.code, -32600, 'Premature notification cannot admit an early request');
-    assert.equal((await after).result?.tools.length, 14, 'Immediate legal tools/list must survive reordered handlers');
+    assert.equal((await after).result?.tools.length, 15, 'Immediate legal tools/list must survive reordered handlers');
     assert.equal(await race.close(), 0);
   }
   console.log('Raw stdio: initialization, version negotiation, ping, errors, cancellation, malformed input and EOF passed.');

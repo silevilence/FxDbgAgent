@@ -30,7 +30,7 @@ try
         fxdbg evaluate --session ID --frame FRAME --expression EXPR [--evaluation-timeout-ms N] [--max-depth N] [--count N] [--max-string-length N]
         fxdbg breakpoints|detach|terminate|refresh-symbols --session ID
         fxdbg remove-break|enable-break --session ID --breakpoint ID [--enabled true|false]
-        fxdbg exceptions --session ID --first-chance true|false
+        fxdbg exceptions --session ID --first-chance true|false [--exception-rules "exact:Type;namespace:Prefix;derived:BaseType"]
         Common: --timeout-ms N; launch/attach: --engine-dir DIR; launch: --cwd DIR, --env NAME=VALUE.
         Results are JSON. Session, frame and reference IDs must be copied from preceding results.
         Each session keeps one background Host alive until detach or 30 minutes without a CLI connection.

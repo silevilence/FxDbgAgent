@@ -112,6 +112,8 @@ public sealed class SingleThreadCommandScheduler : IDisposable
                 if (commands.TryTake(out ICommandWorkItem workItem, idleWork is null ? 100 : 10))
                 {
                     workItem.Execute(shutdown.Token);
+                    // Status polling must not keep native callback stops pending indefinitely.
+                    idleWork?.Invoke(shutdown.Token);
                     continue;
                 }
 

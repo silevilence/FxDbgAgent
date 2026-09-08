@@ -134,7 +134,12 @@ internal sealed class EngineServer
             case "evaluate":
                 result = current.Evaluate(new FrameId(Text(args, "frameId")), Text(args, "expression"), Integer(args, "evaluationTimeoutMs", 250),
                     Integer(args, "maxDepth", 1), Integer(args, "count", 100), Integer(args, "maxStringLength", 256), token, OptionalText(args, "appDomainId"), evaluationBudget); break;
-            case "exceptions.configure": current.ConfigureExceptionStops(Boolean(args, "firstChance", false)); result = new { configured = true }; break;
+            case "exceptions.configure":
+                if (args["rules"] is not null && args["rules"] is not JArray) throw Invalid("Exception rules must be an array.");
+                if (args["rules"] is JArray ruleArray && ruleArray.Count > 64) throw Invalid("At most 64 exception rules are allowed.");
+                ExceptionStopConfiguration configured = current.ConfigureExceptionStops(Boolean(args, "firstChance", false),
+                    args["rules"]?.ToObject<ExceptionTypeRule[]>(WireJson.CreateSerializer()));
+                result = new { configured = true, configured.FirstChance, configured.Rules }; break;
             case "modules": result = current.GetModules(); break;
             case "symbols.refresh": current.RefreshSymbols(); result = current.GetModules(); break;
             case "detach":

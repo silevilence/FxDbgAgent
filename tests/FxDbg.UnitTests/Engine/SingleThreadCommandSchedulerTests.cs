@@ -14,6 +14,24 @@ namespace FxDbg.UnitTests.Engine;
 public sealed class SingleThreadCommandSchedulerTests
 {
     [Fact]
+    public async Task Callback_pump_is_not_starved_by_a_nonempty_command_queue()
+    {
+        int pumps = 0, before = 0;
+        using var entered = new ManualResetEventSlim();
+        using var release = new ManualResetEventSlim();
+        using var scheduler = new SingleThreadCommandScheduler("fair-callbacks", _ => Interlocked.Increment(ref pumps));
+        Task<bool> first = scheduler.EnqueueAsync(token =>
+        {
+            before = Volatile.Read(ref pumps); entered.Set(); release.Wait(token); return true;
+        }, TimeSpan.FromSeconds(5));
+        Assert.True(entered.Wait(TimeSpan.FromSeconds(2)));
+        Task<bool>[] probes = Enumerable.Range(0, 8).Select(_ => scheduler.EnqueueAsync(token =>
+            Volatile.Read(ref pumps) > before, TimeSpan.FromSeconds(5))).ToArray();
+        release.Set(); await first;
+        Assert.All(await Task.WhenAll(probes), Assert.True);
+    }
+
+    [Fact]
     public async Task Commands_run_serially_on_one_dedicated_thread()
     {
         using var scheduler = new SingleThreadCommandScheduler("test-scheduler");
