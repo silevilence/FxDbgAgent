@@ -1,0 +1,13 @@
+ INFO  Files included in the VSIX:
+fxdbg-0.1.0.vsix
+鈹溾攢 [Content_Types].xml
+鈹溾攢 extension.vsixmanifest
+鈹斺攢 extension/
+   鈹溾攢 extension.js [0.94 KB]
+   鈹溾攢 package.json [2.57 KB]
+   鈹斺攢 readme.md [1.01 KB]
+
+ DONE  Packaged: C:\code\dotnet\FxDbgAgent\artifacts\dap\fxdbg-0.1.0.vsix (5 files, 3.42 KB)
+Extension package: C:\code\dotnet\FxDbgAgent\artifacts\dap\fxdbg-0.1.0.vsix
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=

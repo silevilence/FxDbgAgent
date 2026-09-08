@@ -1,0 +1,13 @@
+PASS: conditional native 64 Debug unconditional, exact stops/counters, paired Continue, state oracle.
+PASS: conditional native 64 Debug exact, exact stops/counters, paired Continue, state oracle.
+PASS: conditional native 64 Debug threshold, exact stops/counters, paired Continue, state oracle.
+PASS: conditional native 64 Debug expression, exact stops/counters, paired Continue, state oracle.
+PASS: conditional native 64 Debug combined, exact stops/counters, paired Continue, state oracle.
+PASS: conditional native 64 Debug false, exact stops/counters, paired Continue, state oracle.
+PASS: conditional native 64 Debug nonboolean, exact stops/counters, paired Continue, state oracle.
+PASS: conditional native 64 Debug error, exact stops/counters, paired Continue, state oracle.
+PASS: conditional native 64 Debug getter, exact stops/counters, paired Continue, state oracle.
+PASS: conditional native 64 Debug small-overflow, exact stops/counters, paired Continue, state oracle.
+PASS: conditional native 64 Debug, real 3-domain reload, =2 and symbol refresh preserve counter.
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=

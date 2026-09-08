@@ -1,0 +1,92 @@
+  FxDbg.DapHost -> C:\code\dotnet\FxDbgAgent\src\FxDbg.DapHost\bin\Debug\net10.0-windows\fxdbg-dap.dll
+  FxDbg.UnitTests -> C:\code\dotnet\FxDbgAgent\tests\FxDbg.UnitTests\bin\Debug\net10.0-windows\FxDbg.UnitTests.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:06.69
+  FxDbg.McpHost -> C:\code\dotnet\FxDbgAgent\artifacts\mcp\Debug\
+Mcp bundle: C:\code\dotnet\FxDbgAgent\artifacts\mcp\Debug
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=
+  FxDbg.Engine.x64 -> C:\code\dotnet\FxDbgAgent\src\FxDbg.Engine\bin\Debug\net48\FxDbg.Engine.x64.exe
+  FxDbg.UnitTests -> C:\code\dotnet\FxDbgAgent\tests\FxDbg.UnitTests\bin\Debug\net10.0-windows\FxDbg.UnitTests.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:09.90
+  FxDbg.DapHost -> C:\code\dotnet\FxDbgAgent\artifacts\dap\Debug\
+Dap bundle: C:\code\dotnet\FxDbgAgent\artifacts\dap\Debug
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=
+C:\code\dotnet\FxDbgAgent\tests\FxDbg.UnitTests\bin\Debug\net10.0-windows\FxDbg.UnitTests.dll (.NETCoreApp,Version=v10.0)的测试运行
+总共 1 个测试文件与指定模式相匹配。
+
+已通过! - 失败:     0，通过:   233，已跳过:     0，总计:   233，持续时间: 18 s - FxDbg.UnitTests.dll (net10.0)
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=
+PASS: exception filters Debug 32 bit, exact/namespace/derived, dynamic/clear/default/legacy, 500 ignored throws 649 ms, sampled queue peak 0, paired Continue and zero formatting.
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=
+PASS: exception filters Debug 64 bit, exact/namespace/derived, dynamic/clear/default/legacy, 500 ignored throws 1824 ms, sampled queue peak 0, paired Continue and zero formatting.
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=
+PASS: MCP exception filters x86 Debug, rule relations, running update, clear/default/legacy, operation continuity, 500 ignored throws 12414 ms and zero formatting.
+PASS: MCP exception filters x64 Debug, rule relations, running update, clear/default/legacy, operation continuity, 500 ignored throws 12749 ms and zero formatting.
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=
+PASS: DAP exception filters x86 Debug, exact/namespace/derived, running updates, additive OR, empty/default and zero formatting.
+PASS: CLI exception filters x86 Debug, shared parser, running update, clear/default/legacy and zero formatting.
+PASS: DAP exception filters x64 Debug, exact/namespace/derived, running updates, additive OR, empty/default and zero formatting.
+PASS: CLI exception filters x64 Debug, shared parser, running update, clear/default/legacy and zero formatting.
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=
+  FxDbg.HostIntegrationTests -> C:\code\dotnet\FxDbgAgent\tests\FxDbg.HostIntegrationTests\bin\Release\net10.0-windows\FxDbg.HostIntegrationTests.dll
+  FxDbg.UnitTests -> C:\code\dotnet\FxDbgAgent\tests\FxDbg.UnitTests\bin\Release\net10.0-windows\FxDbg.UnitTests.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:06.42
+  FxDbg.McpHost -> C:\code\dotnet\FxDbgAgent\artifacts\mcp\Release\
+Mcp bundle: C:\code\dotnet\FxDbgAgent\artifacts\mcp\Release
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=
+  FxDbg.Engine.x64 -> C:\code\dotnet\FxDbgAgent\src\FxDbg.Engine\bin\Release\net48\FxDbg.Engine.x64.exe
+  FxDbg.UnitTests -> C:\code\dotnet\FxDbgAgent\tests\FxDbg.UnitTests\bin\Release\net10.0-windows\FxDbg.UnitTests.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:05.99
+  FxDbg.DapHost -> C:\code\dotnet\FxDbgAgent\artifacts\dap\Release\
+Dap bundle: C:\code\dotnet\FxDbgAgent\artifacts\dap\Release
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=
+C:\code\dotnet\FxDbgAgent\tests\FxDbg.UnitTests\bin\Release\net10.0-windows\FxDbg.UnitTests.dll (.NETCoreApp,Version=v10.0)的测试运行
+总共 1 个测试文件与指定模式相匹配。
+
+已通过! - 失败:     0，通过:   233，已跳过:     0，总计:   233，持续时间: 19 s - FxDbg.UnitTests.dll (net10.0)
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=
+PASS: exception filters Release 32 bit, exact/namespace/derived, dynamic/clear/default/legacy, 500 ignored throws 641 ms, sampled queue peak 0, paired Continue and zero formatting.
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=
+PASS: exception filters Release 64 bit, exact/namespace/derived, dynamic/clear/default/legacy, 500 ignored throws 1775 ms, sampled queue peak 0, paired Continue and zero formatting.
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=
+PASS: MCP exception filters x86 Release, rule relations, running update, clear/default/legacy, operation continuity, 500 ignored throws 12492 ms and zero formatting.
+PASS: MCP exception filters x64 Release, rule relations, running update, clear/default/legacy, operation continuity, 500 ignored throws 12753 ms and zero formatting.
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=
+PASS: DAP exception filters x86 Release, exact/namespace/derived, running updates, additive OR, empty/default and zero formatting.
+PASS: CLI exception filters x86 Release, shared parser, running update, clear/default/legacy and zero formatting.
+PASS: DAP exception filters x64 Release, exact/namespace/derived, running updates, additive OR, empty/default and zero formatting.
+PASS: CLI exception filters x64 Release, shared parser, running update, clear/default/legacy and zero formatting.
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=

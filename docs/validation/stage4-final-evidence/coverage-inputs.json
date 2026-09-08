@@ -1,0 +1,24 @@
+{
+  "inputs": [
+    {
+      "length": 1844337,
+      "sha256": "80C964D5F540B308E09B4719AA16C61C9AC644726E137C774045F64B60E6F2C2",
+      "path": "artifacts\\stage4-coverage\\accepted-unit-Debug\\a9dc034c-32b3-45bd-9684-a07cb5aaaf16\\silev_SILSURFACE10_2026-09-08.13_37_27.cobertura.xml"
+    },
+    {
+      "length": 1709364,
+      "sha256": "EFBF4BC18B20A68926C07EE90C6E7FE85542B68F38AF9371388D22720983F874",
+      "path": "artifacts\\stage4-coverage\\accepted-unit-Release\\bfdb057b-8a74-47b6-9f51-4f9b19e505c1\\silev_SILSURFACE10_2026-09-08.13_37_55.cobertura.xml"
+    },
+    {
+      "length": 2769455,
+      "sha256": "84EA783C54D5340234FB53C28473DA8ED308A23DD57E2704CE59643042485A80",
+      "path": "artifacts\\stage4-coverage\\accepted-real-Debug\\f65172d5-e55f-4d68-8df4-e52dca8e25f1\\silev_SILSURFACE10_2026-09-08.13_42_50.cobertura.xml"
+    }
+  ],
+  "excludedTargets": "Fx40.*",
+  "configuration": "Debug/Release units, Debug real x86/x64 matrix",
+  "baseline": "41c2274c49b0e63fa7a70f96964a158e38439c4a",
+  "reviewedCommit": "2aa8a9d4067646fecf0707760980ca629312396a",
+  "sourceRoot": "C:\\code\\dotnet\\FxDbgAgent"
+}

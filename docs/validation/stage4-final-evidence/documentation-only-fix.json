@@ -1,0 +1,9 @@
+{
+  "productionCommit": "106b7477e05b75e75d1181f1bae73dafb914f6d4",
+  "productionTestsAndScriptsUnchanged": true,
+  "skillValidationExitCode": 0,
+  "changedPaths": [
+    "skills/fxdbg-agent/references/workflow.md"
+  ],
+  "finalCommit": "6f497bf5a72dcb4a3a6e4dcf717d886ff78f5a30"
+}

@@ -1,0 +1,12 @@
+62976 root name=dotnet started=2026-09-08T05:19:50.5827192Z exited=True
+66168 parent=62976 name=conhost.exe started=2026-09-08T05:19:50.5876781Z exited=True
+12232 parent=62976 name=dotnet.exe started=2026-09-08T05:19:50.6670987Z exited=True
+59708 parent=12232 name=conhost.exe started=2026-09-08T05:19:50.6724347Z exited=True
+50968 parent=12232 name=FxDbg.Engine.x86.exe started=2026-09-08T05:19:51.1011569Z exited=True
+36132 parent=50968 name=conhost.exe started=2026-09-08T05:19:51.1111723Z exited=True
+31452 parent=50968 name=Fx40.Console.x86.exe started=2026-09-08T05:19:51.3479495Z exited=True
+34336 parent=62976 name=dotnet.exe started=2026-09-08T05:19:52.7162220Z exited=True
+29252 parent=34336 name=conhost.exe started=2026-09-08T05:19:52.7196201Z exited=True
+19808 parent=34336 name=FxDbg.Engine.x64.exe started=2026-09-08T05:19:53.0552535Z exited=True
+15344 parent=19808 name=conhost.exe started=2026-09-08T05:19:53.0671597Z exited=True
+27992 parent=19808 name=Fx40.Console.x64.exe started=2026-09-08T05:19:53.3519827Z exited=True

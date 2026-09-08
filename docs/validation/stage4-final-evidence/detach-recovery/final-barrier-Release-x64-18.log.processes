@@ -1,0 +1,4 @@
+41180 root name=FxDbg.IntegrationTests.x64.exe started=2026-09-08T05:18:12.4575442Z exited=True
+14896 parent=41180 name=conhost.exe started=2026-09-08T05:18:12.4638252Z exited=True
+8216 parent=41180 name=Fx40.ModuleLifecycle.exe started=2026-09-08T05:18:12.5486628Z exited=True
+18020 parent=41180 name=Fx40.ModuleLifecycle.exe started=2026-09-08T05:18:13.2048369Z exited=True

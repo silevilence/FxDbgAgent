@@ -1,0 +1,44 @@
+{
+  "skipped": [],
+  "configuration": "Debug+Release",
+  "atUtc": "2026-09-08T04:35:26.5792806+00:00",
+  "subsetPassed": false,
+  "passed": false,
+  "outcomes": [
+    {
+      "exitCode": 0,
+      "name": "final-package",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-validation\\final-package.log"
+    },
+    {
+      "exitCode": 0,
+      "name": "final-appdomains",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-validation\\final-appdomains.log"
+    },
+    {
+      "exitCode": 0,
+      "name": "final-paging",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-validation\\final-paging.log"
+    },
+    {
+      "exitCode": 0,
+      "name": "final-source-mappings",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-validation\\final-source-mappings.log"
+    },
+    {
+      "exitCode": 0,
+      "name": "final-dap",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-validation\\final-dap.log"
+    },
+    {
+      "exitCode": 0,
+      "name": "final-service-iis",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-validation\\final-service-iis.log"
+    },
+    {
+      "exitCode": 1,
+      "name": "final-stage2-regression",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-validation\\final-stage2-regression.log"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+PASS: detach drains queued UnloadModule and invalidates native bindings (32 bit).
+PASS: detach drains queued ExitAppDomain and invalidates native bindings (32 bit).
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=

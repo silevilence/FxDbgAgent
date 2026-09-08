@@ -1,0 +1,6 @@
+{
+  "exited": true,
+  "pid": 15332,
+  "checkedUtc": "2026-09-08T06:29:59.2818007+00:00",
+  "method": "Get-Process returned no matching process after the worker wrote closed.json"
+}

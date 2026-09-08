@@ -1,0 +1,71 @@
+**********************
+PowerShell transcript start
+Start time: 20260908142324
+Username: SILSURFACE10\silev
+RunAs User: SILSURFACE10\silev
+Configuration Name:
+Machine: SILSURFACE10 (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll -NoProfile -File C:\code\dotnet\FxDbgAgent\eng\verify-stage1.ps1
+Process ID: 11044
+PSVersion: 7.6.0
+PSEdition: Core
+GitCommitId: 7.6.0
+OS: Microsoft Windows 10.0.26200
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.4
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+Transcript started, output file is C:\code\dotnet\FxDbgAgent\artifacts\stage1-validation\Release.log
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Stage 1-2 verification passed: product Engines covered launch/attach/auto x86+x64, stop-at-entry, and actionable rejection paths.
+
+Stage 1-3 verification passed: callback handoff, single-thread serialization, 100 Continue pairs, timeout, and cancellation covered.
+
+
+
+Stage 1-6 verification passed: named threads, 14 source frames, paging, and independent x86/x64 CDB/SOS comparison.
+
+
+
+
+
+PASS: x86 CLI launch/attach/break/continue/step/stack/variables/detach.
+PASS: x64 CLI launch/attach/break/continue/step/stack/variables/detach.
+Stage 1-11 verification passed.
+
+Stage 0-1 verification passed: all debuggees built, all PDBs are MSF 7.00, and both WinForms windows opened.
+
+
+Stage 0-3 verification passed: launch/attach x86+x64 succeeded and all rejection paths preserved their targets.
+
+Stage 0-1 verification passed: all debuggees built, all PDBs are MSF 7.00, and both WinForms windows opened.
+
+Stage 0-4 verification passed: five core callbacks were queued on one callback thread and configurable logging preserved full context.
+
+Stage 0-1 verification passed: all debuggees built, all PDBs are MSF 7.00, and both WinForms windows opened.
+
+Stage 0-5 verification passed: line 71 mapped to Program.Main, and all three symbol failure states were distinguished.
+
+Stage 0-6 verification passed: source line 119 hit at IL 12 with 14 symbolized target frames; pending/unresolved and WinDbg/SOS comparison passed.
+Stage 1-12 full Release verification passed.
+**********************
+PowerShell transcript end
+End time: 20260908142855
+**********************

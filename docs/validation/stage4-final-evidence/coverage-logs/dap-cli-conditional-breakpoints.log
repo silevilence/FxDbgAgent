@@ -1,0 +1,42 @@
+PASS: DAP conditional x86 Debug unconditional, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x86 Debug unconditional, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x86 Debug exact, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x86 Debug exact, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x86 Debug threshold, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x86 Debug threshold, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x86 Debug expression, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x86 Debug expression, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x86 Debug combined, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x86 Debug combined, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x86 Debug false, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x86 Debug false, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x86 Debug nonboolean, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x86 Debug nonboolean, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x86 Debug error, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x86 Debug error, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x86 Debug getter, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x86 Debug getter, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x86 Debug small-overflow, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x86 Debug small-overflow, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x64 Debug unconditional, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x64 Debug unconditional, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x64 Debug exact, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x64 Debug exact, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x64 Debug threshold, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x64 Debug threshold, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x64 Debug expression, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x64 Debug expression, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x64 Debug combined, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x64 Debug combined, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x64 Debug false, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x64 Debug false, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x64 Debug nonboolean, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x64 Debug nonboolean, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x64 Debug error, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x64 Debug error, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x64 Debug getter, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x64 Debug getter, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x64 Debug small-overflow, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x64 Debug small-overflow, shared conditions, counters, diagnostics and state oracle.
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=

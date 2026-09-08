@@ -1,0 +1,35 @@
+{
+  "configuration": "Debug+Release",
+  "os": "Microsoft Windows NT 10.0.26200.0",
+  "outcomes": [
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\stage3-4a.log",
+      "task": "3-4a",
+      "exitCode": 0
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\stage3-4b.log",
+      "task": "3-4b",
+      "exitCode": 0
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\stage3-4c.log",
+      "task": "3-4c",
+      "exitCode": 0
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\stage3-4d.log",
+      "task": "3-4d",
+      "exitCode": 0
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\stage3-4e.log",
+      "task": "3-4e",
+      "exitCode": 0
+    }
+  ],
+  "passed": true,
+  "identity": "SILSURFACE10\\silev",
+  "skipped": [],
+  "atUtc": "2026-09-08T04:35:16.2825747+00:00"
+}

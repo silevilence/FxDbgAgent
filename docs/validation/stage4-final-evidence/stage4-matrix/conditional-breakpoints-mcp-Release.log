@@ -1,0 +1,22 @@
+PASS: MCP conditional x86 Release unconditional, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x86 Release exact, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x86 Release threshold, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x86 Release expression, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x86 Release combined, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x86 Release false, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x86 Release nonboolean, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x86 Release error, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x86 Release getter, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x86 Release small-overflow, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x64 Release unconditional, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x64 Release exact, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x64 Release threshold, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x64 Release expression, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x64 Release combined, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x64 Release false, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x64 Release nonboolean, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x64 Release error, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x64 Release getter, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x64 Release small-overflow, async operation continuity, counters, diagnostics, state oracle.
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=

@@ -1,0 +1,6 @@
+PASS: DAP exception filters x86 Release, exact/namespace/derived, running updates, additive OR, empty/default and zero formatting.
+PASS: CLI exception filters x86 Release, shared parser, running update, clear/default/legacy and zero formatting.
+PASS: DAP exception filters x64 Release, exact/namespace/derived, running updates, additive OR, empty/default and zero formatting.
+PASS: CLI exception filters x64 Release, shared parser, running update, clear/default/legacy and zero formatting.
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=

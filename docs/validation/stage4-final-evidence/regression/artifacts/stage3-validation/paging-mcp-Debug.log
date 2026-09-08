@@ -1,0 +1,4 @@
+Paging x86 Debug: cold=24.6ms P95=27.0ms max=37.0ms, graph=101101.
+Paging x64 Debug: cold=24.6ms P95=21.3ms max=33.8ms, graph=101101.
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=

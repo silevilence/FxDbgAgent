@@ -1,0 +1,13 @@
+DAP Debug x86 launch: initialize, pending/configuration, pause, breakpoint, 14-frame stack, paging, next/stepIn/stepOut, stale handles and safe detach passed.
+DAP Debug x86 attach: initialize, pending/configuration, pause, breakpoint, 14-frame stack, paging, next/stepIn/stepOut, stale handles and safe detach passed.
+DAP Debug x64 launch: initialize, pending/configuration, pause, breakpoint, 14-frame stack, paging, next/stepIn/stepOut, stale handles and safe detach passed.
+DAP Debug x64 attach: initialize, pending/configuration, pause, breakpoint, 14-frame stack, paging, next/stepIn/stepOut, stale handles and safe detach passed.
+DAP cancellation during configuration: one failed launch response, terminated event, target resumed.
+DAP EOF during attached configuration: Engine cleanup and live target continuation passed.
+DAP 100001-element paging, invalid/unpaged limits and natural exit event passed.
+DAP oversized/duplicate headers fail cleanly without stdout pollution.
+DAP 184-frame stack: bounded pages and monotonic totalFrames, oversized/unpaged rejection passed.
+DAP stdout closed with stdin open: bounded adapter exit and safe attached target continuation passed.
+DAP stdout backpressure with stdin open: bounded adapter exit and safe attached target continuation passed.
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=

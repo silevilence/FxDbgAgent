@@ -1,0 +1,3 @@
+Raw stdio: initialization, version negotiation, ping, errors, cancellation, malformed input and EOF passed.
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=

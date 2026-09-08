@@ -1,0 +1,12 @@
+71700 root name=dotnet started=2026-09-08T05:27:11.7255720Z exited=True
+53452 parent=71700 name=conhost.exe started=2026-09-08T05:27:11.7393264Z exited=True
+11396 parent=71700 name=dotnet.exe started=2026-09-08T05:27:11.8436670Z exited=True
+64028 parent=11396 name=conhost.exe started=2026-09-08T05:27:11.8513612Z exited=True
+33876 parent=11396 name=FxDbg.Engine.x86.exe started=2026-09-08T05:27:12.5601197Z exited=True
+32924 parent=33876 name=conhost.exe started=2026-09-08T05:27:12.5949606Z exited=True
+63028 parent=33876 name=Fx40.ModuleLifecycle.x86.exe started=2026-09-08T05:27:14.0042712Z exited=True
+23312 parent=71700 name=dotnet.exe started=2026-09-08T05:27:27.8756286Z exited=True
+7400 parent=23312 name=conhost.exe started=2026-09-08T05:27:27.8806030Z exited=True
+42988 parent=23312 name=FxDbg.Engine.x64.exe started=2026-09-08T05:27:28.4857287Z exited=True
+22876 parent=42988 name=conhost.exe started=2026-09-08T05:27:28.5171729Z exited=True
+10224 parent=42988 name=Fx40.ModuleLifecycle.exe started=2026-09-08T05:27:28.8249312Z exited=True

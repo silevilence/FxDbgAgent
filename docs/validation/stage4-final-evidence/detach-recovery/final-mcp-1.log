@@ -1,0 +1,4 @@
+AppDomains x86 Release: same names, scoped hits, cross-domain frames, variables, unload/recreation passed.
+AppDomains x64 Release: same names, scoped hits, cross-domain frames, variables, unload/recreation passed.
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=

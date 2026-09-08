@@ -1,0 +1,16 @@
+{
+  "stages": [
+    "4-1",
+    "4-2",
+    "4-3"
+  ],
+  "passed": true,
+  "inputsIdentical": true,
+  "note": "Final normal matrix archived before coverage instrumentation.",
+  "configurations": [
+    "Debug",
+    "Release"
+  ],
+  "unitTestsPerConfiguration": 233,
+  "reviewedCommit": "2aa8a9d4067646fecf0707760980ca629312396a"
+}

@@ -1,0 +1,11 @@
+FxDbg.Core.Errors.FxDbgException: The Engine could not synchronize and detach from the target within 4 seconds. ---> ClrDebug.DebugException: Error HRESULT CORDBG_E_CODE_NOT_AVAILABLE has been returned from a call to a COM component.
+   在 ClrDebug.Extensions.ThrowOnFailed(HRESULT hr)
+   在 FxDbg.Interop.DebugModule.NativeBinding.Dispose() 位置 C:\code\dotnet\FxDbgAgent\src\FxDbg.Interop\DebugModule.cs:行号 142
+   在 FxDbg.Core.Breakpoints.BreakpointManager.Remove(BreakpointId id) 位置 C:\code\dotnet\FxDbgAgent\src\FxDbg.Core\Breakpoints\BreakpointManager.cs:行号 78
+   在 FxDbg.Core.Breakpoints.BreakpointManager.Dispose() 位置 C:\code\dotnet\FxDbgAgent\src\FxDbg.Core\Breakpoints\BreakpointManager.cs:行号 126
+   在 FxDbg.Interop.FrameworkDebugSession.SynchronizeAndDetach() 位置 C:\code\dotnet\FxDbgAgent\src\FxDbg.Interop\FrameworkDebugSession.cs:行号 326
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 FxDbg.Interop.FrameworkDebugSession.SynchronizeAndDetach() 位置 C:\code\dotnet\FxDbgAgent\src\FxDbg.Interop\FrameworkDebugSession.cs:行号 347
+   在 FxDbg.Interop.FrameworkDebugSession.Dispose() 位置 C:\code\dotnet\FxDbgAgent\src\FxDbg.Interop\FrameworkDebugSession.cs:行号 158
+   在 FxDbg.IntegrationTests.Program.RunQueuedUnloadDetach(String root, String configuration) 位置 C:\code\dotnet\FxDbgAgent\tests\FxDbg.IntegrationTests\QueuedUnloadDetachTests.cs:行号 68
+   在 FxDbg.IntegrationTests.Program.Main(String[] args) 位置 C:\code\dotnet\FxDbgAgent\tests\FxDbg.IntegrationTests\Program.cs:行号 21

@@ -1,0 +1,13 @@
+69144 root name=FxDbg.IntegrationTests.x86.exe started=2026-09-08T05:34:30.6765027Z exited=True
+2968 parent=69144 name=conhost.exe started=2026-09-08T05:34:30.7083846Z exited=True
+37780 parent=69144 name=Fx40.ModuleLifecycle.x86.exe started=2026-09-08T05:34:30.7824724Z exited=True
+51640 parent=69144 name=Fx40.ModuleLifecycle.x86.exe started=2026-09-08T05:34:31.0956919Z exited=True
+440 parent=69144 name=Fx40.ModuleLifecycle.x86.exe started=2026-09-08T05:34:31.2450321Z exited=True
+71348 parent=69144 name=Fx40.ModuleLifecycle.x86.exe started=2026-09-08T05:34:31.4302707Z exited=True
+50924 parent=69144 name=Fx40.ModuleLifecycle.x86.exe started=2026-09-08T05:34:31.6011090Z exited=True
+18776 parent=69144 name=Fx40.ModuleLifecycle.x86.exe started=2026-09-08T05:34:31.7551075Z exited=True
+17616 parent=69144 name=Fx40.ModuleLifecycle.x86.exe started=2026-09-08T05:34:31.8776405Z exited=True
+40824 parent=69144 name=Fx40.ModuleLifecycle.x86.exe started=2026-09-08T05:34:32.0012172Z exited=True
+17380 parent=69144 name=Fx40.ModuleLifecycle.x86.exe started=2026-09-08T05:34:32.1245795Z exited=True
+43208 parent=69144 name=Fx40.ModuleLifecycle.x86.exe started=2026-09-08T05:34:32.2501999Z exited=True
+47668 parent=69144 name=Fx40.ModuleLifecycle.x86.exe started=2026-09-08T05:34:32.4303123Z exited=True

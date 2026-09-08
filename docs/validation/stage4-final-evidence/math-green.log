@@ -1,0 +1,11 @@
+  FxDbg.Core -> C:\code\dotnet\FxDbgAgent\src\FxDbg.Core\bin\Debug\netstandard2.0\FxDbg.Core.dll
+  FxDbg.Engine.Runtime -> C:\code\dotnet\FxDbgAgent\src\FxDbg.Engine\bin\Debug\netstandard2.0\FxDbg.Engine.Runtime.dll
+  FxDbg.Engine.Protocol -> C:\code\dotnet\FxDbgAgent\src\FxDbg.Engine.Protocol\bin\Debug\netstandard2.0\FxDbg.Engine.Protocol.dll
+  FxDbg.Symbols.Windows -> C:\code\dotnet\FxDbgAgent\src\FxDbg.Symbols.Windows\bin\Debug\netstandard2.0\FxDbg.Symbols.Windows.dll
+  FxDbg.Host -> C:\code\dotnet\FxDbgAgent\src\FxDbg.Host\bin\Debug\net10.0-windows\FxDbg.Host.dll
+  FxDbg.Cli -> C:\code\dotnet\FxDbgAgent\src\FxDbg.Cli\bin\Debug\net10.0-windows\fxdbg.dll
+  FxDbg.UnitTests -> C:\code\dotnet\FxDbgAgent\tests\FxDbg.UnitTests\bin\Debug\net10.0-windows\FxDbg.UnitTests.dll
+C:\code\dotnet\FxDbgAgent\tests\FxDbg.UnitTests\bin\Debug\net10.0-windows\FxDbg.UnitTests.dll (.NETCoreApp,Version=v10.0)的测试运行
+总共 1 个测试文件与指定模式相匹配。
+
+已通过! - 失败:     0，通过:   109，已跳过:     0，总计:   109，持续时间: 277 ms - FxDbg.UnitTests.dll (net10.0)

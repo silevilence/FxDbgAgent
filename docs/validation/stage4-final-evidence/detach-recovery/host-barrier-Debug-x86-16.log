@@ -1,0 +1,16 @@
+
+δ���������쳣:  System.NotSupportedException: Ҫ�� FileStream ��һ�������ļ����豸�������Ҫ�ԡ�com1:����lpt1:�����豸��֧�֣������ CreateFile��Ȼ��ʹ�ò��� OS �����Ϊ IntPtr �� FileStream ���캯����
+   �� Microsoft.Win32.Win32Native.SafeCreateFile(String lpFileName, Int32 dwDesiredAccess, FileShare dwShareMode, SECURITY_ATTRIBUTES securityAttrs, FileMode dwCreationDisposition, Int32 dwFlagsAndAttributes, IntPtr hTemplateFile)
+   �� System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   �� System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   �� System.IO.StreamWriter.CreateFile(String path, Boolean append, Boolean checkHost)
+   �� System.IO.StreamWriter..ctor(String path, Boolean append, Encoding encoding, Int32 bufferSize, Boolean checkHost)
+   �� System.IO.File.InternalWriteAllText(String path, String contents, Encoding encoding, Boolean checkHost)
+   �� System.IO.File.WriteAllText(String path, String contents)
+   �� FxDbg.Debuggees.Program.Main(String[] args) λ�� C:\code\dotnet\FxDbgAgent\tests\Debuggees\Fx40.ModuleLifecycle\Program.cs:�к� 76
+System.InvalidOperationException: After detach the target must complete both remaining domains without an attached debugger.
+   �� FxDbg.IntegrationTests.Program.Require(Boolean condition, String message) λ�� C:\code\dotnet\FxDbgAgent\tests\FxDbg.IntegrationTests\Program.cs:�к� 157
+   �� FxDbg.IntegrationTests.Program.RunQueuedUnloadDetach(String root, String configuration) λ�� C:\code\dotnet\FxDbgAgent\tests\FxDbg.IntegrationTests\QueuedUnloadDetachTests.cs:�к� 73
+   �� FxDbg.IntegrationTests.Program.Main(String[] args) λ�� C:\code\dotnet\FxDbgAgent\tests\FxDbg.IntegrationTests\Program.cs:�к� 21
+
+Supervisor: exit=1, timedOut=False, forcedOwnedCleanup=

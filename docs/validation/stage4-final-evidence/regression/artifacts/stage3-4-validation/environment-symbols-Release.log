@@ -1,0 +1,15 @@
+  姝ｅ湪纭畾瑕佽繕鍘熺殑椤圭洰鈥?
+  鎵€鏈夐」鐩潎鏄渶鏂扮殑锛屾棤娉曡繕鍘熴€?
+  FxDbg.Core -> C:\code\dotnet\FxDbgAgent\src\FxDbg.Core\bin\Release\netstandard2.0\FxDbg.Core.dll
+  FxDbg.Engine.Runtime -> C:\code\dotnet\FxDbgAgent\src\FxDbg.Engine\bin\Release\netstandard2.0\FxDbg.Engine.Runtime.dll
+  FxDbg.Symbols.Windows -> C:\code\dotnet\FxDbgAgent\src\FxDbg.Symbols.Windows\bin\Release\netstandard2.0\FxDbg.Symbols.Windows.dll
+  FxDbg.Engine.Protocol -> C:\code\dotnet\FxDbgAgent\src\FxDbg.Engine.Protocol\bin\Release\netstandard2.0\FxDbg.Engine.Protocol.dll
+  FxDbg.Host -> C:\code\dotnet\FxDbgAgent\src\FxDbg.Host\bin\Release\net10.0-windows\FxDbg.Host.dll
+  FxDbg.Cli -> C:\code\dotnet\FxDbgAgent\src\FxDbg.Cli\bin\Release\net10.0-windows\fxdbg.dll
+  FxDbg.UnitTests -> C:\code\dotnet\FxDbgAgent\tests\FxDbg.UnitTests\bin\Release\net10.0-windows\FxDbg.UnitTests.dll
+C:\code\dotnet\FxDbgAgent\tests\FxDbg.UnitTests\bin\Release\net10.0-windows\FxDbg.UnitTests.dll (.NETCoreApp,Version=v10.0)鐨勬祴璇曡繍琛?
+鎬诲叡 1 涓祴璇曟枃浠朵笌鎸囧畾妯″紡鐩稿尮閰嶃€?
+
+宸查€氳繃! - 澶辫触:     0锛岄€氳繃:     4锛屽凡璺宠繃:     0锛屾€昏:     4锛屾寔缁椂闂? 78 ms - FxDbg.UnitTests.dll (net10.0)
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=

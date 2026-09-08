@@ -1,0 +1,42 @@
+PASS: DAP conditional x86 Release unconditional, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x86 Release unconditional, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x86 Release exact, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x86 Release exact, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x86 Release threshold, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x86 Release threshold, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x86 Release expression, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x86 Release expression, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x86 Release combined, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x86 Release combined, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x86 Release false, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x86 Release false, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x86 Release nonboolean, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x86 Release nonboolean, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x86 Release error, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x86 Release error, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x86 Release getter, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x86 Release getter, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x86 Release small-overflow, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x86 Release small-overflow, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x64 Release unconditional, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x64 Release unconditional, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x64 Release exact, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x64 Release exact, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x64 Release threshold, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x64 Release threshold, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x64 Release expression, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x64 Release expression, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x64 Release combined, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x64 Release combined, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x64 Release false, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x64 Release false, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x64 Release nonboolean, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x64 Release nonboolean, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x64 Release error, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x64 Release error, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x64 Release getter, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x64 Release getter, shared conditions, counters, diagnostics and state oracle.
+PASS: DAP conditional x64 Release small-overflow, exact stops, stable IDs/counters, diagnostics and state oracle.
+PASS: CLI conditional x64 Release small-overflow, shared conditions, counters, diagnostics and state oracle.
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=

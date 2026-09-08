@@ -1,0 +1,9 @@
+[SC] DeleteService 成功
+[SC] DeleteService 成功
+[31;1mException: [0mC:\code\dotnet\FxDbgAgent\eng\setup-stage3-4-environment.ps1:271[0m
+[31;1m[0m[36;1mLine |[0m
+[31;1m[0m[36;1m[36;1m 271 | [0m … eanupProcesses;[36;1mthrow "Cleanup incomplete: $($remaining -join ', ')"[0m }[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m     | [31;1m                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m     | [31;1mCleanup incomplete: service:FxDbgStage34-check-x86[0m
+
+Supervisor: exit=1, timedOut=False, forcedOwnedCleanup=

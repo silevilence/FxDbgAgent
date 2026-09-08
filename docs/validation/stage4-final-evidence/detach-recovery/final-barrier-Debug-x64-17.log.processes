@@ -1,0 +1,4 @@
+51764 root name=FxDbg.IntegrationTests.x64.exe started=2026-09-08T05:16:40.6747506Z exited=True
+36200 parent=51764 name=conhost.exe started=2026-09-08T05:16:40.6852400Z exited=True
+45992 parent=51764 name=Fx40.ModuleLifecycle.exe started=2026-09-08T05:16:40.7856485Z exited=True
+20536 parent=51764 name=Fx40.ModuleLifecycle.exe started=2026-09-08T05:16:41.3889392Z exited=True

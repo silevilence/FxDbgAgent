@@ -1,0 +1,46 @@
+  姝ｅ湪纭畾瑕佽繕鍘熺殑椤圭洰鈥?
+  鎵€鏈夐」鐩潎鏄渶鏂扮殑锛屾棤娉曡繕鍘熴€?
+  FxDbg.Breakpoint.Probe -> C:\code\dotnet\FxDbgAgent\tests\Probes\FxDbg.Breakpoint.Probe\bin\Release\net48\FxDbg.Breakpoint.Probe.exe
+  Fx40.Console.x64 -> C:\code\dotnet\FxDbgAgent\tests\Debuggees\Fx40.Console.x64\bin\Release\net40\Fx40.Console.x64.exe
+  FxDbg.ClrDebug.Probe.x64 -> C:\code\dotnet\FxDbgAgent\tests\Probes\FxDbg.ClrDebug.Probe.x64\bin\Release\net48\FxDbg.ClrDebug.Probe.x64.exe
+  Fx40.Console.x86 -> C:\code\dotnet\FxDbgAgent\tests\Debuggees\Fx40.Console.x86\bin\Release\net40\Fx40.Console.x86.exe
+  FxDbg.Core -> C:\code\dotnet\FxDbgAgent\src\FxDbg.Core\bin\Release\netstandard2.0\FxDbg.Core.dll
+  Fx45.Console.AnyCpuPreferred -> C:\code\dotnet\FxDbgAgent\tests\Debuggees\Fx45.Console.AnyCpuPreferred\bin\Release\net45\Fx45.Console.AnyCpuPreferred.exe
+  Fx40.WinForms.x86 -> C:\code\dotnet\FxDbgAgent\tests\Debuggees\Fx40.WinForms.x86\bin\Release\net40\Fx40.WinForms.x86.exe
+  FxDbg.ClrDebug.Probe -> C:\code\dotnet\FxDbgAgent\tests\Probes\FxDbg.ClrDebug.Probe\bin\Release\net48\FxDbg.ClrDebug.Probe.exe
+  Fx40.ModuleLifecycle -> C:\code\dotnet\FxDbgAgent\tests\Debuggees\Fx40.ModuleLifecycle\bin\Release\net40\Fx40.ModuleLifecycle.exe
+  Fx35.Console.x86 -> C:\code\dotnet\FxDbgAgent\tests\Debuggees\Fx35.Console.x86\bin\Release\net35\Fx35.Console.x86.exe
+  FxDbg.Symbols.Probe -> C:\code\dotnet\FxDbgAgent\tests\Probes\FxDbg.Symbols.Probe\bin\Release\net8.0-windows\FxDbg.Symbols.Probe.dll
+  Fx40.ModuleLifecycle.x86 -> C:\code\dotnet\FxDbgAgent\tests\Debuggees\Fx40.ModuleLifecycle.x86\bin\Release\net40\Fx40.ModuleLifecycle.x86.exe
+  Core80.Console.x64 -> C:\code\dotnet\FxDbgAgent\tests\Debuggees\Core80.Console.x64\bin\Release\net8.0\Core80.Console.x64.dll
+  Fx40.WinForms.x64 -> C:\code\dotnet\FxDbgAgent\tests\Debuggees\Fx40.WinForms.x64\bin\Release\net40\Fx40.WinForms.x64.exe
+  Fx40.LateModule -> C:\code\dotnet\FxDbgAgent\tests\Debuggees\Fx40.LateModule\bin\Release\net40\Fx40.LateModule.dll
+  Fx40.Environment.Service.x86 -> C:\code\dotnet\FxDbgAgent\tests\Debuggees\Fx40.Environment.Service.x86\bin\Release\net40\Fx40.Environment.Service.x86.exe
+  Fx40.Environment.Web -> C:\code\dotnet\FxDbgAgent\tests\Debuggees\Fx40.Environment.Web\bin\Release\net40\Fx40.Environment.Web.dll
+  Fx40.Environment.Late -> C:\code\dotnet\FxDbgAgent\tests\Debuggees\Fx40.Environment.Late\bin\Release\net40\Fx40.Environment.Late.dll
+  Fx40.Environment.Service.x64 -> C:\code\dotnet\FxDbgAgent\tests\Debuggees\Fx40.Environment.Service.x64\bin\Release\net40\Fx40.Environment.Service.x64.exe
+  FxDbg.McpIntegrationTests -> C:\code\dotnet\FxDbgAgent\tests\FxDbg.McpIntegrationTests\bin\Release\net10.0-windows\FxDbg.McpIntegrationTests.dll
+  FxDbg.Symbols.Windows -> C:\code\dotnet\FxDbgAgent\src\FxDbg.Symbols.Windows\bin\Release\netstandard2.0\FxDbg.Symbols.Windows.dll
+  FxDbg.Engine.Protocol -> C:\code\dotnet\FxDbgAgent\src\FxDbg.Engine.Protocol\bin\Release\netstandard2.0\FxDbg.Engine.Protocol.dll
+  FxDbg.Interop -> C:\code\dotnet\FxDbgAgent\src\FxDbg.Interop\bin\Release\net48\FxDbg.Interop.dll
+  FxDbg.IntegrationTests.x64 -> C:\code\dotnet\FxDbgAgent\tests\FxDbg.IntegrationTests\bin\Release\net48\FxDbg.IntegrationTests.x64.exe
+  FxDbg.Engine.Runtime -> C:\code\dotnet\FxDbgAgent\src\FxDbg.Engine\bin\Release\netstandard2.0\FxDbg.Engine.Runtime.dll
+  FxDbg.IntegrationTests.x86 -> C:\code\dotnet\FxDbgAgent\tests\FxDbg.IntegrationTests\bin\Release\net48\FxDbg.IntegrationTests.x86.exe
+  FxDbg.Host -> C:\code\dotnet\FxDbgAgent\src\FxDbg.Host\bin\Release\net10.0-windows\FxDbg.Host.dll
+  FxDbg.Engine.x86 -> C:\code\dotnet\FxDbgAgent\src\FxDbg.Engine\bin\Release\net48\FxDbg.Engine.x86.exe
+  FxDbg.Engine.x64 -> C:\code\dotnet\FxDbgAgent\src\FxDbg.Engine\bin\Release\net48\FxDbg.Engine.x64.exe
+  FxDbg.DapHost -> C:\code\dotnet\FxDbgAgent\src\FxDbg.DapHost\bin\Release\net10.0-windows\fxdbg-dap.dll
+  FxDbg.McpHost -> C:\code\dotnet\FxDbgAgent\src\FxDbg.McpHost\bin\Release\net10.0-windows\fxdbg-mcp.dll
+  FxDbg.HostIntegrationTests -> C:\code\dotnet\FxDbgAgent\tests\FxDbg.HostIntegrationTests\bin\Release\net10.0-windows\FxDbg.HostIntegrationTests.dll
+  FxDbg.Cli -> C:\code\dotnet\FxDbgAgent\src\FxDbg.Cli\bin\Release\net10.0-windows\fxdbg.dll
+  FxDbg.UnitTests -> C:\code\dotnet\FxDbgAgent\tests\FxDbg.UnitTests\bin\Release\net10.0-windows\FxDbg.UnitTests.dll
+
+宸叉垚鍔熺敓鎴愩€?
+    0 涓鍛?
+    0 涓敊璇?
+
+宸茬敤鏃堕棿 00:00:07.49
+  FxDbg.McpHost -> C:\code\dotnet\FxDbgAgent\artifacts\mcp\Release\
+Mcp bundle: C:\code\dotnet\FxDbgAgent\artifacts\mcp\Release
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=

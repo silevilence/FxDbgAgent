@@ -1,0 +1,39 @@
+{
+  "temporaryInstrumentationRemoved": true,
+  "unitsPerConfiguration": 233,
+  "continuousNoise": {
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "configurations": [
+      "Debug",
+      "Release"
+    ],
+    "passed": true
+  },
+  "note": "Failure candidates and manual-stop experiment retained separately from final-prefixed passing evidence; no tests or production hooks from the diagnostic experiment are compiled.",
+  "mcp": {
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "iterations": 40,
+    "configuration": "Release",
+    "passed": true
+  },
+  "unloadBarrier": {
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "configurations": [
+      "Debug",
+      "Release"
+    ],
+    "scenariosPerIteration": 2,
+    "iterationsPerCombination": 25,
+    "passed": true
+  },
+  "productionCommit": "2aa8a9d4067646fecf0707760980ca629312396a"
+}

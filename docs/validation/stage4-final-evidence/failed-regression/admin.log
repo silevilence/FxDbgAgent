@@ -1,0 +1,76 @@
+Running final-package (deadline 240s)...
+final-package passed. Evidence: C:\code\dotnet\FxDbgAgent\artifacts\stage3-validation\final-package.log
+Running final-appdomains (deadline 1200s)...
+final-appdomains passed. Evidence: C:\code\dotnet\FxDbgAgent\artifacts\stage3-validation\final-appdomains.log
+Running final-paging (deadline 1200s)...
+final-paging passed. Evidence: C:\code\dotnet\FxDbgAgent\artifacts\stage3-validation\final-paging.log
+Running final-source-mappings (deadline 1200s)...
+final-source-mappings passed. Evidence: C:\code\dotnet\FxDbgAgent\artifacts\stage3-validation\final-source-mappings.log
+Running final-dap (deadline 1500s)...
+final-dap passed. Evidence: C:\code\dotnet\FxDbgAgent\artifacts\stage3-validation\final-dap.log
+Running final-service-iis (deadline 7200s)...
+final-service-iis passed. Evidence: C:\code\dotnet\FxDbgAgent\artifacts\stage3-validation\final-service-iis.log
+Running final-stage2-regression (deadline 4200s)...
+Running stage2-3-install-evidence (deadline 120s)...
+
+[38;5;250m鈻堚枅鈻堚枅鈻堚枅鈻堚晽鈻堚枅鈺? 鈻堚枅鈺椻枅鈻堚晽鈻堚枅鈺?    鈻堚枅鈺?    鈻堚枅鈻堚枅鈻堚枅鈻堚晽[0m
+[38;5;248m鈻堚枅鈺斺晲鈺愨晲鈺愨暆鈻堚枅鈺?鈻堚枅鈺斺暆鈻堚枅鈺戔枅鈻堚晳     鈻堚枅鈺?    鈻堚枅鈺斺晲鈺愨晲鈺愨暆[0m
+[38;5;245m鈻堚枅鈻堚枅鈻堚枅鈻堚晽鈻堚枅鈻堚枅鈻堚晹鈺?鈻堚枅鈺戔枅鈻堚晳     鈻堚枅鈺?    鈻堚枅鈻堚枅鈻堚枅鈻堚晽[0m
+[38;5;243m鈺氣晲鈺愨晲鈺愨枅鈻堚晳鈻堚枅鈺斺晲鈻堚枅鈺?鈻堚枅鈺戔枅鈻堚晳     鈻堚枅鈺?    鈺氣晲鈺愨晲鈺愨枅鈻堚晳[0m
+[38;5;240m鈻堚枅鈻堚枅鈻堚枅鈻堚晳鈻堚枅鈺? 鈻堚枅鈺椻枅鈻堚晳鈻堚枅鈻堚枅鈻堚枅鈻堚晽鈻堚枅鈻堚枅鈻堚枅鈻堚晽鈻堚枅鈻堚枅鈻堚枅鈻堚晳[0m
+[38;5;238m鈺氣晲鈺愨晲鈺愨晲鈺愨暆鈺氣晲鈺? 鈺氣晲鈺濃暁鈺愨暆鈺氣晲鈺愨晲鈺愨晲鈺愨暆鈺氣晲鈺愨晲鈺愨晲鈺愨暆鈺氣晲鈺愨晲鈺愨晲鈺愨暆[0m
+
+T  [46m[30m skills [39m[49m
+[?25l|
+o  Source: C:\code\dotnet\FxDbgAgent
+[?25h[?25l|
+o  Local path validated
+[?25h[?25l|
+o  Found [32m1[39m skill
+[?25h|
+鈥? Selected 1 skill: [36mfxdbg-agent[39m
+
+|
+o  Installation Summary ---------+
+|                                |
+|  [36m.\.agents\skills\fxdbg-agent[39m  |
+|    [2mcopy 鈫?[22m Codex                |
+|                                |
++--------------------------------+
+[?25l|
+o  Installation complete
+[?25h
+|
+o  [32mInstalled 1 skill[39m ----------------+
+|                                    |
+|  [32m鉁?[39m fxdbg-agent [2m(copied)[22m            |
+|    [2m鈫?[22m .\.agents\skills\fxdbg-agent  |
+|                                    |
++------------------------------------+
+
+|
+鈥? [32mDone![39m[2m  Review skills before use; they run with full agent permissions.[22m
+
+[31;1mException: [0mC:\code\dotnet\FxDbgAgent\eng\verify-skill-install.ps1:33[0m
+[31;1m[0m[36;1mLine |[0m
+[31;1m[0m[36;1m[36;1m  33 | [0m … 1])).Hash) { [36;1mthrow 'Packaged references are out of sync with docs.'[0m }[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m     | [31;1m                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m     | [31;1mPackaged references are out of sync with docs.[0m
+
+Supervisor: exit=1, timedOut=False, forcedOwnedCleanup=
+[31;1mException: [0mC:\code\dotnet\FxDbgAgent\eng\verify-stage2.ps1:29[0m
+[31;1m[0m[36;1mLine |[0m
+[31;1m[0m[36;1m[36;1m  29 | [0m …   if ($code -ne 0) { [36;1mthrow "$Name failed with exit $code. See $log"[0m }[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m     | [31;1m                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m     | [31;1mstage2-3-install-evidence failed with exit 1. See[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m[31;1m[36;1m     | [31;1mC:\code\dotnet\FxDbgAgent\artifacts\stage2-validation\stage2-3-install-evidence.log[0m
+
+Supervisor: exit=1, timedOut=False, forcedOwnedCleanup=
+[31;1mException: [0mC:\code\dotnet\FxDbgAgent\eng\verify-stage3.ps1:27[0m
+[31;1m[0m[36;1mLine |[0m
+[31;1m[0m[36;1m[36;1m  27 | [0m … Path $log -Tail 70 | Write-Host; [36;1mthrow "$Name failed: $code ($log)"[0m }[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m     | [31;1m                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m     | [31;1mfinal-stage2-regression failed: 1[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m[31;1m[36;1m     | [31;1m(C:\code\dotnet\FxDbgAgent\artifacts\stage3-validation\final-stage2-regression.log)[0m
+
+Supervisor: exit=1, timedOut=False, forcedOwnedCleanup=

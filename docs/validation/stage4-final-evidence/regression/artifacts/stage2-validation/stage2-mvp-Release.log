@@ -1,0 +1,15 @@
+MCP MVP: Release Console x86 observe passed.
+MCP MVP: Release Console x86 late passed.
+MCP MVP: Release Console x86 exception passed.
+MCP MVP: Release WinForms x86 observe passed.
+MCP MVP: Release WinForms x86 late passed.
+MCP MVP: Release WinForms x86 exception passed.
+MCP MVP: Release Console x64 observe passed.
+MCP MVP: Release Console x64 late passed.
+MCP MVP: Release Console x64 exception passed.
+MCP MVP: Release WinForms x64 observe passed.
+MCP MVP: Release WinForms x64 late passed.
+MCP MVP: Release WinForms x64 exception passed.
+MCP MVP: all thirteen negative schemas, CoreCLR, launch/attach cross architecture and PDB mismatch passed.
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=

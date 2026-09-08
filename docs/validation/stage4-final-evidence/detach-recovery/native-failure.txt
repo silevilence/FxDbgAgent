@@ -1,0 +1,2 @@
+[DEBUG-stage4-detach] phase=bindings error=DebugException hr=80131301 awaiting=False manual=True entry=False pending=False startup=False
+[DEBUG-stage4-detach] phase=bindings error=DebugException hr=80131309 awaiting=False manual=True entry=False pending=False startup=False

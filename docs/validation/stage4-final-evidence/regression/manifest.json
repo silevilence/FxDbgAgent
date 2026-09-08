@@ -1,0 +1,1796 @@
+{
+  "inputsCount": 298,
+  "files": [
+    {
+      "path": "artifacts\\stage3-validation\\appdomains-mcp-Debug.log",
+      "sourceSha256": "5B44EF9AB8DAE43AB9566E92F48EE000137D0CAB58DC8E53D9F067ED13F23579",
+      "sourceModifiedUtc": "2026-09-08T05:44:07.8213847Z",
+      "archiveSha256": "CB7B89D4F7C6CC654073153DB464CAFF343ADDDD2FEC195A72C20852ABCE619A"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\appdomains-mcp-Debug.log.processes",
+      "sourceSha256": "CDF42E9E5E89A250D8A173E04597AE4400E39172FFA62DCF4BF98D44A12FDFEE",
+      "sourceModifiedUtc": "2026-09-08T05:44:07.8233830Z",
+      "archiveSha256": "33611E8C14FFD7AF47BA466EC51C526C807145FBC0A67D40A77B1BEE860799B3"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\appdomains-mcp-Release.log",
+      "sourceSha256": "305810425241F4E6CE1A7ADFC748AB6A2A6250522D3108FAC444E48346485C1E",
+      "sourceModifiedUtc": "2026-09-08T05:44:44.5769196Z",
+      "archiveSha256": "7C729917B55F638A0F72AA2410F686485B69FE465ECDE23EE604B076C4E38EA7"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\appdomains-mcp-Release.log.processes",
+      "sourceSha256": "B2F71CD1D68D1361A76EB992E75BD635AD6AE2DE32D3321C91EC039AE5F542F3",
+      "sourceModifiedUtc": "2026-09-08T05:44:44.5769196Z",
+      "archiveSha256": "3E0772AF7F6F2C1DA69410275A276E9954BF3977BFFF93027BAFE2A75EFB79A9"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\dap-build-Debug.log",
+      "sourceSha256": "8CB29B58BE835A712FC124714466690EB45235378C4CAC80B45ED2BDE662E0B3",
+      "sourceModifiedUtc": "2026-09-08T05:47:40.3409209Z",
+      "archiveSha256": "4E0369AEAE1EEFEB24D8C651E056B4565DD17813B1DCAFF06B004DF8FE719DB3"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\dap-build-Debug.log.processes",
+      "sourceSha256": "AA6A78A0D41053EC595935C9DACBF1729D250BB34F1E90F1E5E907F4C34A2647",
+      "sourceModifiedUtc": "2026-09-08T05:47:40.3429201Z",
+      "archiveSha256": "AC053842974415633B9653E0338E3467579238F22C3FE064BBFEBE627CE9CF26"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\dap-build-Release.log",
+      "sourceSha256": "4FD57289F1A48D2EE897F0E28ADF775552AEBF254925A819CA3EC6DE649E3029",
+      "sourceModifiedUtc": "2026-09-08T05:48:33.4675389Z",
+      "archiveSha256": "839D4992B012FECB57ABEB79CB46F853D7C1D4D5E71DB745D95E11B6BD23DF05"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\dap-build-Release.log.processes",
+      "sourceSha256": "00E7674E9D7C4C714024DED36D684E02E5AA91A0574AC680DD14E890BA1BFEF5",
+      "sourceModifiedUtc": "2026-09-08T05:48:33.4675389Z",
+      "archiveSha256": "C8A7964E8A4CAB2EF8F9BE81B73D8383CA17BD5A7BBC8AF4D183623CCF06A69B"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\dap-protocol-Debug.log",
+      "sourceSha256": "C3C56E4E024FFDEEECF295601E6A8650223CBB0F76CF850716A7889BC01F2A9A",
+      "sourceModifiedUtc": "2026-09-08T05:47:59.7805096Z",
+      "archiveSha256": "C3C56E4E024FFDEEECF295601E6A8650223CBB0F76CF850716A7889BC01F2A9A"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\dap-protocol-Debug.log.processes",
+      "sourceSha256": "F48DCDDC98154AD13449C31A9A87D80CC002B15C673E5E125EBAD4A68CD53DA5",
+      "sourceModifiedUtc": "2026-09-08T05:47:59.7825099Z",
+      "archiveSha256": "BD2693E1AF4A097A94C77598AE76EA6357CC66696855CAD79034A8A2AA1AC1DB"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\dap-protocol-Release.log",
+      "sourceSha256": "E37449D4317248E488FA13489E570FC45000FCE24F62A65699A89E8BC9B88D25",
+      "sourceModifiedUtc": "2026-09-08T05:48:53.7302618Z",
+      "archiveSha256": "E37449D4317248E488FA13489E570FC45000FCE24F62A65699A89E8BC9B88D25"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\dap-protocol-Release.log.processes",
+      "sourceSha256": "465C5882D850D3E0BDB1F68A08F21F26B3DC35F208DC7DB82479DEF8F375C011",
+      "sourceModifiedUtc": "2026-09-08T05:48:53.7312592Z",
+      "archiveSha256": "2BC40524F139DCF7BA008D64CE90B82CDAD026F6ABDE4DF0017A8C134371866D"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\dap-vscode-Debug.log",
+      "sourceSha256": "2612A7034FB84E39D0F88002C1B759408C842CC1F1FD34020AEB6D26887F791D",
+      "sourceModifiedUtc": "2026-09-08T05:48:15.0106385Z",
+      "archiveSha256": "9DAA91CE17D2ADCAA68B85E5B434F38B89149AE03FE04ABE94CBDC83DFB4204F"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\dap-vscode-Debug.log.processes",
+      "sourceSha256": "39F00A9C49508A4761DB09966F2CDEB1C2C873F4624FC830180CD5E667128B51",
+      "sourceModifiedUtc": "2026-09-08T05:48:15.0116377Z",
+      "archiveSha256": "CC85F889019A3D54381088D13FC954F6F21E70BEA89D178942CD3234C362A0EE"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\dap-vscode-Release.log",
+      "sourceSha256": "EE450C13858C89D108AA55ABD7140F6F23DE558BD428D39223FA73E2B71A6BDC",
+      "sourceModifiedUtc": "2026-09-08T05:49:09.0760066Z",
+      "archiveSha256": "924F6C513ECC358980DEFDA874C0A8FFE5CC9BA5AF341D8618F3A74CA9FD8AB1"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\dap-vscode-Release.log.processes",
+      "sourceSha256": "B4130E4253EDB297CDF9827D9FDEDF390C55D5EDA919F7A0A1B4B50D1AF5D959",
+      "sourceModifiedUtc": "2026-09-08T05:49:09.0770058Z",
+      "archiveSha256": "C10BFF509AAC4B9175ACED9B5EB76CB2FE735AEA884C92CD7D78C26235200EDA"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\domains-events-Debug-x64.log",
+      "sourceSha256": "FFE11D6E575B617D6190C0BEDAF5E5D44770447ED2163870BA8F5B9DB8063133",
+      "sourceModifiedUtc": "2026-09-08T05:44:49.1231875Z",
+      "archiveSha256": "55666240C9BA15B3912F1F474198DCA1308D60C907160C7BBD9CD8A39B9FB7BB"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\domains-events-Debug-x64.log.processes",
+      "sourceSha256": "8C28058AC62B308FA97FF1ADEB188B42AAFA1FFAA2F3C812C7D7F579D7166CD4",
+      "sourceModifiedUtc": "2026-09-08T05:44:49.1241859Z",
+      "archiveSha256": "94691B6AA5291445C8B79E8335CB4296C73ACB3F826C826AA4A15CD77BCEC828"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\domains-events-Debug-x86.log",
+      "sourceSha256": "98C46B8D401C9806092DB83A89BD34F910C8398ED6741EEF732C735F06B7A25C",
+      "sourceModifiedUtc": "2026-09-08T05:44:46.8632768Z",
+      "archiveSha256": "A4932A78256034D6C3ED80392A9FDC0F57FF287315BC6A8D4D585F3B80C83F53"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\domains-events-Debug-x86.log.processes",
+      "sourceSha256": "E823333C2A8540BC5BC6B3AFB30AB716209288D3FA9D0C2A0720BE3A22F94923",
+      "sourceModifiedUtc": "2026-09-08T05:44:46.8648200Z",
+      "archiveSha256": "FA13634E2B623E9B070290BF09260A5AA3858574BE158ECF10C7501E62CF6603"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\domains-events-Release-x64.log",
+      "sourceSha256": "FFE11D6E575B617D6190C0BEDAF5E5D44770447ED2163870BA8F5B9DB8063133",
+      "sourceModifiedUtc": "2026-09-08T05:44:53.6247633Z",
+      "archiveSha256": "55666240C9BA15B3912F1F474198DCA1308D60C907160C7BBD9CD8A39B9FB7BB"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\domains-events-Release-x64.log.processes",
+      "sourceSha256": "442C2F45FDFC6F88D1F17AF69CCDAD6CD691AADCB617681C09A2D19C6BFA5598",
+      "sourceModifiedUtc": "2026-09-08T05:44:53.6262697Z",
+      "archiveSha256": "27CC0A0567B4C6CB876A9D3E8F7BEE0A04F7C6B39A63E613381E40B67C9BFA7D"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\domains-events-Release-x86.log",
+      "sourceSha256": "98C46B8D401C9806092DB83A89BD34F910C8398ED6741EEF732C735F06B7A25C",
+      "sourceModifiedUtc": "2026-09-08T05:44:51.3595622Z",
+      "archiveSha256": "A4932A78256034D6C3ED80392A9FDC0F57FF287315BC6A8D4D585F3B80C83F53"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\domains-events-Release-x86.log.processes",
+      "sourceSha256": "B406CF60990EFC352E29169B7E928BBAB29439997830687F784EC729EEA7371F",
+      "sourceModifiedUtc": "2026-09-08T05:44:51.3595622Z",
+      "archiveSha256": "272414EA508041F5AD4EDCAFFB2AE37BBF5E16C07D3672925B869B544B584DF6"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\feature-build-Debug.log",
+      "sourceSha256": "76C0B0BC586E4B08A5FB03559B9E5A4922B157B1AECE00E21077B79F3ECE094F",
+      "sourceModifiedUtc": "2026-09-08T05:46:21.5249007Z",
+      "archiveSha256": "0C6F55AA738A9D082CD8ADF54589D71DE6CB5E180B80080D751BB788EA1C5F17"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\feature-build-Debug.log.processes",
+      "sourceSha256": "7BBE3CB1ED7FE6E6312FCC4FEB66570F8C9BDEC6D3A3C51593C00D59B0A95E76",
+      "sourceModifiedUtc": "2026-09-08T05:46:21.5269264Z",
+      "archiveSha256": "502B229FC67B4ABC1D5B451F4C52BDDF8AD4BE9B91A0360DEEFE5E2D676F32B9"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\feature-build-Release.log",
+      "sourceSha256": "8081FFE5EBADE0967B4B6D3D381B063509C8B3EB23AFB1C10C3E71432B585DA1",
+      "sourceModifiedUtc": "2026-09-08T05:46:59.7072325Z",
+      "archiveSha256": "37AD7C594F7E8435C4CF6B36A937004E71FB195F3E92BA8980B62C793E162696"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\feature-build-Release.log.processes",
+      "sourceSha256": "E06A7C103610DC0E6C91B6071C5595B0955EA8C2A50599470E29C5925FD629CE",
+      "sourceModifiedUtc": "2026-09-08T05:46:59.7082359Z",
+      "archiveSha256": "E5160EC1F383111B23E830097229EC24903A33E4632B6C3FE0DDAF0A19A5A397"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\feature-unit-Debug.log",
+      "sourceSha256": "6AEF6448D56ED24D780586488BD1812D4BFE2D929467D9C1DCFA3963690141C4",
+      "sourceModifiedUtc": "2026-09-08T05:46:42.1008476Z",
+      "archiveSha256": "7C9EA061D70EFC41D1DC801313DF0B08F4404E78BF315EA7F9AA369D87DB62BA"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\feature-unit-Debug.log.processes",
+      "sourceSha256": "370A5AAE3061C14899D14E534D371185D9D70DCAD41CF57118D0E28297F57E07",
+      "sourceModifiedUtc": "2026-09-08T05:46:42.1028432Z",
+      "archiveSha256": "9E526F546319D7D1D1A4B34CDC77BAF3F684C4177B305C537F9261FE81BDCA2A"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\feature-unit-Release.log",
+      "sourceSha256": "D347E86E483977E954627F916141106FFF1676DD202D012F101B8327A82343AF",
+      "sourceModifiedUtc": "2026-09-08T05:47:21.1589500Z",
+      "archiveSha256": "171DFC0D54B7DF41CC6F3EC324431CD3C13483710B5843110329E54E9AE2C2D5"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\feature-unit-Release.log.processes",
+      "sourceSha256": "7A61CA4231553BC249B173A426CB9D4A2E922917DF90C6111F1175364E4D4C32",
+      "sourceModifiedUtc": "2026-09-08T05:47:21.1614606Z",
+      "archiveSha256": "AADC635CF663BC51284881BC11CE60B3397B853F97916A230AD734FE4873FEBE"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\final-appdomains.log",
+      "sourceSha256": "C631047573148D70B416B1A0E67FF9C4093B201C4B41C59D479A43F4B9FA2ED7",
+      "sourceModifiedUtc": "2026-09-08T05:44:53.7044944Z",
+      "archiveSha256": "2A7DE95509EF60DAA40E294B53C101E1F666812642582F981D44071B2752FA30"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\final-appdomains.log.processes",
+      "sourceSha256": "CB909C257262A5F86DF17A9BED1ECBBD08A7834072B871A1D02ACCE8C7572779",
+      "sourceModifiedUtc": "2026-09-08T05:44:53.7084983Z",
+      "archiveSha256": "BF308DA443D65485442ADD7B614CFE3AB57EE4A91514860581BB520362BDD33F"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\final-dap.log",
+      "sourceSha256": "27F26C57E960133A4B09325A05F63421E6C823A7643332E70B62A7E49E437302",
+      "sourceModifiedUtc": "2026-09-08T05:49:09.1886666Z",
+      "archiveSha256": "C443C10811A99F13E6284C1B0970359543E47FA231B0D01A6ED6576104016B4C"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\final-dap.log.processes",
+      "sourceSha256": "DB12498C951E8A6D3456A3F7E0E229B55235701FA0AB402DAB8452F4E293085D",
+      "sourceModifiedUtc": "2026-09-08T05:49:09.1901626Z",
+      "archiveSha256": "535CBCED4183B27730F87C7EC11B7145E3F7477D88350261C76BF48197CB2326"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\final-package.log",
+      "sourceSha256": "91E16BD8B8AC0E64038E61B7D661C4604DAF220574B224ADB5C92297F7104292",
+      "sourceModifiedUtc": "2026-09-08T05:43:26.5099396Z",
+      "archiveSha256": "F423E07F4AB7D1D12E86221426FE8F3696BE5150499F8138B525F6A451F468B2"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\final-package.log.processes",
+      "sourceSha256": "0CBEF5F2A28AF1A997438ADBC28FC55BFD30D26D6D4C5BB4BAE0847C66A4B208",
+      "sourceModifiedUtc": "2026-09-08T05:43:26.5099396Z",
+      "archiveSha256": "C42DDD7B8E715BCB2573B3F7C556F4DE3F6A83711353C3FEE3AF22ABE0784AE8"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\final-paging.log",
+      "sourceSha256": "8EEA3B53E421F78749CD9E55E1D8FDEF59CA48E7A6D9330FCF937B1D674221AE",
+      "sourceModifiedUtc": "2026-09-08T05:46:08.7627286Z",
+      "archiveSha256": "4B8A4487B676E755E218581096B535AD70A0F03C5C2056E61B9456A1E3683FE6"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\final-paging.log.processes",
+      "sourceSha256": "ECBBC997340CBBF848477AAFA09E74CF64BB5E30B822C99E9049DB795D39A9D4",
+      "sourceModifiedUtc": "2026-09-08T05:46:08.7647265Z",
+      "archiveSha256": "B41D79114E5ABEB5FB2D7886E8C4500D30030068F7113F5E5B37FD80BD3B2677"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\final-service-iis.log",
+      "sourceSha256": "FD917BAD766491FD3D5767DC3A145AB6D3658C968FBC4518103E84A212354DC0",
+      "sourceModifiedUtc": "2026-09-08T06:09:25.8308058Z",
+      "archiveSha256": "28B4AB53FFABBD3FA744501303C55BBC3398EC4067B9BB34388371C220499E90"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\final-service-iis.log.processes",
+      "sourceSha256": "C6B52E9B847E11B9188A4F269AB1032D3B80AE83BB6084A1EC08D98872956B0F",
+      "sourceModifiedUtc": "2026-09-08T06:09:25.8352571Z",
+      "archiveSha256": "AE93F6810670034421875C11A7A43190D45096BF68EB2EF3057D7531752C72D8"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\final-source-mappings.log",
+      "sourceSha256": "9DCE3E9145503A65CFCACBA6D5FA24A3BD880BA1480B705133CA5337DB5367DE",
+      "sourceModifiedUtc": "2026-09-08T05:47:28.6690182Z",
+      "archiveSha256": "7E915F1B11A94225B7F954F382A8F027D4615A2B961DF2A11564BCF0D46FCB30"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\final-source-mappings.log.processes",
+      "sourceSha256": "C5318EC3FECF5FB01543C2F1EB31B8629CCD4AD83C7DF379B0D80DA516DEA834",
+      "sourceModifiedUtc": "2026-09-08T05:47:28.6720194Z",
+      "archiveSha256": "1774ED8508C432B90E0880B0F116A11B1E7ED34A8B2D6282922CB264BC819CEA"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\final-stage2-regression.log",
+      "sourceSha256": "1252CDC6772683ED17AB1C3ECC484F810FC4E2771328A1099615F60506922A48",
+      "sourceModifiedUtc": "2026-09-08T06:28:56.4701362Z",
+      "archiveSha256": "047E631F15B422D4D635657B4FA4162C8BD0110CCE7E8AC607F5E4E922A4D866"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\final-stage2-regression.log.processes",
+      "sourceSha256": "0A4DF140747DDE8E5BBEB85991D052D737E0F1F158FB1D67B77D383ADA6C9409",
+      "sourceModifiedUtc": "2026-09-08T06:28:56.4739088Z",
+      "archiveSha256": "E3532E74C167EE77D50036D4CC6EB0DDBC4B0708F1437CADCD69C12709FAB225"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\paging-Debug.json",
+      "sourceSha256": "7065FC6F2F6B5CC48140342BD857F8B3CBBFAD698BA975AEFAF46A948330195A",
+      "sourceModifiedUtc": "2026-09-08T05:45:31.4834857Z",
+      "archiveSha256": "7065FC6F2F6B5CC48140342BD857F8B3CBBFAD698BA975AEFAF46A948330195A"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\paging-mcp-Debug.log",
+      "sourceSha256": "4925AD84001C7D3FD9872B4095FFC35F9F7B81CF0DCC501432167E238A1340D7",
+      "sourceModifiedUtc": "2026-09-08T05:45:31.5732041Z",
+      "archiveSha256": "A2979B0C2E0816F77A0C851884029242B25BECB13AE767B559ACEA0E23E21A4B"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\paging-mcp-Debug.log.processes",
+      "sourceSha256": "29CBB5F4239A3A1952CB9C82A28C31E1F6D2232C83ED02E8F7F829DE90A18232",
+      "sourceModifiedUtc": "2026-09-08T05:45:31.5732041Z",
+      "archiveSha256": "32EF56E5E2F2CB24AFC593C66A57DB0D17BB796A0238826E2D01C064DC7E47E5"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\paging-mcp-Release.log",
+      "sourceSha256": "4113DEB125D1D5D01662F770E5E0159E442B464F47139FE9CA20324E2460AA9E",
+      "sourceModifiedUtc": "2026-09-08T05:46:08.6189109Z",
+      "archiveSha256": "66DFC681ED9E4E06190FB1D839C797D1D1262344AEE0F3CD637F037C811A7CAE"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\paging-mcp-Release.log.processes",
+      "sourceSha256": "EDB5520511CFA41875DF4CAA79FB2769DA45BAF555FFBB3ABCFE88262B1CBF01",
+      "sourceModifiedUtc": "2026-09-08T05:46:08.6204219Z",
+      "archiveSha256": "52DD578E16CF7EB0077E908120BEA05B7767EB763C3D55F2D0DD2F2227AEC4F4"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\paging-Release.json",
+      "sourceSha256": "275C15AF7B50870DB7A324B556E213BBE3ACE2C9B988FBF826E54ECF23DCCC2B",
+      "sourceModifiedUtc": "2026-09-08T05:46:08.5308633Z",
+      "archiveSha256": "275C15AF7B50870DB7A324B556E213BBE3ACE2C9B988FBF826E54ECF23DCCC2B"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\source-mappings-mcp-Debug.log",
+      "sourceSha256": "82356D8F1AE9D0721D3E9C51976A59C2720E7FAC6856D1FC7C97B32B1071C585",
+      "sourceModifiedUtc": "2026-09-08T05:46:49.3411541Z",
+      "archiveSha256": "907166E77BEACF12D57ABDA6C931A3A035432864A2ECDF4161F1CC7227209CA9"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\source-mappings-mcp-Debug.log.processes",
+      "sourceSha256": "7C663509DC89526388E87678EDFA4DC5C8760D7A956F5F4CBA53198A5097B71D",
+      "sourceModifiedUtc": "2026-09-08T05:46:49.3426679Z",
+      "archiveSha256": "F921F00DD0593459C08FBC907A8C900551C7CDFD8D3ABE078001507624E89579"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\source-mappings-mcp-Release.log",
+      "sourceSha256": "D8B831AB89AAEE26EE1E84EAA8F0109E01A165B0CBDC95850A613E02E69CBF99",
+      "sourceModifiedUtc": "2026-09-08T05:47:28.5447715Z",
+      "archiveSha256": "9267E774D0DD4C1708F6BFDF26C99EEB404DEAE82D3C14AD1A3BC0A96D3C9891"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\source-mappings-mcp-Release.log.processes",
+      "sourceSha256": "ADA2E720F238372AF1E31BFE6900A0E5BD3D7A3F3AC6209243D0C1AB3ED0E5E5",
+      "sourceModifiedUtc": "2026-09-08T05:47:28.5457741Z",
+      "archiveSha256": "5AD66D1A9177FD9A168DD7089F59B2DE36750D5BEB6C3846F6C4DF51DCA8DFB0"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\stage3-inputs.sha256",
+      "sourceSha256": "DB236D2A52EABA4681683DB2F40A612B3DFB4FF0759B82D86BB84AB5EA7AB623",
+      "sourceModifiedUtc": "2026-09-08T05:43:21.4336241Z",
+      "archiveSha256": "DB236D2A52EABA4681683DB2F40A612B3DFB4FF0759B82D86BB84AB5EA7AB623"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\stage3-result.json",
+      "sourceSha256": "242420FDFC68A672083CA0927D959A0523679C78B3A5F69FB652A7D7E538B63F",
+      "sourceModifiedUtc": "2026-09-08T06:28:56.8369034Z",
+      "archiveSha256": "242420FDFC68A672083CA0927D959A0523679C78B3A5F69FB652A7D7E538B63F"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\vscode-Debug.json",
+      "sourceSha256": "5F4415BA73552FA3964FB859751C62AA7461A7E9073F52ABB8D049D4A8B4C0E9",
+      "sourceModifiedUtc": "2026-09-08T05:48:14.6549623Z",
+      "archiveSha256": "5F4415BA73552FA3964FB859751C62AA7461A7E9073F52ABB8D049D4A8B4C0E9"
+    },
+    {
+      "path": "artifacts\\stage3-validation\\vscode-Release.json",
+      "sourceSha256": "4212BC1269B9206BC8BEE599D07A8F00B7BE68934F3F7BF3182C2B741D034D14",
+      "sourceModifiedUtc": "2026-09-08T05:49:08.7506609Z",
+      "archiveSha256": "4212BC1269B9206BC8BEE599D07A8F00B7BE68934F3F7BF3182C2B741D034D14"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\dap-service-iis-Debug.json",
+      "sourceSha256": "EB68A2D19B32B0D85E662E75EF14641FA2DACD3108D0FC2C661CCE12E4DF1317",
+      "sourceModifiedUtc": "2026-09-08T05:58:25.9430539Z",
+      "archiveSha256": "EB68A2D19B32B0D85E662E75EF14641FA2DACD3108D0FC2C661CCE12E4DF1317"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\dap-service-iis-Release.json",
+      "sourceSha256": "78F40157510457995BF6A688ACCF6FE55689A6D86AB97F12D0B401CFC0876FEF",
+      "sourceModifiedUtc": "2026-09-08T06:00:54.0262403Z",
+      "archiveSha256": "78F40157510457995BF6A688ACCF6FE55689A6D86AB97F12D0B401CFC0876FEF"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-delayed-remove-Debug.log",
+      "sourceSha256": "43E06065EA47B399DB6AA7F2091A9DBC943F6DA1BA913ECB177FFFA9D1756775",
+      "sourceModifiedUtc": "2026-09-08T05:50:23.1884785Z",
+      "archiveSha256": "2DAEA535D08BA993DE86836CD527A08126036FAECE3C4AF0614A4D717639232E"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-delayed-remove-Debug.log.processes",
+      "sourceSha256": "5D0F3E091DA36E5F01137C2F1B77FAE4A4B2266E0567F9F4BCB67DD367B5787E",
+      "sourceModifiedUtc": "2026-09-08T05:50:23.1894792Z",
+      "archiveSha256": "E347AF95B0201656BDFB9F8DEA9A12AD2016646F5505731A36453271C3D21B23"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-delayed-remove-Release.log",
+      "sourceSha256": "43E06065EA47B399DB6AA7F2091A9DBC943F6DA1BA913ECB177FFFA9D1756775",
+      "sourceModifiedUtc": "2026-09-08T05:51:18.3578516Z",
+      "archiveSha256": "2DAEA535D08BA993DE86836CD527A08126036FAECE3C4AF0614A4D717639232E"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-delayed-remove-Release.log.processes",
+      "sourceSha256": "A75B628742C5EDACFA7956017A3E8EBD0648237B031A1AAAA0B014A8ECA99F27",
+      "sourceModifiedUtc": "2026-09-08T05:51:18.3588523Z",
+      "archiveSha256": "37C91FCF0684E2773ED6A89D51AC9724AA428CA790721FB248C8CA5ECDEABBE2"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-delayed-state-Debug.json",
+      "sourceSha256": "272036D1A6AE99613A624A69B6B60AAFC458900C1486C7EFE65DFD49B2307518",
+      "sourceModifiedUtc": "2026-09-08T05:50:23.2115304Z",
+      "archiveSha256": "272036D1A6AE99613A624A69B6B60AAFC458900C1486C7EFE65DFD49B2307518"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-delayed-state-Release.json",
+      "sourceSha256": "F3A6303FFF1F445169ACAE82864753D97BD83AB50EB2B9D22AD07DD8A6E7D95D",
+      "sourceModifiedUtc": "2026-09-08T05:51:18.3628688Z",
+      "archiveSha256": "F3A6303FFF1F445169ACAE82864753D97BD83AB50EB2B9D22AD07DD8A6E7D95D"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-install-Debug.log",
+      "sourceSha256": "DF15B132A63210A95862C26DBAFA7F0A01A627A40F17F570C0F11CB497B63B9D",
+      "sourceModifiedUtc": "2026-09-08T05:50:11.1112927Z",
+      "archiveSha256": "43AEB939E58D9257A60BE5DDEF83C02913A1F6ED0F45629EF01F04762677C700"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-install-Debug.log.processes",
+      "sourceSha256": "69C9C974D186D1C463CA182D0CD69DD259AA4152E219F9488454D4F4DB1A378C",
+      "sourceModifiedUtc": "2026-09-08T05:50:11.1124438Z",
+      "archiveSha256": "06A2BEA86C6B00343EB9CA16009DD9870D704951D60B6FDB006E6E388DD32724"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-install-Release.log",
+      "sourceSha256": "DF15B132A63210A95862C26DBAFA7F0A01A627A40F17F570C0F11CB497B63B9D",
+      "sourceModifiedUtc": "2026-09-08T05:51:07.3108765Z",
+      "archiveSha256": "43AEB939E58D9257A60BE5DDEF83C02913A1F6ED0F45629EF01F04762677C700"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-install-Release.log.processes",
+      "sourceSha256": "98289544273E6F3D3536F942F76CA49117C94B66E7B07D0BE81073DF8A1F0091",
+      "sourceModifiedUtc": "2026-09-08T05:51:07.3108765Z",
+      "archiveSha256": "66028D91D117ADBAA2FE21A089881016783B367FF53C951C2066810B7A3EDB40"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-interrupted.log",
+      "sourceSha256": "AFF176DB80E66EA0A19549627DB151D27FF07D0B7A5979857021DBD785423342",
+      "sourceModifiedUtc": "2026-09-08T05:51:42.6805731Z",
+      "archiveSha256": "AFF176DB80E66EA0A19549627DB151D27FF07D0B7A5979857021DBD785423342"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-interrupted.log.processes",
+      "sourceSha256": "457CB181ABE4090FE74836A58926911E1057307B57DEA92844E54020D50F3DEB",
+      "sourceModifiedUtc": "2026-09-08T05:51:42.6816607Z",
+      "archiveSha256": "DDB26B7C696FD85BC698FE5C15D5DFB0C2F65B7DFC29B204AB90BC58D3C06AEF"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-preflight.log",
+      "sourceSha256": "2D90CD0ED2BC7D4F454E5399AD44D8C47E58ADDAF7570D6DAFE5786F5F4AD650",
+      "sourceModifiedUtc": "2026-09-08T05:49:26.9793676Z",
+      "archiveSha256": "388D1C3D755E3272D2395EAA04D77BDCF9656662FE4AB5C521656874A0B53A98"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-preflight.log.processes",
+      "sourceSha256": "BA3586BD63E77FB41618A02CA2DB59999EBB9FE03599C9AFBBB7F4EB92F2FAE3",
+      "sourceModifiedUtc": "2026-09-08T05:49:26.9813907Z",
+      "archiveSha256": "6B19995500ED5E6463068AA28AA52CB976C8C5883EB4D1CE94F38AA25568C4B9"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-recover-interrupted.log",
+      "sourceSha256": "79801375AC59C885ED461F078A5A874FBA9CC73CA4D1226EAF6E39BEC538EF49",
+      "sourceModifiedUtc": "2026-09-08T05:51:43.8123099Z",
+      "archiveSha256": "CC1A1E5B9DFD20EE962C1BCFC019ABC5403E6D8D078B50FEA9C8A26BDE6A6DAB"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-recover-interrupted.log.processes",
+      "sourceSha256": "D8CF2646EA27AA23F7517C8DF211A24E62FB4CB53B7F615955ADF4A96904EB2F",
+      "sourceModifiedUtc": "2026-09-08T05:51:43.8133091Z",
+      "archiveSha256": "F51693EC4D10C4DBDFC59E0F4AB8492C71F49D928E348CF19049FE163E473035"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-remove-Debug.log",
+      "sourceSha256": "79801375AC59C885ED461F078A5A874FBA9CC73CA4D1226EAF6E39BEC538EF49",
+      "sourceModifiedUtc": "2026-09-08T05:50:25.8385277Z",
+      "archiveSha256": "CC1A1E5B9DFD20EE962C1BCFC019ABC5403E6D8D078B50FEA9C8A26BDE6A6DAB"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-remove-Debug.log.processes",
+      "sourceSha256": "80E4FF1A0C596D2296496CC033D8FB820505B9DFD5CD1BFE84AAE9DAD8BEBD6B",
+      "sourceModifiedUtc": "2026-09-08T05:50:25.8385277Z",
+      "archiveSha256": "4265E8586B7F8A728D47678949A74D24BBCEEB68C2B1B2EE3181BE00C150287B"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-remove-Release.log",
+      "sourceSha256": "79801375AC59C885ED461F078A5A874FBA9CC73CA4D1226EAF6E39BEC538EF49",
+      "sourceModifiedUtc": "2026-09-08T05:51:21.1313362Z",
+      "archiveSha256": "CC1A1E5B9DFD20EE962C1BCFC019ABC5403E6D8D078B50FEA9C8A26BDE6A6DAB"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-remove-Release.log.processes",
+      "sourceSha256": "09E46644C5B5E10E508F3981DB023A77A7AC3449DEB436F45CD2E5785B41DA92",
+      "sourceModifiedUtc": "2026-09-08T05:51:21.1323559Z",
+      "archiveSha256": "A055789FDE1F4AD499B0222BA6BDBD276B199186E0925B6C9971EDACC46487DA"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-result.json",
+      "sourceSha256": "68561E790C32630C4757CE806A3CFB2A63AC6ADA0E6186379938376493DABD97",
+      "sourceModifiedUtc": "2026-09-08T05:51:43.8685109Z",
+      "archiveSha256": "68561E790C32630C4757CE806A3CFB2A63AC6ADA0E6186379938376493DABD97"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-symbols-Debug.log",
+      "sourceSha256": "C3EF7FAB6B338B3FAC7EE9263A9557223BF2734589DEBA7478ACF8D5CBEBED71",
+      "sourceModifiedUtc": "2026-09-08T05:49:39.9550333Z",
+      "archiveSha256": "E31BBB419A817B55797E9CE907207E8FA3B20F26A6C2BE9FB8F5317CF8E3A402"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-symbols-Debug.log.processes",
+      "sourceSha256": "445437EB15FCA0D41BC913C9A8A0EAF580092B1348ED1C6CFACB21A328B7FB79",
+      "sourceModifiedUtc": "2026-09-08T05:49:39.9560361Z",
+      "archiveSha256": "FD1B7FA551DD3CDD7CA8F149E7828C645186CAAF46E6E6C9A4F3E71F7863EC53"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-symbols-Release.log",
+      "sourceSha256": "FA13210AFB8DB2B1C9804BE0D67B3EB12E15AAA13E608204FFA4D7A0EB265558",
+      "sourceModifiedUtc": "2026-09-08T05:50:37.7534676Z",
+      "archiveSha256": "7DF22F3DDDB6117F5AAAD85E98CB4DF93D99529AA27DD8E9D99ADF43F9E4664D"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-symbols-Release.log.processes",
+      "sourceSha256": "611A21A361447E2600E1B424EAAE3526219FF93AF22C0C71AB2A68A7F94A3EA4",
+      "sourceModifiedUtc": "2026-09-08T05:50:37.7554649Z",
+      "archiveSha256": "5BDD33C868F48B077B0AE741A9D09E88525405A4CFA7308670A069AFC2E096E2"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-verify-Debug.log",
+      "sourceSha256": "34F472241CBA3E13BF770F059DFDF01223B8171E135D6594F9DD1D81E110F734",
+      "sourceModifiedUtc": "2026-09-08T05:50:19.0108270Z",
+      "archiveSha256": "BD7D0CA77A3165B278116EB0361F9167B83B03BA2AA5ACC13C2287E8232EF521"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-verify-Debug.log.processes",
+      "sourceSha256": "48E75AA7B3279AFCE20107F22911ED865FD528A3FAEAD44631F0403F8E1ED1B8",
+      "sourceModifiedUtc": "2026-09-08T05:50:19.0118270Z",
+      "archiveSha256": "7C9690C0AE20B2B543EC0B3CCDA68ECC6EA7C36D288702AA4221923362E6965B"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-verify-Release.log",
+      "sourceSha256": "34F472241CBA3E13BF770F059DFDF01223B8171E135D6594F9DD1D81E110F734",
+      "sourceModifiedUtc": "2026-09-08T05:51:14.0634422Z",
+      "archiveSha256": "BD7D0CA77A3165B278116EB0361F9167B83B03BA2AA5ACC13C2287E8232EF521"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-verify-Release.log.processes",
+      "sourceSha256": "59462ECB1AC3152413676D6A20D00C99E4170FD22D558AA996C40E51F0C5B484",
+      "sourceModifiedUtc": "2026-09-08T05:51:14.0654330Z",
+      "archiveSha256": "9CE2FF5953D746158923CDC87FF84755E32C60872D00109CBF17AE69B9E4C6B4"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\Fx40.Environment.Late-Debug-build.log",
+      "sourceSha256": "DCBD9CD19C9B1E7FA22FA56C7FB814716DB1041CA9A4B5F51E0D3F600FC5CF16",
+      "sourceModifiedUtc": "2026-09-08T05:49:33.3268661Z",
+      "archiveSha256": "136DD219029E63584BCCA052D18C5A2EAA8E19DF900409AC72F158C3D4D40602"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\Fx40.Environment.Late-Debug-build.log.processes",
+      "sourceSha256": "9089AE393925E052E136088D06BA2C2E09036773D9E6AA7BE2FD798B8604E0F6",
+      "sourceModifiedUtc": "2026-09-08T05:49:33.3278702Z",
+      "archiveSha256": "9226B8E36E4AB53A97855A6F968B60100DB94204FCBE0F18FCEEEE01D5FD1DDA"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\Fx40.Environment.Late-Release-build.log",
+      "sourceSha256": "D960DEFEB9772452605606ED2A70F3FE842E94EA14C1FD9443402954779623B8",
+      "sourceModifiedUtc": "2026-09-08T05:50:32.1458723Z",
+      "archiveSha256": "573496B78FDDE93383A968028AEA2B3414300BB71B630FACAF7DDD3800F8E1CA"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\Fx40.Environment.Late-Release-build.log.processes",
+      "sourceSha256": "9985304182823207DCA50EDE6C77026FADD54B09E9B52AD70523131D6DD59500",
+      "sourceModifiedUtc": "2026-09-08T05:50:32.1471840Z",
+      "archiveSha256": "4D2C662E10AFCEBD0AB9886C38663C89796ED4815DF3561465D2B4A1FD5ABC2A"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\Fx40.Environment.Service.x64-Debug-build.log",
+      "sourceSha256": "69B16C728452AA1747C2D8F18FF10695C9B762209BB3110129AB9E8E43E443B5",
+      "sourceModifiedUtc": "2026-09-08T05:49:30.1847283Z",
+      "archiveSha256": "9917FB18B8CA3A419CE23D8816AFB92D400B422179299A0C647152EDFF8462C1"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\Fx40.Environment.Service.x64-Debug-build.log.processes",
+      "sourceSha256": "DA4770FF7297FA68ACDDE36546752DE8387DA88225E9BD28300A24D2FEB3B791",
+      "sourceModifiedUtc": "2026-09-08T05:49:30.1859589Z",
+      "archiveSha256": "A733EBCA0C50440D75DC1BEDA4434D51FFCA69C8CBACB19C8DCC4A6973648389"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\Fx40.Environment.Service.x64-Release-build.log",
+      "sourceSha256": "E2016BE1AE225D61047B0FB5B5FCA746C25475777A3F0C4C773B4A8A8AEF4812",
+      "sourceModifiedUtc": "2026-09-08T05:50:28.9975681Z",
+      "archiveSha256": "A4E35021D10244E26502E28C7D6CBBBA08F5B23856B7BD943C9C49D101A450C3"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\Fx40.Environment.Service.x64-Release-build.log.processes",
+      "sourceSha256": "A1C7A434810185BBAE67D9991133057BB5EB0A99F15FC7DC4F6B8898F223E480",
+      "sourceModifiedUtc": "2026-09-08T05:50:28.9985677Z",
+      "archiveSha256": "385A2590146A9F1F375B7A65D7A88DD8EFCB98D8B25751C9DB4A968493E7C901"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\Fx40.Environment.Service.x86-Debug-build.log",
+      "sourceSha256": "46C767FCBEDD05727D9BA046D8A852F76274524163800AA48DBA59772D58CF7B",
+      "sourceModifiedUtc": "2026-09-08T05:49:28.5502300Z",
+      "archiveSha256": "A0E054FAADB231B20658793D7696554BDB758320FA536CBE6E885E51926C0BBC"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\Fx40.Environment.Service.x86-Debug-build.log.processes",
+      "sourceSha256": "FDA3126EFA7FF613FB04D8697E7B447ACAD18FEA8BD0F89D2B2A6386D2E0C74F",
+      "sourceModifiedUtc": "2026-09-08T05:49:28.5512359Z",
+      "archiveSha256": "9DA109271BDBC433A005D2BB3CE1813F8396696DC534E55F0E166216C546B15E"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\Fx40.Environment.Service.x86-Release-build.log",
+      "sourceSha256": "6BF1486290FAC024150BDF7A91CE51DD334BE2C821CFA4353666AC4AFD12AC8E",
+      "sourceModifiedUtc": "2026-09-08T05:50:27.4911594Z",
+      "archiveSha256": "9623982DDFEB5178BBB25785CA6984D12981ED43B753AD3EBC016672D3E5B711"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\Fx40.Environment.Service.x86-Release-build.log.processes",
+      "sourceSha256": "C889BD3D7701D96C1C8264C775B93A4A707FDFC495020A4554F1E2A387574EAB",
+      "sourceModifiedUtc": "2026-09-08T05:50:27.4926656Z",
+      "archiveSha256": "82CFCFA684FFABEEFE0EF07F171F3161A375CC29063B712A20AE2742BD7F748E"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\Fx40.Environment.Web-Debug-build.log",
+      "sourceSha256": "2B7EEF006BBEB4CADDBB7704754A1AF9D3F888C16AACD077666E4AE798FE6EE0",
+      "sourceModifiedUtc": "2026-09-08T05:49:31.8085614Z",
+      "archiveSha256": "5E42796E693F6C668516B2C4DCC88748C97F310D33FCF29062D89BD8BC419649"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\Fx40.Environment.Web-Debug-build.log.processes",
+      "sourceSha256": "9C281BA86F4B66D43D988101D6D1C27D9DE51747601491A0877D97291B358986",
+      "sourceModifiedUtc": "2026-09-08T05:49:31.8105599Z",
+      "archiveSha256": "B10FACF7F99C22AA77FF7D4749982F76945DC2269DA60001ADCE9E94B457654F"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\Fx40.Environment.Web-Release-build.log",
+      "sourceSha256": "F7DE17A9C389A7C7F209E4FC8189DC769C394884104E29C9016D12D8351F271E",
+      "sourceModifiedUtc": "2026-09-08T05:50:30.6169047Z",
+      "archiveSha256": "CA19575BE0B619B760B005E83A2B65B8ADE2678D4FB369164180BD915DA59E49"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\Fx40.Environment.Web-Release-build.log.processes",
+      "sourceSha256": "CD322B265668870BC5C4656635DE3B10309FB5B90916DAFD37DC171DE15A3947",
+      "sourceModifiedUtc": "2026-09-08T05:50:30.6179036Z",
+      "archiveSha256": "8B33A9EA189114D9DB15F965261386BF4E737CB55A0AB94B584C63909085B70C"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-build-Debug.log",
+      "sourceSha256": "B667DBE2CFD11BB80BA82799FE78463970013661A1D06A0059C366F8638CA584",
+      "sourceModifiedUtc": "2026-09-08T06:01:31.3818046Z",
+      "archiveSha256": "4A0520FF95E9081DA7FB795761F11096FF53D73B065734DC21E1F442D5CF92CF"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-build-Debug.log.processes",
+      "sourceSha256": "6F4699784D15EA5066363BB4231BF0BCBEB050EAF51A20C659B606E34929FEE1",
+      "sourceModifiedUtc": "2026-09-08T06:01:31.3838088Z",
+      "archiveSha256": "C72FCB96B0E848787D8876D59CCFE9FCD24CC2D8C398AA1389D2E065A1702975"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-build-Release.log",
+      "sourceSha256": "ED1FAE2DF7671588AD7005DDC3C3A41E2C634E4B5B5ABA1D88D2A8077882ABE7",
+      "sourceModifiedUtc": "2026-09-08T06:03:51.8557386Z",
+      "archiveSha256": "240CCC259A8DA4779FEF3DB66B68C3E008399C035A6872B9223D348242E6AC0C"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-build-Release.log.processes",
+      "sourceSha256": "7929612E7CEF6A282544AB1AB6110D8E41260D4C82423DA4629A0CB26CDC037C",
+      "sourceModifiedUtc": "2026-09-08T06:03:51.8571540Z",
+      "archiveSha256": "3F8D9A2BCB61548F8C40352820DF4CBD975C832FB9E1FF8FD68414129704A985"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-cleanup-Debug.log",
+      "sourceSha256": "ED23812DFEA9E3AF2C6C80D6EB12984287F56EC5DCCB362ABC581CC15F1A7703",
+      "sourceModifiedUtc": "2026-09-08T06:03:42.2974334Z",
+      "archiveSha256": "6BE0FFC6BA16FA5416E39FE60490FE321B8ACCECFE694805B8BB013F6C9FA52C"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-cleanup-Debug.log.processes",
+      "sourceSha256": "5FABCFB4D4B05FFDF9DD696C3C2EAA652033AFAAA0645F3FBE83B5976DCEBD5B",
+      "sourceModifiedUtc": "2026-09-08T06:03:42.2984449Z",
+      "archiveSha256": "0DE6F7612089266BE1D3B9AB61967016E0EC2BE7082FE7E6F5280588414605E6"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-cleanup-Release.log",
+      "sourceSha256": "ED23812DFEA9E3AF2C6C80D6EB12984287F56EC5DCCB362ABC581CC15F1A7703",
+      "sourceModifiedUtc": "2026-09-08T06:06:04.0804990Z",
+      "archiveSha256": "6BE0FFC6BA16FA5416E39FE60490FE321B8ACCECFE694805B8BB013F6C9FA52C"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-cleanup-Release.log.processes",
+      "sourceSha256": "72A2D731FB5C6FD344D8BD41426BCFBB3476398FC02D8FF1C9840CC6F8CA5477",
+      "sourceModifiedUtc": "2026-09-08T06:06:04.0814929Z",
+      "archiveSha256": "D5CF60E3DE2A4023FEA25CA42FCB00F54E50C607AAFBE2B9D8E9A182D39374AA"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-coverage-Debug.log",
+      "sourceSha256": "0321F1905DDE9AEFCB2E563ED29414CC382E277CCD26D95EF7CA3B9B44E538A8",
+      "sourceModifiedUtc": "2026-09-08T06:03:33.1073571Z",
+      "archiveSha256": "FADB8CB2267B17FC9C8DE3F511726E8D2DB580F82B7A56D6ED09888BDAE9AE7B"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-coverage-Debug.log.processes",
+      "sourceSha256": "DA60FB44789606F19B30FD481DB6B4035253AB03C5A5E6DEDD7694F21EE0F014",
+      "sourceModifiedUtc": "2026-09-08T06:03:33.1093569Z",
+      "archiveSha256": "D3EDFB852B5BC74A6C61490E09503DB98718B3869A6D82B53C0C6B765B5618DB"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-coverage-Release.log",
+      "sourceSha256": "833523A1A94C8880B1518781DFDCD1D3ACB53D7CDD2A6C71EEF287749565DDAA",
+      "sourceModifiedUtc": "2026-09-08T06:05:55.0754284Z",
+      "archiveSha256": "08BA19DBE9718AE351CFAB2319673E1E825E2C72D139488B58D7A551ADFBED82"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-coverage-Release.log.processes",
+      "sourceSha256": "DA9BA75BB7FE4806BE9E021E0238167891407311ABC267CC2F6FF28EEAE4BE2A",
+      "sourceModifiedUtc": "2026-09-08T06:05:55.0764395Z",
+      "archiveSha256": "A6C612F7DE3872432465C0785CDCD2E00DBC832D2A58B23A09A82E483807F8BC"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-Debug.json",
+      "sourceSha256": "DC5EFC8FBED44647B69617109D572CF8A757918881C61110EF430BCC51243D45",
+      "sourceModifiedUtc": "2026-09-08T06:03:32.2247875Z",
+      "archiveSha256": "DC5EFC8FBED44647B69617109D572CF8A757918881C61110EF430BCC51243D45"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-health-Debug.log",
+      "sourceSha256": "34F472241CBA3E13BF770F059DFDF01223B8171E135D6594F9DD1D81E110F734",
+      "sourceModifiedUtc": "2026-09-08T06:03:39.1064029Z",
+      "archiveSha256": "BD7D0CA77A3165B278116EB0361F9167B83B03BA2AA5ACC13C2287E8232EF521"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-health-Debug.log.processes",
+      "sourceSha256": "05EA21210F48EFB2F14D1EA91C177F744F9E78EE81DEF18AE0BF0B0465C8C3C5",
+      "sourceModifiedUtc": "2026-09-08T06:03:39.1074012Z",
+      "archiveSha256": "5D40A5E2B23738C200A676DF6578810EF65F9430436E096D946FBE67CC9F44E7"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-health-Release.log",
+      "sourceSha256": "34F472241CBA3E13BF770F059DFDF01223B8171E135D6594F9DD1D81E110F734",
+      "sourceModifiedUtc": "2026-09-08T06:06:00.9261242Z",
+      "archiveSha256": "BD7D0CA77A3165B278116EB0361F9167B83B03BA2AA5ACC13C2287E8232EF521"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-health-Release.log.processes",
+      "sourceSha256": "3C012F004B7555C68050DB4FB688C35004C8E8C071EED95027293964774A585D",
+      "sourceModifiedUtc": "2026-09-08T06:06:00.9271690Z",
+      "archiveSha256": "1BD0D59D1A1088F6522C7A07E119B2FE627AC0DAFACB5ADACA91390535D2BE1B"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-install-Debug.log",
+      "sourceSha256": "DF15B132A63210A95862C26DBAFA7F0A01A627A40F17F570C0F11CB497B63B9D",
+      "sourceModifiedUtc": "2026-09-08T06:02:23.1218345Z",
+      "archiveSha256": "43AEB939E58D9257A60BE5DDEF83C02913A1F6ED0F45629EF01F04762677C700"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-install-Debug.log.processes",
+      "sourceSha256": "99078C5DE142255A1121BF5831923CAD4E6DC4ED0E0F48E2BC100028FA5B1361",
+      "sourceModifiedUtc": "2026-09-08T06:02:23.1228311Z",
+      "archiveSha256": "68111F80E6B1A59629DD4BA03D8BC9E3C3DA8988D48DACDD61DA6469F09C905F"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-install-Release.log",
+      "sourceSha256": "DF15B132A63210A95862C26DBAFA7F0A01A627A40F17F570C0F11CB497B63B9D",
+      "sourceModifiedUtc": "2026-09-08T06:04:44.1996507Z",
+      "archiveSha256": "43AEB939E58D9257A60BE5DDEF83C02913A1F6ED0F45629EF01F04762677C700"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-install-Release.log.processes",
+      "sourceSha256": "FEFE237C0AC78B366B46AD4D27737BF41812D23F2C9D195B718AEB119A46A311",
+      "sourceModifiedUtc": "2026-09-08T06:04:44.1996507Z",
+      "archiveSha256": "4B2B6112B697D7CCF64A26F30C3FA2B889483952EF8120A97DD0D16F951A138F"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-last-breakpoint-x64.json",
+      "sourceSha256": "F07848B5859AD0A6AA13A16BB24CB3791B1D4F0BC766C051EF25609D1B5CAA86",
+      "sourceModifiedUtc": "2026-09-08T06:05:41.8739027Z",
+      "archiveSha256": "F07848B5859AD0A6AA13A16BB24CB3791B1D4F0BC766C051EF25609D1B5CAA86"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-last-breakpoint-x86.json",
+      "sourceSha256": "727D89F7C446242A3BAE7926A50AD5975789646E03774A6712C400B3AB6072C7",
+      "sourceModifiedUtc": "2026-09-08T06:05:25.5044160Z",
+      "archiveSha256": "727D89F7C446242A3BAE7926A50AD5975789646E03774A6712C400B3AB6072C7"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-lifecycle-Debug.json",
+      "sourceSha256": "EEE0CDC7AC77E37D79717F54741D8A8FD2F68677B5D17D558DDB0D01AEBF8587",
+      "sourceModifiedUtc": "2026-09-08T06:07:32.3324668Z",
+      "archiveSha256": "EEE0CDC7AC77E37D79717F54741D8A8FD2F68677B5D17D558DDB0D01AEBF8587"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-lifecycle-Release.json",
+      "sourceSha256": "A32DEB2C3F0939693911092E2AEDE556ACAA6FAA69B62313B3FEBFC98EE9D07F",
+      "sourceModifiedUtc": "2026-09-08T06:09:13.6180101Z",
+      "archiveSha256": "A32DEB2C3F0939693911092E2AEDE556ACAA6FAA69B62313B3FEBFC98EE9D07F"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-mcp-Debug.log",
+      "sourceSha256": "D3345DF46D60B193E7FCB3E47C1E4BA1E5022D4587D3C77CBE6BA8392E37AF5A",
+      "sourceModifiedUtc": "2026-09-08T06:02:55.6486202Z",
+      "archiveSha256": "D3345DF46D60B193E7FCB3E47C1E4BA1E5022D4587D3C77CBE6BA8392E37AF5A"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-mcp-Debug.log.processes",
+      "sourceSha256": "F57198BF675A78384C050063C47F76992AE20FD5483686B6BBBF2E788C4E34C8",
+      "sourceModifiedUtc": "2026-09-08T06:02:55.6496559Z",
+      "archiveSha256": "C6B1F0543DE77D211089E1EF498D4F74624A4FEB1F11CBFAF7707B8DC62459B2"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-mcp-Release.log",
+      "sourceSha256": "D3345DF46D60B193E7FCB3E47C1E4BA1E5022D4587D3C77CBE6BA8392E37AF5A",
+      "sourceModifiedUtc": "2026-09-08T06:05:17.1134614Z",
+      "archiveSha256": "D3345DF46D60B193E7FCB3E47C1E4BA1E5022D4587D3C77CBE6BA8392E37AF5A"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-mcp-Release.log.processes",
+      "sourceSha256": "00528EB937713D347C955A51B7265B0A27FF59CE01282531E9A749F708E5765C",
+      "sourceModifiedUtc": "2026-09-08T06:05:17.1145716Z",
+      "archiveSha256": "E4F3429C246B422056B7230B5386A89767BF40FDA455345B7E195D9C12A17168"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-Release.json",
+      "sourceSha256": "ECA9DA4E5CEFBAF50CA4D22AD4FFAA8718565313B9D600D36C91C88C14FD03AF",
+      "sourceModifiedUtc": "2026-09-08T06:05:54.3177964Z",
+      "archiveSha256": "ECA9DA4E5CEFBAF50CA4D22AD4FFAA8718565313B9D600D36C91C88C14FD03AF"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-result.json",
+      "sourceSha256": "6E078D1FBD6006C980E1B112950B03801602E7597D835EE6295445AC7AD360FF",
+      "sourceModifiedUtc": "2026-09-08T06:06:04.1215779Z",
+      "archiveSha256": "6E078D1FBD6006C980E1B112950B03801602E7597D835EE6295445AC7AD360FF"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-unit-Debug.log",
+      "sourceSha256": "6AEF6448D56ED24D780586488BD1812D4BFE2D929467D9C1DCFA3963690141C4",
+      "sourceModifiedUtc": "2026-09-08T06:01:52.1004592Z",
+      "archiveSha256": "7C9EA061D70EFC41D1DC801313DF0B08F4404E78BF315EA7F9AA369D87DB62BA"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-unit-Debug.log.processes",
+      "sourceSha256": "F9A31DEE7ABA1CD70E398704405CAF68C6E29F14654FA3288CF241FEAD7205F1",
+      "sourceModifiedUtc": "2026-09-08T06:01:52.1014682Z",
+      "archiveSha256": "549666B61D3AE740C491C0F5D48E80A239F61E4D1FF07E7A8340E228DA333F9B"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-unit-Release.log",
+      "sourceSha256": "415C62CFF29EEA824C45F5CF6A3A2CAB408A635310A69F2E8A155C3A9FDED5BA",
+      "sourceModifiedUtc": "2026-09-08T06:04:14.1567152Z",
+      "archiveSha256": "786AA567D7106ADCF8A1EF99BEB0C742C8A507A476FA8DF931C4BAF6C47115EF"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\iis-unit-Release.log.processes",
+      "sourceSha256": "181146BCF5742D0067A0103B38EA2F268E150ED75581A7F7DC6CDA05F0235D2C",
+      "sourceModifiedUtc": "2026-09-08T06:04:14.1587100Z",
+      "archiveSha256": "4E41AFA52B4D8EFCDE2F39E352B6240F06BBF2BB4405CD75FF24D7CBF4C92FB6"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-build-Debug.log",
+      "sourceSha256": "06502D8358ADE77A17608BF13FF24904EFE42267F12E235AAAA1DAA99109A23E",
+      "sourceModifiedUtc": "2026-09-08T06:06:15.7673778Z",
+      "archiveSha256": "F16E587737452A5B4F01FD675EFC637572078E9792FCD9AFCD3D8BC929ECD274"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-build-Debug.log.processes",
+      "sourceSha256": "E1C7B82E8A87C8D0121268A9EFCE2B0401BF9EE56217C8224CF749C844443B7D",
+      "sourceModifiedUtc": "2026-09-08T06:06:15.7693811Z",
+      "archiveSha256": "924E34B5355A5114CC9518F5260ED93E168CDE5242912654A4C382456AB7F77D"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-build-Release.log",
+      "sourceSha256": "76F29FE78143268E629D85404196566E13E1DF1926B92876A78B22A3CD6AC6E9",
+      "sourceModifiedUtc": "2026-09-08T06:07:53.8369822Z",
+      "archiveSha256": "20731571B5231D38C8A1C5C03DC0B120D22048D108B85253966E81212FBCD545"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-build-Release.log.processes",
+      "sourceSha256": "83C6667FDDD6CF63C53062BD42F28D420BD709A3C4C51C7E6D2D1BB78E4FF9C7",
+      "sourceModifiedUtc": "2026-09-08T06:07:53.8379816Z",
+      "archiveSha256": "FEC4EAA33DA4F1BB10C254F0A928B67F98FAD8144665D5603FA689ADC1F4FA48"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-cleanup-Debug.log",
+      "sourceSha256": "ED23812DFEA9E3AF2C6C80D6EB12984287F56EC5DCCB362ABC581CC15F1A7703",
+      "sourceModifiedUtc": "2026-09-08T06:07:43.4917675Z",
+      "archiveSha256": "6BE0FFC6BA16FA5416E39FE60490FE321B8ACCECFE694805B8BB013F6C9FA52C"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-cleanup-Debug.log.processes",
+      "sourceSha256": "C4B7495EDAA3606345F10112E5EE84E537AB2B1BA407F1CC4933D7CAF61B8704",
+      "sourceModifiedUtc": "2026-09-08T06:07:43.4930982Z",
+      "archiveSha256": "3C06E99C884D1D4CF94A44B40FC2E09A738159EFD997B7E47E8AB07BCAB273AD"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-cleanup-Release.log",
+      "sourceSha256": "ED23812DFEA9E3AF2C6C80D6EB12984287F56EC5DCCB362ABC581CC15F1A7703",
+      "sourceModifiedUtc": "2026-09-08T06:09:25.2775850Z",
+      "archiveSha256": "6BE0FFC6BA16FA5416E39FE60490FE321B8ACCECFE694805B8BB013F6C9FA52C"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-cleanup-Release.log.processes",
+      "sourceSha256": "5453BA68E8E736343A5CADAAF3591343A42327638E77FA1A0ADCB694227E3A4A",
+      "sourceModifiedUtc": "2026-09-08T06:09:25.2785843Z",
+      "archiveSha256": "30E3B2381A10AF0710D483E8E7F10BA475A3EB7EE9ACCAD54068A2238CA456E3"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-health-Debug.log",
+      "sourceSha256": "34F472241CBA3E13BF770F059DFDF01223B8171E135D6594F9DD1D81E110F734",
+      "sourceModifiedUtc": "2026-09-08T06:07:40.4752804Z",
+      "archiveSha256": "BD7D0CA77A3165B278116EB0361F9167B83B03BA2AA5ACC13C2287E8232EF521"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-health-Debug.log.processes",
+      "sourceSha256": "BCA5F4C37C43F5388C79630815F83DE494730192CCA3219343AA6C3CCC8DFE60",
+      "sourceModifiedUtc": "2026-09-08T06:07:40.4762805Z",
+      "archiveSha256": "1D05FDE6A2304BCEA21D3FEEBF2156E7DFD91938385941A0C24551B1E42C8C7B"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-health-Release.log",
+      "sourceSha256": "34F472241CBA3E13BF770F059DFDF01223B8171E135D6594F9DD1D81E110F734",
+      "sourceModifiedUtc": "2026-09-08T06:09:22.0573754Z",
+      "archiveSha256": "BD7D0CA77A3165B278116EB0361F9167B83B03BA2AA5ACC13C2287E8232EF521"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-health-Release.log.processes",
+      "sourceSha256": "DA52319907132D9A45E1EA37829F70988ED0DBDBC1B5231C18803A2C945F16EA",
+      "sourceModifiedUtc": "2026-09-08T06:09:22.0583810Z",
+      "archiveSha256": "2569389D0F7B2F5E8DD04F9D5BD5CFC38A4397AE86C0664B9065BFC978B2852E"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-install-Debug.log",
+      "sourceSha256": "DF15B132A63210A95862C26DBAFA7F0A01A627A40F17F570C0F11CB497B63B9D",
+      "sourceModifiedUtc": "2026-09-08T06:07:07.1431754Z",
+      "archiveSha256": "43AEB939E58D9257A60BE5DDEF83C02913A1F6ED0F45629EF01F04762677C700"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-install-Debug.log.processes",
+      "sourceSha256": "5E0F8AE461A400468AC3CD1BFF4F8EB99974EE2B210122E7917325DC9C59C9E9",
+      "sourceModifiedUtc": "2026-09-08T06:07:07.1441668Z",
+      "archiveSha256": "5225329882F33E81D1ACE8118ACAC3C103B9584C12E293BA89419EF4C6469FA9"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-install-Release.log",
+      "sourceSha256": "DF15B132A63210A95862C26DBAFA7F0A01A627A40F17F570C0F11CB497B63B9D",
+      "sourceModifiedUtc": "2026-09-08T06:08:47.7120266Z",
+      "archiveSha256": "43AEB939E58D9257A60BE5DDEF83C02913A1F6ED0F45629EF01F04762677C700"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-install-Release.log.processes",
+      "sourceSha256": "209163C2AE2A1BCD6E2C02148378EA27946A849EC769B5CF057FDEAF781E00EF",
+      "sourceModifiedUtc": "2026-09-08T06:08:47.7130274Z",
+      "archiveSha256": "64D3354F78178AA41D8763673D7331D7C618E60380D2D02A6FB9B8B457171362"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-mcp-Debug.log",
+      "sourceSha256": "75E8DBB6826A75B1CD6D55CDEE6B89AB20462779832F1449DDFE5D18935CF8EB",
+      "sourceModifiedUtc": "2026-09-08T06:07:32.4423256Z",
+      "archiveSha256": "3182A35CF1411CC66DD19858555D1CE402744022E202BD52EB59DACD8DCA90DB"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-mcp-Debug.log.processes",
+      "sourceSha256": "919BC98A6F64D75967E9256372F1BF4A84EA912CB8D2435E1ECCC4942BC65F77",
+      "sourceModifiedUtc": "2026-09-08T06:07:32.4433278Z",
+      "archiveSha256": "C30B504B1E7FACBB293BC6CA2BF1AE495B128C2210C2E2F0DCF2E0E89A8F284C"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-mcp-Release.log",
+      "sourceSha256": "45F0FF2AA42E958D600E9207982076A80BDEE399F1B64543542CA23E56807E30",
+      "sourceModifiedUtc": "2026-09-08T06:09:13.7045904Z",
+      "archiveSha256": "6E10E608C374B924EDA765ACA7E9B397BB07B67529788F4BDA968BB3354ADB45"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-mcp-Release.log.processes",
+      "sourceSha256": "EF038E360C0787FB43AB2034B529EB3A1308091B2685576033CDF40B6C3CEC9B",
+      "sourceModifiedUtc": "2026-09-08T06:09:13.7055892Z",
+      "archiveSha256": "A4A32DD1E82E41B5635BA884CC01E13217DDF0DDDFFDC3DBD99A0529EB3D3522"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-progress-Debug-x64.json",
+      "sourceSha256": "A5BC1036B8C5D3813C5DA7D22E42856E0B8403A9C8182B5FA3ED88155C127927",
+      "sourceModifiedUtc": "2026-09-08T06:07:31.4978192Z",
+      "archiveSha256": "A5BC1036B8C5D3813C5DA7D22E42856E0B8403A9C8182B5FA3ED88155C127927"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-progress-Debug-x86.json",
+      "sourceSha256": "8C1F934AFB6F9C01EDF181929ED36EE3B4924C2915CC622A55863A90D2890BBC",
+      "sourceModifiedUtc": "2026-09-08T06:07:19.6815016Z",
+      "archiveSha256": "8C1F934AFB6F9C01EDF181929ED36EE3B4924C2915CC622A55863A90D2890BBC"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-progress-Release-x64.json",
+      "sourceSha256": "611252160D6EA1E56B3B679D44DF85A624D60A7282CDAE676E2460652417742B",
+      "sourceModifiedUtc": "2026-09-08T06:09:12.7304228Z",
+      "archiveSha256": "611252160D6EA1E56B3B679D44DF85A624D60A7282CDAE676E2460652417742B"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-progress-Release-x86.json",
+      "sourceSha256": "7C8162FD1014C8576429FD10D26C8B7EF33444B904BBA25716BF5628BC5E8A82",
+      "sourceModifiedUtc": "2026-09-08T06:09:00.6081561Z",
+      "archiveSha256": "7C8162FD1014C8576429FD10D26C8B7EF33444B904BBA25716BF5628BC5E8A82"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-result.json",
+      "sourceSha256": "5841B7CEA95431E9299842FBF8CE53F63E25010AAD352D66804DD2D4E35FBAE9",
+      "sourceModifiedUtc": "2026-09-08T06:09:25.3158493Z",
+      "archiveSha256": "5841B7CEA95431E9299842FBF8CE53F63E25010AAD352D66804DD2D4E35FBAE9"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-unit-Debug.log",
+      "sourceSha256": "47B723F44B57BD5E967EAE2D0FA7264B62FD3487E1544D85F9A3E802A5C09F4E",
+      "sourceModifiedUtc": "2026-09-08T06:06:36.8048712Z",
+      "archiveSha256": "B4844AC7CE8F8DF1458293BDE989A6215EC255AD4323F8AF35BEAAE64E110A87"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-unit-Debug.log.processes",
+      "sourceSha256": "CA5013DB374145BB869690F2BED74CC0BCBDB6C78A9DABA1A8D1211471D0D862",
+      "sourceModifiedUtc": "2026-09-08T06:06:36.8048712Z",
+      "archiveSha256": "E338F187355F0D3D70CB63E8B1633829DCC6B8973663F685130E51918E6884A8"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-unit-Release.log",
+      "sourceSha256": "415C62CFF29EEA824C45F5CF6A3A2CAB408A635310A69F2E8A155C3A9FDED5BA",
+      "sourceModifiedUtc": "2026-09-08T06:08:16.0163449Z",
+      "archiveSha256": "786AA567D7106ADCF8A1EF99BEB0C742C8A507A476FA8DF931C4BAF6C47115EF"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\lifecycle-unit-Release.log.processes",
+      "sourceSha256": "2E73FFDC907E69413607D69ED77FDB733A9B0D642F8BF6F295CC3FF7E1599416",
+      "sourceModifiedUtc": "2026-09-08T06:08:16.0183418Z",
+      "archiveSha256": "5ACD9DEDFA2B7D43B6EACEEE85332FE098EE3E9D22706EBAEA8B66C055B65780"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-admin-Debug.json",
+      "sourceSha256": "EC18B6811D48015842D6A61F673523769D15B2712B86E71717A573611E34FD99",
+      "sourceModifiedUtc": "2026-09-08T05:53:53.4970683Z",
+      "archiveSha256": "EC18B6811D48015842D6A61F673523769D15B2712B86E71717A573611E34FD99"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-admin-Release.json",
+      "sourceSha256": "DF75C0AA4FFF57ED8C3A10969D21C1B4CE0B1CA48C0DCC94A780B5861985CE4C",
+      "sourceModifiedUtc": "2026-09-08T05:56:14.1107874Z",
+      "archiveSha256": "DF75C0AA4FFF57ED8C3A10969D21C1B4CE0B1CA48C0DCC94A780B5861985CE4C"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-build-Debug.log",
+      "sourceSha256": "17108F928C9DAD4C38419E138DE723800BE5AB8F4E47A7B19B6E18D46E36BA7C",
+      "sourceModifiedUtc": "2026-09-08T05:51:54.4322712Z",
+      "archiveSha256": "91292D0339EE26BF2EF9A3A40FBD74523F41096A6BB7542E74C0D7AB344D384A"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-build-Debug.log.processes",
+      "sourceSha256": "46F4640B82486295C38B0C951570F7427B76F46EB0F678800619E7161A1510B1",
+      "sourceModifiedUtc": "2026-09-08T05:51:54.4332660Z",
+      "archiveSha256": "CAD9864D3AC1B06A727C0FBAEE8E59B63A10763D814C56610BF6B4209126C3D3"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-build-Release.log",
+      "sourceSha256": "9C1F9B62327F5C4679547FAA4B154D59754ED6DCC80591C80FF4CEBA67FCFF3F",
+      "sourceModifiedUtc": "2026-09-08T05:54:12.7993996Z",
+      "archiveSha256": "763AD26FCDAA59E9F76E6945F961E4A3F7A5B875984F85833A1E4AB981A7A8B0"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-build-Release.log.processes",
+      "sourceSha256": "625CE3B03D49335CB82CF350A69F54F6739346BF5EC30C5617B8E053925BBC80",
+      "sourceModifiedUtc": "2026-09-08T05:54:12.7999086Z",
+      "archiveSha256": "A8922B190DA8A8C263D1F05475048BD4FC1389A34D352D7A79742161D515FE19"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-cleanup-Debug.log",
+      "sourceSha256": "ED23812DFEA9E3AF2C6C80D6EB12984287F56EC5DCCB362ABC581CC15F1A7703",
+      "sourceModifiedUtc": "2026-09-08T05:54:03.4443508Z",
+      "archiveSha256": "6BE0FFC6BA16FA5416E39FE60490FE321B8ACCECFE694805B8BB013F6C9FA52C"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-cleanup-Debug.log.processes",
+      "sourceSha256": "33D3DE9636289DBD8C22CBBB4192773FC752B070BA191C8E57FAAB4F9CC95C16",
+      "sourceModifiedUtc": "2026-09-08T05:54:03.4453504Z",
+      "archiveSha256": "921056F8568CA0785D055968B276F98177ED1EF7F8FEFD117D9E8D300386350D"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-cleanup-Release.log",
+      "sourceSha256": "ED23812DFEA9E3AF2C6C80D6EB12984287F56EC5DCCB362ABC581CC15F1A7703",
+      "sourceModifiedUtc": "2026-09-08T05:56:23.7445134Z",
+      "archiveSha256": "6BE0FFC6BA16FA5416E39FE60490FE321B8ACCECFE694805B8BB013F6C9FA52C"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-cleanup-Release.log.processes",
+      "sourceSha256": "9CD195EE63E4AA42202E3322B076859B163262F62D6AED1A01899897E383718C",
+      "sourceModifiedUtc": "2026-09-08T05:56:23.7455254Z",
+      "archiveSha256": "EAF8C4DC62B4B8F4218D25F702724EFD4890FFBFE1E9EFE3C7D08EB5BF6DA3EC"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-coverage-Debug.log",
+      "sourceSha256": "CF3D2426E165FBD112647AFEA7BABA041B9CD5C008DF04ACAD4268EBDC48C20C",
+      "sourceModifiedUtc": "2026-09-08T05:53:54.3619018Z",
+      "archiveSha256": "AE76CEBDDB01AFFC46AD78F8AE897BBF30562E38780338EED35D01B0236A1156"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-coverage-Debug.log.processes",
+      "sourceSha256": "3213F849D5A19DFB461750CD3EDFBB7A047076EF3CC141FBDB5A655FCAD47758",
+      "sourceModifiedUtc": "2026-09-08T05:53:54.3644140Z",
+      "archiveSha256": "46F5A3E7275161E1DEA15ACC143413AE58043772AB58345F1A6BF597ECCE72C3"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-coverage-Release.log",
+      "sourceSha256": "347E8D840D6CE4033E9BE32B02FD56CA5C87D9A626FEC3245DC8765A662259CC",
+      "sourceModifiedUtc": "2026-09-08T05:56:14.9502303Z",
+      "archiveSha256": "61F6F4A329136E70A58F6E64906EB439C43B22043ACBC83BD266A85FC164CA7F"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-coverage-Release.log.processes",
+      "sourceSha256": "88F44AA4156EDE0EFC5F27C4EE5B3143879C76F6AC323E55CAA9E64E1E175735",
+      "sourceModifiedUtc": "2026-09-08T05:56:14.9514244Z",
+      "archiveSha256": "ECB5A2C155E5F6F6B732CE683041F64941B0EDC78D72295907ACDEA6B12FA64F"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-health-Debug.log",
+      "sourceSha256": "34F472241CBA3E13BF770F059DFDF01223B8171E135D6594F9DD1D81E110F734",
+      "sourceModifiedUtc": "2026-09-08T05:54:00.2515574Z",
+      "archiveSha256": "BD7D0CA77A3165B278116EB0361F9167B83B03BA2AA5ACC13C2287E8232EF521"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-health-Debug.log.processes",
+      "sourceSha256": "953801DE005156B5A2F85060A2D6175FAE87F03E91B914142196FCC558AC949C",
+      "sourceModifiedUtc": "2026-09-08T05:54:00.2525676Z",
+      "archiveSha256": "C1EF3D4FA010F72AD922E642721C44C5144F68DE48210FE081502C2590441927"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-health-Release.log",
+      "sourceSha256": "34F472241CBA3E13BF770F059DFDF01223B8171E135D6594F9DD1D81E110F734",
+      "sourceModifiedUtc": "2026-09-08T05:56:20.8338133Z",
+      "archiveSha256": "BD7D0CA77A3165B278116EB0361F9167B83B03BA2AA5ACC13C2287E8232EF521"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-health-Release.log.processes",
+      "sourceSha256": "3AC797F950D27C024BB99FF7746EBDA2A1BB8C7F8F61A47BD3870EEAE118FDCC",
+      "sourceModifiedUtc": "2026-09-08T05:56:20.8348071Z",
+      "archiveSha256": "2DFC6D7BAA74CD8A3302BE92A465E07FE9C90217D2796B82E6556CF1642D981A"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-install-Debug.log",
+      "sourceSha256": "DF15B132A63210A95862C26DBAFA7F0A01A627A40F17F570C0F11CB497B63B9D",
+      "sourceModifiedUtc": "2026-09-08T05:52:45.2741890Z",
+      "archiveSha256": "43AEB939E58D9257A60BE5DDEF83C02913A1F6ED0F45629EF01F04762677C700"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-install-Debug.log.processes",
+      "sourceSha256": "B055343E63C81FBC2F6450056B54DBF07A9EBAEB599DA6FCCB7111164FB0585F",
+      "sourceModifiedUtc": "2026-09-08T05:52:45.2751817Z",
+      "archiveSha256": "3B614F964A222F1D8BB956D749F6B334E84C5876514DBFCD7CEF9A3769DC808F"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-install-Release.log",
+      "sourceSha256": "DF15B132A63210A95862C26DBAFA7F0A01A627A40F17F570C0F11CB497B63B9D",
+      "sourceModifiedUtc": "2026-09-08T05:55:05.2920538Z",
+      "archiveSha256": "43AEB939E58D9257A60BE5DDEF83C02913A1F6ED0F45629EF01F04762677C700"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-install-Release.log.processes",
+      "sourceSha256": "D1B20E60C80DAA9BE558C79D9C10E072572255FC2F5658BF1D9BAAD91E9A474A",
+      "sourceModifiedUtc": "2026-09-08T05:55:05.2935587Z",
+      "archiveSha256": "C55C5A572EE1D6525DACC5B0F2B86D9084D5747326A6BEA11D2ED8E7FE2DADC1"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-mcp-Debug.log",
+      "sourceSha256": "C06DBB7F526F8BADA9EA666A4971456F9D3596B1D4ADCF98B71486A41CB8733C",
+      "sourceModifiedUtc": "2026-09-08T05:53:15.8972791Z",
+      "archiveSha256": "1D36B44F238C5515772D4FEAEBAE5111F7F07D807712CF62B9C07D502C40CF07"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-mcp-Debug.log.processes",
+      "sourceSha256": "9F77A8064C11732AADD1BF7AE4F7F0322EBF37B22499EB06BC37A21C974724DA",
+      "sourceModifiedUtc": "2026-09-08T05:53:15.8986045Z",
+      "archiveSha256": "7900BBB7673B2E639CC17271DCD323A1406C857DFF8C467AA692523E4DB4D230"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-mcp-Release.log",
+      "sourceSha256": "C42B7B28B3704072FC951A84FABBD97D7FF1961F3A9731EAB4EED21FA586E011",
+      "sourceModifiedUtc": "2026-09-08T05:55:36.2786958Z",
+      "archiveSha256": "8555A2AEBAA7BC80382C56356537A206FE6D86D8A94B8EC1D2358FBFE5155ED1"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-mcp-Release.log.processes",
+      "sourceSha256": "DE929DDCB5669780239F8F48A1D5565655D535F8254FDAB64B3DA72D81E6EBFC",
+      "sourceModifiedUtc": "2026-09-08T05:55:36.2796923Z",
+      "archiveSha256": "0EC3DBACA48FEEFDE290F6C800CE13A2A7D4588E6BECE61A7ECBB22F4F0AFDAE"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-restricted-Debug.json",
+      "sourceSha256": "EEBCE339DFF0D6D4C93C1BAC53749F72C2E4812EFE3E04BA455C3F1033B2AD60",
+      "sourceModifiedUtc": "2026-09-08T05:53:53.4782858Z",
+      "archiveSha256": "EEBCE339DFF0D6D4C93C1BAC53749F72C2E4812EFE3E04BA455C3F1033B2AD60"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-restricted-Release.json",
+      "sourceSha256": "A101EA36C2B1254E0784B8B5B507887AF45E6380FC580234DBE273E43584E449",
+      "sourceModifiedUtc": "2026-09-08T05:56:14.0875326Z",
+      "archiveSha256": "A101EA36C2B1254E0784B8B5B507887AF45E6380FC580234DBE273E43584E449"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-result.json",
+      "sourceSha256": "13718AD693061DCDE9A95A51FBBD2639E75BE110C94965409EE2B306B0F8EF4E",
+      "sourceModifiedUtc": "2026-09-08T05:56:23.7845246Z",
+      "archiveSha256": "13718AD693061DCDE9A95A51FBBD2639E75BE110C94965409EE2B306B0F8EF4E"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-unit-Debug.log",
+      "sourceSha256": "47B723F44B57BD5E967EAE2D0FA7264B62FD3487E1544D85F9A3E802A5C09F4E",
+      "sourceModifiedUtc": "2026-09-08T05:52:15.6331674Z",
+      "archiveSha256": "B4844AC7CE8F8DF1458293BDE989A6215EC255AD4323F8AF35BEAAE64E110A87"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-unit-Debug.log.processes",
+      "sourceSha256": "242053B2EBC4D6C6BB9FBBDF716E89DED6CC6CE86E2E4117B2A29E15B838A701",
+      "sourceModifiedUtc": "2026-09-08T05:52:15.6341623Z",
+      "archiveSha256": "1DFFBF1FBB48D29AE73BFA76D9A415819834D4072ECB95E019C4C051048E108F"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-unit-Release.log",
+      "sourceSha256": "D347E86E483977E954627F916141106FFF1676DD202D012F101B8327A82343AF",
+      "sourceModifiedUtc": "2026-09-08T05:54:34.4013920Z",
+      "archiveSha256": "171DFC0D54B7DF41CC6F3EC324431CD3C13483710B5843110329E54E9AE2C2D5"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\permissions-unit-Release.log.processes",
+      "sourceSha256": "A0D19F71FF1EA2748EB944CEF2E425E714A6467EB045875C5446047CB249A65C",
+      "sourceModifiedUtc": "2026-09-08T05:54:34.4013920Z",
+      "archiveSha256": "F2E4FDDAC1FA1B46DD168A888F5911FD8F5F0F29D03D54B54E6E80A184AE34D2"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\restricted-startup.log",
+      "sourceSha256": "09AFFFB8D3C4FC6C8D8E6E482A62264EBD1A0908A0388D8B76616C3294A4F183",
+      "sourceModifiedUtc": "2026-09-08T05:56:14.0895334Z",
+      "archiveSha256": "E7AF1911E48747D937E78C640D214EA187F8ED5B2B5DBD46C24F9D9920B9B864"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-build-Debug.log",
+      "sourceSha256": "E9CC96443C1F5F376D3776F7867572485B7744D5BB3C8F2CF84670A42A22B326",
+      "sourceModifiedUtc": "2026-09-08T05:56:34.7325064Z",
+      "archiveSha256": "CFD0647FCE9042B7EE5AF29B62B68DDB3D566A4274CA13E68218D274C1533FA5"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-build-Debug.log.processes",
+      "sourceSha256": "A289E5A75F8913D22CB08308502CC6479B5276B4123718CEFCBE3B2AC532E034",
+      "sourceModifiedUtc": "2026-09-08T05:56:34.7345136Z",
+      "archiveSha256": "3EDCE61BF85AEC8AE4997CE80BF8BD95B210AE41449C8AAC87C33339B79AAFB7"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-build-Release.log",
+      "sourceSha256": "0FBCB6EE7EEF98F1B8001CC8F3684F0678B7334D4CCFDEC5A1F058BF70716E69",
+      "sourceModifiedUtc": "2026-09-08T05:59:00.4890264Z",
+      "archiveSha256": "F478B3453DF3145F34588E5DB0E4F94ED13B0AA97B7B285388831A49534B796C"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-build-Release.log.processes",
+      "sourceSha256": "F7D4C05AAA5DF13B711F3CB15201D5539C6AD061E9F889B86454DEA772EE1002",
+      "sourceModifiedUtc": "2026-09-08T05:59:00.4903501Z",
+      "archiveSha256": "1A70B752A607D12499224D04277064997B652ACF9516641493B14E4773111BFF"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-cleanup-Debug.log",
+      "sourceSha256": "ED23812DFEA9E3AF2C6C80D6EB12984287F56EC5DCCB362ABC581CC15F1A7703",
+      "sourceModifiedUtc": "2026-09-08T05:58:51.7700759Z",
+      "archiveSha256": "6BE0FFC6BA16FA5416E39FE60490FE321B8ACCECFE694805B8BB013F6C9FA52C"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-cleanup-Debug.log.processes",
+      "sourceSha256": "891E4FF3231BDD02CA6447B43E07900289AB7643A289AC24CF0074092885CCE6",
+      "sourceModifiedUtc": "2026-09-08T05:58:51.7710687Z",
+      "archiveSha256": "181497A25BEDEF9B08481CAC9AD12FC6C863F3BF8C5833CEFC940CD747708B69"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-cleanup-Release.log",
+      "sourceSha256": "ED23812DFEA9E3AF2C6C80D6EB12984287F56EC5DCCB362ABC581CC15F1A7703",
+      "sourceModifiedUtc": "2026-09-08T06:01:20.1635425Z",
+      "archiveSha256": "6BE0FFC6BA16FA5416E39FE60490FE321B8ACCECFE694805B8BB013F6C9FA52C"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-cleanup-Release.log.processes",
+      "sourceSha256": "E304736FC6A39677DDEFEB7883DF9943C8BC7B583AAC62720E33E53CB5E1FB83",
+      "sourceModifiedUtc": "2026-09-08T06:01:20.1645440Z",
+      "archiveSha256": "0091BE7C8839CF35A8C3D699BFC3F2205F96868DC26DEA62199CA536F0F03383"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-dap-build-Debug.log",
+      "sourceSha256": "41AF97F82F37D1A4F6A2A0841D3A79B50FDE2A90D42601E93E982CD4393B5BE6",
+      "sourceModifiedUtc": "2026-09-08T05:56:43.6857822Z",
+      "archiveSha256": "474E82EAC685CECFD344D0F7986A037344794C974A316AE863E078B194FFC4CE"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-dap-build-Debug.log.processes",
+      "sourceSha256": "203C3E1F883B549281683BE0CBDE9106638A9939124AFC4CB02C9123CB5847DA",
+      "sourceModifiedUtc": "2026-09-08T05:56:43.6869519Z",
+      "archiveSha256": "2464B95F992BE01F455D3CF234B1864F92088232FE230B4A888C443D3E917F59"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-dap-build-Release.log",
+      "sourceSha256": "F8A4CFF91681706F7CE5DA4B18ACDB4FAC2C559E79522E081C602DCB9A13751A",
+      "sourceModifiedUtc": "2026-09-08T05:59:11.2050715Z",
+      "archiveSha256": "DC3CAEC4FA2A86A9FA34D1BC0408933B40BA0A341FB1FC931D0678FA5B7BCE46"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-dap-build-Release.log.processes",
+      "sourceSha256": "BE8804B0EC9829426043CFBFC5009C269FD8431725AACD83B78CCE7F689B45F0",
+      "sourceModifiedUtc": "2026-09-08T05:59:11.2060768Z",
+      "archiveSha256": "29E12F3BD9902CF6F4AEC532BED1E7DB8BA075BCBAB09AAC6704BFE9C3354F8A"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-dap-Debug.log",
+      "sourceSha256": "D3345DF46D60B193E7FCB3E47C1E4BA1E5022D4587D3C77CBE6BA8392E37AF5A",
+      "sourceModifiedUtc": "2026-09-08T05:58:25.9909437Z",
+      "archiveSha256": "D3345DF46D60B193E7FCB3E47C1E4BA1E5022D4587D3C77CBE6BA8392E37AF5A"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-dap-Debug.log.processes",
+      "sourceSha256": "08550E11B54525DBEBA9A4652A2BF30F7306520F95C53481E91C544CB73C4901",
+      "sourceModifiedUtc": "2026-09-08T05:58:25.9919586Z",
+      "archiveSha256": "9C1E8E934677978A78157CDB2B5051553ADBC24CB3CB45DCCD48C74E4EA0057B"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-dap-Release.log",
+      "sourceSha256": "D3345DF46D60B193E7FCB3E47C1E4BA1E5022D4587D3C77CBE6BA8392E37AF5A",
+      "sourceModifiedUtc": "2026-09-08T06:00:54.0432898Z",
+      "archiveSha256": "D3345DF46D60B193E7FCB3E47C1E4BA1E5022D4587D3C77CBE6BA8392E37AF5A"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-dap-Release.log.processes",
+      "sourceSha256": "A94210F80FCA5575451AE8BE51CAB724CD6103954373CFC353635C7FB0DA091A",
+      "sourceModifiedUtc": "2026-09-08T06:00:54.0442938Z",
+      "archiveSha256": "CE1A896984407D7F6B79810BFE4A70DD9B0FBEF4C39085ABCB0F243FB2A62421"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-Debug.json",
+      "sourceSha256": "2568E125734D429D3F26F77DDBA440FF8BDEBC57FFAF65C5BE9288290A9D5AF3",
+      "sourceModifiedUtc": "2026-09-08T05:58:14.0239127Z",
+      "archiveSha256": "2568E125734D429D3F26F77DDBA440FF8BDEBC57FFAF65C5BE9288290A9D5AF3"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-health-Debug.log",
+      "sourceSha256": "34F472241CBA3E13BF770F059DFDF01223B8171E135D6594F9DD1D81E110F734",
+      "sourceModifiedUtc": "2026-09-08T05:58:48.4941031Z",
+      "archiveSha256": "BD7D0CA77A3165B278116EB0361F9167B83B03BA2AA5ACC13C2287E8232EF521"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-health-Debug.log.processes",
+      "sourceSha256": "C52D54799715FDDFC633E8D29E1F55FB9B38A9396F8F914EF1284818FCA6D61F",
+      "sourceModifiedUtc": "2026-09-08T05:58:48.4941031Z",
+      "archiveSha256": "8F8ED3580471C50CA23105F71F0D7D5912403298A8BF0A448C7AE0C2682BBB01"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-health-Release.log",
+      "sourceSha256": "34F472241CBA3E13BF770F059DFDF01223B8171E135D6594F9DD1D81E110F734",
+      "sourceModifiedUtc": "2026-09-08T06:01:16.7033985Z",
+      "archiveSha256": "BD7D0CA77A3165B278116EB0361F9167B83B03BA2AA5ACC13C2287E8232EF521"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-health-Release.log.processes",
+      "sourceSha256": "8963610829B9164BF7A5531618D43EBF916F1E4CC04545614F475A39E0A55A44",
+      "sourceModifiedUtc": "2026-09-08T06:01:16.7044065Z",
+      "archiveSha256": "601E16103F752714B8B13365EB8B013A4D370EFBA21AD91E11F2D5126F5A362C"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-install-Debug.log",
+      "sourceSha256": "DF15B132A63210A95862C26DBAFA7F0A01A627A40F17F570C0F11CB497B63B9D",
+      "sourceModifiedUtc": "2026-09-08T05:57:36.9895490Z",
+      "archiveSha256": "43AEB939E58D9257A60BE5DDEF83C02913A1F6ED0F45629EF01F04762677C700"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-install-Debug.log.processes",
+      "sourceSha256": "9F578AD3C1C87892A852D239E7B6750AC4966997D9AC11C411E082C5ECDBE94E",
+      "sourceModifiedUtc": "2026-09-08T05:57:36.9895490Z",
+      "archiveSha256": "B674218B3A836BA16EF6437ED315A2E1DF49836D7629FF01632178E5701916E3"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-install-Release.log",
+      "sourceSha256": "DF15B132A63210A95862C26DBAFA7F0A01A627A40F17F570C0F11CB497B63B9D",
+      "sourceModifiedUtc": "2026-09-08T06:00:03.9276090Z",
+      "archiveSha256": "43AEB939E58D9257A60BE5DDEF83C02913A1F6ED0F45629EF01F04762677C700"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-install-Release.log.processes",
+      "sourceSha256": "7BFF396CAF434D87B734F01C1A64B8854441AA4549FBD55AD769FE8E8183031E",
+      "sourceModifiedUtc": "2026-09-08T06:00:03.9296228Z",
+      "archiveSha256": "77118C5C06E62ADC56632D14183DA90A5A64DAC7A7A1654DBA6D99959F4532E7"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-mcp-Debug.log",
+      "sourceSha256": "D3345DF46D60B193E7FCB3E47C1E4BA1E5022D4587D3C77CBE6BA8392E37AF5A",
+      "sourceModifiedUtc": "2026-09-08T05:58:14.0890434Z",
+      "archiveSha256": "D3345DF46D60B193E7FCB3E47C1E4BA1E5022D4587D3C77CBE6BA8392E37AF5A"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-mcp-Debug.log.processes",
+      "sourceSha256": "B9D4CF59A85CAAD33FC98EC854F6761EA9F4793CA0CDA4429C1B2E186A26CC25",
+      "sourceModifiedUtc": "2026-09-08T05:58:14.0910424Z",
+      "archiveSha256": "8961486292684B218930236EE08F58A17CFA253EF3E67739F7517A700509E6C0"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-mcp-Release.log",
+      "sourceSha256": "D3345DF46D60B193E7FCB3E47C1E4BA1E5022D4587D3C77CBE6BA8392E37AF5A",
+      "sourceModifiedUtc": "2026-09-08T06:00:42.3103486Z",
+      "archiveSha256": "D3345DF46D60B193E7FCB3E47C1E4BA1E5022D4587D3C77CBE6BA8392E37AF5A"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-mcp-Release.log.processes",
+      "sourceSha256": "DB0220960074061BEDE205B94A4F332F9407126C90121E02C15F0A190B328419",
+      "sourceModifiedUtc": "2026-09-08T06:00:42.3123577Z",
+      "archiveSha256": "88ABDECE3EC42790BC200580EDFB54E2608B086D8174F6781BC5DE1A4E748535"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-Release.json",
+      "sourceSha256": "8AE7C1D8A4BBF7A23B6724E2E375D03E9D5A75DEBB02211DE488437F613BE183",
+      "sourceModifiedUtc": "2026-09-08T06:00:42.1823791Z",
+      "archiveSha256": "8AE7C1D8A4BBF7A23B6724E2E375D03E9D5A75DEBB02211DE488437F613BE183"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-result.json",
+      "sourceSha256": "779EBC638D37CF6DD96E24CE963ACA13386C7F5ACFD6837B636BD3F9F623CA94",
+      "sourceModifiedUtc": "2026-09-08T06:01:20.1972599Z",
+      "archiveSha256": "779EBC638D37CF6DD96E24CE963ACA13386C7F5ACFD6837B636BD3F9F623CA94"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-unit-Debug.log",
+      "sourceSha256": "47B723F44B57BD5E967EAE2D0FA7264B62FD3487E1544D85F9A3E802A5C09F4E",
+      "sourceModifiedUtc": "2026-09-08T05:57:05.0295270Z",
+      "archiveSha256": "B4844AC7CE8F8DF1458293BDE989A6215EC255AD4323F8AF35BEAAE64E110A87"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-unit-Debug.log.processes",
+      "sourceSha256": "0A9C2798BA6944A4B30238975EFA2BD91E289794193ECD1F0E8B660FDCFBCBFE",
+      "sourceModifiedUtc": "2026-09-08T05:57:05.0320798Z",
+      "archiveSha256": "FF12AA28ADF661DE201B91A1BDAD8D12F2A72BA8E7775F3A31A5A2D2ECEB6E5C"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-unit-Release.log",
+      "sourceSha256": "D347E86E483977E954627F916141106FFF1676DD202D012F101B8327A82343AF",
+      "sourceModifiedUtc": "2026-09-08T05:59:32.9429101Z",
+      "archiveSha256": "171DFC0D54B7DF41CC6F3EC324431CD3C13483710B5843110329E54E9AE2C2D5"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-unit-Release.log.processes",
+      "sourceSha256": "D5D96288AE9363263EA229924EF166DD53BEB4C9826E2F6BFB5ACCC61C2FA19D",
+      "sourceModifiedUtc": "2026-09-08T05:59:32.9449119Z",
+      "archiveSha256": "C8D331B45327C906134E3A57463300ED3D47450327B322C5FB574CF67DE4CD95"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-vscode-Debug.log",
+      "sourceSha256": "3106DBF6868757BD4CCDCC33858C61574982BA77DF7AC3AA410B7C006E10B7FC",
+      "sourceModifiedUtc": "2026-09-08T05:58:42.9903380Z",
+      "archiveSha256": "B51A2C1549065189A0A5EFB72FADE728DC084A881EE7D6F7AD72A80C1E0E7B30"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-vscode-Debug.log.processes",
+      "sourceSha256": "BB3113620F986C6CFA2EC89603C6803B9F767995A5DBD0B58EDCF2DC86F62552",
+      "sourceModifiedUtc": "2026-09-08T05:58:42.9913374Z",
+      "archiveSha256": "A97B01843CF1695CBDA37DB56C0727EB4E7D90DCB64791B599197794561D5EA1"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-vscode-Release.log",
+      "sourceSha256": "E4D093A45CC4F8D13FB63F6B38781B998B58774FE470B675DED8B015841CAEBF",
+      "sourceModifiedUtc": "2026-09-08T06:01:11.2145227Z",
+      "archiveSha256": "21CDF69ED818827ADB1EF9077906634AE263BAB38C769D8BB43CD873007C507E"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\services-vscode-Release.log.processes",
+      "sourceSha256": "43D9E728894DF992C5B90A74BB823BBB1EB331531DCD3E8FAFA2258D3C278C6B",
+      "sourceModifiedUtc": "2026-09-08T06:01:11.2155225Z",
+      "archiveSha256": "4C03DC92E41D5262C45A65A8B65B2FAB720D8EBAA17D8C244B19DEDB71E9C658"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\stage3-4-inputs.sha256",
+      "sourceSha256": "DB236D2A52EABA4681683DB2F40A612B3DFB4FF0759B82D86BB84AB5EA7AB623",
+      "sourceModifiedUtc": "2026-09-08T05:49:10.9469201Z",
+      "archiveSha256": "DB236D2A52EABA4681683DB2F40A612B3DFB4FF0759B82D86BB84AB5EA7AB623"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\stage3-4-result.json",
+      "sourceSha256": "BFE380ADCD30AE4DC4ADDD814678F3FF287683D339E21D8AF6D779D5ED037688",
+      "sourceModifiedUtc": "2026-09-08T06:09:25.6746204Z",
+      "archiveSha256": "BFE380ADCD30AE4DC4ADDD814678F3FF287683D339E21D8AF6D779D5ED037688"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\stage3-4a.log",
+      "sourceSha256": "A83F5703B3BD01A3852FE4C638DC2BDA99A6409886217A51FEDC113A75FCE180",
+      "sourceModifiedUtc": "2026-09-08T05:51:43.9400190Z",
+      "archiveSha256": "C324FF24D6343B5839ACB9B0C6B1AB9D31DEE31E6F5F023826057282F9EA7FAF"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\stage3-4a.log.processes",
+      "sourceSha256": "004799D14A8DC8D3D65BEBAEF0FF19F780FCAC8D5747F2FABF65B7367E8BAABB",
+      "sourceModifiedUtc": "2026-09-08T05:51:43.9410210Z",
+      "archiveSha256": "E13D3064A69BC652349A1DF4C2014319FED0B9B325010106F9601DA33C30078F"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\stage3-4b.log",
+      "sourceSha256": "D3345DF46D60B193E7FCB3E47C1E4BA1E5022D4587D3C77CBE6BA8392E37AF5A",
+      "sourceModifiedUtc": "2026-09-08T05:56:23.8720036Z",
+      "archiveSha256": "D3345DF46D60B193E7FCB3E47C1E4BA1E5022D4587D3C77CBE6BA8392E37AF5A"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\stage3-4b.log.processes",
+      "sourceSha256": "24304B38F56C98D74FD944E76E64CCEE54CDF489913527491AA7556E6092373B",
+      "sourceModifiedUtc": "2026-09-08T05:56:23.8760939Z",
+      "archiveSha256": "02E8249DFF161C7E8299447195539CF9312BCABECD7F056231CA97B529856527"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\stage3-4c.log",
+      "sourceSha256": "D3345DF46D60B193E7FCB3E47C1E4BA1E5022D4587D3C77CBE6BA8392E37AF5A",
+      "sourceModifiedUtc": "2026-09-08T06:01:20.2989542Z",
+      "archiveSha256": "D3345DF46D60B193E7FCB3E47C1E4BA1E5022D4587D3C77CBE6BA8392E37AF5A"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\stage3-4c.log.processes",
+      "sourceSha256": "18FDE08D8A9B29FA20B2E9598573C29B1D901AE700B980495F8D89C2EF41E89E",
+      "sourceModifiedUtc": "2026-09-08T06:01:20.3019602Z",
+      "archiveSha256": "F396EB8BA0DA015B9F686E0B296F95B82F4B10F54C2B6E1CF34D176224882128"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\stage3-4d.log",
+      "sourceSha256": "D3345DF46D60B193E7FCB3E47C1E4BA1E5022D4587D3C77CBE6BA8392E37AF5A",
+      "sourceModifiedUtc": "2026-09-08T06:06:04.2092908Z",
+      "archiveSha256": "D3345DF46D60B193E7FCB3E47C1E4BA1E5022D4587D3C77CBE6BA8392E37AF5A"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\stage3-4d.log.processes",
+      "sourceSha256": "75FB5C6519C469A42498402EB0E34A20DC6A6158F255463D063D5DB3D65B3484",
+      "sourceModifiedUtc": "2026-09-08T06:06:04.2103034Z",
+      "archiveSha256": "41BDFA02ACCECDBFE5AC15ACD129EDFD51197C5A28DC2B7A2E94D43788B1CE6C"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\stage3-4e.log",
+      "sourceSha256": "D3345DF46D60B193E7FCB3E47C1E4BA1E5022D4587D3C77CBE6BA8392E37AF5A",
+      "sourceModifiedUtc": "2026-09-08T06:09:25.4205424Z",
+      "archiveSha256": "D3345DF46D60B193E7FCB3E47C1E4BA1E5022D4587D3C77CBE6BA8392E37AF5A"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\stage3-4e.log.processes",
+      "sourceSha256": "B6DE8FF54233FDB07E292218B94850489021D0332F8A998045D00EFBB9E58B84",
+      "sourceModifiedUtc": "2026-09-08T06:09:25.4255417Z",
+      "archiveSha256": "DEFE858219F280D2CAF35C0765C7A4079DEFFE36FD72B9FAEC7A0F88EAE18BD0"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\vscode-service-iis-Debug.json",
+      "sourceSha256": "A0A34B438A6062FA852E3C81C9519563FC6CD868AE92F6D3454E3E9D4AC813D2",
+      "sourceModifiedUtc": "2026-09-08T05:58:42.5147727Z",
+      "archiveSha256": "A0A34B438A6062FA852E3C81C9519563FC6CD868AE92F6D3454E3E9D4AC813D2"
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\vscode-service-iis-Release.json",
+      "sourceSha256": "17240B142F56CAD664E0E3D07D10F6D2305139D516D69EDECC6BAACA40A59585",
+      "sourceModifiedUtc": "2026-09-08T06:01:10.9194100Z",
+      "archiveSha256": "17240B142F56CAD664E0E3D07D10F6D2305139D516D69EDECC6BAACA40A59585"
+    },
+    {
+      "path": "artifacts\\stage2-validation\\skill-install.json",
+      "sourceSha256": "B4A5ECD74961EE9F0802BE9FB32CD94FDB3A68FB00592F5030113971E4427252",
+      "sourceModifiedUtc": "2026-09-08T06:09:30.9510992Z",
+      "archiveSha256": "B4A5ECD74961EE9F0802BE9FB32CD94FDB3A68FB00592F5030113971E4427252"
+    },
+    {
+      "path": "artifacts\\stage2-validation\\stage1-full-regression.log",
+      "sourceSha256": "5C9AAC0275AECC9D95A8A236C048ADB2A7D6C7BF37C377FEA8EFDFB9AD7E0B52",
+      "sourceModifiedUtc": "2026-09-08T06:28:55.5642787Z",
+      "archiveSha256": "45FA36BE74E2AE83C81D5D7BEBB090B5357011D28E4F525BF5C051834D5C20C2"
+    },
+    {
+      "path": "artifacts\\stage2-validation\\stage1-full-regression.log.processes",
+      "sourceSha256": "97EBDBFE6FED83358C8C0BC1FD7285D00DD28D13BB874A688BAF4B0B56A0A188",
+      "sourceModifiedUtc": "2026-09-08T06:28:55.5652880Z",
+      "archiveSha256": "D0A0684393DEA02A64CCB617DA9645D73A4FAE525D3A9FA7029842615A320704"
+    },
+    {
+      "path": "artifacts\\stage2-validation\\stage2-3-install-evidence.log",
+      "sourceSha256": "5921A123D71A5E70B4F99BDFC7F85CB4209D72732F5F85E6B1BA330BA3D386BC",
+      "sourceModifiedUtc": "2026-09-08T06:09:31.1891375Z",
+      "archiveSha256": "D4AEA6EE34A048C2E5238C3F96EE1E4C16DBAD722948981F1DDEF79DCD27C98F"
+    },
+    {
+      "path": "artifacts\\stage2-validation\\stage2-3-install-evidence.log.processes",
+      "sourceSha256": "07656B21A927976D5575A8D2C82431B50FF85236B395642B783F86674AAAC9CF",
+      "sourceModifiedUtc": "2026-09-08T06:09:31.1921359Z",
+      "archiveSha256": "8E55C2045FF89902EE46A8C29A37EA34A512B3E1A64F176DC241739A4362E76C"
+    },
+    {
+      "path": "artifacts\\stage2-validation\\stage2-Debug.log",
+      "sourceSha256": "A5D76677B1213F935B5728E0F646112C5E8161041ACA2298334809F0A6B03EAD",
+      "sourceModifiedUtc": "2026-09-08T06:13:27.7330811Z",
+      "archiveSha256": "31420B47F3902403F66C285AA1D4E740E603AAA228227917AC8F6F3ECEF77864"
+    },
+    {
+      "path": "artifacts\\stage2-validation\\stage2-Debug.log.processes",
+      "sourceSha256": "9883BB9CD76567FD25A3A0DBEC809A332EAE3E0A55906FC44EA4C599B48159F4",
+      "sourceModifiedUtc": "2026-09-08T06:13:27.7360870Z",
+      "archiveSha256": "117C078E1EBC57B842DB08CC6B72F93BF7DC5CE0F4B17B7DD6652A051C0B9112"
+    },
+    {
+      "path": "artifacts\\stage2-validation\\stage2-inputs.sha256",
+      "sourceSha256": "31C1E62440670466B94EB991F9763F7D95592097DFC852BCAF6A84C4B5FB8CEE",
+      "sourceModifiedUtc": "2026-09-08T06:09:27.3605341Z",
+      "archiveSha256": "31C1E62440670466B94EB991F9763F7D95592097DFC852BCAF6A84C4B5FB8CEE"
+    },
+    {
+      "path": "artifacts\\stage2-validation\\stage2-mvp-Debug.log",
+      "sourceSha256": "45944CB92D229F9659B0F830456F1A64DCFCCFA88EF3D8E2ADDFCC16E1E3610D",
+      "sourceModifiedUtc": "2026-09-08T06:13:49.6532581Z",
+      "archiveSha256": "9DD81A4C1ADCE3526A4D88C7C8B622CB55E66A224B44EAB9F0999CEDCCF26389"
+    },
+    {
+      "path": "artifacts\\stage2-validation\\stage2-mvp-Debug.log.processes",
+      "sourceSha256": "74F5C2D4661F5E76CE78825CE7330D6A012330910C3451267B06B6A62334404D",
+      "sourceModifiedUtc": "2026-09-08T06:13:49.6542594Z",
+      "archiveSha256": "6DBDB03836AA3ACDEFB2904218E29D833A439E1D2B36D139A73350BF9E0609FA"
+    },
+    {
+      "path": "artifacts\\stage2-validation\\stage2-mvp-Release.log",
+      "sourceSha256": "B768EF8C797000DB08FC144A4153F1975FAE9E330429DB49C109A9C056EB03AC",
+      "sourceModifiedUtc": "2026-09-08T06:18:14.8448503Z",
+      "archiveSha256": "1180C0634CB25247411B1226FF0D35A9EEDCA000FF5964EA6487DD9E8D4A399A"
+    },
+    {
+      "path": "artifacts\\stage2-validation\\stage2-mvp-Release.log.processes",
+      "sourceSha256": "9EAFD3EF8DF55E7441FA52780A9815C4608F5236E21C692AF06822AE2DECB46A",
+      "sourceModifiedUtc": "2026-09-08T06:18:14.8458503Z",
+      "archiveSha256": "68A7CBD516BBB5AC3F3D4088102915CAC46B4B73741E1E285BA674637F6D9131"
+    },
+    {
+      "path": "artifacts\\stage2-validation\\stage2-Release.log",
+      "sourceSha256": "693076C7540454E0DB6D7EE718D74C2F28DDC9363141D3CDDF547A9039390B46",
+      "sourceModifiedUtc": "2026-09-08T06:17:51.7882640Z",
+      "archiveSha256": "5BE3163E5274404F37604B8844A610D901945291C2D8C77A59023D31FD4FB04B"
+    },
+    {
+      "path": "artifacts\\stage2-validation\\stage2-Release.log.processes",
+      "sourceSha256": "27EA86713731D6BA5996FE24D692AAC217FE03978C3749A3AF5651E100CEB826",
+      "sourceModifiedUtc": "2026-09-08T06:17:51.7913183Z",
+      "archiveSha256": "C62F7A024B8DF5887290DA33969B144BF54BCC300F1DA22D2D1ADAEFDE2CBFE0"
+    },
+    {
+      "path": "artifacts\\stage2-validation\\stage2-result.json",
+      "sourceSha256": "B8E159CF36008F31135DC4E290E4C4E805D383117CC2AAD497C7B9A8AA8818DA",
+      "sourceModifiedUtc": "2026-09-08T06:28:56.3973828Z",
+      "archiveSha256": "B8E159CF36008F31135DC4E290E4C4E805D383117CC2AAD497C7B9A8AA8818DA"
+    },
+    {
+      "path": "artifacts\\stage1-validation\\Debug.log",
+      "sourceSha256": "2BEC04F949692B9BC525C05CB7AF475748A601844929FD268BB63AA3DA82FFE4",
+      "sourceModifiedUtc": "2026-09-08T06:23:24.7057023Z",
+      "archiveSha256": "BDD51BD9DBDB7EA31198A52E4C705520230E46B3D1A7BC29D7FAF61DA038824D"
+    },
+    {
+      "path": "artifacts\\stage1-validation\\Release.log",
+      "sourceSha256": "C968E9C9550EA5502809DBE386E646DAE2D0020A4207C379CBA118CBEC80C620",
+      "sourceModifiedUtc": "2026-09-08T06:28:55.3194300Z",
+      "archiveSha256": "F10043C0FE58B9945292A69D2F64CD908EAA5B01D72D0DC5F10C88E427290313"
+    },
+    {
+      "path": "artifacts\\stage0-5\\pdb-loaded.json",
+      "sourceSha256": "21A2BFD3BE6203C77A4D4CAF8DAB5CC4F48D46B977294B8D5190C42294766F55",
+      "sourceModifiedUtc": "2026-09-08T06:28:46.1382061Z",
+      "archiveSha256": "21A2BFD3BE6203C77A4D4CAF8DAB5CC4F48D46B977294B8D5190C42294766F55"
+    },
+    {
+      "path": "artifacts\\stage0-5\\pdb-mismatch.json",
+      "sourceSha256": "1546BCEA4C4D3C05C9FF52B520764CE9C030B1F1DDBA24A40BCCE6E315946A41",
+      "sourceModifiedUtc": "2026-09-08T06:28:46.1438223Z",
+      "archiveSha256": "1546BCEA4C4D3C05C9FF52B520764CE9C030B1F1DDBA24A40BCCE6E315946A41"
+    },
+    {
+      "path": "artifacts\\stage0-5\\pdb-missing.json",
+      "sourceSha256": "5D91884DA828BE03FBB222CA600AF7E2B11EF6FB2921E5ECFDDB153E3DD415BE",
+      "sourceModifiedUtc": "2026-09-08T06:28:46.1413409Z",
+      "archiveSha256": "5D91884DA828BE03FBB222CA600AF7E2B11EF6FB2921E5ECFDDB153E3DD415BE"
+    },
+    {
+      "path": "artifacts\\stage0-5\\pdb-read-failed.json",
+      "sourceSha256": "939E590C6D460DE8D3D6751E7C15DC3D23F7CAB717388884DAC9FC2DF43D014A",
+      "sourceModifiedUtc": "2026-09-08T06:28:46.1463503Z",
+      "archiveSha256": "939E590C6D460DE8D3D6751E7C15DC3D23F7CAB717388884DAC9FC2DF43D014A"
+    },
+    {
+      "path": "artifacts\\stage0-6\\pending-debug.json",
+      "sourceSha256": "7BD53449557ABD29706DCF2E69232B6963BDBF0401E9690F4E3AF077CE8069B3",
+      "sourceModifiedUtc": "2026-09-08T06:23:24.3498961Z",
+      "archiveSha256": "7BD53449557ABD29706DCF2E69232B6963BDBF0401E9690F4E3AF077CE8069B3"
+    },
+    {
+      "path": "artifacts\\stage0-6\\pending-release.json",
+      "sourceSha256": "CFF9EC776FA87C92D0B2A3B7CF9A53D844BBCF02D8591F6169C1680528804ADB",
+      "sourceModifiedUtc": "2026-09-08T06:28:54.8377811Z",
+      "archiveSha256": "CFF9EC776FA87C92D0B2A3B7CF9A53D844BBCF02D8591F6169C1680528804ADB"
+    },
+    {
+      "path": "artifacts\\stage0-6\\stack-debug.json",
+      "sourceSha256": "84A68C571C14E1F3377CEC0164882EFC90761B9A0DC3E45293D79FA4FE0B0D05",
+      "sourceModifiedUtc": "2026-09-08T06:23:24.3467113Z",
+      "archiveSha256": "84A68C571C14E1F3377CEC0164882EFC90761B9A0DC3E45293D79FA4FE0B0D05"
+    },
+    {
+      "path": "artifacts\\stage0-6\\stack-release.json",
+      "sourceSha256": "8B2D56FC5171B48C7083197DA4B409F4183C84785E3F80C64A79F9332F463CE1",
+      "sourceModifiedUtc": "2026-09-08T06:28:54.8355282Z",
+      "archiveSha256": "8B2D56FC5171B48C7083197DA4B409F4183C84785E3F80C64A79F9332F463CE1"
+    },
+    {
+      "path": "artifacts\\stage0-6\\unresolved-debug.json",
+      "sourceSha256": "7A4301AD903138E5CA188FFDA081EBC6BB384B35B4623E5A0045EEE5011C9141",
+      "sourceModifiedUtc": "2026-09-08T06:23:24.3559070Z",
+      "archiveSha256": "7A4301AD903138E5CA188FFDA081EBC6BB384B35B4623E5A0045EEE5011C9141"
+    },
+    {
+      "path": "artifacts\\stage0-6\\unresolved-release.json",
+      "sourceSha256": "B0486B873DFA8DB36E58823A91987B2E8FF57D50AF46F930F651F07F70297FF7",
+      "sourceModifiedUtc": "2026-09-08T06:28:54.8396032Z",
+      "archiveSha256": "B0486B873DFA8DB36E58823A91987B2E8FF57D50AF46F930F651F07F70297FF7"
+    },
+    {
+      "path": "artifacts\\stage3-4-environment-check\\state.json",
+      "sourceSha256": "0C9334BEB4E6F3C12763EE14A86D51183312630F3AABD376774EA2BB9968198E",
+      "sourceModifiedUtc": "2026-09-08T05:51:43.5344376Z",
+      "archiveSha256": "0C9334BEB4E6F3C12763EE14A86D51183312630F3AABD376774EA2BB9968198E"
+    },
+    {
+      "path": "artifacts\\stage3-4-environment-permissions\\state.json",
+      "sourceSha256": "810230E2B61B79FFC3033A8EDE0FCB7FB957268C3042B0F49B1A8E988E6A0838",
+      "sourceModifiedUtc": "2026-09-08T05:56:23.4694341Z",
+      "archiveSha256": "810230E2B61B79FFC3033A8EDE0FCB7FB957268C3042B0F49B1A8E988E6A0838"
+    },
+    {
+      "path": "artifacts\\stage3-4-environment-services\\state.json",
+      "sourceSha256": "615B2EA2F47C5FBE5D78F0A0A9DA06FBA6ADD167634AE1CA6FAD33017AC9BBFA",
+      "sourceModifiedUtc": "2026-09-08T06:01:19.8882378Z",
+      "archiveSha256": "615B2EA2F47C5FBE5D78F0A0A9DA06FBA6ADD167634AE1CA6FAD33017AC9BBFA"
+    },
+    {
+      "path": "artifacts\\stage3-4-environment-iis\\state.json",
+      "sourceSha256": "764822FC756922CBC5B9E76B104F7E484A3A4941FD9AA8A5D16D08BE7A94BF88",
+      "sourceModifiedUtc": "2026-09-08T06:06:03.7770110Z",
+      "archiveSha256": "764822FC756922CBC5B9E76B104F7E484A3A4941FD9AA8A5D16D08BE7A94BF88"
+    },
+    {
+      "path": "artifacts\\stage3-4-environment-lifecycle\\state.json",
+      "sourceSha256": "F4C556DFFE20757A1DD18C1F64F06E164CA352AC3C5DE1E1282C39BF084D272A",
+      "sourceModifiedUtc": "2026-09-08T06:09:25.0323546Z",
+      "archiveSha256": "F4C556DFFE20757A1DD18C1F64F06E164CA352AC3C5DE1E1282C39BF084D272A"
+    },
+    {
+      "path": "artifacts\\stage4-preflight\\stage4-final-accepted.status.json",
+      "sourceSha256": "D6817F10968217E2E7ED07A0D229F44F3D2A60F16F4BDF6824FD28683502B9BF",
+      "sourceModifiedUtc": "2026-09-08T06:28:58.0874794Z",
+      "archiveSha256": "D6817F10968217E2E7ED07A0D229F44F3D2A60F16F4BDF6824FD28683502B9BF"
+    },
+    {
+      "path": "artifacts\\stage4-preflight\\stage4-final-accepted.log",
+      "sourceSha256": "8AE6CD140E9E85C0AFA03F3B6B14C3FEA7EA74997E1095F2B1CCF7B03B85E3D3",
+      "sourceModifiedUtc": "2026-09-08T06:28:57.0103761Z",
+      "archiveSha256": "DD7E707D8045C7F8D40F8BA81FB0422619EFBBD322C2803FDC107D0B7AB9D8B2"
+    },
+    {
+      "path": "artifacts\\stage4-preflight\\stage4-final-accepted.log.processes",
+      "sourceSha256": "7F6B7A3371539DFC17E93761508DE05E7CB2F86A6E265B5D78F802B85C451D78",
+      "sourceModifiedUtc": "2026-09-08T06:28:57.0164265Z",
+      "archiveSha256": "F8D2DBA5F4EDF0A1FD6E3FE076A34C2752EE601E55AB67131240D8E28600F61E"
+    }
+  ],
+  "additionalInputScope": [
+    {
+      "InputObject": "tests\\Debuggees\\Fx40.Environment.Web\\health.aspx C67E8EE96BA8F09A8B042322973FD4ED8BB24AF783519570FB0EE080D756208D",
+      "SideIndicator": "<="
+    },
+    {
+      "InputObject": "tests\\Debuggees\\Fx40.Environment.Web\\late.aspx C67E8EE96BA8F09A8B042322973FD4ED8BB24AF783519570FB0EE080D756208D",
+      "SideIndicator": "<="
+    },
+    {
+      "InputObject": "global.json 1497BDA77AC26A91600F9EAA9D733BE95A970961816C63738A4AAFE1DC9C14E3",
+      "SideIndicator": "<="
+    },
+    {
+      "InputObject": "Directory.Build.props F2DFBD5DDE845A2B725BF05ED25C791F8AF9FFD273B4CA2A2A36588F52A51AC2",
+      "SideIndicator": "<="
+    },
+    {
+      "InputObject": "Directory.Build.targets B1E7F916BE9D3830068205802B7482D038FDC2AA0CAB68EDB32B1075DBB692F0",
+      "SideIndicator": "<="
+    },
+    {
+      "InputObject": "FxDbg.sln 81A9FBC49E6F6B80F1C5234770D17A726350D63874418C75230F77C8966491ED",
+      "SideIndicator": "<="
+    }
+  ],
+  "normalization": "Only log/process record trailing whitespace and final newline normalized; raw and archived hashes both recorded.",
+  "endedUtc": "2026-09-08T14:28:58.0856583+08:00",
+  "sharedInputsIdenticalToStage4": true,
+  "inputsSha256": "DB236D2A52EABA4681683DB2F40A612B3DFB4FF0759B82D86BB84AB5EA7AB623",
+  "reviewedCommit": "2aa8a9d4067646fecf0707760980ca629312396a",
+  "passed": true,
+  "startedUtc": "2026-09-08T13:43:19.9427897+08:00"
+}
