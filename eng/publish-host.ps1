@@ -25,5 +25,10 @@ $engineDestination = Join-Path $OutputDirectory 'engines'
 $null = New-Item -ItemType Directory -Path $engineDestination -Force
 Get-ChildItem -LiteralPath (Join-Path $repoRoot "src/FxDbg.Engine/bin/$Configuration/net48") -File | Copy-Item -Destination $engineDestination
 @(Get-ChildItem -LiteralPath (Join-Path $repoRoot "src/FxDbg.Engine/bin/$Configuration/net48") -File | ForEach-Object Name) | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $engineDestination 'engine-manifest.json') -Encoding utf8
+if ($Entry -eq 'Mcp') {
+    $skillDestination = Join-Path $OutputDirectory 'skills'
+    $null = New-Item -ItemType Directory -Path $skillDestination -Force
+    Copy-Item -LiteralPath (Join-Path $repoRoot 'skills/fxdbg-agent') -Destination $skillDestination -Recurse
+}
 if ($runDirectory) { Save-ValidationPreparation $publishKey @($OutputDirectory) $publishLog }
 Write-Host "$Entry bundle: $OutputDirectory"

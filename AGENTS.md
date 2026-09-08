@@ -23,7 +23,7 @@ FxDbg Agent：运行于 Windows 的托管代码调试器，使外部 AI Agent（
 - 技术栈：C#；ICorDebug 经 **ClrDebug**（lordmilko，MIT，NuGet 0.4.2）包装，作为固定版本第三方依赖——**不修改、不复制其生成代码**；Windows PDB 基于 DIA（Microsoft.DiaSymReader 系包）；SharpDbg 仅作会话模型 / 变量树 / DAP 参考，不依赖其调试后端（已验证：SharpDbg 自身为 CoreCLR-only——基于 ICorDebugSharp + DbgShim 的 RegisterForRuntimeStartup，仅读 portable PDB，net10.0 AnyCPU 无 x86 构建，无任何 ICLRMetaHost/FX 运行时发现路径，不能调试 FX 目标）。
 - 首期不做：函数求值、变量修改、Edit and Continue、Set Next Statement、条件/数据断点、混合模式调试、Dump 分析、多进程联调、远程调试、HTTP MCP、VS 扩展。
 - 阶段 0 定案：固定 `ClrDebug` 0.4.2；Windows PDB 固定 `Microsoft.DiaSymReader` 2.2.11 与 `Microsoft.DiaSymReader.Native` 17.12.0-beta1.24603.5。独立 Native 包没有 Microsoft 公布的 CVE 最低修复版，所选版本是公告后的项目安全基线，并非官方最低修复下限。
-- MCP固定官方ModelContextProtocol / ModelContextProtocol.Core 2.2.0，协议2025-11-25，仅stdio；阶段4-1按已批准ADR-004增加debug_evaluate，阶段4-2增加debug_configure_exceptions，原13个debug_工具保持兼容。只读解释在共享Core/Engine执行，禁止目标ICorDebugEval或任意目标代码；字段、默认上限和错误恢复见docs/mcp-tools.md，安装与调用流程见docs/agent-skill.md。验收状态以ROADMAP为准。
+- MCP固定官方ModelContextProtocol / ModelContextProtocol.Core 2.2.0，协议2025-11-25，仅stdio；阶段4-1按已批准ADR-004增加debug_evaluate，阶段4-2增加debug_configure_exceptions，原13个debug_工具保持兼容。只读解释在共享Core/Engine执行，禁止目标ICorDebugEval或任意目标代码；字段、默认上限和错误恢复见docs/mcp-tools.md，安装与调用流程见docs/agent-skill.md，发布/部署/客户端配置/技能安装见docs/skill-mcp-install.md。验收状态以ROADMAP为准。
 
 ## 计划目录结构（需求 §15）
 
@@ -70,7 +70,7 @@ FxDbg.sln
 - 2026-09-08加入上述优化时只做静态检查，按用户要求未运行测试；旧阶段验收报告不能作为优化后脚本的运行通过证据，也不能声称实测提速。
 - MVP 一键验收：`./eng/verify-stage2.ps1`，默认 Debug/Release，支持 `-Configuration Debug|Release`。包括真实 MCP、技能安装/独立 Agent 证据检查和 `eng/verify-stage1.ps1`；记录源码哈希、超时、日志及自有进程退出，任何失败不得标记通过。
 - 阶段3一键验收：管理员64位PowerShell运行 `./eng/verify-stage3.ps1 -NodePath <node.exe> -CodePath <Code.exe>`，默认Debug/Release，包含3-1/2/3/4/5、真实VS Code、VSIX及阶段2/1/0全回归；需要完整IIS/ASP.NET 4.x、Node/npm、VS Code、.NET 8/10和双架构CDB。显式 `-SkipServiceIis` 仅运行既有子集，结果列出skipped、完整passed=false；不能标记阶段3全验收通过。Service/IIS专项为 `./eng/verify-stage3-4.ps1`，使用独立资源并验证恢复，流程见 `docs/service-iis.md`。DAP发布：`./eng/publish-dap.ps1`，扩展打包：`./eng/package-extension.ps1`，配置见 `docs/dap.md`。
-- 发布 MCP：`./eng/publish-mcp.ps1 -Configuration Release`，入口为 `dotnet <发布目录>/fxdbg-mcp.dll`；必须携带相邻 `engines/` 的完整双架构依赖，不依赖当前目录。
+- 发布 MCP：`./eng/publish-mcp.ps1 -Configuration Release`，入口为 `dotnet <发布目录>/fxdbg-mcp.dll`；必须携带相邻 `engines/` 的完整双架构依赖，不依赖当前目录；发布目录同时包含 `skills/fxdbg-agent/`（终端用户用 `skills` CLI 从发布目录安装，见 `docs/skill-mcp-install.md`）。
 - SDK 由 `global.json` 固定为 .NET SDK 10.0.301（允许同一 feature band 的最新补丁）。
 - `net40` 使用 SDK 风格项目；`Directory.Build.targets` 固定引用 `Microsoft.NETFramework.ReferenceAssemblies` 1.0.3，因此构建机无需预装 .NET Framework 4.0 targeting pack。
 - 构建全部阶段 0 样例：`dotnet build FxDbg.sln --configuration Debug`。
@@ -89,6 +89,7 @@ FxDbg.sln
 - 清理或迁移证据时同步更新Markdown链接和复现说明，保留历史JSON结果及哈希的原始含义；不把旧报告改写为新脚本的实测通过记录。
 - 推翻需求 §16 决策之前先写 `docs/architecture.md` 的 ADR 记录，并与用户确认；不要「顺手修正」需求文档本身。
 - ROADMAP.md 的任务条目按 roadmap 流程维护；不得跳过「阶段 0 技术验证」直接开发 MCP。
+- 用户安装流程以 `docs/skill-mcp-install.md` 为准（README 引用）。`docs/mcp-tools.md` 与 `docs/agent-skill.md` 必须与 `skills/fxdbg-agent/references/` 中对应文件逐字节一致（`eng/verify-skill-install.ps1` 校验 SHA256），修改任一后同步另一处；技能安装固定 `skills@1.5.23`，项目级安装不加 `--global`。
 - 本文件是权威事实来源的衍生物：与需求文档冲突时先确认，再修改本文件。
 
 ## 已知坑
