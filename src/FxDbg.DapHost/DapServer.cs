@@ -105,6 +105,7 @@ internal sealed partial class DapServer(DebugSessionService sessions, Stream inp
             await Respond(packet, new JObject { ["supportsConfigurationDoneRequest"] = true, ["supportsTerminateRequest"] = true,
                 ["supportsCancelRequest"] = true, ["supportsDelayedStackTraceLoading"] = true, ["supportsEvaluateForHovers"] = true,
                 ["supportsExceptionFilterOptions"] = true,
+                ["supportsConditionalBreakpoints"] = true, ["supportsHitConditionalBreakpoints"] = true,
                 ["exceptionBreakpointFilters"] = new JArray(new JObject { ["filter"] = "firstChance", ["label"] = "First-chance managed exceptions",
                     ["default"] = false, ["supportsCondition"] = true,
                     ["conditionDescription"] = "Type rules separated by semicolons: exact:Full.Type;namespace:Prefix;derived:Base.Type" }) });
@@ -233,7 +234,7 @@ internal sealed partial class DapServer(DebugSessionService sessions, Stream inp
         {
             string id = (string)breakpoint["breakpointId"]!;
             if (!breakpointNumbers.TryGetValue(id, out int number)) continue;
-            string state = breakpoint.ToString(Formatting.None);
+            string state = ToBreakpoint(breakpoint, number).ToString(Formatting.None);
             if (breakpointStates.TryGetValue(id, out string? previous) && state != previous)
                 await Event("breakpoint", new JObject { ["reason"] = "changed", ["breakpoint"] = ToBreakpoint(breakpoint, number) });
             breakpointStates[id] = state;

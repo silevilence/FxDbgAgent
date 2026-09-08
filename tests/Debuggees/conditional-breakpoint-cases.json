@@ -1,0 +1,11 @@
+[
+  {"name":"unconditional","stops":[1,2,3,4,5,6]},
+  {"name":"exact","hitCondition":"=3","stops":[3]},
+  {"name":"threshold","hitCondition":">=3","stops":[3,4,5,6]},
+  {"name":"expression","condition":"iteration % 2 == 0 && node.Value == 7","stops":[2,4,6]},
+  {"name":"combined","condition":"iteration % 2 == 0","hitCondition":">=3","stops":[4,6]},
+  {"name":"false","condition":"false && missing","stops":[]},
+  {"name":"nonboolean","condition":"iteration","stops":[1],"diagnostic":true},
+  {"name":"error","condition":"1 / 0 == iteration","stops":[1],"diagnostic":true},
+  {"name":"getter","condition":"node.Getter > 0","stops":[1],"diagnostic":true}
+]

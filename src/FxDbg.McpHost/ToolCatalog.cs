@@ -30,7 +30,9 @@ public static class ToolCatalog
         Define("attach", "Attach to one local Desktop CLR process without terminating it on detach.",
             Fields(("pid", Number(1, int.MaxValue)), ("arch", Choice("auto", "x86", "x64"))), ["pid"], false),
         Define("set_breakpoint", "Create a source breakpoint with file and line, or update enabled using only breakpointId and enabled. Report moved/pending states.",
-            Fields(("file", Text()), ("line", Number(1, int.MaxValue)), ("enabled", Flag(true)), ("breakpointId", Text())), []),
+            Fields(("file", Text()), ("line", Number(1, int.MaxValue)), ("enabled", Flag(true)), ("breakpointId", Text()),
+                ("condition", new() { ["type"] = "string", ["minLength"] = 1, ["maxLength"] = 4096 }),
+                ("hitCondition", new() { ["type"] = "string", ["minLength"] = 2, ["maxLength"] = 12 })), []),
         Define("remove_breakpoint", "Remove a source breakpoint by its returned ID.", Fields(("breakpointId", Text())), ["breakpointId"]),
         Define("continue", "Resume exactly once; waitForStop=false returns an operationId to poll with debug_status. Old frame/reference IDs expire.",
             Fields(("waitForStop", Flag(true))), []),
@@ -77,7 +79,7 @@ public static class ToolCatalog
             ["required"] = new JsonArray((session ? required.Prepend("sessionId") : required).Select(x => (JsonNode?)JsonValue.Create(x)).ToArray())
         };
         if (name == "set_breakpoint")
-            schema["oneOf"] = JsonNode.Parse("""[{"required":["file","line"],"not":{"required":["breakpointId"]}},{"required":["breakpointId","enabled"],"not":{"anyOf":[{"required":["file"]},{"required":["line"]},{"required":["appDomainId"]}]}}]""");
+            schema["oneOf"] = JsonNode.Parse("""[{"required":["file","line"],"not":{"required":["breakpointId"]}},{"required":["breakpointId","enabled"],"not":{"anyOf":[{"required":["file"]},{"required":["line"]},{"required":["appDomainId"]},{"required":["condition"]},{"required":["hitCondition"]}]}}]""");
         return new Tool
         {
             Name = "debug_" + name, Description = description, InputSchema = JsonSerializer.SerializeToElement(schema), OutputSchema = OutputSchemas.For(name),
@@ -95,7 +97,7 @@ public static class ToolCatalog
         {
             bool update = arguments.TryGetProperty("breakpointId", out _);
             bool file = arguments.TryGetProperty("file", out _), line = arguments.TryGetProperty("line", out _);
-            if (update ? file || line || arguments.TryGetProperty("appDomainId", out _) || !arguments.TryGetProperty("enabled", out _) : !file || !line)
+            if (update ? file || line || arguments.TryGetProperty("appDomainId", out _) || arguments.TryGetProperty("condition", out _) || arguments.TryGetProperty("hitCondition", out _) || !arguments.TryGetProperty("enabled", out _) : !file || !line)
                 throw new ArgumentException("Use file + line to create, or breakpointId + enabled to update a breakpoint.");
         }
     }

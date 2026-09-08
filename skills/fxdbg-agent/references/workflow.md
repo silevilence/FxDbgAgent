@@ -88,3 +88,5 @@ npx --yes skills@1.5.23 add <FxDbg源码绝对路径> --skill fxdbg-agent --agen
 多域断点可限定appDomainId；域卸载后该ID及帧/引用失效，限定断点不跟随同名新域，未限定断点可在新模块重新绑定。纯内存/Reflection.Emit模块无可用PDB时明确报告符号不可用。服务重启/IIS回收使旧session结束；重新预热、列出候选、核对PID并显式attach，新会话不继承旧引用。正常EOF与Host退出会尝试安全detach；Engine硬崩溃的目标存活仍受CLR/操作系统约束。
 
 异常类型过滤使用debug_configure_exceptions。先用窄exact/namespace/derived规则，运行中亦可更新；完成观察后用firstChance:false或rules:[]清空。true省略rules会停在所有first-chance，不宜用于高频抛出。异常过滤失败会保守停止并提供脱敏诊断，可关闭后继续。
+
+条件断点的condition/hitCondition仅随新建传入，按ID更新仅enabled。错误或超时会保守停止，检查debug_status中的conditionDiagnostic，可禁用/移除后继续；不要在相同停止反复重试错误条件。=N仅第N次，>=N自第N次起，模块重载保留hitCount，删除重建重置。

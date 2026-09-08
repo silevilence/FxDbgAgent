@@ -22,7 +22,7 @@ try
         Console.WriteLine("""
         fxdbg launch --exe app.exe [--arg value | --args "..."] [--arch auto|x86|x64] [--stop-at-entry]
         fxdbg attach --pid PID [--arch auto|x86|x64]
-        fxdbg break --session ID --file source.cs --line LINE
+        fxdbg break --session ID --file source.cs --line LINE [--condition EXPR] [--hit-condition =N|>=N]
         fxdbg continue|pause|wait|threads|modules|state|events --session ID
         fxdbg step --session ID --kind into|over|out --thread ID
         fxdbg stack --session ID --thread ID [--start N] [--count N]

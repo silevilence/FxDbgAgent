@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FxDbg.Core.Errors;
+using FxDbg.Core.Evaluation;
 using FxDbg.Core.Model;
 
 namespace FxDbg.Core.Breakpoints;
@@ -18,10 +19,11 @@ public sealed class BreakpointManager : IDisposable
 
     public BreakpointInfo Get(BreakpointId id) => Require(id).Info;
 
-    public BreakpointInfo Set(SourceLocation location, bool enabled = true, string? appDomainId = null)
+    public BreakpointInfo Set(SourceLocation location, bool enabled = true, string? appDomainId = null, string? condition = null, string? hitCondition = null)
     {
+        var policy = new BreakpointCondition(condition, hitCondition);
         var entry = new Entry(new BreakpointInfo(BreakpointId.New(), location, null, BreakpointState.Pending, enabled,
-            "Waiting for a loaded module with matching source symbols.", appDomainId));
+            "Waiting for a loaded module with matching source symbols.", appDomainId, condition: condition, hitCondition: hitCondition), policy);
         entries.Add(entry.Info.BreakpointId, entry);
         Changed?.Invoke(new BreakpointChange(entry.Info));
         foreach (ISourceBreakpointModule module in modules.Values)
@@ -31,6 +33,19 @@ public sealed class BreakpointManager : IDisposable
 
         Publish(entry);
         return entry.Info;
+    }
+
+    public bool ShouldStop(BreakpointId id, Func<RestrictedExpression, EvaluationBudget, ExpressionValue> evaluate)
+    {
+        if (!entries.TryGetValue(id, out Entry? entry) || !entry.Info.Enabled) return false;
+        long count = entry.Info.HitCount == long.MaxValue ? long.MaxValue : entry.Info.HitCount + 1;
+        bool stop = entry.Policy.ShouldStop(count, evaluate, out string? diagnostic);
+        // Queries observe counters; hidden hits must not flood change/stop event queues.
+        BreakpointInfo previous = entry.Info;
+        entry.Info = new BreakpointInfo(previous.BreakpointId, previous.RequestedLocation, previous.BoundLocation, previous.State,
+            previous.Enabled, previous.Diagnostic, previous.AppDomainId, previous.BoundAppDomainIds,
+            previous.Condition, previous.HitCondition, count, diagnostic);
+        return stop;
     }
 
     public BreakpointInfo SetEnabled(BreakpointId id, bool enabled)
@@ -170,7 +185,8 @@ public sealed class BreakpointManager : IDisposable
             entry.Info.BoundLocation?.OriginalFilePath == location?.OriginalFilePath &&
             entry.Info.BoundAppDomainIds.SequenceEqual(boundDomains) &&
             entry.Info.Diagnostic == diagnostic) return;
-        entry.Info = new BreakpointInfo(entry.Info.BreakpointId, entry.Info.RequestedLocation, location, state, entry.Info.Enabled, diagnostic, entry.Info.AppDomainId, boundDomains);
+        entry.Info = new BreakpointInfo(entry.Info.BreakpointId, entry.Info.RequestedLocation, location, state, entry.Info.Enabled, diagnostic, entry.Info.AppDomainId, boundDomains,
+            entry.Info.Condition, entry.Info.HitCondition, entry.Info.HitCount, entry.Info.ConditionDiagnostic);
         Changed?.Invoke(new BreakpointChange(entry.Info));
     }
 
@@ -178,11 +194,13 @@ public sealed class BreakpointManager : IDisposable
         throw new FxDbgException(FxDbgErrorCode.BreakpointNotFound, "Source breakpoint does not exist: " + id);
 
     private static BreakpointInfo Copy(BreakpointInfo info, bool enabled) =>
-        new(info.BreakpointId, info.RequestedLocation, info.BoundLocation, info.State, enabled, info.Diagnostic, info.AppDomainId, info.BoundAppDomainIds);
+        new(info.BreakpointId, info.RequestedLocation, info.BoundLocation, info.State, enabled, info.Diagnostic, info.AppDomainId, info.BoundAppDomainIds,
+            info.Condition, info.HitCondition, info.HitCount, info.ConditionDiagnostic);
 
     private sealed class Entry
     {
-        internal Entry(BreakpointInfo info) => Info = info;
+        internal Entry(BreakpointInfo info, BreakpointCondition policy) { Info = info; Policy = policy; }
+        internal BreakpointCondition Policy { get; }
         internal BreakpointInfo Info { get; set; }
         internal Dictionary<string, List<Bound>> Bindings { get; } = new();
         internal Dictionary<string, SourceBreakpointResolution> Resolutions { get; } = new();

@@ -49,10 +49,10 @@ public sealed partial class FrameworkDebugSession
         return breakpoints.List();
     }
 
-    public BreakpointInfo SetBreakpoint(SourceLocation source, bool enabled = true, string? appDomainId = null) => WithSynchronizedTarget(() =>
+    public BreakpointInfo SetBreakpoint(SourceLocation source, bool enabled = true, string? appDomainId = null, string? condition = null, string? hitCondition = null) => WithSynchronizedTarget(() =>
     {
         RequireAppDomain(appDomainId);
-        return breakpoints.Set(source, enabled, appDomainId);
+        return breakpoints.Set(source, enabled, appDomainId, condition, hitCondition);
     });
 
     public BreakpointInfo SetBreakpointEnabled(BreakpointId id, bool enabled) =>
@@ -120,7 +120,9 @@ public sealed partial class FrameworkDebugSession
                 }
                 break;
             case BreakpointCorDebugManagedCallbackEventArgs hit:
-                HitBreakpointId = modules.Values.Select(moduleItem => moduleItem.FindBreakpoint(hit.Breakpoint)).FirstOrDefault(id => id is not null);
+                BreakpointId? hitId = modules.Values.Select(moduleItem => moduleItem.FindBreakpoint(hit.Breakpoint)).FirstOrDefault(id => id is not null);
+                if (hitId is not null && !breakpoints.ShouldStop(hitId, (expression, budget) => EvaluateBreakpointFrame(hit.Thread, expression, budget))) return false;
+                HitBreakpointId = hitId;
                 StoppedThreadId = hit.Thread.Id;
                 pendingEntryController = envelope.Controller;
                 StopAt(hit.Thread, FxDbg.Core.Sessions.StopReason.Breakpoint);

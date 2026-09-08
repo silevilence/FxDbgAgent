@@ -36,3 +36,5 @@ threads、stack、variables、break支持 --app-domain <status中的appDomainId>
 Service/IIS使用同一个attach入口；先核对服务/应用池的当前PID并为IIS请求预热，权限、影子符号、回收及安全分离见[Service/IIS指南](service-iis.md)。CLI已纳入两类目标的双架构真实断点/分离验收。
 
 阶段4-2：`exceptions --session <id> --first-chance true --exception-rules "exact:System.InvalidOperationException;namespace:MyApp.Errors;derived:MyApp.BaseError"`，分号分隔 OR 规则，规则语义及64项上限见 [MCP契约](mcp-tools.md#会话异常类型过滤阶段4-2)。运行中和停止态均可更新。`--exception-rules ""` 清空；省略该参数且 true 为旧的全 first-chance，false 恢复仅未处理异常。非法配置保留原设置。
+
+阶段4-3：`break --session <id> --file <source> --line <line> --hit-condition ">=3" --condition "iteration % 2 == 0"`。两个可选条件做AND，=N恰好一次、>=N从阈值起，1≤N≤2147483647。`breakpoints`返回条件、实际命中hitCount及失败诊断conditionDiagnostic；模块重载保留计数，删除重建重置。条件失败保守停止，可用enable-break --enabled false禁用后继续。语法和预算见[MCP契约](mcp-tools.md#条件断点阶段4-3)。

@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using FxDbg.Core.Errors;
+using FxDbg.Core.Breakpoints;
 using FxDbg.Core.Model;
 using FxDbg.Core.Sessions;
 using FxDbg.Engine.Protocol;
@@ -69,6 +70,8 @@ public sealed class CliCommand
                 case "--file": values["file"] = RequiredPath(value); break;
                 case "--frame": values["frameId"] = value; break;
                 case "--expression": values["expression"] = value; break;
+                case "--condition": values["condition"] = value; break;
+                case "--hit-condition": values["hitCondition"] = value; break;
                 case "--exception-rules": values["rules"] = WireJson.Value(ExceptionStopConfiguration.ParseRules(value)); break;
                 case "--evaluation-timeout-ms": values["evaluationTimeoutMs"] = Positive(value, option); break;
                 case "--reference": values["referenceId"] = value; break;
@@ -88,6 +91,7 @@ public sealed class CliCommand
         if (method == "launch" && values["executablePath"] is null) throw Invalid("Launch requires --exe.");
         if (method == "attach" && values["processId"] is null) throw Invalid("Attach requires --pid.");
         if (method == "break.set" && (values["file"] is null || values["line"] is null)) throw Invalid("Break requires --file and --line.");
+        if (method == "break.set") _ = new BreakpointCondition((string?)values["condition"], (string?)values["hitCondition"]);
         if (method is "step" or "stack" && values["threadId"] is null) throw Invalid("--thread is required.");
         if (method == "step" && values["kind"] is null) throw Invalid("--kind is required.");
         if (method == "variables" && string.IsNullOrWhiteSpace((string?)values["frameId"])) throw Invalid("Variables requires --frame from stack output.");
@@ -108,7 +112,7 @@ public sealed class CliCommand
         {
             "launch" => option is "--exe" or "--cwd" or "--arg" or "--args" or "--env" or "--stop-at-entry" or "--stopAtEntry",
             "attach" => option == "--pid",
-            "break.set" => option is "--file" or "--line",
+            "break.set" => option is "--file" or "--line" or "--condition" or "--hit-condition",
             "break.remove" => option == "--breakpoint",
             "break.enable" => option is "--breakpoint" or "--enabled",
             "step" => option is "--thread" or "--kind",

@@ -3,12 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using FxDbg.Core.Breakpoints;
 using FxDbg.Core.Model;
+using FxDbg.Core.Evaluation;
 using Xunit;
 
 namespace FxDbg.UnitTests.Breakpoints;
 
 public sealed class BreakpointManagerTests
 {
+    [Fact]
+    public void Actual_hit_counters_survive_rebinding_and_reset_on_delete_without_hidden_events()
+    {
+        using var manager = new BreakpointManager();
+        var module = new SampleModule("first"); manager.ModuleLoaded(module);
+        var point = manager.Set(new SourceLocation("sample.cs",10), condition:"true",hitCondition:">=3");
+        var changes = new List<BreakpointChange>(); manager.Changed += changes.Add;
+        ExpressionValue Evaluate(RestrictedExpression parsed,EvaluationBudget budget) => parsed.Evaluate((_,_)=>throw new Exception(),budget);
+        Assert.False(manager.ShouldStop(point.BreakpointId,Evaluate)); Assert.Empty(changes);
+        manager.SetEnabled(point.BreakpointId,false); Assert.False(manager.ShouldStop(point.BreakpointId,Evaluate));
+        Assert.Equal(1,manager.Get(point.BreakpointId).HitCount);
+        manager.SetEnabled(point.BreakpointId,true); manager.SymbolsChanged(module.Id);
+        Assert.False(manager.ShouldStop(point.BreakpointId,Evaluate));
+        manager.ModuleUnloaded(module.Id); manager.ModuleLoaded(new SampleModule("second"));
+        Assert.True(manager.ShouldStop(point.BreakpointId,Evaluate));
+        var current=manager.Get(point.BreakpointId); Assert.Equal(3,current.HitCount); Assert.Equal("true",current.Condition); Assert.Equal(">=3",current.HitCondition);
+        manager.Remove(point.BreakpointId); Assert.False(manager.ShouldStop(point.BreakpointId,Evaluate));
+        Assert.Equal(0,manager.Set(new SourceLocation("sample.cs",10)).HitCount);
+    }
+
     [Fact]
     public void Scoped_breakpoint_never_binds_another_or_recreated_domain()
     {

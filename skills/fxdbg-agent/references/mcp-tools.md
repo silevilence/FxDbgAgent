@@ -18,7 +18,7 @@
 |---|---|---|---|
 | debug_launch | exe*、args、cwd、env、arch、stopAtEntry | exe/cwd 字符串；args 字符串数组；env 字符串字典；arch=auto/x86/x64，默认 auto；stopAtEntry=false | 目标信息（PID、实际架构、CLR 标识/文件版本、状态），创建新会话 |
 | debug_attach | pid*、arch | pid 正整数；arch 同上 | 目标信息，创建新会话；不得终止目标 |
-| debug_set_breakpoint | file+line，或 breakpointId+enabled | 新建 file/line 必填，line≥1、enabled=true；更新仅 breakpointId/显式 enabled，不允许混入 file/line | 断点及请求/绑定位置，活动会话 |
+| debug_set_breakpoint | file+line、condition?、hitCondition?，或 breakpointId+enabled | 新建line≥1、enabled=true；condition≤4096字符；hitCondition为=N或>=N。更新仅breakpointId/显式enabled，不混入位置/条件 | 断点及请求/绑定位置、条件、hitCount、conditionDiagnostic，活动会话 |
 | debug_remove_breakpoint | breakpointId* | 已返回的 ID | removed=true，活动会话 |
 | debug_continue | waitForStop | 默认 true | 停止/退出或异步操作，只能 stopped |
 | debug_step | threadId*、kind*、waitForStop | threadId≥1；kind=into/over/out；waitForStop=true | 同 continue，只能 stopped |
@@ -107,3 +107,11 @@ stdin EOF、输出断开或 Host 退出均结束所属会话，默认尝试 Deta
 `firstChance:true` 且省略 rules 保持旧行为（全部 first-chance）；显式 rules:[] 或 firstChance:false 恢复默认仅未处理异常。所有规则先验证再替换；非法配置返回 invalid_request 并保留之前配置。未处理异常始终停止。未知类型读取失败时保守停止，在 exception.diagnostic 给出脱敏诊断，便于检查、关闭过滤后继续。
 
 运行中更新经同一调度线程串行执行，不构成停止，也不完成当前运行操作；更新后处理的回调使用新规则。未匹配的 first-chance 内部继续，不产生停止事件或新的用户停止代次。高频回调与命令公平调度；原生回调只入队，每次原生停止仍恰好一次 Continue。停止信息沿用类型、原始 `_message`、线程、源码位置与栈，禁止调用自定义 Message/ToString。
+
+## 条件断点（阶段4-3）
+
+`debug_set_breakpoint({sessionId,file,line,hitCondition:">=3",condition:"iteration % 2 == 0"})`：条件均为可选项，命中次数与表达式为 AND。hitCondition 只接受 `=N`（恰好第N次）或 `>=N`（从第N次起），N为1～2147483647的十进制整数，不带空白、正负号或前导零。condition使用阶段4-1的受限只读语法，必须产生bool；不做数值、字符串或对象的隐式真假转换。无条件保持原行为。
+
+仅在原生断点实际命中且该逻辑断点启用时递增hitCount；先计数并判断次数，再按需解释表达式。模块重载、符号重绑定、启停均保留计数；删除后新建才从0开始。计数为非负Int64，极限处饱和，绝不溢出。breakpoint的condition/hitCondition/hitCount/conditionDiagnostic通过debug_status断点列表及创建/启停响应可见，状态机仍仅pending/verified/moved/unresolved。条件只能随新断点创建；按ID更新仍只支持enabled，改条件须删除重建。
+
+条件为false时沿既有Continue配对路径内部继续，无用户停止代次、stopped事件或运行操作完成；不创建变量引用或调用目标代码。判断在原单调度线程进行，每次表达式250ms期限、阶段4-1相同语法/资源预算；不等待CLR Eval。无法读取、非bool、除零、预算耗尽、超时均保守停止，conditionDiagnostic含稳定错误分类且不包含表达式、变量值或目标堆栈。修正/删除或禁用断点后可继续，不自动重试当前停止。原生COM不可中断限制沿用ADR-004。

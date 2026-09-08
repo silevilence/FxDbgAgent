@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading;
+using ClrDebug;
 using FxDbg.Core.Errors;
 using FxDbg.Core.Evaluation;
 using FxDbg.Core.Model;
@@ -31,15 +32,7 @@ public sealed partial class FrameworkDebugSession
         if (appDomainId is not null && handle.AppDomain.AppDomainId != appDomainId)
             throw new FxDbgException(FxDbgErrorCode.InvalidRequest, "Frame does not belong to the selected AppDomain.");
         RestrictedExpression parsed = RestrictedExpression.Parse(expression, budget);
-        ExpressionValue value = parsed.Evaluate((name, limits) =>
-        {
-            foreach (RootVariable root in DescribeRoots(handle.Frame))
-            {
-                limits.Step();
-                if (root.Name == name) return NativeVariableValue.Expression(root.Read, handle.Frame, limits);
-            }
-            throw new FxDbgException(FxDbgErrorCode.ExpressionNameNotFound, "Expression name is unavailable in this frame.");
-        }, budget);
+        ExpressionValue value = EvaluateFrame(handle.Frame, parsed, budget);
         if (!variableReaders.TryGetValue(handle.AppDomain.AppDomainId, out VariableReader? reader))
         {
             reader = new VariableReader(SessionId + ":" + stopGeneration + ":" + handle.AppDomain.AppDomainId, handle.AppDomain, variableReferenceBudget);
@@ -48,5 +41,29 @@ public sealed partial class FrameworkDebugSession
         // A fixed result name prevents source expressions from leaking through serialized values/logs.
         VariableInfo result = reader.Read(new[] { new VariableMember("result", VariableKind.Local, value.Variable) }, maxDepth, count, maxStringLength, budget.Token).Single();
         budget.Check(); return result;
+    }
+
+    private ExpressionValue EvaluateFrame(CorDebugILFrame frame, RestrictedExpression parsed, EvaluationBudget budget) =>
+        parsed.Evaluate((name, limits) =>
+        {
+            foreach (RootVariable root in DescribeRoots(frame))
+            {
+                limits.Step();
+                if (root.Name == name) return NativeVariableValue.Expression(root.Read, frame, limits);
+            }
+            throw new FxDbgException(FxDbgErrorCode.ExpressionNameNotFound, "Expression name is unavailable in this frame.");
+        }, budget);
+
+    private ExpressionValue EvaluateBreakpointFrame(CorDebugThread thread, RestrictedExpression parsed, EvaluationBudget budget)
+    {
+        try
+        {
+            budget.Check();
+            if (thread.ActiveFrame.Raw is not ICorDebugILFrame frame)
+                throw new FxDbgException(FxDbgErrorCode.ValueUnavailable, "Breakpoint frame is unavailable.");
+            return EvaluateFrame(new CorDebugILFrame(frame), parsed, budget);
+        }
+        catch (Exception error) when (error is not FxDbgException && error is not OperationCanceledException && error is not OutOfMemoryException)
+        { throw new FxDbgException(FxDbgErrorCode.ValueUnavailable, "Breakpoint frame could not be read."); }
     }
 }

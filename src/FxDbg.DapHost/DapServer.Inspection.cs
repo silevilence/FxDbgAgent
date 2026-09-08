@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using FxDbg.Core.Breakpoints;
 
 namespace FxDbg.DapHost;
 
@@ -9,6 +10,8 @@ internal sealed partial class DapServer
     private readonly Dictionary<int, string> frames = [];
     private readonly Dictionary<int, VariableHandle> variables = [];
     private readonly Dictionary<string, List<string>> sourceBreakpoints = new(StringComparer.OrdinalIgnoreCase);
+    private sealed record SourceBreakpointRequest(int Line, string? Condition, string? HitCondition);
+    private readonly Dictionary<string, SourceBreakpointRequest> breakpointRequests = new(StringComparer.Ordinal);
     private readonly Dictionary<string, int> breakpointNumbers = new(StringComparer.Ordinal);
     private JArray knownThreads = new();
     private readonly Dictionary<int, int> stackTotals = [];
@@ -30,31 +33,50 @@ internal sealed partial class DapServer
         string file = Path.GetFullPath(suppliedPath);
         var requested = args["breakpoints"] as JArray ?? new JArray();
         if (requested.Count > 1024) throw Invalid("At most 1024 breakpoints per source file.");
-        var lines = new List<int>();
+        var desired = new List<SourceBreakpointRequest>();
         foreach (var item in requested)
         {
             if (item is not JObject breakpoint) throw Invalid("breakpoints must contain objects.");
-            foreach (string field in new[] { "condition", "hitCondition", "logMessage" })
-                if (breakpoint[field]?.Type is not null and not JTokenType.Null) throw Invalid(field + " is not supported.");
+            if (breakpoint["logMessage"]?.Type is not null and not JTokenType.Null) throw Invalid("Log breakpoints are not supported.");
+            string? OptionalCondition(string field)
+            {
+                JToken? value = breakpoint[field];
+                if (value is null || value.Type == JTokenType.Null) return null;
+                if (value.Type != JTokenType.String) throw Invalid(field + " must be a string.");
+                return (string?)value == "" ? null : (string?)value;
+            }
+            string? condition = OptionalCondition("condition"), hitCondition = OptionalCondition("hitCondition");
+            _ = new BreakpointCondition(condition, hitCondition);
             int line = checked(Integer(breakpoint, "line") + (linesStartAt1 ? 0 : 1));
             if (line <= 0) throw Invalid("Invalid source line.");
-            lines.Add(line);
+            desired.Add(new SourceBreakpointRequest(line, condition, hitCondition));
         }
         if (!sourceBreakpoints.TryGetValue(file, out var existing)) sourceBreakpoints[file] = existing = [];
-        foreach (string id in existing.ToArray())
+        var available = new HashSet<string>(existing, StringComparer.Ordinal);
+        var status = await Invoke("status", new(), token);
+        var current = (status["breakpoints"] as JArray ?? new()).ToDictionary(item => (string)item["breakpointId"]!, StringComparer.Ordinal);
+        var result = new JArray();
+        foreach (SourceBreakpointRequest request in desired)
+        {
+            string? id = available.FirstOrDefault(candidate => breakpointRequests.TryGetValue(candidate, out var previous) && previous == request && current.ContainsKey(candidate));
+            JToken bound;
+            if (id is not null) { available.Remove(id); bound = current[id]; }
+            else
+            {
+                var parameters = new JObject { ["file"] = file, ["line"] = request.Line };
+                if (request.Condition is not null) parameters["condition"] = request.Condition;
+                if (request.HitCondition is not null) parameters["hitCondition"] = request.HitCondition;
+                bound = await Invoke("set_breakpoint", parameters, token);
+                id = (string)bound["breakpointId"]!; existing.Add(id); breakpointRequests[id] = request;
+            }
+            if (!breakpointNumbers.TryGetValue(id, out int number)) breakpointNumbers[id] = number = checked(++nextBreakpoint);
+            breakpointStates[id] = ToBreakpoint(bound, number).ToString(Formatting.None);
+            result.Add(ToBreakpoint(bound, number));
+        }
+        foreach (string id in available)
         {
             await Invoke("remove_breakpoint", new() { ["breakpointId"] = id }, token);
-            existing.Remove(id); breakpointNumbers.Remove(id); breakpointStates.Remove(id);
-        }
-        var result = new JArray();
-        foreach (int line in lines)
-        {
-            var bound = await Invoke("set_breakpoint", new() { ["file"] = file, ["line"] = line }, token);
-            string id = (string)bound["breakpointId"]!;
-            existing.Add(id);
-            if (!breakpointNumbers.TryGetValue(id, out int number)) breakpointNumbers[id] = number = checked(++nextBreakpoint);
-            breakpointStates[id] = bound.ToString(Formatting.None);
-            result.Add(ToBreakpoint(bound, number));
+            existing.Remove(id); breakpointNumbers.Remove(id); breakpointStates.Remove(id); breakpointRequests.Remove(id);
         }
         if (existing.Count == 0) sourceBreakpoints.Remove(file);
         return new() { ["breakpoints"] = result };
@@ -65,7 +87,7 @@ internal sealed partial class DapServer
         var location = value["boundLocation"]?.Type == JTokenType.Object ? value["boundLocation"]! : value["requestedLocation"]!;
         string state = (string)value["state"]!;
         return new() { ["id"] = number, ["verified"] = state is "verified" or "moved",
-            ["message"] = state == "moved" ? "Moved to the nearest executable line." : (string?)value["diagnostic"] ?? state,
+            ["message"] = (string?)value["conditionDiagnostic"] ?? (state == "moved" ? "Moved to the nearest executable line." : (string?)value["diagnostic"] ?? state),
             ["source"] = Source(location), ["line"] = (int)location["line"]! - (linesStartAt1 ? 0 : 1) };
     }
 

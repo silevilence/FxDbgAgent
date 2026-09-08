@@ -1,0 +1,20 @@
+PASS: MCP conditional x86 Debug unconditional, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x86 Debug exact, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x86 Debug threshold, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x86 Debug expression, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x86 Debug combined, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x86 Debug false, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x86 Debug nonboolean, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x86 Debug error, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x86 Debug getter, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x64 Debug unconditional, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x64 Debug exact, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x64 Debug threshold, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x64 Debug expression, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x64 Debug combined, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x64 Debug false, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x64 Debug nonboolean, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x64 Debug error, async operation continuity, counters, diagnostics, state oracle.
+PASS: MCP conditional x64 Debug getter, async operation continuity, counters, diagnostics, state oracle.
+
+Supervisor: exit=0, timedOut=False, forcedOwnedCleanup=

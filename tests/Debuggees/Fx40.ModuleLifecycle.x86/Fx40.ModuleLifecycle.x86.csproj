@@ -8,5 +8,6 @@
   <ItemGroup>
     <Compile Include="..\Fx40.ModuleLifecycle\Program.cs" Link="Program.cs" />
     <Compile Include="..\Fx40.ModuleLifecycle\ExceptionFilterScenarios.cs" Link="ExceptionFilterScenarios.cs" />
+    <Compile Include="..\Fx40.ModuleLifecycle\ConditionalBreakpointScenarios.cs" Link="ConditionalBreakpointScenarios.cs" />
   </ItemGroup>
 </Project>

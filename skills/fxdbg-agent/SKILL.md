@@ -22,3 +22,5 @@ For arithmetic or comparisons use debug_evaluate with a current frameId. It inte
 Finish with detach so the target can continue, or terminate only when authorized and launched by this session. Attached targets cannot be terminated. Close stdin for normal transport shutdown; do not kill the process tree. Respond to standard server ping messages (normal MCP clients handle this). Report actual observations and limitations, including Engine hard-crash target-survival limits, with the tool results that support them.
 
 异常过滤：debug_configure_exceptions({sessionId,firstChance:true,rules:[{kind:"exact",typeName:"MyApp.Error"}]})；kind还可为namespace（点边界前缀）或derived（自身/真实基类）。规则OR、最多64项。rules:[]或firstChance:false恢复默认仅未处理异常；true且省略rules则全first-chance。运行中可更新；非法配置保留原规则。禁止调用目标格式化、Getter或反射。细节见references/mcp-tools.md。
+
+条件断点：debug_set_breakpoint新建可带condition（受限bool表达式）和hitCondition（=N或>=N，1≤N≤2147483647），两者AND。debug_status断点列表提供hitCount和conditionDiagnostic。模块重载保留计数，删除重建重置；条件错误/250ms超时保守停止，禁用/移除或修正重建后继续。禁止用目标Getter、方法或格式化替代，详见references/mcp-tools.md。

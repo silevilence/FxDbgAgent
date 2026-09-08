@@ -66,7 +66,7 @@ code --install-extension ./artifacts/dap/fxdbg-0.1.0.vsix
 | disconnect | 默认安全分离、目标继续运行；terminateDebuggee=true 仅允许终止本入口启动的目标 |
 | terminate | 仅允许终止本入口启动的目标 |
 
-默认只停未处理异常，阶段4-2的setExceptionBreakpoints支持下文的firstChance类型过滤。阶段4-1声明supportsEvaluateForHovers，evaluate必须携带当前stackTrace返回的frameId和expression，watch/hover/repl都使用同一只读子集，不执行任意C#或目标函数。对象结果variablesReference可通过variables分页，恢复后失效；默认计算期限250ms。具体语法、白名单、预算及错误见[MCP求值契约](mcp-tools.md#受限表达式阶段4-1)。不支持变量修改、条件/命中次数/日志断点、单线程运行、指令级单步、函数断点、restart、源文件传输或网络监听；对应能力不声明。标准错误响应携带稳定错误码；畸形帧/重复JSON字段关闭连接并清理会话。
+默认只停未处理异常，阶段4-2的setExceptionBreakpoints支持下文的firstChance类型过滤。阶段4-1声明supportsEvaluateForHovers，evaluate必须携带当前stackTrace返回的frameId和expression，watch/hover/repl都使用同一只读子集，不执行任意C#或目标函数。对象结果variablesReference可通过variables分页，恢复后失效；默认计算期限250ms。具体语法、白名单、预算及错误见[MCP求值契约](mcp-tools.md#受限表达式阶段4-1)。不支持变量修改、日志断点、单线程运行、指令级单步、函数断点、restart、源文件传输或网络监听；对应能力不声明。标准错误响应携带稳定错误码；畸形帧/重复JSON字段关闭连接并清理会话。
 
 输入头最大8 KiB，消息最大4 MiB，普通待处理请求最多32个，另为控制请求保留4个名额；请求（含配置等待）30秒截止。写锁和输出有独立3秒期限，客户端保持输入开启但不消费输出时会断开并清理会话；Windows上不可取消的输入读取不阻止Host收尾。底层继续/步进保留最长240秒运行期限，达到期限后共享后端尝试暂停，可再继续。EOF、客户端崩溃或输入错误均释放 Host/Engine 并尝试安全 Detach；不会终止附加目标。
 
@@ -95,3 +95,9 @@ Service与完整IIS使用现有processId附加配置；适配器继承编辑器�
 initialize 声明 supportsExceptionFilterOptions，firstChance 过滤器支持 condition。`setExceptionBreakpoints({filters:[],filterOptions:[{filterId:"firstChance",condition:"exact:MyApp.Error;namespace:MyApp.Errors;derived:MyApp.BaseError"}]})` 使用共享类型规则，分号之间为 OR；类型名称、继承及上限见 [MCP契约](mcp-tools.md#会话异常类型过滤阶段4-2)。filters 必须为数组；exceptionOptions 仅接受空数组，未知过滤器和非法规则拒绝。
 
 DAP filters 与 filterOptions 是相加的 OR：filters:["firstChance"] 表示无条件全 first-chance，即使同时提供条件选项也保持全匹配。空/省略 condition 的 firstChance 选项同样全匹配。`filters:[]` 且无 filterOptions 清空，仅未处理异常停止。响应 breakpoints 按 filters 后 filterOptions 顺序返回 verified:true。可在运行中更新，不伪造 stopped 事件。实现不执行目标格式化或求值。
+
+## 条件断点（阶段4-3）
+
+initialize声明supportsConditionalBreakpoints及supportsHitConditionalBreakpoints。setBreakpoints的每项接受condition、hitCondition，语义与[MCP契约](mcp-tools.md#条件断点阶段4-3)相同；空字符串按未设置处理。表达式必须为bool、250ms期限，错误保守停止并在Breakpoint.message显示脱敏诊断。日志断点仍拒绝。
+
+同一文件的请求列表按位置和两个条件匹配既有断点，未变条目保留ID与实际命中计数；增加/删除其他条目不重置它，修改条件或删除重建则从0开始。全部条目先校验再更新；不因隐藏命中次数变化发送breakpoint changed事件。失败后可移除断点并继续。共享CLI/MCP查询可查看完整命中计数；DAP使用标准Breakpoint响应和stopped事件，不添加私有计数字段。

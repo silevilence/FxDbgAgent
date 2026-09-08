@@ -20,7 +20,8 @@ public sealed class BreakpointInfo
         SourceLocation? boundLocation,
         BreakpointState state,
         bool enabled,
-        string? diagnostic, string? appDomainId = null, IReadOnlyList<string>? boundAppDomainIds = null)
+        string? diagnostic, string? appDomainId = null, IReadOnlyList<string>? boundAppDomainIds = null,
+        string? condition = null, string? hitCondition = null, long hitCount = 0, string? conditionDiagnostic = null)
     {
         BreakpointId = breakpointId ?? throw new ArgumentNullException(nameof(breakpointId));
         RequestedLocation = requestedLocation ?? throw new ArgumentNullException(nameof(requestedLocation));
@@ -28,6 +29,10 @@ public sealed class BreakpointInfo
         State = state;
         Enabled = enabled;
         Diagnostic = diagnostic;
+        Condition = condition;
+        HitCondition = hitCondition;
+        HitCount = hitCount;
+        ConditionDiagnostic = conditionDiagnostic;
         AppDomainId = appDomainId;
         BoundAppDomainIds = new ReadOnlyCollection<string>(boundAppDomainIds is null ? Array.Empty<string>() : new List<string>(boundAppDomainIds));
     }
@@ -43,6 +48,10 @@ public sealed class BreakpointInfo
     public bool Enabled { get; }
 
     public string? Diagnostic { get; }
+    public string? Condition { get; }
+    public string? HitCondition { get; }
+    public long HitCount { get; }
+    public string? ConditionDiagnostic { get; }
     public string? AppDomainId { get; }
     public IReadOnlyList<string> BoundAppDomainIds { get; }
 }

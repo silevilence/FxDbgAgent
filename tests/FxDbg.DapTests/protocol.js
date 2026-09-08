@@ -52,7 +52,7 @@ async function session(bundle, root, configuration, architecture, attach) {
     assert.equal(caps.supportsConfigurationDoneRequest, true); assert.ok(!caps.supportsSetVariable && caps.supportsEvaluateForHovers);
     const launch = client.send(attach ? 'attach' : 'launch', attach ? { processId: child.pid } : { program: fix.exe, args: ['--scenario', 'gated', fix.directory] });
     await client.event('initialized');
-    await assert.rejects(client.request('setBreakpoints', { source: { path: fix.source }, breakpoints: [{ line: fix.line('E2E_BREAKPOINT'), condition: 'true' }] }));
+    await assert.rejects(client.request('setBreakpoints', { source: { path: fix.source }, breakpoints: [{ line: fix.line('E2E_BREAKPOINT'), logMessage: 'unsupported' }] }));
     const breaks = await client.request('setBreakpoints', { source: { path: fix.source }, breakpoints: [{ line: fix.line('E2E_BREAKPOINT') }] });
     assert.equal(breaks.breakpoints.length, 1);
     await client.request('configurationDone'); await launch.completion;

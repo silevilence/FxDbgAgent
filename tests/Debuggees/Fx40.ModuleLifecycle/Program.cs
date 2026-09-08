@@ -31,6 +31,7 @@ namespace FxDbg.Debuggees
 
         private static void Main(string[] args)
         {
+            if (args[0] == "--conditional-breakpoints") { ConditionalBreakpointScenarios.Run(args[1]); return; }
             if (args[0] == "--exception-filters") { Filtering.ExceptionFilterScenarios.Run(args[1]); return; }
             if (args[0] == "--evaluation")
             {

@@ -9,7 +9,7 @@
 - 阶段 1 已完成，依据为 `docs/validation/stage1-final-review.md`。阶段 2 的实现、独立 Agent 调用证据与完整回归见 `docs/validation/stage2-mvp.md`；按 `ROADMAP.md` 原地勾选保留任务位置。
 - 阶段3全部完成，包含3-4a～3-4f真实Service/IIS及3-5可选DAP/VS Code扩展。2026-09-07实现a0b4a2c的Debug/Release完整回归通过，覆盖阶段3、真实VS Code及全部阶段2/1/0；269项输入一致，独立审核无遗留阻塞，变更生产行覆盖率140/155（90.32%）。依据见 `docs/validation/stage3-4-service-iis.md`、`docs/validation/stage3-4-final-review.md`。2026-09-06的3-4跳过记录仅为历史；Cursor共用扩展，未宣称Cursor实测。
 
-- 阶段4-1按用户批准ADR-004完成受限只读解释求值，新增debug_evaluate；双架构Debug/Release专项及阶段2/1/0回归通过，见docs/validation/stage4-1.md。4-2异常类型过滤已完成（docs/validation/stage4-2.md），4-3尚未完成，4-4维持不实施决策；阶段4整体审核与最终全回归待全部任务完成后执行。
+- 阶段4-1按用户批准ADR-004完成受限只读解释求值，新增debug_evaluate；双架构Debug/Release专项及阶段2/1/0回归通过，见docs/validation/stage4-1.md。4-2异常类型过滤已完成（docs/validation/stage4-2.md），4-3条件断点已完成（docs/validation/stage4-3.md），4-4维持不实施决策；阶段4全部任务已依序实现并专项验收，整体审核与最终全回归正在执行。
 
 ## 项目是什么
 

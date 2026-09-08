@@ -116,7 +116,7 @@ internal sealed class EngineServer
                     }
                 }
                 break;
-            case "break.set": result = current.SetBreakpoint(new SourceLocation(Text(args, "file"), Integer(args, "line", 0)), Boolean(args, "enabled", true), OptionalText(args, "appDomainId")); break;
+            case "break.set": result = current.SetBreakpoint(new SourceLocation(Text(args, "file"), Integer(args, "line", 0)), Boolean(args, "enabled", true), OptionalText(args, "appDomainId"), OptionalText(args, "condition"), OptionalText(args, "hitCondition")); break;
             case "break.list": result = current.GetBreakpoints(); break;
             case "break.remove": current.RemoveBreakpoint(new BreakpointId(Text(args, "breakpointId"))); result = new { removed = true }; break;
             case "break.enable": result = current.SetBreakpointEnabled(new BreakpointId(Text(args, "breakpointId")), Boolean(args, "enabled", true)); break;

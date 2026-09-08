@@ -8,6 +8,17 @@ namespace FxDbg.UnitTests.Host;
 public sealed class CliCommandTests
 {
     [Fact]
+    public void Break_conditions_use_shared_validation_before_starting_a_Host()
+    {
+        var args = new[] { "break", "--session", "b8ba588d-d261-45aa-8cb0-68d63bd773a0", "--file", "sample.cs", "--line", "10", "--condition", "iteration > 3", "--hit-condition", ">=2" };
+        var point = CliCommand.Parse(args);
+        Assert.Equal("iteration > 3",(string?)point.Parameters["condition"]);
+        Assert.Equal(">=2",(string?)point.Parameters["hitCondition"]);
+        args[args.Length-1] = "=0";
+        Assert.Throws<FxDbgException>(()=>CliCommand.Parse(args));
+    }
+
+    [Fact]
     public void Exception_rules_preserve_legacy_clear_and_multiple_match_kinds()
     {
         var legacy = CliCommand.Parse(new[] { "exceptions", "--session", "b8ba588d-d261-45aa-8cb0-68d63bd773a0", "--first-chance", "true" });
