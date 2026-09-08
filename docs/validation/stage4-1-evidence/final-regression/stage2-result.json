@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "configuration": "Debug+Release",
+  "atUtc": "2026-09-08T02:35:39.4639669+00:00",
+  "outcomes": [
+    {
+      "name": "stage2-3-install-evidence",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage2-validation\\stage2-3-install-evidence.log",
+      "exitCode": 0
+    },
+    {
+      "name": "stage2-Debug",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage2-validation\\stage2-Debug.log",
+      "exitCode": 0
+    },
+    {
+      "name": "stage2-mvp-Debug",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage2-validation\\stage2-mvp-Debug.log",
+      "exitCode": 0
+    },
+    {
+      "name": "stage2-Release",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage2-validation\\stage2-Release.log",
+      "exitCode": 0
+    },
+    {
+      "name": "stage2-mvp-Release",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage2-validation\\stage2-mvp-Release.log",
+      "exitCode": 0
+    },
+    {
+      "name": "stage1-full-regression",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage2-validation\\stage1-full-regression.log",
+      "exitCode": 0
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # MCP 工具契约
 
-阶段 2 的公开契约。当前实现进度以 ROADMAP 勾选项和验证报告为准；13 个工具、操作跟踪、资源限流和生命周期清理均复用共享 Host/Engine；独立 Agent 证据和完整回归结论见 docs/validation 下的阶段 2 报告。
+公开契约以tools/list及本文件为准；当前14个工具（原13工具保持兼容，阶段4-1新增debug_evaluate）、操作跟踪、资源限流和生命周期清理均复用共享Host/Engine。实现验收状态以ROADMAP及对应验证报告为准。
 
 运行 `./eng/publish-mcp.ps1 -Configuration Debug`，用 `dotnet <发布目录>/fxdbg-mcp.dll` 作为 MCP command/args。发布目录默认 `artifacts/mcp/Debug`，其旁 `engines/` 放置完整 x86/x64 Engine 与 DIA/ClrDebug 等依赖。可使用 `--engine-dir <绝对路径>` 覆盖，不依赖当前工作目录。仅本机 stdio，无网络监听。
 
@@ -27,6 +27,7 @@
 | debug_threads | 无 | stopped | 托管线程数组 |
 | debug_stack | threadId*、start、count | start=0（0～100000），count=32（1～1024） | 托管栈数组，stopped |
 | debug_variables | frameId*、referenceId、start、count、maxDepth、maxStringLength | start=0，count=100（1～1024），maxDepth=1（0～8），maxStringLength=256（1～32768） | 参数/局部/对象字段数组，stopped；展开对象时再传 referenceId |
+| debug_evaluate | frameId*、expression*、evaluationTimeoutMs、count、maxDepth、maxStringLength、appDomainId | expression非空且≤4096字符；evaluationTimeoutMs=250（1～1000），其余显示上限同variables | 单个VariableInfo，stopped；对象结果referenceId可交给variables分页 |
 | debug_detach | 无 | 安全分离，launch/attach 均适用 | 终态会话；目标继续运行 |
 | debug_terminate | 无 | 仅 launch 目标 | 终态会话；附加目标返回 invalid_request |
 
@@ -35,6 +36,20 @@
 工具业务错误包括 invalid_request、session_not_found、invalid_session_state、already_debugged、architecture_mismatch、core_clr_not_supported、symbols_missing/mismatch/read_failed、frame_not_found、value_unavailable、operation_timed_out/cancelled、operation_not_found、transport_disconnected、engine_exited、rate_limited（error.retryAfterMs=1000）。JSON-RPC 封装错误、未知方法和未知工具是协议错误；输入不合法及执行失败为工具错误。
 
 ## 调用与恢复
+
+### 受限表达式（阶段4-1）
+
+debug_evaluate在指定当前帧解释表达式，线程由frameId确定；可选appDomainId须与帧一致。仅读取参数、局部、this、实例/静态字段及数组元素，支持括号、null/bool/字符/字符串/数值字面量、`+ - * / %`、`== != < <= > >=`、`! && ||`（短路）、字段和数组/字符串索引。多维索引使用逗号，遵守真实下界。String/Array.Length读取原生长度；未初始化静态字段不触发类型初始化。
+
+固有操作白名单为Math.Abs/Min/Max基础数值参数、String.IsNullOrEmpty、String.Equals(string,string)（ordinal）、String.Concat(string,string)、Array.GetLength(array,dimension)。名称区分大小写，在调试器内执行，不调用目标mscorlib；用户Getter、ToString、方法、运算符、隐式转换、构造器、反射、赋值、自增减、循环和脚本均拒绝。对象支持字段读取、null/引用身份比较与变量树展示。
+
+这是C#的明确子集：小整数/char算术提升int，uint与有符号整数按long提升，ulong与有符号整数混合拒绝（不实现常量隐式转换），float/double按基础提升，整数检查溢出，整数除法向零截断。十进制整数字面量无后缀依次选择int/long/ulong，支持u/l/ul、浮点f/d与指数；不支持十六进制、decimal、指针、强制转换、位运算、条件运算符或完整C#重载选择。字符串字面量支持引号、反斜杠及n/r/t/0转义；计算使用完整原始值，不用显示截断值。
+
+输入4096个UTF-16代码单元，最多1024语法节点、32层、10000解释步骤、1024次值读取；单字符串32768、累计中间字符串65536个代码单元，超限拒绝，不能截断后继续计算。evaluationTimeoutMs包含Engine排队、解析、读取和计算；timeoutMs仍是Host调用期限。取消观察请求可先返回，后台只读工作在原期限内收尾；不会为求值Continue或使帧失效。不可中断原生COM故障沿用隔离清理，不能承诺此类故障后继续或强杀Engine后目标存活。
+
+错误分类为expression_syntax_error、expression_forbidden、expression_type_error、expression_name_not_found（包括未找到字段的Getter请求）、expression_index_out_of_range、expression_arithmetic_error、expression_limit_exceeded；上下文/读取/期限继续使用invalid_session_state、frame_not_found、value_unavailable、value_optimized_away、operation_timed_out/cancelled。错误不回显表达式、值或内部堆栈。正常结果固定name=result，对象referenceId仅在当前停止有效；恢复后重新取帧。求值失败先查status，修正表达式或预算后重试，无需额外Continue。
+
+示例：`debug_evaluate({sessionId,frameId,expression:"number + matrix[1,1]"})`；读取字段为node.Label，比较为node.Self == node，字符串比较为String.Equals(node.Label,"node-label")。
 
 ```json
 {"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"debug_status","arguments":{"sessionId":"00000000-0000-0000-0000-000000000001"}}}

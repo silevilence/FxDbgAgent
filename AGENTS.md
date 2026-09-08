@@ -9,6 +9,8 @@
 - 阶段 1 已完成，依据为 `docs/validation/stage1-final-review.md`。阶段 2 的实现、独立 Agent 调用证据与完整回归见 `docs/validation/stage2-mvp.md`；按 `ROADMAP.md` 原地勾选保留任务位置。
 - 阶段3全部完成，包含3-4a～3-4f真实Service/IIS及3-5可选DAP/VS Code扩展。2026-09-07实现a0b4a2c的Debug/Release完整回归通过，覆盖阶段3、真实VS Code及全部阶段2/1/0；269项输入一致，独立审核无遗留阻塞，变更生产行覆盖率140/155（90.32%）。依据见 `docs/validation/stage3-4-service-iis.md`、`docs/validation/stage3-4-final-review.md`。2026-09-06的3-4跳过记录仅为历史；Cursor共用扩展，未宣称Cursor实测。
 
+- 阶段4-1按用户批准ADR-004完成受限只读解释求值，新增debug_evaluate；双架构Debug/Release专项及阶段2/1/0回归通过，见docs/validation/stage4-1.md。4-2/4-3尚未完成，4-4维持不实施决策；阶段4整体审核与最终全回归待全部任务完成后执行。
+
 ## 项目是什么
 
 FxDbg Agent：运行于 Windows 的托管代码调试器，使外部 AI Agent（Cursor、Claude Code、Copilot）通过 **MCP over stdio** 调试 .NET Framework 4.x（CLR v4.0.30319）应用。定位为只读观察优先：**MVP 禁止函数求值与状态修改**，不追求复制 Visual Studio 完整体验。
@@ -21,7 +23,7 @@ FxDbg Agent：运行于 Windows 的托管代码调试器，使外部 AI Agent（
 - 技术栈：C#；ICorDebug 经 **ClrDebug**（lordmilko，MIT，NuGet 0.4.2）包装，作为固定版本第三方依赖——**不修改、不复制其生成代码**；Windows PDB 基于 DIA（Microsoft.DiaSymReader 系包）；SharpDbg 仅作会话模型 / 变量树 / DAP 参考，不依赖其调试后端（已验证：SharpDbg 自身为 CoreCLR-only——基于 ICorDebugSharp + DbgShim 的 RegisterForRuntimeStartup，仅读 portable PDB，net10.0 AnyCPU 无 x86 构建，无任何 ICLRMetaHost/FX 运行时发现路径，不能调试 FX 目标）。
 - 首期不做：函数求值、变量修改、Edit and Continue、Set Next Statement、条件/数据断点、混合模式调试、Dump 分析、多进程联调、远程调试、HTTP MCP、VS 扩展。
 - 阶段 0 定案：固定 `ClrDebug` 0.4.2；Windows PDB 固定 `Microsoft.DiaSymReader` 2.2.11 与 `Microsoft.DiaSymReader.Native` 17.12.0-beta1.24603.5。独立 Native 包没有 Microsoft 公布的 CVE 最低修复版，所选版本是公告后的项目安全基线，并非官方最低修复下限。
-- MCP 固定官方 `ModelContextProtocol` / `ModelContextProtocol.Core` 2.2.0，协议 2025-11-25，仅 stdio 和 13 个 `debug_` 工具；字段、默认上限和错误恢复见 `docs/mcp-tools.md`，安装与调用流程见 `docs/agent-skill.md`。
+- MCP固定官方ModelContextProtocol / ModelContextProtocol.Core 2.2.0，协议2025-11-25，仅stdio；阶段4-1按已批准ADR-004增加debug_evaluate，原13个debug_工具保持兼容。只读解释在共享Core/Engine执行，禁止目标ICorDebugEval或任意目标代码；字段、默认上限和错误恢复见docs/mcp-tools.md，安装与调用流程见docs/agent-skill.md。验收状态以ROADMAP为准。
 
 ## 计划目录结构（需求 §15）
 

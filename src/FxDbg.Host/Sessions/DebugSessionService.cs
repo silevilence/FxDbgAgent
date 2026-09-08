@@ -108,10 +108,10 @@ public sealed partial class DebugSessionService : IAsyncDisposable
         {
             "set_breakpoint" => arguments["breakpointId"] is null ? "break.set" : "break.enable",
             "remove_breakpoint" => "break.remove",
-            "threads" => "threads", "stack" => "stack", "variables" => "variables",
+            "threads" => "threads", "stack" => "stack", "variables" => "variables", "evaluate" => "evaluate",
             _ => throw Invalid("This command is not implemented in the current stage.")
         };
-        if (method is "threads" or "stack" or "variables")
+        if (method is "threads" or "stack" or "variables" or "evaluate")
         {
             // Editor refreshes routinely cancel obsolete reads after continue. Cancelling the
             // RPC wait would close the Engine pipe even though the read cannot alter execution.

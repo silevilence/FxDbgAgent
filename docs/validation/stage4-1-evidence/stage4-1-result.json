@@ -1,0 +1,77 @@
+{
+  "outcomes": [
+    {
+      "name": "evaluation-publish-mcp-Debug",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\evaluation-publish-mcp-Debug.log",
+      "exitCode": 0
+    },
+    {
+      "name": "evaluation-publish-dap-Debug",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\evaluation-publish-dap-Debug.log",
+      "exitCode": 0
+    },
+    {
+      "name": "evaluation-unit-Debug",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\evaluation-unit-Debug.log",
+      "exitCode": 0
+    },
+    {
+      "name": "evaluation-native-Debug-x86",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\evaluation-native-Debug-x86.log",
+      "exitCode": 0
+    },
+    {
+      "name": "evaluation-native-Debug-x64",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\evaluation-native-Debug-x64.log",
+      "exitCode": 0
+    },
+    {
+      "name": "evaluation-mcp-Debug",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\evaluation-mcp-Debug.log",
+      "exitCode": 0
+    },
+    {
+      "name": "evaluation-dap-cli-Debug",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\evaluation-dap-cli-Debug.log",
+      "exitCode": 0
+    },
+    {
+      "name": "evaluation-publish-mcp-Release",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\evaluation-publish-mcp-Release.log",
+      "exitCode": 0
+    },
+    {
+      "name": "evaluation-publish-dap-Release",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\evaluation-publish-dap-Release.log",
+      "exitCode": 0
+    },
+    {
+      "name": "evaluation-unit-Release",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\evaluation-unit-Release.log",
+      "exitCode": 0
+    },
+    {
+      "name": "evaluation-native-Release-x86",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\evaluation-native-Release-x86.log",
+      "exitCode": 0
+    },
+    {
+      "name": "evaluation-native-Release-x64",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\evaluation-native-Release-x64.log",
+      "exitCode": 0
+    },
+    {
+      "name": "evaluation-mcp-Release",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\evaluation-mcp-Release.log",
+      "exitCode": 0
+    },
+    {
+      "name": "evaluation-dap-cli-Release",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\evaluation-dap-cli-Release.log",
+      "exitCode": 0
+    }
+  ],
+  "configuration": "Debug+Release",
+  "passed": true,
+  "atUtc": "2026-09-08T02:07:11.4373656+00:00"
+}

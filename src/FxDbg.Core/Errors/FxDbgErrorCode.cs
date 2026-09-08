@@ -28,5 +28,12 @@ public enum FxDbgErrorCode
     TransportDisconnected,
     EngineExited,
     AccessDenied,
-    InternalError
+    InternalError,
+    ExpressionSyntaxError,
+    ExpressionForbidden,
+    ExpressionTypeError,
+    ExpressionNameNotFound,
+    ExpressionIndexOutOfRange,
+    ExpressionArithmeticError,
+    ExpressionLimitExceeded
 }

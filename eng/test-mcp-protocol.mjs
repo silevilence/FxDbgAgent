@@ -4,8 +4,8 @@ import assert from 'node:assert/strict';
 
 const bundle = resolve(process.argv[2]);
 const children = new Set();
-function connect(extra = []) {
-  const child = spawn('dotnet', [join(bundle, 'fxdbg-mcp.dll'), ...extra], { windowsHide: true, cwd: process.env.TEMP });
+function connect(extra = [], environment = {}) {
+  const child = spawn('dotnet', [join(bundle, 'fxdbg-mcp.dll'), ...extra], { windowsHide: true, cwd: process.env.TEMP, env: { ...process.env, ...environment } });
   children.add(child);
   const messages = [], pending = new Map();
   let buffer = '', stderr = '', failure;
@@ -63,7 +63,8 @@ try {
   client.send({ jsonrpc: '2.0', method: 'notifications/initialized', params: {} });
   assert.ok((await client.call('ping', {})).result);
   const listed = await client.call('tools/list', {});
-  assert.equal(listed.result?.tools.length, 13, JSON.stringify(listed));
+  assert.equal(listed.result?.tools.length, 14, JSON.stringify(listed));
+  assert.ok(listed.result.tools.some(tool => tool.name === 'debug_evaluate'));
   assert.equal((await client.call('method/absent', {})).error.code, -32601);
   const missing = await client.call('tools/call', { name: 'debug_status', arguments: {} });
   assert.equal(missing.result.isError, true);
@@ -90,5 +91,20 @@ try {
   await quiet.call('tools/call', { name: 'debug_status', arguments: { sessionId: 'secret-invalid-session' } });
   await quiet.close();
   assert.equal(quiet.stderr, '', 'Off level emits no tool diagnostics');
+  // One logical processor makes the SDK's yielded handlers overtake each other reliably.
+  // Wire-order admission must reject the early request even if its handler runs last.
+  for (let iteration = 0; iteration < 20; iteration++) {
+    const race = connect([], { DOTNET_PROCESSOR_COUNT: '1' });
+    race.send({ jsonrpc: '2.0', method: 'notifications/initialized', params: {} });
+    await race.call('initialize', { protocolVersion: '2025-11-25', capabilities: {}, clientInfo: { name: 'ordered-handshake', version: '1' } });
+    race.child.stdin.cork();
+    const before = race.call('tools/list', {});
+    race.send({ jsonrpc: '2.0', method: 'notifications/initialized', params: {} });
+    const after = race.call('tools/list', {});
+    race.child.stdin.uncork();
+    assert.equal((await before).error?.code, -32600, 'Premature notification cannot admit an early request');
+    assert.equal((await after).result?.tools.length, 14, 'Immediate legal tools/list must survive reordered handlers');
+    assert.equal(await race.close(), 0);
+  }
   console.log('Raw stdio: initialization, version negotiation, ping, errors, cancellation, malformed input and EOF passed.');
 } finally { for (const child of children) child.kill(); }

@@ -103,7 +103,7 @@ internal sealed partial class DapServer(DebugSessionService sessions, Stream inp
             columnsStartAt1 = (bool?)args["columnsStartAt1"] ?? true;
             initialized = true;
             await Respond(packet, new JObject { ["supportsConfigurationDoneRequest"] = true, ["supportsTerminateRequest"] = true,
-                ["supportsCancelRequest"] = true, ["supportsDelayedStackTraceLoading"] = true,
+                ["supportsCancelRequest"] = true, ["supportsDelayedStackTraceLoading"] = true, ["supportsEvaluateForHovers"] = true,
                 ["exceptionBreakpointFilters"] = new JArray() });
             return;
         }
@@ -158,7 +158,7 @@ internal sealed partial class DapServer(DebugSessionService sessions, Stream inp
         if (!configured) throw Invalid("configurationDone must complete first.");
         if ((bool?)args["singleThread"] == true) throw Invalid("Only all-thread execution control is supported.");
         if ((string?)args["granularity"] == "instruction") throw Invalid("Only source-level stepping is supported.");
-        if (command is "threads" or "stackTrace" or "scopes" or "variables") await RefreshStatus(token);
+        if (command is "threads" or "stackTrace" or "scopes" or "variables" or "evaluate") await RefreshStatus(token);
         JObject result;
         switch (command)
         {
@@ -172,6 +172,7 @@ internal sealed partial class DapServer(DebugSessionService sessions, Stream inp
             case "stackTrace": result = await Stack(args, token); break;
             case "scopes": result = Scopes(args); break;
             case "variables": result = await Variables(args, token); break;
+            case "evaluate": result = await Evaluate(args, token); break;
             default: throw Invalid("Unsupported DAP request: " + command);
         }
         await Respond(packet, result);

@@ -45,13 +45,17 @@ public static class ToolCatalog
         Define("variables", "Read fields/arguments/locals without getters, ToString or evaluation. References belong to this session and stop only.",
             Fields(("frameId", Text()), ("referenceId", Text()), ("start", Number(0, int.MaxValue, 0)), ("count", Number(1, 1024, 100)),
                 ("maxDepth", Number(0, 8, 1)), ("maxStringLength", Number(1, 32768, 256))), ["frameId"], true, true),
+        Define("evaluate", "Interpret a bounded read-only expression in a stopped frame. Never executes target code. Only the documented intrinsic whitelist is accepted.",
+            Fields(("frameId", Text()), ("expression", new() { ["type"] = "string", ["minLength"] = 1, ["maxLength"] = 4096 }),
+                ("evaluationTimeoutMs", Number(1, 1000, 250)), ("count", Number(1, 1024, 100)), ("maxDepth", Number(0, 8, 1)),
+                ("maxStringLength", Number(1, 32768, 256))), ["frameId", "expression"], true, true),
         Define("detach", "Safely detach and leave the target running. Ends the debugging session.", Fields(), []),
         Define("terminate", "Terminate only a target launched by this debugger. Attached targets are rejected.", Fields(), [])
     ];
 
     private static Tool Define(string name, string description, JsonObject properties, string[] required, bool session = true, bool readOnly = false)
     {
-        if (name is "status" or "threads" or "stack" or "variables" or "set_breakpoint") properties["appDomainId"] = Text();
+        if (name is "status" or "threads" or "stack" or "variables" or "evaluate" or "set_breakpoint") properties["appDomainId"] = Text();
         if (name is "launch" or "attach") properties["sourceMappings"] = new JsonObject
         {
             ["type"] = "array", ["maxItems"] = 128,
@@ -106,6 +110,8 @@ public static class ToolCatalog
         if (!valid) throw new ArgumentException("Tool argument has an invalid JSON type.");
         if (type == "string" && schema.TryGetProperty("minLength", out _) && string.IsNullOrWhiteSpace(value.GetString()))
             throw new ArgumentException("Tool string argument cannot be empty.");
+        if (type == "string" && schema.TryGetProperty("maxLength", out var maxLength) && value.GetString()!.Length > maxLength.GetInt32())
+            throw new ArgumentException("Tool string argument exceeds its length limit.");
         if (schema.TryGetProperty("enum", out var choices) && !choices.EnumerateArray().Any(x => x.GetString() == value.GetString()))
             throw new ArgumentException("Tool argument is outside the advertised enum.");
         if (type == "integer" && (value.GetInt32() < schema.GetProperty("minimum").GetInt32() || value.GetInt32() > schema.GetProperty("maximum").GetInt32()))

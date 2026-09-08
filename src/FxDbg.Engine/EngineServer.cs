@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FxDbg.Core.Errors;
 using FxDbg.Core.Events;
+using FxDbg.Core.Evaluation;
 using FxDbg.Core.Model;
 using FxDbg.Core.Requests;
 using FxDbg.Core.Sessions;
@@ -57,22 +58,24 @@ internal sealed class EngineServer
         return 0;
     }
 
-    private Task<JToken> Handle(string method, JObject args, CancellationToken cancellationToken)
+    private async Task<JToken> Handle(string method, JObject args, CancellationToken cancellationToken)
     {
         int milliseconds = Integer(args, "commandTimeoutMs", Integer(args, "timeoutMs", 10000));
         if (milliseconds <= 0 || milliseconds > 300000) throw Invalid("Invalid command timeout.");
-        return scheduler.EnqueueAsync(token =>
+        using EvaluationBudget? evaluationBudget = method == "evaluate" ? new EvaluationBudget(Integer(args, "evaluationTimeoutMs", 250), cancellationToken, milliseconds) : null;
+        int schedulingMilliseconds = evaluationBudget is null ? milliseconds : Math.Min(milliseconds, Integer(args, "evaluationTimeoutMs", 250));
+        return await scheduler.EnqueueAsync(token =>
         {
-            try { return Dispatch(method, args, token, TimeSpan.FromMilliseconds(milliseconds)); }
+            try { return Dispatch(method, args, token, TimeSpan.FromMilliseconds(milliseconds), evaluationBudget); }
             catch (FxDbgException error) when (error.Code == FxDbgErrorCode.OperationCancelled && !cancellationToken.IsCancellationRequested)
             { throw new FxDbgException(FxDbgErrorCode.OperationTimedOut, error.Message, error); }
             catch (Exception error) when (error is ArgumentException || error is FormatException || error is OverflowException || error is Newtonsoft.Json.JsonException)
             { throw Invalid("Command parameters have an invalid type or value."); }
             finally { PublishEvents(); }
-        }, TimeSpan.FromMilliseconds(milliseconds), cancellationToken);
+        }, TimeSpan.FromMilliseconds(schedulingMilliseconds), cancellationToken).ConfigureAwait(false);
     }
 
-    private JToken Dispatch(string method, JObject args, CancellationToken token, TimeSpan timeout)
+    private JToken Dispatch(string method, JObject args, CancellationToken token, TimeSpan timeout, EvaluationBudget? evaluationBudget = null)
     {
         token.ThrowIfCancellationRequested();
         if (method == "start")
@@ -128,6 +131,9 @@ internal sealed class EngineServer
             case "variables":
                 result = current.GetVariables(new FrameId(Text(args, "frameId")), args["referenceId"]?.Type == JTokenType.String ? new VariableReferenceId(Text(args, "referenceId")) : null,
                     Integer(args, "start", 0), Integer(args, "count", 100), Integer(args, "maxDepth", 1), Integer(args, "maxStringLength", 256), token, OptionalText(args, "appDomainId")); break;
+            case "evaluate":
+                result = current.Evaluate(new FrameId(Text(args, "frameId")), Text(args, "expression"), Integer(args, "evaluationTimeoutMs", 250),
+                    Integer(args, "maxDepth", 1), Integer(args, "count", 100), Integer(args, "maxStringLength", 256), token, OptionalText(args, "appDomainId"), evaluationBudget); break;
             case "exceptions.configure": current.ConfigureExceptionStops(Boolean(args, "firstChance", false)); result = new { configured = true }; break;
             case "modules": result = current.GetModules(); break;
             case "symbols.refresh": current.RefreshSymbols(); result = current.GetModules(); break;

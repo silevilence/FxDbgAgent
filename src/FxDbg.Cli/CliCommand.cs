@@ -23,7 +23,7 @@ public sealed class CliCommand
         if (args.Length == 0) throw Invalid("A command is required. Use --help.");
         string method = args[0] switch
         {
-            "launch" or "attach" or "continue" or "pause" or "step" or "wait" or "threads" or "stack" or "variables" or "detach" or "terminate" or "state" or "modules" or "events" => args[0],
+            "launch" or "attach" or "continue" or "pause" or "step" or "wait" or "threads" or "stack" or "variables" or "evaluate" or "detach" or "terminate" or "state" or "modules" or "events" => args[0],
             "break" => "break.set", "breakpoints" => "break.list", "remove-break" => "break.remove", "enable-break" => "break.enable",
             "exceptions" => "exceptions.configure", "refresh-symbols" => "symbols.refresh",
             _ => throw Invalid("Unknown command. Use --help.")
@@ -67,6 +67,8 @@ public sealed class CliCommand
                 case "--line": values["line"] = Positive(value, option); break;
                 case "--file": values["file"] = RequiredPath(value); break;
                 case "--frame": values["frameId"] = value; break;
+                case "--expression": values["expression"] = value; break;
+                case "--evaluation-timeout-ms": values["evaluationTimeoutMs"] = Positive(value, option); break;
                 case "--reference": values["referenceId"] = value; break;
                 case "--breakpoint": values["breakpointId"] = value; break;
                 case "--kind": if (value is not ("into" or "over" or "out")) throw Invalid("Step kind must be into, over or out."); values["kind"] = value; break;
@@ -87,6 +89,7 @@ public sealed class CliCommand
         if (method is "step" or "stack" && values["threadId"] is null) throw Invalid("--thread is required.");
         if (method == "step" && values["kind"] is null) throw Invalid("--kind is required.");
         if (method == "variables" && string.IsNullOrWhiteSpace((string?)values["frameId"])) throw Invalid("Variables requires --frame from stack output.");
+        if (method == "evaluate" && (string.IsNullOrWhiteSpace((string?)values["frameId"]) || string.IsNullOrWhiteSpace((string?)values["expression"]))) throw Invalid("Evaluate requires --frame and --expression.");
         if (method is "break.remove" or "break.enable" && string.IsNullOrWhiteSpace((string?)values["breakpointId"])) throw Invalid("--breakpoint is required.");
         if (timeout > 240000) throw Invalid("Timeout cannot exceed four minutes.");
         if (method == "launch") { values["arguments"] = arguments; values["environment"] = environment; }
@@ -97,7 +100,7 @@ public sealed class CliCommand
     private static bool Allowed(string method, string option)
     {
         if (option is "--session" or "--timeout-ms") return true;
-        if (option == "--app-domain" && method is "threads" or "stack" or "variables" or "break.set") return true;
+        if (option == "--app-domain" && method is "threads" or "stack" or "variables" or "evaluate" or "break.set") return true;
         if (method is "launch" or "attach" && option is "--engine-dir" or "--arch" or "--source-maps") return true;
         return method switch
         {
@@ -109,6 +112,7 @@ public sealed class CliCommand
             "step" => option is "--thread" or "--kind",
             "stack" => option is "--thread" or "--start" or "--count",
             "variables" => option is "--frame" or "--reference" or "--start" or "--count" or "--max-depth" or "--max-string-length",
+            "evaluate" => option is "--frame" or "--expression" or "--evaluation-timeout-ms" or "--count" or "--max-depth" or "--max-string-length",
             "exceptions.configure" => option == "--first-chance",
             _ => false
         };

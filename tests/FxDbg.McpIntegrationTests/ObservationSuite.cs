@@ -8,6 +8,20 @@ internal static class ObservationSuite
 {
     internal static async Task Run(string bundle, string root, string configuration)
     {
+        // A visible file is not yet a published signal while its writer still owns the handle.
+        string publication = Path.Combine(root, "artifacts", "ready-publication-" + Guid.NewGuid().ToString("N"));
+        using (var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(3)))
+        {
+            Task ready;
+            using (var writer = new StreamWriter(new FileStream(publication, FileMode.CreateNew, FileAccess.Write, FileShare.None)))
+            {
+                writer.Write("ready"); writer.Flush();
+                ready = Until(() => File.ReadAllText(publication) == "ready", deadline.Token);
+                Require(!ready.IsCompleted, "Ready observation must wait for the publishing writer to close.");
+            }
+            try { await ready; }
+            finally { File.Delete(publication); }
+        }
         string source = Path.Combine(root, "tests/Debuggees/Shared/EndToEndScenarios.cs");
         int line = File.ReadAllLines(source).Select((text, index) => (text, index)).Single(x => x.text.Contains("// E2E_BREAKPOINT")).index + 1;
         foreach (string architecture in new[] { "x86", "x64" })
@@ -147,7 +161,14 @@ internal static class ObservationSuite
     }
     private static async Task Until(Func<bool> predicate, CancellationToken token)
     {
-        while (!predicate()) await Task.Delay(20, token);
+        while (true)
+        {
+            token.ThrowIfCancellationRequested();
+            try { if (predicate()) return; }
+            catch (IOException error) when ((error.HResult & 0xffff) is 32 or 33)
+            { /* Sharing/lock violations mean the target has not finished publishing its signal. */ }
+            await Task.Delay(20, token);
+        }
     }
     internal static void Require(bool value, string message) { if (!value) throw new InvalidOperationException(message); }
 }

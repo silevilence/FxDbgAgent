@@ -11,6 +11,7 @@ internal sealed class BoundedStdioTransport : ITransport
     internal const int MaximumBytes = 4 * 1024 * 1024;
     private readonly Stream input;
     private readonly Stream output;
+    private readonly Action<JsonRpcMessage>? received;
     private readonly Channel<JsonRpcMessage> incoming = Channel.CreateBounded<JsonRpcMessage>(16);
     private readonly Channel<Outgoing> outgoing = Channel.CreateBounded<Outgoing>(8);
     private readonly CancellationTokenSource closed = new();
@@ -19,9 +20,9 @@ internal sealed class BoundedStdioTransport : ITransport
     private readonly Task reader;
     private readonly Task writer;
     private int disposed;
-    internal BoundedStdioTransport(Stream input, Stream output)
+    internal BoundedStdioTransport(Stream input, Stream output, Action<JsonRpcMessage>? received = null)
     {
-        this.input = input; this.output = output;
+        this.input = input; this.output = output; this.received = received;
         reader = ReadAsync(); writer = WriteAsync();
     }
     public string? SessionId => null;
@@ -68,6 +69,7 @@ internal sealed class BoundedStdioTransport : ITransport
                     // The SDK yields each handler. Bound those not-yet-completed handlers too,
                     // not merely the transport channel that the SDK can drain immediately.
                     await dispatched.WaitAsync(closed.Token).ConfigureAwait(false);
+                    received?.Invoke(message);
                     await incoming.Writer.WriteAsync(message, closed.Token).ConfigureAwait(false);
                     line.SetLength(0); begin = index + 1;
                 }

@@ -1,5 +1,7 @@
 # CLI 使用
 
+阶段4-1增加`fxdbg evaluate --session ID --frame FRAME --expression "number + matrix[1,1]"`。可选`--evaluation-timeout-ms 1..1000`（默认250）、`--max-depth`、`--count`、`--max-string-length`及`--app-domain`，显示上限同variables。结果为单个VariableInfo；对象引用用variables继续分页，恢复后重新取帧。仅支持[MCP契约](mcp-tools.md#受限表达式阶段4-1)定义的只读解释子集，目标不执行函数，不调用Getter或ToString。计算超时/取消不增加Continue；原生读取卡死的隔离边界见ADR-004。
+
 开发构建后可使用 `src/FxDbg.Cli/bin/Debug/net10.0-windows/fxdbg.exe`，或 `dotnet .../fxdbg.dll`。发布布局在 CLI 旁放置 `engines/`，也可用 `--engine-dir` 指定含双架构 Engine 的目录。
 
 ```powershell

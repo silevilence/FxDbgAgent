@@ -68,7 +68,7 @@ internal static class OutputSchemas
             "launch" or "attach" or "detach" or "terminate" => Ref("target"),
             "set_breakpoint" => Ref("breakpoint"), "remove_breakpoint" => Object(("removed", Type("boolean"))),
             "continue" or "step" => Ref("operation"), "pause" => Ref("stop"), "status" => Ref("status"),
-            "threads" => Array(Ref("thread")), "stack" => Array(Ref("frame")), "variables" => Array(Ref("variable")),
+            "threads" => Array(Ref("thread")), "stack" => Array(Ref("frame")), "variables" => Array(Ref("variable")), "evaluate" => Ref("variable"),
             _ => throw new ArgumentException("Unknown tool output schema.")
         };
         var envelope = Object(("ok", Type("boolean")), ("sessionId", Text(true)));

@@ -14,7 +14,9 @@ Core 标识序列化为字符串，枚举为 camelCase。`start` 要求 protocol
 
 ## 命令
 
-`start`、`state`、`break.set/list/remove/enable`、`continue`、`pause`、`step`、`wait`、`threads`、`stack`、`variables`、`exceptions.configure`、`modules`、`symbols.refresh`、`detach`、`terminate`。
+`start`、`state`、`break.set/list/remove/enable`、`continue`、`pause`、`step`、`wait`、`threads`、`stack`、`variables`、`evaluate`、`exceptions.configure`、`modules`、`symbols.refresh`、`detach`、`terminate`。
+
+阶段4-1的evaluate要求frameId与expression，可选evaluationTimeoutMs（1～1000，默认250）、maxDepth/count/maxStringLength（沿用变量显示上限）及appDomainId。结果为单个VariableInfo，对象引用继续交给variables展开。调度期限取commandTimeoutMs与evaluationTimeoutMs较小值，从入队计时；解释器仅读目标值，不执行ICorDebugEval、不调用目标方法或增加Continue。共享Host的观察取消可先返回，实际只读工作在原期限内结束，保留并发名额和连接；原生COM不可中断故障沿用下节隔离边界。语法与错误详见[MCP契约](mcp-tools.md#受限表达式阶段4-1)。
 
 阶段 2 兼容扩展：`state` 返回调度线程上生成的 `eventSequence` 水位；可选 `includeDetails=true` 同时读取断点与模块符号快照，供共享 Host 的观察入口使用。`break.set` 可选 `enabled`（默认 true）在同一次同步目标操作中创建禁用断点，避免先激活再跨请求禁用的命中竞态。既有 CLI 参数与默认行为不变。
 

@@ -27,6 +27,7 @@ try
         fxdbg step --session ID --kind into|over|out --thread ID
         fxdbg stack --session ID --thread ID [--start N] [--count N]
         fxdbg variables --session ID --frame FRAME [--reference REF] [--start N] [--count N] [--max-depth N] [--max-string-length N]
+        fxdbg evaluate --session ID --frame FRAME --expression EXPR [--evaluation-timeout-ms N] [--max-depth N] [--count N] [--max-string-length N]
         fxdbg breakpoints|detach|terminate|refresh-symbols --session ID
         fxdbg remove-break|enable-break --session ID --breakpoint ID [--enabled true|false]
         fxdbg exceptions --session ID --first-chance true|false

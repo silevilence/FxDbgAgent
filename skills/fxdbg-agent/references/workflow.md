@@ -22,7 +22,9 @@
 
 客户端通过逐行 UTF-8 stdio 完成 initialize（2025-11-25）、notifications/initialized、tools/list、tools/call。stdout 只有协议。服务每 3 秒发标准 ping，客户端应立即回复同 ID 的 result:{}；超过 5 秒无应答会启动清理。官方 MCP 客户端自动处理 ping。
 
-## 13 个工具示例
+## 原13工具与受限表达式
+
+阶段4-1新增debug_evaluate：在停止态先从debug_stack获取frameId，再调用`debug_evaluate({sessionId,frameId,expression:"number + 2"})`。字段与数组通过直接读取，String/Array/Math仅有契约列明的调试器内固有操作，不执行目标函数。对象结果referenceId可交给debug_variables分页；继续后所有旧引用失效。默认求值250ms、最大1000ms，显示上限与variables相同；禁止调用或预算错误不能用Getter、反射、赋值等替代，按错误码检查语法、状态或重新取帧。具体语法、数值子集、资源预算与原生不可中断故障限制见随包mcp-tools契约。
 
 下表是 tools/call 的 `params`，表内 SESSION/BP/FRAME/REF/OP、线程和 PID 都是占位说明，实际必须使用上一步返回的数据；工具结果读取 structuredContent，并检查 ok/error.code。示例路径也须替换。先运行 tools/list 获得当前完整 schema。
 

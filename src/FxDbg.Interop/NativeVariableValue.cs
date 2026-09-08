@@ -11,7 +11,7 @@ using FxDbg.Core.Variables;
 
 namespace FxDbg.Interop;
 
-internal sealed class NativeVariableValue : IVariableValue
+internal sealed partial class NativeVariableValue : IVariableValue
 {
     private readonly CorDebugValue? value;
     private readonly CorDebugILFrame frame;

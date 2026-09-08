@@ -1,0 +1,35 @@
+{
+  "skipped": [],
+  "passed": true,
+  "outcomes": [
+    {
+      "task": "3-4a",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\stage3-4a.log"
+    },
+    {
+      "task": "3-4b",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\stage3-4b.log"
+    },
+    {
+      "task": "3-4c",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\stage3-4c.log"
+    },
+    {
+      "task": "3-4d",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\stage3-4d.log"
+    },
+    {
+      "task": "3-4e",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\stage3-4e.log"
+    }
+  ],
+  "atUtc": "2026-09-08T01:53:14.0052676+00:00",
+  "configuration": "Debug+Release",
+  "os": "Microsoft Windows NT 10.0.26200.0",
+  "identity": "SILSURFACE10\\silev"
+}

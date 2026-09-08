@@ -50,14 +50,10 @@ try
         new EngineProcessPaths(Path.Combine(engineDirectory, "FxDbg.Engine.x86.exe"), Path.Combine(engineDirectory, "FxDbg.Engine.x64.exe")));
     await using var sessions = new DebugSessionService(host, limits);
     using var shutdown = new CancellationTokenSource();
-    int initialized = 0;
-    void RequireInitialized()
-    {
-        if (Volatile.Read(ref initialized) == 0)
-            throw new McpProtocolException("Complete initialize and notifications/initialized first.", McpErrorCode.InvalidRequest);
-    }
+    McpServer? currentServer = null;
+    var initialization = new StdioInitializationGate(() => currentServer?.ClientInfo is not null);
     Console.CancelKeyPress += (_, input) => { input.Cancel = true; shutdown.Cancel(); };
-    await using var transport = new BoundedStdioTransport(Console.OpenStandardInput(), Console.OpenStandardOutput());
+    await using var transport = new BoundedStdioTransport(Console.OpenStandardInput(), Console.OpenStandardOutput(), initialization.Received);
     using var disconnected = transport.Disconnected.Register(shutdown.Cancel);
     var options = new McpServerOptions
     {
@@ -67,13 +63,11 @@ try
         {
             ListToolsHandler = (request, _) =>
             {
-                RequireInitialized();
                 if (request.Params?.Cursor is not null) throw new McpProtocolException("This tool list has no continuation cursor.", McpErrorCode.InvalidParams);
                 return ValueTask.FromResult(new ListToolsResult { Tools = ToolCatalog.Tools.ToList() });
             },
             CallToolHandler = async (request, token) =>
             {
-                RequireInitialized();
                 var call = request.Params ?? throw new ArgumentException("Missing call parameters.");
                 Tool tool = ToolCatalog.Find(call.Name);
                 JsonElement arguments = JsonSerializer.SerializeToElement(call.Arguments ?? new Dictionary<string, JsonElement>());
@@ -108,13 +102,13 @@ try
     {
         try
         {
-            if (context.JsonRpcMessage is JsonRpcNotification { Method: "notifications/initialized" } && context.Server.ClientInfo is not null)
-                Volatile.Write(ref initialized, 1);
+            initialization.RequireAllowed(context.JsonRpcMessage);
             await next(context, token);
         }
         finally { transport.MessageHandled(); }
     });
     await using var server = McpServer.Create(transport, options);
+    currentServer = server;
     async Task CheckClientAsync()
     {
         try
@@ -122,7 +116,7 @@ try
             while (!shutdown.IsCancellationRequested)
             {
                 await Task.Delay(3000, shutdown.Token);
-                if (Volatile.Read(ref initialized) == 0) continue;
+                if (!initialization.IsInitialized) continue;
                 using var probe = CancellationTokenSource.CreateLinkedTokenSource(shutdown.Token);
                 probe.CancelAfter(TimeSpan.FromSeconds(5));
                 await server.SendRequestAsync(new JsonRpcRequest { Id = new RequestId("fxdbg-health-" + Guid.NewGuid().ToString("N")), Method = "ping" }, probe.Token);

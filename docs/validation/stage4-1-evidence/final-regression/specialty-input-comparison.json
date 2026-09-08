@@ -1,0 +1,8 @@
+{
+  "productionInputsUnchanged": true,
+  "reason": "Ready publication sharing-race regression and bounded retry; covered by subsequent complete Debug/Release stage2/1/0 run",
+  "changedTests": [
+    "tests\\FxDbg.McpIntegrationTests\\ObservationSuite.cs"
+  ],
+  "atUtc": "2026-09-08T02:37:11.8795251+00:00"
+}

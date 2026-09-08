@@ -1,6 +1,6 @@
 # 调试 Windows Service 与完整 IIS
 
-FxDbg 按 PID 附加本机已运行、已加载 CLR v4 的 .NET Framework 4.x 进程。SCM 服务和完整 IIS 的 ASP.NET/WebForms worker 均使用现有 Host/Engine；支持真实 x86/x64 路由、源码断点、栈与只读变量、单步、继续及安全分离。MCP 仍为 13 个 stdio 工具，不提供服务管理、远程调试或自动跨 PID 重附加。
+FxDbg 按 PID 附加本机已运行、已加载 CLR v4 的 .NET Framework 4.x 进程。SCM 服务和完整 IIS 的 ASP.NET/WebForms worker 均使用现有 Host/Engine；支持真实 x86/x64 路由、源码断点、栈与只读变量、单步、继续及安全分离。MCP使用stdio调试工具，完整工具契约见[mcp-tools.md](mcp-tools.md)；不提供服务管理、远程调试或自动跨PID重附加。
 
 ## 身份与 PID
 

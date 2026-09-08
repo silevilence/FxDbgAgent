@@ -160,4 +160,16 @@ internal sealed partial class DapServer
         }
         return new() { ["variables"] = result };
     }
+
+    private async Task<JObject> Evaluate(JObject args, CancellationToken token)
+    {
+        if (!frames.TryGetValue(Integer(args, "frameId"), out string? frame)) throw Invalid("Evaluate requires a current frameId from stackTrace.");
+        JToken value = await Invoke("evaluate", new() { ["frameId"] = frame, ["expression"] = Text(args, "expression"), ["maxDepth"] = 0 }, token);
+        int total = (int?)value["totalMembers"] ?? 0;
+        bool indexed = System.Text.RegularExpressions.Regex.IsMatch((string?)value["typeName"] ?? "", @"\[[,]*\]$");
+        int reference = total > 0 && value["referenceId"]?.Type == JTokenType.String ? VariableNumber(new(frame, (string)value["referenceId"]!, indexed, total)) : 0;
+        var result = new JObject { ["result"] = (string?)value["displayValue"] ?? "<" + (string?)value["status"] + ">", ["type"] = (string?)value["typeName"], ["variablesReference"] = reference };
+        if (reference > 0) result[indexed ? "indexedVariables" : "namedVariables"] = total;
+        return result;
+    }
 }

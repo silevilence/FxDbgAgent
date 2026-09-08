@@ -1,6 +1,6 @@
 # DAP 与 VS Code / Cursor
 
-阶段3-5提供可选 `FxDbg.DapHost`，仅通过 stdio 使用 Content-Length 帧。每条连接拥有一个目标；入口只依赖 `FxDbg.Host`，继续复用同一双架构 Engine、断点、源码映射和变量读取逻辑。MCP 保持13个工具，两个协议不能同时附加同一个目标。
+阶段3-5提供可选FxDbg.DapHost，仅通过stdio使用Content-Length帧。每条连接拥有一个目标，入口只依赖FxDbg.Host，复用双架构Engine；阶段4-1的evaluate也使用同一共享后端。MCP原13工具保持兼容，新增debug_evaluate；两个协议不能同时附加同一个目标。
 
 ## 发布与配置
 
@@ -66,7 +66,7 @@ code --install-extension ./artifacts/dap/fxdbg-0.1.0.vsix
 | disconnect | 默认安全分离、目标继续运行；terminateDebuggee=true 仅允许终止本入口启动的目标 |
 | terminate | 仅允许终止本入口启动的目标 |
 
-默认只停未处理异常，`setExceptionBreakpoints` 仅接受空过滤配置。不支持 evaluate、变量修改、条件/命中次数/日志断点、单线程运行、指令级单步、函数断点、restart、源文件传输或网络监听；对应能力不声明。标准错误响应携带稳定错误码；畸形帧/重复JSON字段关闭连接并清理会话。
+默认只停未处理异常，setExceptionBreakpoints仅接受空过滤配置。阶段4-1声明supportsEvaluateForHovers，evaluate必须携带当前stackTrace返回的frameId和expression，watch/hover/repl都使用同一只读子集，不执行任意C#或目标函数。对象结果variablesReference可通过variables分页，恢复后失效；默认计算期限250ms。具体语法、白名单、预算及错误见[MCP求值契约](mcp-tools.md#受限表达式阶段4-1)。不支持变量修改、条件/命中次数/日志断点、单线程运行、指令级单步、函数断点、restart、源文件传输或网络监听；对应能力不声明。标准错误响应携带稳定错误码；畸形帧/重复JSON字段关闭连接并清理会话。
 
 输入头最大8 KiB，消息最大4 MiB，普通待处理请求最多32个，另为控制请求保留4个名额；请求（含配置等待）30秒截止。写锁和输出有独立3秒期限，客户端保持输入开启但不消费输出时会断开并清理会话；Windows上不可取消的输入读取不阻止Host收尾。底层继续/步进保留最长240秒运行期限，达到期限后共享后端尝试暂停，可再继续。EOF、客户端崩溃或输入错误均释放 Host/Engine 并尝试安全 Detach；不会终止附加目标。
 

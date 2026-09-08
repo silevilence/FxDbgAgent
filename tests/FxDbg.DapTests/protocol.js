@@ -49,7 +49,7 @@ async function session(bundle, root, configuration, architecture, attach) {
   try {
     if (attach) { child = startTarget(fix); await until(() => fs.existsSync(path.join(fix.directory, 'ready')), 'attach readiness'); }
     const caps = await client.request('initialize', { adapterID: 'fxdbg', pathFormat: 'path', supportsVariablePaging: true });
-    assert.equal(caps.supportsConfigurationDoneRequest, true); assert.ok(!caps.supportsSetVariable && !caps.supportsEvaluateForHovers);
+    assert.equal(caps.supportsConfigurationDoneRequest, true); assert.ok(!caps.supportsSetVariable && caps.supportsEvaluateForHovers);
     const launch = client.send(attach ? 'attach' : 'launch', attach ? { processId: child.pid } : { program: fix.exe, args: ['--scenario', 'gated', fix.directory] });
     await client.event('initialized');
     await assert.rejects(client.request('setBreakpoints', { source: { path: fix.source }, breakpoints: [{ line: fix.line('E2E_BREAKPOINT'), condition: 'true' }] }));

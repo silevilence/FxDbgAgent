@@ -1,0 +1,27 @@
+{
+  "atUtc": "2026-09-08T02:13:14.8905977+00:00",
+  "outcomes": [
+    {
+      "name": "stage2-3-install-evidence",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage2-validation\\stage2-3-install-evidence.log",
+      "exitCode": 0
+    },
+    {
+      "name": "stage2-Debug",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage2-validation\\stage2-Debug.log",
+      "exitCode": 0
+    },
+    {
+      "name": "stage2-mvp-Debug",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage2-validation\\stage2-mvp-Debug.log",
+      "exitCode": 0
+    },
+    {
+      "name": "stage2-Release",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage2-validation\\stage2-Release.log",
+      "exitCode": 1
+    }
+  ],
+  "configuration": "Debug+Release",
+  "passed": false
+}
