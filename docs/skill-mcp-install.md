@@ -14,6 +14,8 @@ FxDbg 的 AI Agent 接入由两部分组成：**MCP 服务**（发布包内的 `
 C:/tools/FxDbg/
 ├─ fxdbg-mcp.dll            MCP 服务入口
 ├─ fxdbg-mcp.pdb
+├─ fxdbg-dap.dll、fxdbg-dap.pdb  DAP Host（与 MCP 共用 engines/）
+├─ bundle-manifest.sha256   全包文件 SHA256（不含清单自身）
 ├─ fxdbg-mcp.runtimeconfig.json、fxdbg-mcp.deps.json
 ├─ ModelContextProtocol.dll、ModelContextProtocol.Core.dll 及依赖 ·dll
 ├─ engines/
@@ -29,6 +31,8 @@ C:/tools/FxDbg/
 **机器要求**：Windows（本机，x64），目标应用为 .NET Framework 4.x Desktop CLR 进程并带匹配的 Windows PDB；运行服务需要 **.NET 10 运行时**（`dotnet` 命令可用）；安装技能需要 **Node.js/npm**；无需 IDE 与源码。
 
 **注意**：只复制单个 DLL/EXE 无法启动；`engines/` 与 `skills/` 必须随包保留。
+
+自动发布 zip 同时包含 MCP 与 DAP 的可执行入口、配置及依赖；SHA256 核对与维护者自动发布流程见 [release.md](release.md)。
 
 ## 2. 配置 MCP 客户端
 

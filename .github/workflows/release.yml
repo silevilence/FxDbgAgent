@@ -1,0 +1,93 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '[vV][0-9]+.[0-9]+.[0-9]+'
+      - '[vV][0-9]+.[0-9]+.[0-9]+-*'
+      - '[vV][0-9]+.[0-9]+.[0-9]+\+*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  eligibility:
+    if: github.event.deleted == false
+    runs-on: windows-2022
+    timeout-minutes: 5
+    outputs:
+      eligible: ${{ steps.check.outputs.eligible }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      # Keep this gate inline: do not execute scripts from an unapproved tag.
+      - name: Check SemVer and main ancestry
+        id: check
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $semver = '^[vV](0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$'
+          if ($env:RELEASE_TAG -cnotmatch $semver) {
+            'eligible=false' >> $env:GITHUB_OUTPUT
+            Write-Host 'Skipped: tag is not V/v followed by SemVer 2.0.0.'
+            exit 0
+          }
+          git merge-base --is-ancestor HEAD refs/remotes/origin/main
+          if ($LASTEXITCODE -eq 1) {
+            'eligible=false' >> $env:GITHUB_OUTPUT
+            Write-Host 'Skipped: tag commit is not in main history.'
+            exit 0
+          }
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot check main history; ensure the main branch exists and full history was fetched.' }
+          'eligible=true' >> $env:GITHUB_OUTPUT
+
+  release:
+    needs: eligibility
+    if: needs.eligibility.outputs.eligible == 'true'
+    runs-on: windows-2022
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    env:
+      RELEASE_TAG: ${{ github.ref_name }}
+      DOTNET_CLI_HOME: ${{ github.workspace }}/artifacts/dotnet-home
+      NUGET_PACKAGES: ${{ github.workspace }}/artifacts/nuget-packages
+      DOTNET_NOLOGO: '1'
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Read release notes
+        run: ./eng/release-notes.ps1 -Tag $env:RELEASE_TAG -OutputDirectory artifacts/release
+      - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
+        with:
+          global-json-file: global.json
+      - name: Build solution and publish MCP and DAP bundle
+        run: |
+          ./eng/publish-mcp.ps1 -Configuration Release -OutputDirectory artifacts/release/bundle
+          ./eng/publish-dap.ps1 -Configuration Release -OutputDirectory artifacts/release/bundle
+      - name: Run unit tests
+        run: |
+          dotnet test tests/FxDbg.UnitTests/FxDbg.UnitTests.csproj -c Release --no-build --no-restore
+          if ($LASTEXITCODE -ne 0) { throw 'Unit tests failed; no release will be published.' }
+      - name: Package and check bundle
+        run: ./eng/package-release.ps1 -Tag $env:RELEASE_TAG -BundleDirectory artifacts/release/bundle -OutputDirectory artifacts/release
+      - name: Create or update GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: ./eng/release-github.ps1 -Tag $env:RELEASE_TAG -OutputDirectory artifacts/release

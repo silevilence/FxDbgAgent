@@ -25,6 +25,8 @@
 
 **直接使用（推荐）**：从 [GitHub Releases](https://github.com/silevilence/FxDbgAgent/releases) 下载 `fxdbg-<版本>.zip`，解压后按 [docs/skill-mcp-install.md](docs/skill-mcp-install.md) 依次完成——检查包内文件 → 配置 MCP 客户端 → 安装技能 → 验证（`tools/list` 应列出 15 个工具）。无需 IDE 与源码。
 
+发布 zip 同时包含 MCP 与 DAP Host、共享双架构 Engine、技能及 PDB；维护者通过版本 tag 自动发布，流程与 SHA256 校验见 [docs/release.md](docs/release.md)。
+
 **从源码构建（开发者）**：
 
 1. **发布 MCP 服务**（源码根目录）：

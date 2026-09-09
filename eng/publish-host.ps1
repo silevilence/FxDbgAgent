@@ -30,5 +30,7 @@ if ($Entry -eq 'Mcp') {
     $null = New-Item -ItemType Directory -Path $skillDestination -Force
     Copy-Item -LiteralPath (Join-Path $repoRoot 'skills/fxdbg-agent') -Destination $skillDestination -Recurse
 }
+. (Join-Path $PSScriptRoot 'bundle-manifest.ps1')
+Get-BundleHashes $OutputDirectory | Set-Content -LiteralPath (Join-Path $OutputDirectory 'bundle-manifest.sha256') -Encoding utf8
 if ($runDirectory) { Save-ValidationPreparation $publishKey @($OutputDirectory) $publishLog }
 Write-Host "$Entry bundle: $OutputDirectory"

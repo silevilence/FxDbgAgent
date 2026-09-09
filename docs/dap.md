@@ -4,6 +4,8 @@
 
 ## 发布与配置
 
+GitHub 自动发布的 `fxdbg-<版本>.zip` 已包含 DAP Host，与 MCP Host 共用包内 `engines/`。解压后将 `fxdbg.adapterPath` 指向其中的 `fxdbg-dap.dll`；VSIX 仍按下方命令单独打包安装。维护者发布流程见 [release.md](release.md)。
+
 Windows 上安装与 `global.json` 匹配的 .NET SDK，然后执行：
 
 ```powershell
