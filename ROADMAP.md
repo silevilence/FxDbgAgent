@@ -8,15 +8,6 @@
 
 ## 🚧 开发中 (In Progress)
 
-- [ ] **GitHub Actions 自动发布**——主分支推送版本 tag（如 `V0.1.0`，忽略大小写）时自动触发，仅运行必要单元测试，打包发布产物 zip 并发布 GitHub Release
-    - [x] 触发：推送形如 `V0.1.0` / `v0.1.0`（忽略大小写，`V`/`v` 前缀 + 语义化版本号）的版本 tag 且该 tag 指向的提交属于 `main` 分支历史时运行发布流水线；非版本 tag、普通分支/主分支推送、tag 指向非 main 提交均不触发发布
-    - [x] 构建与测试：在 Windows runner（项目 Windows-only）上按 `global.json` 固定 SDK（10.0.301）构建解决方案；仅运行 `tests/FxDbg.UnitTests` 的必要单元测试，任一失败即终止且不发布；不运行任何真实环境、Service/IIS、DAP/VS Code、覆盖率采集及阶段验收（`verify-*`、`setup-stage3-4-*`）脚本，这些由发布者发布前人工把控
-    - [x] 打包：复用现有发布入口（`eng/publish-mcp.ps1`、`eng/publish-dap.ps1` / `publish-host.ps1`，Release 配置）的产物布局，将二者合并发布目录内容整体打包为单个 `fxdbg-<版本>.zip`：`fxdbg-mcp`、`fxdbg-dap` 主机可执行文件与依赖、共用 `engines/` 下双架构（x86/x64）`FxDbg.Engine.*.exe` 及 native 依赖（ClrDebug、DiaSymReader 系等）、`engine-manifest.json`、`skills/fxdbg-agent/`（SKILL.md 与 references，供终端用户安装技能）与匹配的 PDB（自有代码 PDB 均包含，engines 为 Windows PDB），附全包文件 SHA256 清单
-    - [x] 发布：以 tag 名创建（或更新，幂等重试）GitHub Release 并上传 zip 资产，workflow 权限最小化（仅 `contents: write`）；Release Notes 取 `changelog.md` 中对应版本条目（`## V0.1.0` 标题块，忽略大小写）；`changelog.md` 没有对应条目时以明确可操作错误终止，不发布
-    - 验收：推送 `V0.1.0` 与 `v0.1.0` 均触发并成功发布，Release 名称/说明与 changelog 对应条目一致，zip 可下载且内部清单 SHA256 可核对；非版本 tag、指向非 main 提交的 tag 及普通 push 不触发发布；单元测试失败时无 Release/资产产生；流水线日志中不存在任何 `verify-*`/`setup-stage3-4-*`/IIS/真实环境调用；zip 内容与 MCP/DAP 两个入口合并到同一目录的本地发布结果一致（含双架构 engines 与匹配 PDB）；`changelog.md` 缺失对应版本条目时 workflow 非零退出并给出可操作原因。
-    - 实现与本地验证（2026-09-09）：Release 构建、MCP/DAP 发布、233 项普通单元测试、52 项发布脚本回归断言、actionlint 1.7.12 及 zip 61 文件逐项 SHA256 比对通过。GitHub 事件过滤无法直接判断祖先关系，候选 tag 经只读检查后决定是否跳过整个发布作业。流程见 `docs/release.md`。
-    - 待线上验收：尚未推送版本 tag、运行真实 GitHub Actions 或创建/下载 Release；本地模拟不作为线上验收通过证据，父任务保留未勾选。
-
 ## ✅ 已完成 (Completed)
 
 ### 阶段 0：技术验证（先于一切产品开发，需求 §12）
@@ -347,3 +338,12 @@
 > 阶段4整体完成记录（2026-09-08）：4-1/4-2/4-3按顺序实施、快速审核仅修阻塞、原地勾选并分别本地提交；4-4按批准决策不实施。最终实现2aa8a9d通过双配置双架构四入口专项（42个监督步骤、每配置233项单元）、独立Standards/Spec完整审核及阻塞修复复核。变更生产行覆盖率697/738（94.44%）；真实Service/IIS、VS Code及阶段2/1/0的Debug/Release完整回归通过，无跳过，298项输入一致，资源恢复与管理员后台进程退出已核对。遗留阻塞0，保留2项非阻塞维护建议。证据见docs/validation/stage4-final-review.md；全部操作仅本地提交，不推送。
 
 ### 其它
+
+- [x] **GitHub Actions 自动发布**——主分支推送版本 tag（如 `V0.1.0`，忽略大小写）时自动触发，仅运行必要单元测试，打包发布产物 zip 并发布 GitHub Release
+    - [x] 触发：推送形如 `V0.1.0` / `v0.1.0`（忽略大小写，`V`/`v` 前缀 + 语义化版本号）的版本 tag 且该 tag 指向的提交属于 `main` 分支历史时运行发布流水线；非版本 tag、普通分支/主分支推送、tag 指向非 main 提交均不触发发布
+    - [x] 构建与测试：在 Windows runner（项目 Windows-only）上按 `global.json` 固定 SDK（10.0.301）构建解决方案；仅运行 `tests/FxDbg.UnitTests` 的必要单元测试，任一失败即终止且不发布；不运行任何真实环境、Service/IIS、DAP/VS Code、覆盖率采集及阶段验收（`verify-*`、`setup-stage3-4-*`）脚本，这些由发布者发布前人工把控
+    - [x] 打包：复用现有发布入口（`eng/publish-mcp.ps1`、`eng/publish-dap.ps1` / `publish-host.ps1`，Release 配置）的产物布局，将二者合并发布目录内容整体打包为单个 `fxdbg-<版本>.zip`：`fxdbg-mcp`、`fxdbg-dap` 主机可执行文件与依赖、共用 `engines/` 下双架构（x86/x64）`FxDbg.Engine.*.exe` 及 native 依赖（ClrDebug、DiaSymReader 系等）、`engine-manifest.json`、`skills/fxdbg-agent/`（SKILL.md 与 references，供终端用户安装技能）与匹配的 PDB（自有代码 PDB 均包含，engines 为 Windows PDB），附全包文件 SHA256 清单
+    - [x] 发布：以 tag 名创建（或更新，幂等重试）GitHub Release 并上传 zip 资产，workflow 权限最小化（仅 `contents: write`）；Release Notes 取 `changelog.md` 中对应版本条目（`## V0.1.0` 标题块，忽略大小写）；`changelog.md` 没有对应条目时以明确可操作错误终止，不发布
+    - 验收：推送 `V0.1.0` 与 `v0.1.0` 均触发并成功发布，Release 名称/说明与 changelog 对应条目一致，zip 可下载且内部清单 SHA256 可核对；非版本 tag、指向非 main 提交的 tag 及普通 push 不触发发布；单元测试失败时无 Release/资产产生；流水线日志中不存在任何 `verify-*`/`setup-stage3-4-*`/IIS/真实环境调用；zip 内容与 MCP/DAP 两个入口合并到同一目录的本地发布结果一致（含双架构 engines 与匹配 PDB）；`changelog.md` 缺失对应版本条目时 workflow 非零退出并给出可操作原因。
+    - 实现与本地验证（2026-09-09）：Release 构建、MCP/DAP 发布、233 项普通单元测试、52 项发布脚本回归断言、actionlint 1.7.12 及 zip 61 文件逐项 SHA256 比对通过。GitHub 事件过滤无法直接判断祖先关系，候选 tag 经只读检查后决定是否跳过整个发布作业。流程见 `docs/release.md`。
+    - 待线上验收：尚未推送版本 tag、运行真实 GitHub Actions 或创建/下载 Release；本地模拟不作为线上验收通过证据，父任务保留未勾选。

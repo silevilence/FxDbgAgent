@@ -112,7 +112,7 @@ C# / .NET 10（构建与运行宿主）+ `net40` 目标；ICorDebug 经 **ClrDeb
 - [docs/skill-mcp-install.md](docs/skill-mcp-install.md) — SKILL 与 MCP 安装指南（下载检查、客户端配置、技能安装、验证、升级、排障）
 - [docs/agent-skill.md](docs/agent-skill.md) — Agent 使用工作流（工具调用、异步轮询、限额与错误恢复、Service/IIS 流程）
 - [docs/mcp-tools.md](docs/mcp-tools.md) — 15 个工具契约：schema、默认值、错误码、资源边界
-- [docs/cli.md](docs/cli.md) / [docs/dap.md](docs/dap.md) — CLI 与 DAP/VS Code 用法
+- [docs/cli.md](docs/cli.md) / [docs/dap.md](docs/dap.md) — CLI 与 DAP/VS Code 用法；[docs/dap-omp.md](docs/dap-omp.md) — oh-my-pi（omp）DAP 接入指南
 - [docs/service-iis.md](docs/service-iis.md) — Windows Service 与 IIS 附加指南
 - [docs/architecture.md](docs/architecture.md) — 架构、决策与 ADR（含求值 ADR-004）
 - [ROADMAP.md](ROADMAP.md) — 各阶段实现与验收状态（阶段 0–4 已完成）

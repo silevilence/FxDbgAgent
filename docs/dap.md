@@ -58,7 +58,7 @@ code --install-extension ./artifacts/dap/fxdbg-0.1.0.vsix
 
 ## 直接启动 DAP 连接（不依赖 VS Code）
 
-DAP 入口不依赖编辑器：VS Code/Cursor 扩展只负责启动 DAP 进程并转发 stdio。任何 DAP 客户端都可以直接连接。
+DAP 入口不依赖编辑器：VS Code/Cursor 扩展只负责启动 DAP 进程并转发 stdio。任何 DAP 客户端都可以直接连接。oh-my-pi（omp）等终端 harness 的接入见 [dap-omp.md](dap-omp.md)。
 
 1. **发布**（一次）：`./eng/publish-dap.ps1 -Configuration Release`，使用完整 `artifacts/dap/Release/`（含 `engines/` 与 `engine-manifest.json`；不要只复制单个 DLL/EXE）。
 2. **启动进程**：
