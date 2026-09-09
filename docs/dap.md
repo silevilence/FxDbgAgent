@@ -54,6 +54,39 @@ code --install-extension ./artifacts/dap/fxdbg-0.1.0.vsix
 
 目标须为真实 .NET Framework 4.x，源码行依赖 Windows PDB。`arch` 为 `auto|x86|x64`；启动支持 `env` 字符串字典。启动、附加均支持[会话源码映射](source-mapping.md)。默认 `stopAtEntry=false`：配置断点后运行；`true` 停在引擎启动入口，此时 CLR 可能尚未创建可枚举托管线程，继续运行到源码断点后观察。
 
+## 直接启动 DAP 连接（不依赖 VS Code）
+
+DAP 入口不依赖编辑器：VS Code/Cursor 扩展只负责启动 DAP 进程并转发 stdio。任何 DAP 客户端都可以直接连接。
+
+1. **发布**（一次）：`./eng/publish-dap.ps1 -Configuration Release`，使用完整 `artifacts/dap/Release/`（含 `engines/` 与 `engine-manifest.json`；不要只复制单个 DLL/EXE）。
+2. **启动进程**：
+
+```powershell
+dotnet C:/tools/fxdbg/fxdbg-dap.dll
+# 可选（唯一启动参数）：--engine-dir C:/tools/fxdbg/engines
+```
+
+默认从程序所在目录相邻 `engines/` 加载完整双架构依赖并校验清单；清单不完整时写 stderr 并非零退出。stdout 只输出 DAP 帧，不得混入日志或启动信息。
+
+3. **会话序列**（stdio 逐帧 `Content-Length: <N>\r\n\r\n` + JSON 体，帧限制见「协议与边界」）：
+
+| 顺序 | 请求 | 说明 |
+|---|---|---|
+| 1 | `initialize` | `{"adapterID":"fxdbg","pathFormat":"path","supportsVariablePaging":true}`；响应先于 `initialized` 事件，并声明 `supportsConfigurationDoneRequest`、`supportsEvaluateForHovers` 等 |
+| 2 | `launch` / `attach` | 可先于 `initialized` 发送；`launch` 参数为 `program`、`args`、`cwd`、`env`、`arch`、`stopAtEntry`、`sourceMappings`；`attach` 参数为 `processId`、`arch`、`sourceMappings`；其成功响应在 `configurationDone` 之后返回 |
+| 3 | `initialized` 事件后 | `setBreakpoints`（每项可带 `condition`/`hitCondition`，见[条件断点](#条件断点阶段4-3)）→ `configurationDone` → 目标按 `stopAtEntry` 运行 |
+| 4 | 控制/观察 | `pause`/`continue`/`next`/`stepIn`/`stepOut`、`threads`/`stackTrace`/`scopes`/`variables`/`evaluate`、`setExceptionBreakpoints`（见[异常类型条件](#异常类型条件阶段4-2)）；恢复运行后旧帧与变量句柄失效 |
+| 5 | 结束 | `disconnect`（默认安全分离、目标继续运行；`terminateDebuggee:true` 仅限本入口启动的目标）或直接关闭 stdin（EOF 触发等效安全分离） |
+
+裸请求示例（`launch`）：
+
+```json
+{"seq":1,"type":"request","command":"launch","arguments":{"program":"C:/app/MyApp.exe","args":["--mode","x"],"cwd":"C:/app","arch":"auto","stopAtEntry":false}}
+```
+
+4. **参考实现**：`tests/FxDbg.DapTests/protocol.js` 是直接连接（不经编辑器）的完整参考——用 Node `spawn('dotnet', [<发布目录>/fxdbg-dap.dll])` 并按上述序列完成启动/附加、断点、暂停/继续、三种单步、栈/变量分页、取消与 EOF 矩阵；`eng/verify-stage3-5.ps1` 运行同一矩阵。
+5. **注意**：一条连接对应一个目标（1:1）；MCP 与 DAP 两个协议不能同时附加同一目标；请求（含配置等待）30 秒截止、普通待处理请求最多 32 个、控制请求另有 4 个名额，见「协议与边界」。
+
 ## 协议与边界
 
 | DAP 请求 | 行为 |
