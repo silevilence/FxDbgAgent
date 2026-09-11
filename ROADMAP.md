@@ -8,34 +8,6 @@
 
 ## 🚧 开发中 (In Progress)
 
-- [x] **受限表达式语法与内置函数增强**——扩展解释器语法与固有函数白名单（Core）
-    - [x] 语法：三元 `?:`、位运算 `& | ^ ~ << >>`、`0x` 字面量、基础数值显式转换 `(T)x`（C# unchecked 语义并文档化）、裸名回退按 `this` 成员解析
-    - [x] 内置函数：字符串 Substring/IndexOf/Contains/StartsWith/EndsWith/Trim/CompareOrdinal/IsNullOrWhiteSpace；Math Round/Floor/Ceiling/Truncate/Sqrt/Sign/Clamp；Array.IndexOf；全部作用于已读值，不调用目标 mscorlib
-    - [x] 七个错误码与既有预算/期限语义保持不变；断点条件自动继承新语法
-    - 验收：正反例单元测试覆盖优先级、数值提升/溢出/转换语义与拒绝面；真实 x86/x64 × Debug/Release 结果与变量模型一致；既有表达式与断点条件回归完全一致；超时/预算/取消行为不变。
-    - 验证记录：2026-09-11 求值与条件断点双配置双架构四入口矩阵共28个监督步骤通过，每配置315项普通单测，输入一致、快速审核无遗留阻塞；见 docs/validation/expression-extension-1.md。
-
-- [x] **IL 证明的属性读取**——按运行时类型解析属性 getter，仅当其 IL 可证明只读字段时由解释器代读（Interop）
-    - [x] 解析链：字段精确名 → 属性证明 → 拒绝并附原因；模式白名单（`ldarg.0; ldfld; ret`、`ldsfld; ret`、常量 `ldc.*/ldnull; ret`，单方法≤16字节，禁分支/调用/异常子句）；token 解析（FieldDef/MemberRef）与字段槽匹配，歧义拒绝；显式接口实现与带参 getter 拒绝
-    - [x] 预算：元数据探针≤256/表达式、IL 累计≤256字节；类型级缓存绑定停止代次；不创建 ICorDebugEval、不新增 Continue
-    - [x] 覆盖容器 Count 的通过/拒绝矩阵：List/Queue/Stack 的纯字段实现通过，Dictionary.Count 的计算型实现保持拒绝；模型 auto-property/手写纯字段属性通过，其他计算型 getter 保持拒绝
-    - 验收：真实双架构 × 双配置的通过/拒绝矩阵（容器、模型属性、虚属性、静态属性、值类型接收者、计算属性、显式接口实现）；副作用计数与 Continue 配对计数证据；禁止路径调用计数为零；CLI/MCP/DAP 结果一致；文档同步。
-    - 验证记录：2026-09-11双配置双架构四入口求值/条件矩阵共28个监督步骤通过，每配置319项普通单测，真实预算及跨停止缓存验证通过；Dictionary.Count等计算型实现仍拒绝，快速审核无遗留阻塞。见docs/validation/expression-extension-2.md。
-
-- [x] **诊断自愈**——成员解析失败给出有界、脱敏的候选与原因提示
-    - [x] 候选成员名列表（字段+属性，前缀/大小写/编辑距离排序，上限8条，只含元数据名称）；属性拒绝时说明 getter 无法证明只读
-    - [x] 脱敏边界变更按 ADR-005 记录；错误码冻结，仅消息富化；同步工具文档与技能
-    - 验收：典型拼写/大小写/属性场景提示有界且无值泄漏；日志脱敏扫描通过；既有错误分类回归一致。
-
-    - 验证记录：2026-09-11双配置双架构四入口求值矩阵14个监督步骤通过，每配置322项普通单测；候选与原因、错误分类、真实审计日志脱敏扫描通过，快速审核无遗留阻塞。见docs/validation/expression-extension-3.md。
-
-- [x] **受限表达式扩展全量验证与独立审核**——形成可复核的一键证据与整体结论
-    - [x] 扩展验收入口纳入本组任务专项；双配置双架构全量回归（真实 Service/IIS、VS Code 及阶段4/3/2/1/0）；覆盖率采集与变更生产行≥90%门槛核对
-    - [x] 独立 Standards/Spec 双轴审核、阻塞修复与复核；报告与原始证据按仓库文档纪律归档
-    - 验收：全量回归 Debug/Release 通过、无跳过；审核遗留阻塞为零；报告逐条关联上述任务与 ADR-005；失败或缺失证据不得勾选。
-
-    - 验证记录：2026-09-11管理员Debug/Release全部阶段4/3/2/1/0、真实Service/IIS与VS Code通过，无跳过；332项输入一致、1052项产物哈希核验通过，变更生产行覆盖率569/598（95.15%），独立Standards/Spec审核3项问题修复复核后无遗留阻塞。见docs/validation/expression-extension-final-review.md。
-
 ## ✅ 已完成 (Completed)
 
 ### 阶段 0：技术验证（先于一切产品开发，需求 §12）
@@ -375,3 +347,31 @@
     - 验收：推送 `V0.1.0` 与 `v0.1.0` 均触发并成功发布，Release 名称/说明与 changelog 对应条目一致，zip 可下载且内部清单 SHA256 可核对；非版本 tag、指向非 main 提交的 tag 及普通 push 不触发发布；单元测试失败时无 Release/资产产生；流水线日志中不存在任何 `verify-*`/`setup-stage3-4-*`/IIS/真实环境调用；zip 内容与 MCP/DAP 两个入口合并到同一目录的本地发布结果一致（含双架构 engines 与匹配 PDB）；`changelog.md` 缺失对应版本条目时 workflow 非零退出并给出可操作原因。
     - 实现与本地验证（2026-09-09）：Release 构建、MCP/DAP 发布、233 项普通单元测试、52 项发布脚本回归断言、actionlint 1.7.12 及 zip 61 文件逐项 SHA256 比对通过。GitHub 事件过滤无法直接判断祖先关系，候选 tag 经只读检查后决定是否跳过整个发布作业。流程见 `docs/release.md`。
     - 待线上验收：尚未推送版本 tag、运行真实 GitHub Actions 或创建/下载 Release；本地模拟不作为线上验收通过证据，父任务保留未勾选。
+
+- [x] **受限表达式语法与内置函数增强**——扩展解释器语法与固有函数白名单（Core）
+    - [x] 语法：三元 `?:`、位运算 `& | ^ ~ << >>`、`0x` 字面量、基础数值显式转换 `(T)x`（C# unchecked 语义并文档化）、裸名回退按 `this` 成员解析
+    - [x] 内置函数：字符串 Substring/IndexOf/Contains/StartsWith/EndsWith/Trim/CompareOrdinal/IsNullOrWhiteSpace；Math Round/Floor/Ceiling/Truncate/Sqrt/Sign/Clamp；Array.IndexOf；全部作用于已读值，不调用目标 mscorlib
+    - [x] 七个错误码与既有预算/期限语义保持不变；断点条件自动继承新语法
+    - 验收：正反例单元测试覆盖优先级、数值提升/溢出/转换语义与拒绝面；真实 x86/x64 × Debug/Release 结果与变量模型一致；既有表达式与断点条件回归完全一致；超时/预算/取消行为不变。
+    - 验证记录：2026-09-11 求值与条件断点双配置双架构四入口矩阵共28个监督步骤通过，每配置315项普通单测，输入一致、快速审核无遗留阻塞；见 docs/validation/expression-extension-1.md。
+
+- [x] **IL 证明的属性读取**——按运行时类型解析属性 getter，仅当其 IL 可证明只读字段时由解释器代读（Interop）
+    - [x] 解析链：字段精确名 → 属性证明 → 拒绝并附原因；模式白名单（`ldarg.0; ldfld; ret`、`ldsfld; ret`、常量 `ldc.*/ldnull; ret`，单方法≤16字节，禁分支/调用/异常子句）；token 解析（FieldDef/MemberRef）与字段槽匹配，歧义拒绝；显式接口实现与带参 getter 拒绝
+    - [x] 预算：元数据探针≤256/表达式、IL 累计≤256字节；类型级缓存绑定停止代次；不创建 ICorDebugEval、不新增 Continue
+    - [x] 覆盖容器 Count 的通过/拒绝矩阵：List/Queue/Stack 的纯字段实现通过，Dictionary.Count 的计算型实现保持拒绝；模型 auto-property/手写纯字段属性通过，其他计算型 getter 保持拒绝
+    - 验收：真实双架构 × 双配置的通过/拒绝矩阵（容器、模型属性、虚属性、静态属性、值类型接收者、计算属性、显式接口实现）；副作用计数与 Continue 配对计数证据；禁止路径调用计数为零；CLI/MCP/DAP 结果一致；文档同步。
+    - 验证记录：2026-09-11双配置双架构四入口求值/条件矩阵共28个监督步骤通过，每配置319项普通单测，真实预算及跨停止缓存验证通过；Dictionary.Count等计算型实现仍拒绝，快速审核无遗留阻塞。见docs/validation/expression-extension-2.md。
+
+- [x] **诊断自愈**——成员解析失败给出有界、脱敏的候选与原因提示
+    - [x] 候选成员名列表（字段+属性，前缀/大小写/编辑距离排序，上限8条，只含元数据名称）；属性拒绝时说明 getter 无法证明只读
+    - [x] 脱敏边界变更按 ADR-005 记录；错误码冻结，仅消息富化；同步工具文档与技能
+    - 验收：典型拼写/大小写/属性场景提示有界且无值泄漏；日志脱敏扫描通过；既有错误分类回归一致。
+
+    - 验证记录：2026-09-11双配置双架构四入口求值矩阵14个监督步骤通过，每配置322项普通单测；候选与原因、错误分类、真实审计日志脱敏扫描通过，快速审核无遗留阻塞。见docs/validation/expression-extension-3.md。
+
+- [x] **受限表达式扩展全量验证与独立审核**——形成可复核的一键证据与整体结论
+    - [x] 扩展验收入口纳入本组任务专项；双配置双架构全量回归（真实 Service/IIS、VS Code 及阶段4/3/2/1/0）；覆盖率采集与变更生产行≥90%门槛核对
+    - [x] 独立 Standards/Spec 双轴审核、阻塞修复与复核；报告与原始证据按仓库文档纪律归档
+    - 验收：全量回归 Debug/Release 通过、无跳过；审核遗留阻塞为零；报告逐条关联上述任务与 ADR-005；失败或缺失证据不得勾选。
+
+    - 验证记录：2026-09-11管理员Debug/Release全部阶段4/3/2/1/0、真实Service/IIS与VS Code通过，无跳过；332项输入一致、1052项产物哈希核验通过，变更生产行覆盖率569/598（95.15%），独立Standards/Spec审核3项问题修复复核后无遗留阻塞。见docs/validation/expression-extension-final-review.md。
