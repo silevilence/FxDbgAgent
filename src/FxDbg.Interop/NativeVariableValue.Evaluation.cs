@@ -11,12 +11,14 @@ namespace FxDbg.Interop;
 internal sealed partial class NativeVariableValue : IExpressionArray
 {
     IVariableValue IExpressionObject.Variable => this;
-    internal static ExpressionValue Expression(Func<CorDebugValue> read, CorDebugILFrame frame, EvaluationBudget budget)
+    private PropertyReadContext? propertyContext;
+    internal static ExpressionValue Expression(Func<CorDebugValue> read, CorDebugILFrame frame, EvaluationBudget budget, PropertyReadContext? context = null)
     {
         budget.Read();
         IVariableValue captured = Capture(read, frame, budget.Token);
         if (captured is not NativeVariableValue native)
             throw new FxDbgException(captured.Status == Core.Model.VariableStatus.OptimizedAway ? FxDbgErrorCode.ValueOptimizedAway : FxDbgErrorCode.ValueUnavailable, "Expression value is unavailable.");
+        native.propertyContext = context ?? new PropertyReadContext();
         ExpressionValue result = native.ToExpression(budget); budget.Check(); return result;
     }
     private ExpressionValue ToExpression(EvaluationBudget budget) => Read(() =>
@@ -63,10 +65,11 @@ internal sealed partial class NativeVariableValue : IExpressionArray
     {
         budget.Check();
         if (!HasFields || value?.Raw is not ICorDebugObjectValue raw) throw EvaluationBudget.TypeError();
-        FieldSlot? field = GetFields(budget.Token).FirstOrDefault(candidate => candidate.Name == name);
-        if (field is null) throw new FxDbgException(FxDbgErrorCode.ExpressionNameNotFound, "Expression field was not found; getters are never invoked.");
+        MemberCatalog catalog = GetExpressionMembers(budget);
+        FieldSlot? field = catalog.Fields.FirstOrDefault(candidate => candidate.Name == name);
+        if (field is null) return ReadProvedProperty(name, catalog, budget);
         var instance = new CorDebugObjectValue(raw);
-        return Expression(() => field.IsStatic ? field.Type.GetStaticFieldValue(field.Token, frame.Raw) : instance.GetFieldValue(field.Type.Class.Raw, field.Token), frame, budget);
+        return Expression(() => field.IsStatic ? field.Type.GetStaticFieldValue(field.Token, frame.Raw) : instance.GetFieldValue(field.Type.Class.Raw, field.Token), frame, budget, propertyContext);
     });
     ExpressionValue IExpressionObject.Index(int[] indices, EvaluationBudget budget) => Read(() =>
     {
@@ -79,7 +82,7 @@ internal sealed partial class NativeVariableValue : IExpressionArray
         int[] bases = array.HasBaseIndicies() ? array.GetBaseIndicies(rank) : new int[rank];
         for (int dimension = 0; dimension < rank; dimension++)
             if ((long)indices[dimension] - bases[dimension] < 0 || (long)indices[dimension] - bases[dimension] >= dimensions[dimension]) throw RestrictedExpression.IndexError();
-        return Expression(() => array.GetElement(rank, indices), frame, budget);
+        return Expression(() => array.GetElement(rank, indices), frame, budget, propertyContext);
     });
     int IExpressionObject.Length(int dimension, EvaluationBudget budget) => Read(() =>
     {

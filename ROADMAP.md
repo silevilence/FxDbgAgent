@@ -15,11 +15,12 @@
     - 验收：正反例单元测试覆盖优先级、数值提升/溢出/转换语义与拒绝面；真实 x86/x64 × Debug/Release 结果与变量模型一致；既有表达式与断点条件回归完全一致；超时/预算/取消行为不变。
     - 验证记录：2026-09-11 求值与条件断点双配置双架构四入口矩阵共28个监督步骤通过，每配置315项普通单测，输入一致、快速审核无遗留阻塞；见 docs/validation/expression-extension-1.md。
 
-- [ ] **IL 证明的属性读取**——按运行时类型解析属性 getter，仅当其 IL 可证明只读字段时由解释器代读（Interop）
-    - [ ] 解析链：字段精确名 → 属性证明 → 拒绝并附原因；模式白名单（`ldarg.0; ldfld; ret`、`ldsfld; ret`、常量 `ldc.*/ldnull; ret`，单方法≤16字节，禁分支/调用/异常子句）；token 解析（FieldDef/MemberRef）与字段槽匹配，歧义拒绝；显式接口实现与带参 getter 拒绝
-    - [ ] 预算：元数据探针≤256/表达式、IL 累计≤256字节；类型级缓存绑定停止代次；不创建 ICorDebugEval、不新增 Continue
-    - [ ] 覆盖容器 Count（List/Dictionary/Queue/Stack 等）与模型 auto-property/手写纯字段属性；计算型 getter 保持拒绝
+- [x] **IL 证明的属性读取**——按运行时类型解析属性 getter，仅当其 IL 可证明只读字段时由解释器代读（Interop）
+    - [x] 解析链：字段精确名 → 属性证明 → 拒绝并附原因；模式白名单（`ldarg.0; ldfld; ret`、`ldsfld; ret`、常量 `ldc.*/ldnull; ret`，单方法≤16字节，禁分支/调用/异常子句）；token 解析（FieldDef/MemberRef）与字段槽匹配，歧义拒绝；显式接口实现与带参 getter 拒绝
+    - [x] 预算：元数据探针≤256/表达式、IL 累计≤256字节；类型级缓存绑定停止代次；不创建 ICorDebugEval、不新增 Continue
+    - [x] 覆盖容器 Count（List/Dictionary/Queue/Stack 等）与模型 auto-property/手写纯字段属性；计算型 getter 保持拒绝
     - 验收：真实双架构 × 双配置的通过/拒绝矩阵（容器、模型属性、虚属性、静态属性、值类型接收者、计算属性、显式接口实现）；副作用计数与 Continue 配对计数证据；禁止路径调用计数为零；CLI/MCP/DAP 结果一致；文档同步。
+    - 验证记录：2026-09-11双配置双架构四入口求值/条件矩阵共28个监督步骤通过，每配置319项普通单测，真实预算及跨停止缓存验证通过；Dictionary.Count等计算型实现仍拒绝，快速审核无遗留阻塞。见docs/validation/expression-extension-2.md。
 
 - [ ] **诊断自愈**——成员解析失败给出有界、脱敏的候选与原因提示
     - [ ] 候选成员名列表（字段+属性，前缀/大小写/编辑距离排序，上限8条，只含元数据名称）；属性拒绝时说明 getter 无法证明只读

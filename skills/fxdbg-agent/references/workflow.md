@@ -92,3 +92,5 @@ npx --yes skills@1.5.23 add <FxDbg源码绝对路径> --skill fxdbg-agent --agen
 阶段4-3在debug_set_breakpoint新建时可带condition和hitCondition（=N或>=N，N正整数≤2147483647）。表达式必须为bool并遵守250ms只读解释预算，次数与表达式AND。debug_status的breakpoints可查hitCount和conditionDiagnostic；模块重载保留计数，删除重建重置。条件错误/超时会保守停止，先查诊断，禁用/移除或修正重建后再继续，不重复求值当前错误，不调用目标Getter/格式化。
 
 ADR-005扩展允许三元、位运算、十六进制与基础数值unchecked显式转换，裸名可回退this成员；新增String/Math/Array固有操作的参数及边界以mcp-tools为准，例如`number > 0 ? Math.Clamp(number,0,10) : 0`、`String.Substring(message,0,3)`。这些能力也用于断点条件，仍禁止目标函数调用。
+
+属性读取先查精确字段，再按运行时类型证明getter IL并代读字段/常量；例如`List.Count`和纯字段auto-property可用，Dictionary.Count等计算getter仍拒绝。不能证明时不要改用方法调用，按错误原因选择直接字段或变量树。缓存只活到当前停止，证明预算为每表达式256次元数据探针/累计256字节IL、单方法16字节；详见mcp-tools。

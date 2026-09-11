@@ -191,7 +191,7 @@ internal sealed partial class NativeVariableValue : IVariableValue
         _ => data.Length == 4 ? BitConverter.ToUInt32(data, 0).ToString(CultureInfo.InvariantCulture) : BitConverter.ToUInt64(data, 0).ToString(CultureInfo.InvariantCulture)
     };
 
-    private sealed class FieldSlot
+    internal sealed class FieldSlot
     {
         internal FieldSlot(string name, mdFieldDef token, CorDebugType type, bool isStatic) { Name = name; Token = token; Type = type; IsStatic = isStatic; }
         internal string Name { get; }

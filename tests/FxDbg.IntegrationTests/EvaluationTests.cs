@@ -55,6 +55,33 @@ internal static partial class Program
                 ["Array.IndexOf(ShiftedVector,0)"]="-2", ["Array.IndexOf(ShiftedVector,1)"]="-3"
             }) Require(session.Evaluate(frame,pair.Key,1000).DisplayValue==pair.Value,"Extension result: "+pair.Key);
             ExpectError(FxDbgErrorCode.ExpressionTypeError,()=>session.Evaluate(frame,"Array.IndexOf(matrix,40)",1000));
+            foreach (var pair in new System.Collections.Generic.Dictionary<string,string>
+            {
+                ["List.Count"]="3", ["Queue.Count"]="2", ["Stack.Count"]="1", ["Properties.Auto"]="19", ["Properties.Pure"]="23",
+                ["Virtual.Value"]="23", ["Properties.Static"]="37", ["Properties.Constant"]="7", ["Properties.Flag"]="true",
+                ["Properties.Letter"]="Z", ["Properties.Long"]="1234567890123", ["Properties.Single"]="1.5", ["Properties.Double"]="2.5",
+                ["Properties.Null == null"]="true", ["Properties.Shadow"]="43", ["Struct.Pure"]="31", ["Generic.Pure"]="generic"
+            })
+            {
+                Require(session.Evaluate(frame,pair.Key,1000).DisplayValue==pair.Value,"Proved property result: "+pair.Key);
+            }
+            foreach (string rejected in new[] { "Dictionary.Count", "Properties.Computed", "Properties.SideEffect", "Properties.WithFinally", "Properties.Cold", "ComputedVirtual.Value", "Properties.Item", "Properties.Explicit", "Generic.OtherInstantiation" })
+                ExpectError(FxDbgErrorCode.ExpressionNameNotFound,()=>session.Evaluate(frame,rejected,1000));
+            string Balanced(int first, int count) => count == 1 ? "Many.P"+first : "("+Balanced(first,count/2)+"+"+Balanced(first+count/2,count-count/2)+")";
+            // Warm only the type catalogue (no getter proofs), so this case isolates the IL cap.
+            Require(session.Evaluate(frame,"Many.Field",1000).DisplayValue=="1","Metadata-only catalogue warmup.");
+            using var ilBudget=new EvaluationBudget(1000);
+            ExpectError(FxDbgErrorCode.ExpressionLimitExceeded,()=>session.Evaluate(frame,Balanced(0,40),budget:ilBudget));
+            Require((int)typeof(EvaluationBudget).GetField("ilBytes",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(ilBudget)! ==252,"Real proof must hit cumulative IL budget before reading the next getter.");
+            using var metadataBudget=new EvaluationBudget(1000);
+            ExpectError(FxDbgErrorCode.ExpressionLimitExceeded,()=>session.Evaluate(frame,"Huge.Missing",budget:metadataBudget));
+            Require((int)typeof(EvaluationBudget).GetField("metadataProbes",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(metadataBudget)! ==257,"Real metadata traversal must stop before probe 257 executes.");
+            using var repeatedRoots=new EvaluationBudget(1000);
+            Require(session.Evaluate(frame,string.Join("+",Enumerable.Repeat("number",16)),budget:repeatedRoots).DisplayValue=="672","Repeated roots retain their values.");
+            Require((int)typeof(EvaluationBudget).GetField("metadataProbes",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(repeatedRoots)! < 10,"Repeated root names must not repeat metadata scans.");
+            using var shortCircuit=new EvaluationBudget(1000);
+            Require(session.Evaluate(frame,"false && missing",budget:shortCircuit).DisplayValue=="false","Short-circuit result.");
+            Require((int)typeof(EvaluationBudget).GetField("metadataProbes",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(shortCircuit)! == 0,"Skipped names must not inspect frame metadata.");
             var node=session.Evaluate(frame,"node",1000,maxDepth:0);
             Require(node.ReferenceId is not null && session.GetVariables(frame,node.ReferenceId).Any(x=>x.Name=="Label" && x.DisplayValue=="node-label"),"Evaluation object references reuse variable paging.");
             ExpectError(FxDbgErrorCode.ExpressionForbidden,()=>session.Evaluate(frame,"node.ToString()",1000));
@@ -70,8 +97,15 @@ internal static partial class Program
             ExpectError(FxDbgErrorCode.OperationTimedOut,()=>session.Evaluate(frame,"number",budget:expired));
             Require(session.Evaluate(frame,"userCodeCalls",1000).DisplayValue=="0" && session.Evaluate(frame,"node.Counter",1000).DisplayValue=="777","Forbidden calls and all errors preserve target state.");
             Require(session.CurrentStop==stop && pairing.ContinueCount==before && pairing.StopCount==stops,"Evaluation must neither resume nor manufacture stops.");
+            object readsBefore = typeof(FrameworkDebugSession).GetField("propertyReads",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(session)!;
             session.Step(stop.ThreadId,StepKind.Over); session.WaitForStop(TimeSpan.FromSeconds(10));
+            Require(!ReferenceEquals(readsBefore,typeof(FrameworkDebugSession).GetField("propertyReads",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(session)),"Property cache must expire at a new stop.");
             ExpectError(FxDbgErrorCode.FrameNotFound,()=>session.Evaluate(frame,"number",1000));
+            int secondLine=File.ReadAllLines(source).Select((text,index)=>(text,index)).Single(x=>x.text.Contains("// PROPERTY_SECOND_STOP")).index+1;
+            session.SetBreakpoint(new SourceLocation(source,secondLine));
+            session.Continue(); var secondStop=session.WaitForStop(TimeSpan.FromSeconds(10));
+            FrameId secondFrame=session.GetStack(secondStop.ThreadId,0,1).Single().FrameId;
+            Require(session.Evaluate(secondFrame,"Properties.Pure",1000).DisplayValue=="24","Property cache must never retain field values across stops.");
             session.Continue(); session.WaitForStop(TimeSpan.FromSeconds(10));
             Require(process.WaitForExit(5000) && process.ExitCode==0,"Target state oracle must confirm every state invariant after evaluation.");
             Console.WriteLine("PASS: evaluation "+configuration+" "+IntPtr.Size*8+" bit, "+expressions.Length+" exact results, errors, cancellation/timeout, object paging, no Continue and target state oracle.");

@@ -12,7 +12,7 @@ public sealed class EvaluationBudget : IDisposable
     private readonly int milliseconds;
     private readonly CancellationToken externalCancellation;
     private readonly CancellationTokenSource deadline;
-    private int steps, reads, characters;
+    private int steps, reads, characters, metadataProbes, ilBytes;
     public CancellationToken Token { get; }
     public EvaluationBudget(int milliseconds = 250, CancellationToken token = default, int? maximumMilliseconds = null)
     {
@@ -32,6 +32,13 @@ public sealed class EvaluationBudget : IDisposable
     public void Dispose() => deadline.Dispose();
     public void Step() { Check(); if (++steps > 10000) throw Limit(); }
     public void Read() { Step(); if (++reads > 1024) throw Limit(); }
+    public void MetadataProbe() { Step(); if (++metadataProbes > 256) throw Limit(); }
+    public void InspectIl(int length)
+    {
+        Step();
+        if (length < 0 || length > 16 || length > 256 - ilBytes) throw Limit();
+        ilBytes += length;
+    }
     public void String(int length)
     {
         Check();

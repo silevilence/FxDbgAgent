@@ -42,7 +42,7 @@
 
 debug_evaluate在指定当前帧解释表达式，线程由frameId确定；可选appDomainId须与帧一致。仅读取参数、局部、this、实例/静态字段及数组元素，支持括号、null/bool/字符/字符串/数值字面量、`+ - * / %`、`== != < <= > >=`、`! && ||`（短路）、字段和数组/字符串索引。多维索引使用逗号，遵守真实下界。String/Array.Length读取原生长度；未初始化静态字段不触发类型初始化。
 
-固有操作白名单为Math.Abs/Min/Max基础数值参数、String.IsNullOrEmpty、String.Equals(string,string)（ordinal）、String.Concat(string,string)、Array.GetLength(array,dimension)。名称区分大小写，在调试器内执行，不调用目标mscorlib；用户Getter、ToString、方法、运算符、隐式转换、构造器、反射、赋值、自增减、循环和脚本均拒绝。对象支持字段读取、null/引用身份比较与变量树展示。
+固有操作白名单为Math.Abs/Min/Max基础数值参数、String.IsNullOrEmpty、String.Equals(string,string)（ordinal）、String.Concat(string,string)、Array.GetLength(array,dimension)。名称区分大小写，在调试器内执行，不调用目标mscorlib；目标Getter执行、ToString、方法、运算符、隐式转换、构造器、反射、赋值、自增减、循环和脚本均拒绝。对象支持字段读取、null/引用身份比较与变量树展示。
 
 这是C#的明确子集：小整数/char算术提升int，uint与有符号整数按long提升，ulong与有符号整数混合拒绝（不实现常量隐式转换），float/double按基础提升，整数检查溢出，整数除法向零截断。十进制整数字面量无后缀依次选择int/long/ulong，支持u/l/ul、浮点f/d与指数；不支持decimal、指针或完整C#重载选择。字符串字面量支持引号、反斜杠及n/r/t/0转义；计算使用完整原始值，不用显示截断值。
 
@@ -53,6 +53,12 @@ ADR-005语法扩展：三元`?:`右结合且仅计算选中的分支，返回该
 显式转换仅支持`(sbyte/byte/short/ushort/char/int/uint/long/ulong/float/double)x`，采用C# unchecked数值转换：整数窄化保留低位，浮点到整数向零截断；超范围/NaN/无穷到整数的值由Engine CLR决定，C#对此不规定固定结果，不作为跨架构恒等保证。普通整数算术仍检查溢出。见[Microsoft数值转换说明](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/numeric-conversions)。裸名先匹配参数/局部/this，未命中再读取this同名成员；参数优先于同名实例字段。
 
 新增固有操作全部用静态白名单名称调用：String.Substring(s,start[,count])、IndexOf(s,value[,start])、Contains/StartsWith/EndsWith(s,value)使用ordinal、Trim(s)、CompareOrdinal(a,b)、IsNullOrWhiteSpace(s)。仅后两者接受null；越界返回expression_index_out_of_range。Math.Round(x[,digits])用ToEven、digits为0～15；Floor/Ceiling/Truncate/Sqrt返回double，Sign返回int，Clamp(x,min,max)沿用基础数值提升且同型小整数保留类型；min>max与Sign(NaN)返回expression_arithmetic_error。Array.IndexOf(array,value)仅一维数组，从真实下界起扫描，未找到返回下界减一；primitive按精确装箱类型和值比较（NaN相等）、对象按引用身份比较，绝不调用目标Equals，复杂值类型不做内容相等。扫描消耗既有步骤/读取预算，超限即拒绝。所有新语法与固有操作自动用于断点条件。
+
+ADR-005属性代读：先按精确名查字段，再从接收者运行时类型沿基类查零参数属性。getter从不执行；仅接受精确IL `ldarg.0; ldfld; ret`、`ldsfld; ret`、`ldc.*/ldnull; ret`，单方法≤16字节。普通Desktop CLR方法通过已加载模块RVA及代码地址核对tiny/fat方法头，不接受异常/附加段、额外指令、调用、分支、显式接口实现、带参索引器、抽象/无IL、动态或内存模块、歧义字段。虚属性按运行时覆盖实现证明；字段同名时优先。常量按声明的基础返回类型展示，字段沿用既有原生读取；类型初始化器仍不触发，未初始化静态字段可能为默认值或不可用。
+
+FieldDef按模块+token匹配；MemberRef验证声明类型（包括同模块泛型实例参数）、名字和字段签名后唯一匹配。不用名称猜测跨模块TypeRef：固定ClrDebug 0.4.2未提供可用ResolveTypeRef，不能证明的引用保守拒绝。类型属性元数据和证明缓存只在当前停止有效，不缓存字段值；隐藏条件命中各自使用新缓存。每表达式新增≤256次元数据探针、≤256字节累计IL，根变量元数据枚举与建缓存均计入预算，同一表达式惰性复用根描述，短路分支不读取；命中缓存避免重复IL读取；超过资源预算仍为expression_limit_exceeded。头部只读内存访问计入既有读取预算。
+
+常见通过：List/Queue/Stack.Count、auto-property、表达式体纯字段属性、纯字段虚覆盖、静态字段属性、基础常量和值类型字段属性。常见拒绝：Dictionary.Count在当前Framework实现为多字段相减，计算属性仍拒绝；Debug带nop/分支的手写块体也不会被归一化放行。属性失败为expression_name_not_found，附不能证明只读的稳定原因，七个错误分类不变。证明检查没有调用目标方法或新增Continue。
 
 输入4096个UTF-16代码单元，最多1024语法节点、32层、10000解释步骤、1024次值读取；单字符串32768、累计中间字符串65536个代码单元，超限拒绝，不能截断后继续计算。evaluationTimeoutMs包含Engine排队、解析、读取和计算；timeoutMs仍是Host调用期限。取消观察请求可先返回，后台只读工作在原期限内收尾；不会为求值Continue或使帧失效。不可中断原生COM故障沿用隔离清理，不能承诺此类故障后继续或强杀Engine后目标存活。
 

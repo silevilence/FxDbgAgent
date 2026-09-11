@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using ClrDebug;
@@ -11,6 +12,7 @@ namespace FxDbg.Interop;
 
 public sealed partial class FrameworkDebugSession
 {
+    private NativeVariableValue.PropertyReadContext propertyReads = new();
     public VariableInfo Evaluate(FrameId frameId, string expression, int evaluationTimeoutMs = 250, int maxDepth = 1,
         int count = 100, int maxStringLength = 256, CancellationToken cancellationToken = default, string? appDomainId = null,
         EvaluationBudget? budget = null)
@@ -43,20 +45,35 @@ public sealed partial class FrameworkDebugSession
         budget.Check(); return result;
     }
 
-    private ExpressionValue EvaluateFrame(CorDebugILFrame frame, RestrictedExpression parsed, EvaluationBudget budget) =>
-        parsed.Evaluate((name, limits) =>
+    private ExpressionValue EvaluateFrame(CorDebugILFrame frame, RestrictedExpression parsed, EvaluationBudget budget, NativeVariableValue.PropertyReadContext? context = null)
+    {
+        // Describe roots lazily and at most once per expression. A short-circuited branch
+        // still performs no native reads; repeated names never repeat metadata enumeration.
+        var roots = new List<RootVariable>();
+        using IEnumerator<RootVariable> pending = DescribeRoots(frame, budget).GetEnumerator();
+        bool complete = false;
+        RootVariable? receiver = null;
+        return parsed.Evaluate((name, limits) =>
         {
-            RootVariable? receiver = null;
-            foreach (RootVariable root in DescribeRoots(frame))
+            foreach (RootVariable root in roots)
             {
                 limits.Step();
-                if (root.Name == name) return NativeVariableValue.Expression(root.Read, frame, limits);
+                if (root.Name == name) return NativeVariableValue.Expression(root.Read, frame, limits, context ?? propertyReads);
+            }
+            while (!complete)
+            {
+                limits.Step();
+                if (!pending.MoveNext()) { complete = true; break; }
+                RootVariable root = pending.Current;
+                roots.Add(root);
                 if (root.Name == "this") receiver = root;
+                if (root.Name == name) return NativeVariableValue.Expression(root.Read, frame, limits, context ?? propertyReads);
             }
             if (receiver is not null)
-                return NativeVariableValue.Expression(receiver.Read, frame, limits).Object?.Field(name, limits) ?? throw EvaluationBudget.TypeError();
+                return NativeVariableValue.Expression(receiver.Read, frame, limits, context ?? propertyReads).Object?.Field(name, limits) ?? throw EvaluationBudget.TypeError();
             throw new FxDbgException(FxDbgErrorCode.ExpressionNameNotFound, "Expression name is unavailable in this frame.");
         }, budget);
+    }
 
     private ExpressionValue EvaluateBreakpointFrame(CorDebugThread thread, RestrictedExpression parsed, EvaluationBudget budget)
     {
@@ -65,7 +82,9 @@ public sealed partial class FrameworkDebugSession
             budget.Check();
             if (thread.ActiveFrame.Raw is not ICorDebugILFrame frame)
                 throw new FxDbgException(FxDbgErrorCode.ValueUnavailable, "Breakpoint frame is unavailable.");
-            return EvaluateFrame(new CorDebugILFrame(frame), parsed, budget);
+            // A hidden conditional hit has no public stop generation. Never reuse an earlier
+            // stopped frame's metadata objects while deciding whether to publish this stop.
+            return EvaluateFrame(new CorDebugILFrame(frame), parsed, budget, new NativeVariableValue.PropertyReadContext());
         }
         catch (Exception error) when (error is not FxDbgException && error is not OperationCanceledException && error is not OutOfMemoryException)
         { throw new FxDbgException(FxDbgErrorCode.ValueUnavailable, "Breakpoint frame could not be read."); }

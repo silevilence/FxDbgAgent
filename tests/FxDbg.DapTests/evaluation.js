@@ -20,11 +20,12 @@ async function main() {
       await client.request('configurationDone'); await launch.completion;
       const stop=await client.event('stopped'); assert.equal(stop.body.reason,'breakpoint');
       const stack=await client.request('stackTrace',{threadId:stop.body.threadId}); const frameId=stack.stackFrames[0].id;
-      for(const [expression,expected] of [['number + 2','44'],['(number & 0x1) == 0 ? Math.Clamp(number,0,10) : 0','10'],['(byte)257','1'],['String.Substring(message,2,3)','cde'],['fallbackNumber','17'],['Array.IndexOf(Values,20)','1'],['matrix[1,1]','40'],['shifted[-1,7]','99'],['userCodeCalls','0']]) {
+      for(const [expression,expected] of [['number + 2','44'],['(number & 0x1) == 0 ? Math.Clamp(number,0,10) : 0','10'],['(byte)257','1'],['String.Substring(message,2,3)','cde'],['fallbackNumber','17'],['Array.IndexOf(Values,20)','1'],['matrix[1,1]','40'],['shifted[-1,7]','99'],['List.Count','3'],['Properties.Pure','23'],['Virtual.Value','23'],['Properties.Static','37'],['Struct.Pure','31'],['Properties.Flag','true'],['userCodeCalls','0']]) {
         const result=await client.request('evaluate',{frameId,expression,context:'watch'}); assert.equal(result.result,expected);
       }
       const object=await client.request('evaluate',{frameId,expression:'node'}); assert.ok(object.variablesReference>0);
       const children=await client.request('variables',{variablesReference:object.variablesReference}); assert.ok(children.variables.some(x=>x.name==='Label'&&x.value==='node-label'));
+      for (const expression of ['Dictionary.Count','Properties.Computed','Properties.SideEffect','ComputedVirtual.Value','Properties.Item','Properties.Explicit','Properties.Cold','Generic.OtherInstantiation']) await assert.rejects(client.request('evaluate',{frameId,expression}),/expression_name_not_found/);
       await assert.rejects(client.request('evaluate',{frameId,expression:'node.ToString()'}),/expression_forbidden/);
       let cursor=client.events.length; await client.request('next',{threadId:stop.body.threadId}); await client.event('stopped',cursor);
       await assert.rejects(client.request('evaluate',{frameId,expression:'number'}));
@@ -45,7 +46,7 @@ async function main() {
       call('break',['--file',source,'--line',String(line)]); call('continue');
       const stop=call('wait').result; const frame=call('stack',['--thread',String(stop.threadId)]).result[0].frameId;
       assert.equal(call('evaluate',['--frame',frame,'--expression','number + matrix[1,1]']).result.displayValue,'82');
-      for (const [expression,expected] of [['(number & 0x1) == 0 ? Math.Clamp(number,0,10) : 0','10'],['fallbackNumber','17'],['String.Substring(message,2,3)','cde'],['Array.IndexOf(Values,20)','1'],['userCodeCalls','0']]) assert.equal(call('evaluate',['--frame',frame,'--expression',expression]).result.displayValue,expected);
+      for (const [expression,expected] of [['(number & 0x1) == 0 ? Math.Clamp(number,0,10) : 0','10'],['fallbackNumber','17'],['String.Substring(message,2,3)','cde'],['Array.IndexOf(Values,20)','1'],['List.Count','3'],['Properties.Pure','23'],['Virtual.Value','23'],['Properties.Static','37'],['Struct.Pure','31'],['Properties.Flag','true'],['userCodeCalls','0']]) assert.equal(call('evaluate',['--frame',frame,'--expression',expression]).result.displayValue,expected);
       call('continue'); const exited=call('wait').result; assert.equal(exited.reason,'processExit');
       assert.equal(fs.readFileSync(cliOracle,'utf8'),'ok');
       console.log(`PASS: CLI evaluation ${configuration} ${architecture}, shared Engine path and target state oracle.`);

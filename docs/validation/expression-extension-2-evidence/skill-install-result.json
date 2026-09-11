@@ -1,0 +1,21 @@
+{
+  "projectDirectory": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage2-validation\\skill-project-df5dd86b4159417ab8e9fded6fbe8b53",
+  "validatedAtUtc": "2026-09-11T01:45:58.0188732+00:00",
+  "files": [
+    {
+      "file": "SKILL.md",
+      "sha256": "91EC5FDA8C7F4B499E309C3E6D1D2F05326DD24CF1275DB7532AA673C4A2BFED"
+    },
+    {
+      "file": "references/workflow.md",
+      "sha256": "6780B7C5DF5D51F894BBDB584F823799EFEB26D157357526AB68A4915C5F0323"
+    },
+    {
+      "file": "references/mcp-tools.md",
+      "sha256": "2F0821B2698ED107713D61735793AB33AA0562547DFD435AC8C0D5C5FDE78678"
+    }
+  ],
+  "cliVersion": "1.5.23",
+  "command": "npx --yes skills@1.5.23 add C:\\code\\dotnet\\FxDbgAgent --skill fxdbg-agent --agent codex --yes",
+  "installedDirectory": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage2-validation\\skill-project-df5dd86b4159417ab8e9fded6fbe8b53\\.agents\\skills\\fxdbg-agent"
+}
