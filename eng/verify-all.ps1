@@ -17,12 +17,13 @@ try {
     Initialize-ValidationBuilds $validationRun $Configuration
     # Stage 4 and the complete stage 3/2/1/0 matrix share one frozen preparation.
     # Every native/MCP/DAP/CLI/VS Code scenario still runs; no Service/IIS skip option.
-    foreach($stage in @('4-1','4-2','4-3','3')) {
-        $arguments=@('-NoProfile','-File',(Join-Path $PSScriptRoot "verify-stage$stage.ps1"),'-NodePath',$NodePath)
+    foreach($stage in @('expression-extension','4-2','3')) {
+        $script=if($stage -eq 'expression-extension'){'verify-expression-extension.ps1'}else{"verify-stage$stage.ps1"}
+        $arguments=@('-NoProfile','-File',(Join-Path $PSScriptRoot $script),'-NodePath',$NodePath)
         if($Configuration) { $arguments+=@('-Configuration',$Configuration) }
         if($stage -eq '3') { $arguments+=@('-CodePath',$CodePath) }
         $log=Join-Path $runDirectory "stage$stage.log"
-        $seconds=if($stage -eq '3'){14400}else{1800}
+        $seconds=if($stage -eq '3'){14400}elseif($stage -eq 'expression-extension'){3600}else{1800}
         Write-Host "Running stage $stage; evidence: $log"
         $code=Invoke-ValidationProcess $shell $arguments $repoRoot $log $seconds
         if($code -ne 0) { Get-Content -LiteralPath $log -Tail 40 | Write-Host; throw "Stage $stage failed ($code): $log" }

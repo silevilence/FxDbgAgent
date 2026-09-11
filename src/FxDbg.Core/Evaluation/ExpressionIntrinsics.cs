@@ -27,7 +27,12 @@ internal static class ExpressionIntrinsics
             case "String.IsNullOrWhiteSpace": result = string.IsNullOrWhiteSpace(Text(args[0], true)); break;
             case "String.CompareOrdinal": result = string.CompareOrdinal(Text(args[0], true), Text(args[1], true)); break;
             case "String.Trim":
-                string trimmed = Text(args[0])!.Trim(); budget.String(trimmed.Length); result = trimmed; break;
+                string untrimmed = Text(args[0])!;
+                int first = 0, last = untrimmed.Length - 1;
+                while (first <= last && char.IsWhiteSpace(untrimmed[first])) { budget.Check(); first++; }
+                while (last >= first && char.IsWhiteSpace(untrimmed[last])) { budget.Check(); last--; }
+                int trimmedLength = last - first + 1;
+                budget.String(trimmedLength); result = untrimmed.Substring(first, trimmedLength); break;
             case "String.Substring":
                 string text = Text(args[0])!; int start = args[1].Integer();
                 int count = args.Length == 3 ? args[2].Integer() : text.Length - start;

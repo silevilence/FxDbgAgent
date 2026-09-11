@@ -30,7 +30,7 @@ internal static class EvaluationSuite
                 var before=await Call("status"); int thread=(int)before["stop"]!["threadId"]!;
                 string frame=(string)(await Call("stack",new(){["threadId"]=thread}))[0]!["frameId"]!;
                 async Task<JsonNode> Eval(string expression,string? error=null) => await Call("evaluate",new(){["frameId"]=frame,["expression"]=expression,["evaluationTimeoutMs"]=1000,["maxDepth"]=0},error);
-                foreach(var pair in new Dictionary<string,string>{["number + 2"]="44",["(number & 0x1) == 0 ? Math.Clamp(number,0,10) : 0"]="10",["(byte)257"]="1",["String.Substring(message,2,3)"]="cde",["fallbackNumber"]="17",["Array.IndexOf(Values,20)"]="1",["matrix[1,1]"]="40",["shifted[-1,7]"]="99",["exact == 9007199254740993L"]="true",["node.Self == node"]="true",["String.Equals(node.Label,\"node-label\")"]="true",["List.Count"]="3",["Properties.Pure"]="23",["Virtual.Value"]="23",["Properties.Static"]="37",["Struct.Pure"]="31",["Properties.Flag"]="true",["userCodeCalls"]="0"})
+                foreach(var pair in new Dictionary<string,string>{["number + 2"]="44",["(number & 0x1) == 0 ? Math.Clamp(number,0,10) : 0"]="10",["(byte)257"]="1",["String.Substring(message,2,3)"]="cde",["fallbackNumber"]="17",["Array.IndexOf(Values,20)"]="1",["matrix[1,1]"]="40",["shifted[-1,7]"]="99",["exact == 9007199254740993L"]="true",["node.Self == node"]="true",["String.Equals(node.Label,\"node-label\")"]="true",["Properties.Promoted"]="5",["List.Count"]="3",["Properties.Pure"]="23",["Virtual.Value"]="23",["Properties.Static"]="37",["Struct.Pure"]="31",["Properties.Flag"]="true",["userCodeCalls"]="0"})
                 {
                     var result=await Eval(pair.Key); ObservationSuite.Require((string?)result["displayValue"]==pair.Value,"MCP evaluation result: "+pair.Key);
                     evidence.Add(new JsonObject{["configuration"]=configuration,["architecture"]=architecture,["expression"]=pair.Key,["result"]=result.DeepClone()});
@@ -38,7 +38,7 @@ internal static class EvaluationSuite
                 var node=await Eval("node");
                 var children=(await Call("variables",new(){["frameId"]=frame,["referenceId"]=(string)node["referenceId"]!})).AsArray();
                 ObservationSuite.Require(children.Any(x=>(string?)x!["name"]=="Label"&&(string?)x["displayValue"]=="node-label"),"MCP evaluation result expands using variables.");
-                foreach (string rejected in new[]{"Dictionary.Count","Properties.Computed","Properties.SideEffect","ComputedVirtual.Value","Properties.Item","Properties.Explicit","Properties.Cold","Generic.OtherInstantiation"}) await Eval(rejected,"expression_name_not_found");
+                foreach (string rejected in new[]{"OddVirtual.Value","ImplicitVirtual.Value","Dictionary.Count","Properties.Computed","Properties.SideEffect","ComputedVirtual.Value","Properties.Item","Properties.Explicit","Properties.Cold","Generic.OtherInstantiation"}) await Eval(rejected,"expression_name_not_found");
                 foreach (var diagnostic in new[]{("Properties.Puer","Pure"),("Properties.pure","Pure"),("node.Labl","Label"),("Properties.Computed","Computed")})
                 {
                     var error=await Eval(diagnostic.Item1,"expression_name_not_found"); string text=(string)error["message"]!;

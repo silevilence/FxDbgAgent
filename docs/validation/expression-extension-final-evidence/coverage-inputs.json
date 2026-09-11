@@ -1,0 +1,43 @@
+{
+  "baseline": "f831779744ea743ebd35620652b4b244c4efb1e7",
+  "parentCommit": "d09d7ff1e4e7e0ef011323375da2c0c0df759304",
+  "sourceTree": "d46dfc7e877d9a45867f6432d3b68a5c37d08c6c",
+  "sourceRoot": "C:\\code\\dotnet\\FxDbgAgent",
+  "inputs": [
+    {
+      "path": "artifacts\\expression-extension\\coverage\\final\\real-Debug\\9c503808-2fc3-4cae-a286-9a39c4852db1\\silev_SILSURFACE10_2026-09-11.10_25_39.cobertura.xml",
+      "length": 3010424,
+      "sha256": "FD6DF89D848C62BE7248FDAA03AB0CDDF933F3ECE13A71FDE04DF94068CFB888"
+    },
+    {
+      "path": "artifacts\\expression-extension\\coverage\\final\\unit-Debug\\3b62424b-70d7-4a6e-802e-c5035a4a0a6b\\silev_SILSURFACE10_2026-09-11.10_22_00.cobertura.xml",
+      "length": 2084021,
+      "sha256": "302E3066FD136267F91C50CD1C35308300E873CAB031B32DE5421BBB108B316E"
+    },
+    {
+      "path": "artifacts\\expression-extension\\coverage\\final\\unit-Release\\130a8e03-3f99-4d13-900c-a1fa2e383468\\silev_SILSURFACE10_2026-09-11.10_22_29.cobertura.xml",
+      "length": 1928756,
+      "sha256": "24AED14B2A0701B7385AB532A397ACD9EDE3FEDA0C875AB0F37CE2249B52D0A1"
+    }
+  ],
+  "testInputsManifest": "docs/validation/expression-extension-final-evidence/stage4-1-inputs.sha256",
+  "testInputsSha256": "81DC1FABDBF547A8B49ED3E1D95A43ADD890786527025ABBCBA3541CB94479F8",
+  "measurementSources": [
+    {
+      "path": "docs\\validation\\expression-extension-final-evidence\\coverage-harness\\ExpressionCoverage.csproj",
+      "sha256": "A3F3AF258E205EEE786249950698723EDC8BE4F2EF351E02491487F333B33A87"
+    },
+    {
+      "path": "docs\\validation\\expression-extension-final-evidence\\coverage-harness\\RealExpressionCoverage.cs",
+      "sha256": "4E1103C40DB38BF6B6E9C5B68458038252F039FBF639ABE2129875221301D22A"
+    },
+    {
+      "path": "docs\\validation\\expression-extension-final-evidence\\summarize-coverage.ps1",
+      "sha256": "215D8F44102362B918C7283F7347D90EA47D7E5776F870D321CEB0B9B18FC648"
+    },
+    {
+      "path": "eng\\coverage.runsettings",
+      "sha256": "8FF21D965AD1115E31EB92ED0C604CA217BA7B90E2EE4C7ABFAB4E4B32A3A413"
+    }
+  ]
+}

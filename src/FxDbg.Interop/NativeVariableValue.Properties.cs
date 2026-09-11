@@ -18,6 +18,7 @@ internal sealed partial class NativeVariableValue
     {
         internal readonly List<FieldSlot> Fields = new();
         internal readonly List<PropertySlot> Properties = new();
+        internal readonly List<CorDebugType> Hierarchy = new();
     }
     internal sealed class PropertySlot
     {
@@ -34,6 +35,7 @@ internal sealed partial class NativeVariableValue
         internal FieldSlot? Field;
         internal ExpressionValue? Constant;
         internal string? Rejection;
+        internal byte[]? ReturnSignature;
     }
 
     private MemberCatalog GetExpressionMembers(EvaluationBudget budget)
@@ -48,6 +50,7 @@ internal sealed partial class NativeVariableValue
         {
             budget.MetadataProbe();
             if (++depth > 128) throw EvaluationBudget.Limit();
+            catalog.Hierarchy.Add(type);
             MetaDataImport metadata = type.Class.Module.GetMetaDataInterface().MetaDataImport;
             var fieldTokens = new mdFieldDef[32]; IntPtr enumeration = IntPtr.Zero;
             try
@@ -101,8 +104,18 @@ internal sealed partial class NativeVariableValue
         if (proof.Constant is not null) return proof.Constant;
         FieldSlot field = proof.Field!;
         var instance = new CorDebugObjectValue((ICorDebugObjectValue)value!.Raw);
-        return Expression(() => field.IsStatic ? field.Type.GetStaticFieldValue(field.Token, frame.Raw)
+        ExpressionValue captured = Expression(() => field.IsStatic ? field.Type.GetStaticFieldValue(field.Token, frame.Raw)
             : instance.GetFieldValue(field.Type.Class.Raw, field.Token), frame, budget, propertyContext);
+        byte[] signature = proof.ReturnSignature!;
+        CorElementType returnType = (CorElementType)signature[2];
+        if (returnType < CorElementType.Boolean || returnType > CorElementType.R8) return captured;
+        // ldfld puts narrow integers on the I4 stack; ret applies the declared type.
+        object? scalar = captured.Scalar;
+        if (scalar is bool or char or sbyte or byte or short or ushort) scalar = Convert.ToInt32(scalar);
+        else if (scalar is uint unsigned) scalar = unchecked((int)unsigned);
+        else if (scalar is ulong large) scalar = unchecked((long)large);
+        return captured.Object is null && ConstantResult(scalar, signature) is { } converted ? converted
+            : throw MemberUnavailable("Field value cannot be represented by the getter return type.", name, catalog, budget);
     }
 
     private static PropertyProof RejectProperty(string reason) => new() { Rejection = reason };
@@ -126,6 +139,8 @@ internal sealed partial class NativeVariableValue
             bool isStatic = (method.pdwAttr & CorMethodAttr.mdStatic) != 0;
             if (signature.Length < 3 || signature[0] != (isStatic ? 0 : 0x20) || signature[1] != 0)
                 return RejectProperty("Only zero-parameter non-generic getters are supported.");
+            if ((method.pdwAttr & CorMethodAttr.mdVirtual) != 0 && !HasUnambiguousDispatch(property, method.szMethod, catalog, budget))
+                return RejectProperty("Virtual getter dispatch cannot be proved from the property metadata.");
             budget.MetadataProbe();
             CorDebugCode code = module.GetFunctionFromToken(property.Getter).ILCode;
             if (code is null || code.Size < 2 || code.Size > 16) return RejectProperty("Getter has no IL or exceeds the 16-byte whitelist.");
@@ -145,10 +160,58 @@ internal sealed partial class NativeVariableValue
             FieldSlot? field = ResolveGetterField(load.FieldToken, property.Type, catalog, budget);
             if (field is null || field.IsStatic != (load.Kind == GetterLoadKind.StaticField))
                 return RejectProperty("Field token cannot be matched to one receiver field slot.");
-            return new PropertyProof { Field = field };
+            return new PropertyProof { Field = field, ReturnSignature = signature };
         }
         catch (DebugException) { return RejectProperty("Runtime metadata or IL is unavailable."); }
         catch (COMException) { return RejectProperty("Runtime metadata or IL is unavailable."); }
+    }
+
+    private static bool HasUnambiguousDispatch(PropertySlot property, string getterName, MemberCatalog catalog, EvaluationBudget budget)
+    {
+        for (int depth = 0; depth < property.Depth; depth++)
+        {
+            CorDebugType type = catalog.Hierarchy[depth];
+            MetaDataImport metadata = type.Class.Module.GetMetaDataInterface().MetaDataImport;
+            IntPtr enumeration = IntPtr.Zero;
+            var bodies = new mdToken[8]; var declarations = new mdToken[8];
+            try
+            {
+                while (true)
+                {
+                    budget.MetadataProbe();
+                    HRESULT status = metadata.TryEnumMethodImpls(ref enumeration, type.Class.Token, bodies, declarations, out int count);
+                    if (status != HRESULT.S_FALSE) ClrDebug.Extensions.ThrowOnFailed(status);
+                    if (count == 0) break;
+                    // An explicit mapping in a more-derived type may replace an inherited
+                    // getter without any Property row. Do not guess its virtual slot.
+                    if (depth < property.Depth - 1) return false;
+                    for (int index = 0; index < count; index++)
+                    {
+                        budget.MetadataProbe();
+                        mdToken declaration = declarations[index];
+                        string name = declaration.Type == CorTokenType.mdtMethodDef
+                            ? metadata.GetMethodProps(new mdMethodDef(declaration.Value)).szMethod
+                            : declaration.Type == CorTokenType.mdtMemberRef
+                                ? metadata.GetMemberRefProps(new mdMemberRef(declaration.Value)).szMember : getterName;
+                        if (name == getterName) return false;
+                    }
+                }
+            }
+            finally { if (enumeration != IntPtr.Zero) metadata.CloseEnum(enumeration); }
+            if (depth == property.Depth - 1) continue;
+            enumeration = IntPtr.Zero;
+            try
+            {
+                budget.MetadataProbe();
+                // Implicit overrides also need not carry a Property row. Even an overload
+                // with this accessor name is conservatively rejected rather than dispatched.
+                HRESULT status = metadata.TryEnumMethodsWithName(ref enumeration, type.Class.Token, getterName, new mdMethodDef[1], out int count);
+                if (status != HRESULT.S_FALSE) ClrDebug.Extensions.ThrowOnFailed(status);
+                if (count != 0) return false;
+            }
+            finally { if (enumeration != IntPtr.Zero) metadata.CloseEnum(enumeration); }
+        }
+        return true;
     }
 
     private static byte[] ReadSignature(IntPtr address, int length)
@@ -202,6 +265,8 @@ internal sealed partial class NativeVariableValue
         if (value is long large && type is CorElementType.I8 or CorElementType.U8)
             return new ExpressionValue(type == CorElementType.I8 ? (object)large : unchecked((ulong)large));
         if (value is float && type == CorElementType.R4 || value is double && type == CorElementType.R8) return new ExpressionValue(value);
+        if (value is float single && type == CorElementType.R8) return new ExpressionValue((object)(double)single);
+        if (value is double real && type == CorElementType.R4) return new ExpressionValue((object)(float)real);
         return null;
     }
 

@@ -23,6 +23,15 @@ namespace FxDbg.Debuggees
         }
     }
 
+    public class VirtualProofBase
+    {
+        public static int Calls;
+        public int Field = 13;
+        public virtual int Value => Field;
+        public static void Record() { Calls++; }
+    }
+    public sealed class InheritedVirtualModel : VirtualProofBase { }
+
     internal sealed class Program
     {
         private static int executionSink;
@@ -41,7 +50,7 @@ namespace FxDbg.Debuggees
                 Array shifted = Array.CreateInstance(typeof(int), new[] {2,3}, new[] {-2,5}); shifted.SetValue(99,-1,7);
                 variableSink = Node.Counter;
                 new Program().EvaluateTarget(42,"abcdefghijklmnop",node,matrix,shifted,9007199254740993L,new string('s',32769));
-                if (userCodeCalls != 0 || Node.Counter != 777 || node.Label != "node-label" || node.Self != node ||
+                if (userCodeCalls != 0 || VirtualProofBase.Calls != 0 || Node.Counter != 777 || node.Label != "node-label" || node.Self != node ||
                     matrix[1,1] != 40 || (int)shifted.GetValue(-1,7) != 99 || variableSink != 42)
                     throw new InvalidOperationException("Evaluation changed target state.");
                 if (args.Length > 1) File.WriteAllText(args[1],"ok");
@@ -158,11 +167,26 @@ namespace FxDbg.Debuggees
         public System.Collections.Generic.Stack<int> Stack = new System.Collections.Generic.Stack<int>(new[] {1});
         public PropertyModel Properties = new PropertyModel();
         public PropertyBase Virtual = new PropertyModel();
+        public VirtualProofBase OddVirtual = MakeHiddenOverride(true);
+        public VirtualProofBase ImplicitVirtual = MakeHiddenOverride(false);
+        public VirtualProofBase InheritedVirtual = new InheritedVirtualModel();
         public PropertyBase ComputedVirtual = new ComputedPropertyModel();
         public ValueModel Struct = new ValueModel { Field = 31 };
         public GenericModel<string> Generic = new GenericModel<string> { Field = "generic" };
         public ManyProperties Many = new ManyProperties();
         public ManyFields Huge = new ManyFields();
+        private static VirtualProofBase MakeHiddenOverride(bool explicitMapping)
+        {
+            var assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("HiddenGetter"+Guid.NewGuid().ToString("N")), System.Reflection.Emit.AssemblyBuilderAccess.Run);
+            var module = assembly.DefineDynamicModule("hidden");
+            var type = module.DefineType("HiddenGetter", TypeAttributes.Public, typeof(VirtualProofBase));
+            var method = type.DefineMethod(explicitMapping ? "HiddenImplementation" : "get_Value", MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig, typeof(int), Type.EmptyTypes);
+            var il = method.GetILGenerator();
+            il.Emit(System.Reflection.Emit.OpCodes.Call, typeof(VirtualProofBase).GetMethod("Record"));
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, 99); il.Emit(System.Reflection.Emit.OpCodes.Ret);
+            if (explicitMapping) type.DefineMethodOverride(method, typeof(VirtualProofBase).GetProperty("Value").GetGetMethod());
+            return (VirtualProofBase)Activator.CreateInstance(type.CreateType());
+        }
         private interface IProperty { int Explicit { get; } }
         public class PropertyBase
         {
@@ -172,6 +196,15 @@ namespace FxDbg.Debuggees
         }
         public sealed class PropertyModel : PropertyBase, IProperty
         {
+            public byte Tiny = 5;
+            public int Promoted => Tiny;
+            public byte StillTiny => Tiny;
+            public uint Unsigned = 4000000000;
+            public uint UnsignedProperty => Unsigned;
+            public ulong Wide = 18000000000000000000;
+            public ulong WideProperty => Wide;
+            public float Real = 1.5f;
+            public double RealProperty => Real;
             public int Field = 23;
             public static int StaticField = 37;
             public new int Shadow = 43;

@@ -1,0 +1,76 @@
+{
+  "outcomes": [
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\permissions-build-Debug.log",
+      "exitCode": 0,
+      "name": "permissions-build-Debug"
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\permissions-unit-Debug.log",
+      "exitCode": 0,
+      "name": "permissions-unit-Debug"
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\permissions-install-Debug.log",
+      "exitCode": 0,
+      "name": "permissions-install-Debug"
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\permissions-mcp-Debug.log",
+      "exitCode": 0,
+      "name": "permissions-mcp-Debug"
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\permissions-coverage-Debug.log",
+      "exitCode": 0,
+      "name": "permissions-coverage-Debug"
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\permissions-health-Debug.log",
+      "exitCode": 0,
+      "name": "permissions-health-Debug"
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\permissions-cleanup-Debug.log",
+      "exitCode": 0,
+      "name": "permissions-cleanup-Debug"
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\permissions-build-Release.log",
+      "exitCode": 0,
+      "name": "permissions-build-Release"
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\permissions-unit-Release.log",
+      "exitCode": 0,
+      "name": "permissions-unit-Release"
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\permissions-install-Release.log",
+      "exitCode": 0,
+      "name": "permissions-install-Release"
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\permissions-mcp-Release.log",
+      "exitCode": 0,
+      "name": "permissions-mcp-Release"
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\permissions-coverage-Release.log",
+      "exitCode": 0,
+      "name": "permissions-coverage-Release"
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\permissions-health-Release.log",
+      "exitCode": 0,
+      "name": "permissions-health-Release"
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\permissions-cleanup-Release.log",
+      "exitCode": 0,
+      "name": "permissions-cleanup-Release"
+    }
+  ],
+  "atUtc": "2026-09-11T02:47:42.6287879+00:00",
+  "passed": true
+}

@@ -54,7 +54,7 @@ ADR-005语法扩展：三元`?:`右结合且仅计算选中的分支，返回该
 
 新增固有操作全部用静态白名单名称调用：String.Substring(s,start[,count])、IndexOf(s,value[,start])、Contains/StartsWith/EndsWith(s,value)使用ordinal、Trim(s)、CompareOrdinal(a,b)、IsNullOrWhiteSpace(s)。仅后两者接受null；越界返回expression_index_out_of_range。Math.Round(x[,digits])用ToEven、digits为0～15；Floor/Ceiling/Truncate/Sqrt返回double，Sign返回int，Clamp(x,min,max)沿用基础数值提升且同型小整数保留类型；min>max与Sign(NaN)返回expression_arithmetic_error。Array.IndexOf(array,value)仅一维数组，从真实下界起扫描，未找到返回下界减一；primitive按精确装箱类型和值比较（NaN相等）、对象按引用身份比较，绝不调用目标Equals，复杂值类型不做内容相等。扫描消耗既有步骤/读取预算，超限即拒绝。所有新语法与固有操作自动用于断点条件。
 
-ADR-005属性代读：先按精确名查字段，再从接收者运行时类型沿基类查零参数属性。getter从不执行；仅接受精确IL `ldarg.0; ldfld; ret`、`ldsfld; ret`、`ldc.*/ldnull; ret`，单方法≤16字节。普通Desktop CLR方法通过已加载模块RVA及代码地址核对tiny/fat方法头，不接受异常/附加段、额外指令、调用、分支、显式接口实现、带参索引器、抽象/无IL、动态或内存模块、歧义字段。虚属性按运行时覆盖实现证明；字段同名时优先。常量按声明的基础返回类型展示，字段沿用既有原生读取；类型初始化器仍不触发，未初始化静态字段可能为默认值或不可用。
+ADR-005属性代读：先按精确名查字段，再从接收者运行时类型沿基类查零参数属性。getter从不执行；仅接受精确IL `ldarg.0; ldfld; ret`、`ldsfld; ret`、`ldc.*/ldnull; ret`，单方法≤16字节。普通Desktop CLR方法通过已加载模块RVA及代码地址核对tiny/fat方法头，不接受异常/附加段、额外指令、调用、分支、显式接口实现、带参索引器、抽象/无IL、动态或内存模块、歧义字段。虚属性按运行时覆盖实现证明；额外检查MethodImpl和更派生类型同名方法，无对应Property行的覆盖或其他不能证明的槽映射保守拒绝（含更派生类型的显式映射）。字段同名时优先。常量按声明的基础返回类型展示，字段沿用既有原生读取，并按getter声明的基础返回类型解释IL栈值（例如byte字段的int属性返回int）；类型初始化器仍不触发，未初始化静态字段可能为默认值或不可用。
 
 FieldDef按模块+token匹配；MemberRef验证声明类型（包括同模块泛型实例参数）、名字和字段签名后唯一匹配。不用名称猜测跨模块TypeRef：固定ClrDebug 0.4.2未提供可用ResolveTypeRef，不能证明的引用保守拒绝。类型属性元数据和证明缓存只在当前停止有效，不缓存字段值；隐藏条件命中各自使用新缓存。每表达式新增≤256次元数据探针、≤256字节累计IL，根变量元数据枚举与建缓存均计入预算，同一表达式惰性复用根描述，短路分支不读取；命中缓存避免重复IL读取；超过资源预算仍为expression_limit_exceeded。头部只读内存访问计入既有读取预算。
 

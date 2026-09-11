@@ -57,7 +57,7 @@ internal static partial class Program
             ExpectError(FxDbgErrorCode.ExpressionTypeError,()=>session.Evaluate(frame,"Array.IndexOf(matrix,40)",1000));
             foreach (var pair in new System.Collections.Generic.Dictionary<string,string>
             {
-                ["List.Count"]="3", ["Queue.Count"]="2", ["Stack.Count"]="1", ["Properties.Auto"]="19", ["Properties.Pure"]="23",
+                ["Properties.Promoted"]="5", ["Properties.StillTiny"]="5", ["Properties.UnsignedProperty"]="4000000000", ["Properties.WideProperty"]="18000000000000000000", ["InheritedVirtual.Value"]="13", ["List.Count"]="3", ["Queue.Count"]="2", ["Stack.Count"]="1", ["Properties.Auto"]="19", ["Properties.Pure"]="23",
                 ["Virtual.Value"]="23", ["Properties.Static"]="37", ["Properties.Constant"]="7", ["Properties.Flag"]="true",
                 ["Properties.Letter"]="Z", ["Properties.Long"]="1234567890123", ["Properties.Single"]="1.5", ["Properties.Double"]="2.5",
                 ["Properties.Null == null"]="true", ["Properties.Shadow"]="43", ["Struct.Pure"]="31", ["Generic.Pure"]="generic"
@@ -65,7 +65,7 @@ internal static partial class Program
             {
                 Require(session.Evaluate(frame,pair.Key,1000).DisplayValue==pair.Value,"Proved property result: "+pair.Key);
             }
-            foreach (string rejected in new[] { "Dictionary.Count", "Properties.Computed", "Properties.SideEffect", "Properties.WithFinally", "Properties.Cold", "ComputedVirtual.Value", "Properties.Item", "Properties.Explicit", "Generic.OtherInstantiation" })
+            foreach (string rejected in new[] { "Properties.RealProperty", "OddVirtual.Value", "ImplicitVirtual.Value", "Dictionary.Count", "Properties.Computed", "Properties.SideEffect", "Properties.WithFinally", "Properties.Cold", "ComputedVirtual.Value", "Properties.Item", "Properties.Explicit", "Generic.OtherInstantiation" })
                 ExpectError(FxDbgErrorCode.ExpressionNameNotFound,()=>session.Evaluate(frame,rejected,1000));
             foreach (var diagnostic in new[] { ("Properties.Puer", "Pure"), ("Properties.pure", "Pure"), ("node.Labl", "Label"), ("Properties.Computed", "Computed") })
             {
@@ -76,6 +76,10 @@ internal static partial class Program
                     Require(error.Message.Contains("Getter cannot be proved read-only and will not be called.") && !error.Message.Contains(diagnostic.Item1) && !error.Message.Contains("node-label") && !error.Message.Contains("FxDbg.Interop"),"Only metadata names and stable reasons may enter diagnostics.");
                 }
             }
+            Require(session.Evaluate(frame,"Properties.Promoted",1000).TypeName=="int","Getter returns declared int, not the byte field type.");
+            Require(session.Evaluate(frame,"Properties.StillTiny",1000).TypeName=="byte","Getter retains declared narrow return type.");
+            ExpectError(FxDbgErrorCode.ExpressionTypeError,()=>session.Evaluate(frame,"Properties.Promoted & 1UL",1000));
+            Require(session.Evaluate(frame,"OddVirtual.Calls",1000).DisplayValue=="0","Hidden virtual implementations must never execute.");
             string Balanced(int first, int count) => count == 1 ? "Many.P"+first : "("+Balanced(first,count/2)+"+"+Balanced(first+count/2,count-count/2)+")";
             // Warm only the type catalogue (no getter proofs), so this case isolates the IL cap.
             Require(session.Evaluate(frame,"Many.Field",1000).DisplayValue=="1","Metadata-only catalogue warmup.");

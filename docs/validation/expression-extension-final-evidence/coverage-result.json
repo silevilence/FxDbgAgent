@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "outcomes": [
+    {
+      "exitCode": 0,
+      "step": "unit-Debug",
+      "log": "artifacts\\expression-extension\\coverage\\final\\unit-Debug.log"
+    },
+    {
+      "exitCode": 0,
+      "step": "unit-Release",
+      "log": "artifacts\\expression-extension\\coverage\\final\\unit-Release.log"
+    },
+    {
+      "exitCode": 0,
+      "step": "real-Debug",
+      "log": "artifacts\\expression-extension\\coverage\\final\\real-Debug.log"
+    }
+  ]
+}

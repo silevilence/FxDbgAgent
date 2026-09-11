@@ -1,0 +1,53 @@
+{
+  "passed": true,
+  "configuration": "Debug+Release",
+  "skipped": [],
+  "sourceTree": "d46dfc7e877d9a45867f6432d3b68a5c37d08c6c",
+  "runDirectory": "artifacts\\validation-runs\\a4e7cdc4fd774cb481fa3203cc0ffea2",
+  "inputFiles": 332,
+  "verifiedPreparedFiles": 1052,
+  "inputsUnchanged": true,
+  "wallSeconds": 2620.929,
+  "startedUtc": "2026-09-11T02:26:26.2665932+00:00",
+  "completedUtc": "2026-09-11T03:10:07.1956771+00:00",
+  "timedOut": false,
+  "forcedCleanupCount": 0,
+  "preparations": [
+    "build-Debug",
+    "build-Release",
+    "coverage-build-Debug",
+    "coverage-build-Release",
+    "publish-Dap-Debug-C5ED9E37C440D2AAE3C909DCFF521EBF8F08F68722AF261DBD52CE2E9AD7809F",
+    "publish-Dap-Release-49A9205F21528E1D0F0B7A7F8A6C0071FC4919D174922DB5B0F49B5147D3A80F",
+    "publish-Mcp-Debug-775C735DFED9C470584167B21CA4CB8B1A723D9189A195A9D064BED438471D50",
+    "publish-Mcp-Release-9903C49B19142FB44A371D407486AEAAF1BC76F225E0016A0EC2B554FE93F9A8",
+    "stage0-1-Debug",
+    "stage0-1-Release",
+    "unit-Debug",
+    "unit-Release"
+  ],
+  "reuseCount": 132,
+  "supervisedSteps": 175,
+  "expectedNegativeSteps": [
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-delayed-remove-Debug.log.timing.json",
+      "exitCode": 1,
+      "expected": 1,
+      "durationSeconds": 4.249
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-delayed-remove-Release.log.timing.json",
+      "exitCode": 1,
+      "expected": 1,
+      "durationSeconds": 4.209
+    },
+    {
+      "path": "artifacts\\stage3-4-validation\\environment-interrupted.log.timing.json",
+      "exitCode": 197,
+      "expected": 197,
+      "durationSeconds": 19.813
+    }
+  ],
+  "rawFiles": 929,
+  "archiveRoot": "artifacts\\expression-extension\\full-a4e7cdc4fd774cb481fa3203cc0ffea2"
+}

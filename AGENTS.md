@@ -11,6 +11,8 @@
 
 - 阶段4-1按用户批准ADR-004完成受限只读解释求值，新增debug_evaluate；双架构Debug/Release专项及阶段2/1/0回归通过，见docs/validation/stage4-1.md。4-2异常类型过滤已完成（docs/validation/stage4-2.md），4-3条件断点已完成（docs/validation/stage4-3.md），4-4维持不实施决策；阶段4全部任务已依序完成并原地勾选。2026-09-08最终实现2aa8a9d的Debug/Release专项、真实Service/IIS与VS Code及阶段2/1/0完整回归通过；298项完整回归输入一致，独立审核无遗留阻塞，变更生产行覆盖率697/738（94.44%）。整体结论与证据见docs/validation/stage4-final-review.md；4-4仅为不实施决策闭环。
 
+- 2026-09-11按已批准ADR-005完成受限表达式语法/固有函数、IL证明属性代读及有界脱敏诊断，本组ROADMAP四项依序原地勾选。完整管理员Debug/Release回归通过，覆盖真实Service/IIS、VS Code及全部阶段4/3/2/1/0；332项输入一致、1052项准备产物SHA256核验通过。变更生产行569/598（95.15%），独立Standards/Spec发现3项问题均已修复复核、无遗留阻塞。生产源码固定子树d46dfc7e877d9a45867f6432d3b68a5c37d08c6c，证据见docs/validation/expression-extension-final-review.md。getter仍不执行；计算型Dictionary.Count、不能证明的跨模块引用/虚槽等保守拒绝。
+
 ## 项目是什么
 
 FxDbg Agent：运行于 Windows 的托管代码调试器，使外部 AI Agent（Cursor、Claude Code、Copilot）通过 **MCP over stdio** 调试 .NET Framework 4.x（CLR v4.0.30319）应用。定位为只读观察优先：**MVP 禁止函数求值与状态修改**，不追求复制 Visual Studio 完整体验。
@@ -62,12 +64,13 @@ FxDbg.sln
 
 ## 构建与测试
 
-- 当前全量入口：管理员64位PowerShell运行 `./eng/verify-all.ps1 -NodePath <node.exe> -CodePath <Code.exe>`，默认Debug/Release，依次覆盖阶段4-1/2/3和完整阶段3/2/1/0。不提供跳过Service/IIS的参数；阶段4变更行覆盖率门槛仍需另外采集/汇总，不由这个入口替代。
+- 当前全量入口：管理员64位PowerShell运行 `./eng/verify-all.ps1 -NodePath <node.exe> -CodePath <Code.exe>`，默认Debug/Release，覆盖受限表达式扩展专项（4-1/4-3）、4-2和完整阶段3/2/1/0。不提供跳过Service/IIS的参数；阶段4变更行覆盖率门槛仍需另外采集/汇总，不由这个入口替代。
 - 全量验收使用 `eng/validation-reuse.ps1` 的**单轮复用**：`verify-all.ps1`、`verify-stage3.ps1`、`verify-stage3-4.ps1`、`verify-stage2.ps1`、`verify-stage1.ps1` 创建本轮唯一上下文，嵌套脚本继承；每个配置只强制构建一次解决方案、执行一次完整普通单元测试，MCP/DAP各发布一次，同一阶段0-1和Service/IIS覆盖率harness构建也可复用。过滤单元测试由本轮完整单元套件覆盖。独立专项未进入全量上下文时保留原执行行为。
 - 复用必须绑定本轮存活进程、输入指纹、配置、已成功完成的准备记录和产物；每次复用检查输入及产物列表/大小/时间，结束前统一核对产物SHA256。输入或产物变动直接失败，不沿用旧结果，不自动重试混合批次。禁止手动设置 `FXDBG_VALIDATION_RUN` 来使用历史结果，禁止并行运行共享同一产物目录的验收。
+- 受限表达式扩展专项入口：`./eng/verify-expression-extension.ps1`，默认Debug/Release，覆盖ADR-005语法、固有函数、属性证明、诊断及条件断点，使用同轮准备复用；已经接入verify-all.ps1。
 - 原生/MCP/DAP/CLI/VS Code真实场景、双架构、取消/超时/故障恢复、Service/IIS安装/健康/清理和覆盖率采集仍实际执行；不得把有不同环境、参数或插桩设置的调用当成重复测试跳过。Service/IIS各专项独占环境是隔离和恢复验收的一部分。
 - 本轮准备证据位于 `artifacts/validation-runs/<runId>/`：`run.json`、准备清单、原始日志、`reuse.jsonl` 和最终 `verification.json`；复用输出须明确标记 `REUSED` 并链接原记录。`ValidationProcess` 为监督步骤写入 `.log.timing.json`，包含起止时间、墙钟耗时和失败/清理信息。父子步骤耗时有包含关系，统计时不能重复相加。
-- 2026-09-08加入上述优化时只做静态检查，按用户要求未运行测试；旧阶段验收报告不能作为优化后脚本的运行通过证据，也不能声称实测提速。
+- 2026-09-08加入上述优化时只做静态检查，按用户要求未运行测试；旧阶段验收报告不能作为优化后脚本的运行通过证据，也不能声称实测提速。 2026-09-11首次完成本轮优化入口的完整运行验证：12项准备、132次显式复用、1052项产物最终哈希通过，见上述表达式扩展最终报告；不以本轮墙钟推算历史环境加速比例。
 - MVP 一键验收：`./eng/verify-stage2.ps1`，默认 Debug/Release，支持 `-Configuration Debug|Release`。包括真实 MCP、技能安装/独立 Agent 证据检查和 `eng/verify-stage1.ps1`；记录源码哈希、超时、日志及自有进程退出，任何失败不得标记通过。
 - 阶段3一键验收：管理员64位PowerShell运行 `./eng/verify-stage3.ps1 -NodePath <node.exe> -CodePath <Code.exe>`，默认Debug/Release，包含3-1/2/3/4/5、真实VS Code、VSIX及阶段2/1/0全回归；需要完整IIS/ASP.NET 4.x、Node/npm、VS Code、.NET 8/10和双架构CDB。显式 `-SkipServiceIis` 仅运行既有子集，结果列出skipped、完整passed=false；不能标记阶段3全验收通过。Service/IIS专项为 `./eng/verify-stage3-4.ps1`，使用独立资源并验证恢复，流程见 `docs/service-iis.md`。DAP发布：`./eng/publish-dap.ps1`，扩展打包：`./eng/package-extension.ps1`，配置见 `docs/dap.md`。
 - 发布 MCP：`./eng/publish-mcp.ps1 -Configuration Release`，入口为 `dotnet <发布目录>/fxdbg-mcp.dll`；必须携带相邻 `engines/` 的完整双架构依赖，不依赖当前目录；发布目录同时包含 `skills/fxdbg-agent/`（终端用户用 `skills` CLI 从发布目录安装，见 `docs/skill-mcp-install.md`）。

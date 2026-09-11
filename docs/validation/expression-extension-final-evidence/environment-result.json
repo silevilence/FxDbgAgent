@@ -1,0 +1,60 @@
+{
+  "passed": true,
+  "environments": [
+    {
+      "environment": "check",
+      "status": "removed",
+      "removalVerifiedAtUtc": "2026-09-11T10:43:44.9586374+08:00",
+      "cleanupProcessCount": 0,
+      "allOwnedProcessesExited": true,
+      "source": "artifacts\\stage3-4-environment-check\\state.json"
+    },
+    {
+      "environment": "permissions",
+      "status": "removed",
+      "removalVerifiedAtUtc": "2026-09-11T10:47:42.335463+08:00",
+      "cleanupProcessCount": 4,
+      "allOwnedProcessesExited": true,
+      "source": "artifacts\\stage3-4-environment-permissions\\state.json"
+    },
+    {
+      "environment": "services",
+      "status": "removed",
+      "removalVerifiedAtUtc": "2026-09-11T10:51:17.4152822+08:00",
+      "cleanupProcessCount": 4,
+      "allOwnedProcessesExited": true,
+      "source": "artifacts\\stage3-4-environment-services\\state.json"
+    },
+    {
+      "environment": "iis",
+      "status": "removed",
+      "removalVerifiedAtUtc": "2026-09-11T10:55:16.6526967+08:00",
+      "cleanupProcessCount": 4,
+      "allOwnedProcessesExited": true,
+      "source": "artifacts\\stage3-4-environment-iis\\state.json"
+    },
+    {
+      "environment": "lifecycle",
+      "status": "removed",
+      "removalVerifiedAtUtc": "2026-09-11T10:57:34.9641771+08:00",
+      "cleanupProcessCount": 4,
+      "allOwnedProcessesExited": true,
+      "source": "artifacts\\stage3-4-environment-lifecycle\\state.json"
+    }
+  ],
+  "defaultServices": [
+    {
+      "status": "Running",
+      "name": "FxDbgStage34-x64"
+    },
+    {
+      "status": "Running",
+      "name": "FxDbgStage34-x86"
+    }
+  ],
+  "administratorRunner": {
+    "status": "closed",
+    "atUtc": "2026-09-11T11:12:01.9441268+08:00",
+    "completed": 1
+  }
+}

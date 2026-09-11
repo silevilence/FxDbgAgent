@@ -1,0 +1,18 @@
+{
+  "configuration": "Debug+Release",
+  "outcomes": [
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\validation-runs\\b0d6a73d34d843f9b897b67a20f6d2a0\\expression-stage4-1.log",
+      "stage": "4-1",
+      "exitCode": 0
+    },
+    {
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\validation-runs\\b0d6a73d34d843f9b897b67a20f6d2a0\\expression-stage4-3.log",
+      "stage": "4-3",
+      "exitCode": 0
+    }
+  ],
+  "atUtc": "2026-09-11T02:21:19.2323108+00:00",
+  "passed": true,
+  "runDirectory": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\validation-runs\\b0d6a73d34d843f9b897b67a20f6d2a0"
+}

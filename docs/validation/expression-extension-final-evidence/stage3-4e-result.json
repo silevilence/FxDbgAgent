@@ -1,0 +1,66 @@
+{
+  "passed": true,
+  "outcomes": [
+    {
+      "name": "lifecycle-build-Debug",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\lifecycle-build-Debug.log",
+      "exitCode": 0
+    },
+    {
+      "name": "lifecycle-unit-Debug",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\lifecycle-unit-Debug.log",
+      "exitCode": 0
+    },
+    {
+      "name": "lifecycle-install-Debug",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\lifecycle-install-Debug.log",
+      "exitCode": 0
+    },
+    {
+      "name": "lifecycle-mcp-Debug",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\lifecycle-mcp-Debug.log",
+      "exitCode": 0
+    },
+    {
+      "name": "lifecycle-health-Debug",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\lifecycle-health-Debug.log",
+      "exitCode": 0
+    },
+    {
+      "name": "lifecycle-cleanup-Debug",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\lifecycle-cleanup-Debug.log",
+      "exitCode": 0
+    },
+    {
+      "name": "lifecycle-build-Release",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\lifecycle-build-Release.log",
+      "exitCode": 0
+    },
+    {
+      "name": "lifecycle-unit-Release",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\lifecycle-unit-Release.log",
+      "exitCode": 0
+    },
+    {
+      "name": "lifecycle-install-Release",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\lifecycle-install-Release.log",
+      "exitCode": 0
+    },
+    {
+      "name": "lifecycle-mcp-Release",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\lifecycle-mcp-Release.log",
+      "exitCode": 0
+    },
+    {
+      "name": "lifecycle-health-Release",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\lifecycle-health-Release.log",
+      "exitCode": 0
+    },
+    {
+      "name": "lifecycle-cleanup-Release",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage3-4-validation\\lifecycle-cleanup-Release.log",
+      "exitCode": 0
+    }
+  ],
+  "atUtc": "2026-09-11T02:57:35.2429965+00:00"
+}

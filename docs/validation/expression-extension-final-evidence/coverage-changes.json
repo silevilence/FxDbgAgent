@@ -1,0 +1,1971 @@
+{
+  "overallProduction": {
+    "rate": 0.8080263551961665,
+    "total": 6678,
+    "covered": 5396
+  },
+  "incompleteProductionMethods": [
+    {
+      "rate": 0.8947368421052632,
+      "covered": 34,
+      "total": 38,
+      "file": "src/FxDbg.Interop/NativeVariableValue.Properties.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.ProveProperty"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 17,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.DrainCallbacksUntilQuiet"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 5,
+      "file": "src/FxDbg.Core/Requests/BreakpointRequests.cs",
+      "name": "FxDbg.Core.Requests.SetBreakpointEnabledRequest..ctor"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 2,
+      "file": "src/FxDbg.Engine/Program.cs",
+      "name": "FxDbg.Engine.Program.AttachDenied"
+    },
+    {
+      "rate": 0.45454545454545453,
+      "covered": 5,
+      "total": 11,
+      "file": "src/FxDbg.Engine/EngineTargetValidator.cs",
+      "name": "FxDbg.Engine.EngineTargetValidator.RequireCurrentArchitecture"
+    },
+    {
+      "rate": 0.8055555555555556,
+      "covered": 29,
+      "total": 36,
+      "file": "src/FxDbg.DapHost/DapServer.cs",
+      "name": "FxDbg.DapHost.DapServer.<RunAsync>d__18.MoveNext"
+    },
+    {
+      "rate": 0.07692307692307693,
+      "covered": 5,
+      "total": 65,
+      "file": "src/FxDbg.Engine/Program.cs",
+      "name": "FxDbg.Engine.Program.Main"
+    },
+    {
+      "rate": 0.5,
+      "covered": 4,
+      "total": 8,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Breakpoints.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.WithSynchronizedTarget"
+    },
+    {
+      "rate": 0.8484848484848485,
+      "covered": 56,
+      "total": 66,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Variables.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.<DescribeRoots>d__119.MoveNext"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 6,
+      "file": "src/FxDbg.Symbols.Windows/WindowsModuleSymbols.cs",
+      "name": "FxDbg.Symbols.Windows.WindowsModuleSymbols.MetadataProvider.TryGetTypeReferenceInfo"
+    },
+    {
+      "rate": 0.21739130434782608,
+      "covered": 5,
+      "total": 23,
+      "file": "src/FxDbg.Engine/EngineLaunchPreparation.cs",
+      "name": "FxDbg.Engine.EngineLaunchPreparation.WindowsCommandLine.Quote"
+    },
+    {
+      "rate": 0.6666666666666666,
+      "covered": 4,
+      "total": 6,
+      "file": "src/FxDbg.Engine/EngineOptions.cs",
+      "name": "FxDbg.Engine.EngineOptions.ParsePositiveInt"
+    },
+    {
+      "rate": 0.75,
+      "covered": 6,
+      "total": 8,
+      "file": "src/FxDbg.Engine/Scheduling/SingleThreadCommandScheduler.cs",
+      "name": "FxDbg.Engine.Scheduling.SingleThreadCommandScheduler.CommandWorkItem<T>.DisposeCancellationResources"
+    },
+    {
+      "rate": 0.9411764705882353,
+      "covered": 16,
+      "total": 17,
+      "file": "src/FxDbg.Cli/BackgroundHost.cs",
+      "name": "FxDbg.Cli.BackgroundHost.Start"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 4,
+      "file": "src/FxDbg.Engine/Program.cs",
+      "name": "FxDbg.Engine.Program.AddShutdownGrace"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Core/Model/BreakpointId.cs",
+      "name": "FxDbg.Core.Model.BreakpointId.Equals"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 5,
+      "file": "src/FxDbg.Engine/Program.cs",
+      "name": "FxDbg.Engine.Program.WaitUntilInputCloses"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Engine/EngineServer.cs",
+      "name": "FxDbg.Engine.EngineServer.<>c__DisplayClass11_0.<Dispatch>b__2"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 4,
+      "file": "src/FxDbg.Core/Requests/BreakpointRequests.cs",
+      "name": "FxDbg.Core.Requests.SetBreakpointRequest..ctor"
+    },
+    {
+      "rate": 0.9459459459459459,
+      "covered": 35,
+      "total": 37,
+      "file": "src/FxDbg.Core/Evaluation/ExpressionNumbers.cs",
+      "name": "FxDbg.Core.Evaluation.ExpressionNumbers.Binary"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Core/Evaluation/ExpressionValue.cs",
+      "name": "FxDbg.Core.Evaluation.ExpressionValue.ScalarVariable.GetMembers"
+    },
+    {
+      "rate": 0.8571428571428571,
+      "covered": 6,
+      "total": 7,
+      "file": "src/FxDbg.Interop/NativeVariableValue.Properties.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.MatchesTypeToken"
+    },
+    {
+      "rate": 0.78125,
+      "covered": 25,
+      "total": 32,
+      "file": "src/FxDbg.Interop/NativeVariableValue.Evaluation.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.<>c__DisplayClass30_0.<ToExpression>b__0"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 5,
+      "file": "src/FxDbg.DapHost/DapServer.Inspection.cs",
+      "name": "FxDbg.DapHost.DapServer.Scopes"
+    },
+    {
+      "rate": 0.6923076923076923,
+      "covered": 9,
+      "total": 13,
+      "file": "src/FxDbg.Core/Model/SourceLocation.cs",
+      "name": "FxDbg.Core.Model.SourceLocation..ctor"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 2,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Execution.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.InvalidState"
+    },
+    {
+      "rate": 0.7413793103448276,
+      "covered": 43,
+      "total": 58,
+      "file": "src/FxDbg.Host/Sessions/DebugSessionService.Execution.cs",
+      "name": "FxDbg.Host.Sessions.DebugSessionService.<RunAsync>d__23.MoveNext"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Interop/NativeVariableValue.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.FaultValue.get_Status"
+    },
+    {
+      "rate": 0.9743589743589743,
+      "covered": 76,
+      "total": 78,
+      "file": "src/FxDbg.Core/Evaluation/RestrictedExpression.cs",
+      "name": "FxDbg.Core.Evaluation.RestrictedExpression.Parser.Next"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Core/Sessions/SessionId.cs",
+      "name": "FxDbg.Core.Sessions.SessionId.Equals"
+    },
+    {
+      "rate": 0.875,
+      "covered": 7,
+      "total": 8,
+      "file": "src/FxDbg.Core/Evaluation/ExpressionNumbers.cs",
+      "name": "FxDbg.Core.Evaluation.ExpressionNumbers.Box"
+    },
+    {
+      "rate": 0.8571428571428571,
+      "covered": 6,
+      "total": 7,
+      "file": "src/FxDbg.Host/Engine/EngineProcessHost.cs",
+      "name": "FxDbg.Host.Engine.EngineProcessHost.Find"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 30,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.RunPauseContinueCycles"
+    },
+    {
+      "rate": 0.8,
+      "covered": 4,
+      "total": 5,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Execution.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.RequireThread"
+    },
+    {
+      "rate": 0.9473684210526315,
+      "covered": 36,
+      "total": 38,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.HandleCallback"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 2,
+      "file": "src/FxDbg.Host/Sessions/DebugSessionService.cs",
+      "name": "FxDbg.Host.Sessions.DebugSessionService.<>c__DisplayClass10_0.<InvokeAsync>b__2"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 8,
+      "file": "src/FxDbg.Core/Requests/ExecutionRequests.cs",
+      "name": "FxDbg.Core.Requests.StepRequest..ctor"
+    },
+    {
+      "rate": 0.68,
+      "covered": 17,
+      "total": 25,
+      "file": "src/FxDbg.Interop/ManagedCreateProcessObserver.cs",
+      "name": "FxDbg.Interop.ManagedCreateProcessObserver.WaitForCreateProcess"
+    },
+    {
+      "rate": 0.8648648648648649,
+      "covered": 32,
+      "total": 37,
+      "file": "src/FxDbg.Engine/Scheduling/SingleThreadCommandScheduler.cs",
+      "name": "FxDbg.Engine.Scheduling.SingleThreadCommandScheduler.CommandWorkItem<T>.Execute"
+    },
+    {
+      "rate": 0.8888888888888888,
+      "covered": 16,
+      "total": 18,
+      "file": "src/FxDbg.Engine/Scheduling/SingleThreadCommandScheduler.cs",
+      "name": "FxDbg.Engine.Scheduling.SingleThreadCommandScheduler..ctor"
+    },
+    {
+      "rate": 0.9,
+      "covered": 9,
+      "total": 10,
+      "file": "src/FxDbg.Host/Engine/PersistentSessionServer.cs",
+      "name": "FxDbg.Host.Engine.PersistentSessionServer.<>c__DisplayClass1_1.<<RunAsync>b__0>d.MoveNext"
+    },
+    {
+      "rate": 0.7209302325581395,
+      "covered": 31,
+      "total": 43,
+      "file": "src/FxDbg.Host/Sessions/DebugSessionService.Execution.cs",
+      "name": "FxDbg.Host.Sessions.DebugSessionService.<WatchDeadlineAsync>d__25.MoveNext"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Host/Sessions/DebugSessionService.Execution.cs",
+      "name": "FxDbg.Host.Sessions.DebugSessionService.<>c__DisplayClass27_0.<ControlAsync>b__0"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 4,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Exceptions.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.ConfigureExceptionStops"
+    },
+    {
+      "rate": 0.75,
+      "covered": 12,
+      "total": 16,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.WaitForExitProcess"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 7,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Breakpoints.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.<>c__DisplayClass40_0.<PollSymbolFiles>b__1"
+    },
+    {
+      "rate": 0.8356164383561644,
+      "covered": 61,
+      "total": 73,
+      "file": "src/FxDbg.Cli/CliCommand.cs",
+      "name": "FxDbg.Cli.CliCommand.Parse"
+    },
+    {
+      "rate": 0.8333333333333334,
+      "covered": 5,
+      "total": 6,
+      "file": "src/FxDbg.Interop/TargetProcessLifetime.cs",
+      "name": "FxDbg.Interop.TargetProcessLifetime..ctor"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 5,
+      "file": "src/FxDbg.Engine/Program.cs",
+      "name": "FxDbg.Engine.Program.Escape"
+    },
+    {
+      "rate": 0.9333333333333333,
+      "covered": 14,
+      "total": 15,
+      "file": "src/FxDbg.Core/Evaluation/ExpressionIntrinsics.cs",
+      "name": "FxDbg.Core.Evaluation.ExpressionIntrinsics.Search"
+    },
+    {
+      "rate": 0.9,
+      "covered": 18,
+      "total": 20,
+      "file": "src/FxDbg.Core/Model/DebugTargetInfo.cs",
+      "name": "FxDbg.Core.Model.DebugTargetInfo..ctor"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 4,
+      "file": "src/FxDbg.Core/Requests/LifecycleRequests.cs",
+      "name": "FxDbg.Core.Requests.TerminateRequest..ctor"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Interop/NativeVariableValue.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.FaultValue.get_Diagnostic"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 4,
+      "file": "src/FxDbg.Core/Events/DomainEvents.cs",
+      "name": "FxDbg.Core.Events.BreakpointChangedEvent..ctor"
+    },
+    {
+      "rate": 0.8947368421052632,
+      "covered": 17,
+      "total": 19,
+      "file": "src/FxDbg.McpHost/BoundedStdioTransport.cs",
+      "name": "FxDbg.McpHost.BoundedStdioTransport.<WriteAsync>d__27.MoveNext"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Engine/EngineServer.cs",
+      "name": "FxDbg.Engine.EngineServer.<>c__DisplayClass11_0.<Dispatch>b__4"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 6,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.cs",
+      "name": "FxDbg.Interop.ContinuePairingSnapshot..ctor"
+    },
+    {
+      "rate": 0.75,
+      "covered": 3,
+      "total": 4,
+      "file": "src/FxDbg.Host/Engine/EngineProcessHost.cs",
+      "name": "FxDbg.Host.Engine.EngineProcessHost.StopEngine"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Engine/EngineServer.cs",
+      "name": "FxDbg.Engine.EngineServer.Invalid"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Engine/EngineOptions.cs",
+      "name": "FxDbg.Engine.EngineOptions.Invalid"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 10,
+      "file": "src/FxDbg.Core/Sessions/DebugSession.cs",
+      "name": "FxDbg.Core.Sessions.DebugSession.Fail"
+    },
+    {
+      "rate": 0.75,
+      "covered": 6,
+      "total": 8,
+      "file": "src/FxDbg.Engine/EngineServer.cs",
+      "name": "FxDbg.Engine.EngineServer.<>c__DisplayClass10_0.<Handle>b__0"
+    },
+    {
+      "rate": 0.6666666666666666,
+      "covered": 4,
+      "total": 6,
+      "file": "src/FxDbg.Engine/EngineOptions.cs",
+      "name": "FxDbg.Engine.EngineOptions.Next"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 7,
+      "file": "src/FxDbg.Symbols.Windows/WindowsModuleSymbols.cs",
+      "name": "FxDbg.Symbols.Windows.WindowsModuleSymbols.MetadataProvider.TryGetTypeDefinitionInfo"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 2,
+      "file": "src/FxDbg.Host/Sessions/DebugSessionService.cs",
+      "name": "FxDbg.Host.Sessions.DebugSessionService.<>c__DisplayClass10_0.<InvokeAsync>b__4"
+    },
+    {
+      "rate": 0.8888888888888888,
+      "covered": 8,
+      "total": 9,
+      "file": "src/FxDbg.Symbols.Windows/WindowsModuleSymbols.cs",
+      "name": "FxDbg.Symbols.Windows.WindowsModuleSymbols.Resolve"
+    },
+    {
+      "rate": 0.75,
+      "covered": 3,
+      "total": 4,
+      "file": "src/FxDbg.Host/Engine/EngineProcessHost.cs",
+      "name": "FxDbg.Host.Engine.EngineProcessHost.<DrainOutput>d__23.MoveNext"
+    },
+    {
+      "rate": 0.8,
+      "covered": 4,
+      "total": 5,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Execution.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.RequireActive"
+    },
+    {
+      "rate": 0.3333333333333333,
+      "covered": 1,
+      "total": 3,
+      "file": "src/FxDbg.Core/Requests/ExecutionRequests.cs",
+      "name": "FxDbg.Core.Requests.ContinueRequest..ctor"
+    },
+    {
+      "rate": 0.8823529411764706,
+      "covered": 15,
+      "total": 17,
+      "file": "src/FxDbg.DapHost/DapTransport.cs",
+      "name": "FxDbg.DapHost.DapTransport.<SendAsync>d__13.MoveNext"
+    },
+    {
+      "rate": 0.2,
+      "covered": 3,
+      "total": 15,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Exceptions.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.HandleExceptionCallback"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Core/Model/BreakpointId.cs",
+      "name": "FxDbg.Core.Model.BreakpointId.op_Inequality"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 9,
+      "file": "src/FxDbg.Symbols.Windows/WindowsModuleSymbols.cs",
+      "name": "FxDbg.Symbols.Windows.WindowsModuleSymbols.MetadataProvider.TryGetStandaloneSignature"
+    },
+    {
+      "rate": 0.6153846153846154,
+      "covered": 8,
+      "total": 13,
+      "file": "src/Shared/WindowsDebugPrivilege.cs",
+      "name": "FxDbg.Platform.WindowsDebugPrivilege.NativeAdjustment.Dispose"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 2,
+      "file": "src/FxDbg.Engine/EngineServer.cs",
+      "name": "FxDbg.Engine.EngineServer.<>c__DisplayClass11_0.<Dispatch>b__1"
+    },
+    {
+      "rate": 0.8571428571428571,
+      "covered": 6,
+      "total": 7,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Breakpoints.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.ReloadModuleSymbols"
+    },
+    {
+      "rate": 0.8333333333333334,
+      "covered": 5,
+      "total": 6,
+      "file": "src/FxDbg.Engine/EngineOptions.cs",
+      "name": "FxDbg.Engine.EngineOptions.ParseArchitecture"
+    },
+    {
+      "rate": 0.4318181818181818,
+      "covered": 19,
+      "total": 44,
+      "file": "src/FxDbg.Host/Architecture/PeArchitectureDetector.cs",
+      "name": "FxDbg.Host.Architecture.PeArchitectureDetector.Detect"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 12,
+      "file": "src/FxDbg.Core/Requests/InspectionRequests.cs",
+      "name": "FxDbg.Core.Requests.VariablesRequest..ctor"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 17,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Stack.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.GetThreads"
+    },
+    {
+      "rate": 0.9166666666666666,
+      "covered": 22,
+      "total": 24,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Variables.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.GetVariables"
+    },
+    {
+      "rate": 0.875,
+      "covered": 7,
+      "total": 8,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Evaluation.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.Evaluate"
+    },
+    {
+      "rate": 0.9565217391304348,
+      "covered": 22,
+      "total": 23,
+      "file": "src/FxDbg.Engine/EngineServer.cs",
+      "name": "FxDbg.Engine.EngineServer.Run"
+    },
+    {
+      "rate": 0.7105263157894737,
+      "covered": 54,
+      "total": 76,
+      "file": "src/FxDbg.Engine/EngineOptions.cs",
+      "name": "FxDbg.Engine.EngineOptions.Parse"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 12,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Execution.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.Terminate"
+    },
+    {
+      "rate": 0.7878787878787878,
+      "covered": 26,
+      "total": 33,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Execution.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.Step"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Interop/NativeVariableValue.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.FaultValue.get_ReferenceIdentity"
+    },
+    {
+      "rate": 0.8823529411764706,
+      "covered": 15,
+      "total": 17,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.PumpNextCallback"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Host/Architecture/ProcessArchitectureDetector.cs",
+      "name": "FxDbg.Host.Architecture.ProcessArchitectureDetector.<>c__DisplayClass0_0.<Detect>b__0"
+    },
+    {
+      "rate": 0.9545454545454546,
+      "covered": 21,
+      "total": 22,
+      "file": "src/FxDbg.McpHost/AuditLog.cs",
+      "name": "FxDbg.McpHost.AuditLog.ToolCompleted"
+    },
+    {
+      "rate": 0.9827586206896551,
+      "covered": 57,
+      "total": 58,
+      "file": "src/FxDbg.McpHost/OutputSchemas.cs",
+      "name": "FxDbg.McpHost.OutputSchemas.For"
+    },
+    {
+      "rate": 0.7142857142857143,
+      "covered": 5,
+      "total": 7,
+      "file": "src/FxDbg.Engine/Program.cs",
+      "name": "FxDbg.Engine.Program.<>c__DisplayClass2_0.<Attach>b__0"
+    },
+    {
+      "rate": 0.9482758620689655,
+      "covered": 55,
+      "total": 58,
+      "file": "src/FxDbg.Core/Evaluation/RestrictedExpression.cs",
+      "name": "FxDbg.Core.Evaluation.RestrictedExpression.Run"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 5,
+      "file": "src/FxDbg.Core/Events/DomainEvents.cs",
+      "name": "FxDbg.Core.Events.ExceptionRaisedEvent..ctor"
+    },
+    {
+      "rate": 0.8857142857142857,
+      "covered": 31,
+      "total": 35,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.Dispose"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Interop/NativeVariableValue.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.FaultValue.GetMemberCount"
+    },
+    {
+      "rate": 0.5384615384615384,
+      "covered": 7,
+      "total": 13,
+      "file": "src/FxDbg.McpHost/Program.cs",
+      "name": "Program.<>c__DisplayClass0_0.<<<Main>$>g__CheckClientAsync|8>d.MoveNext"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/Shared/WindowsProcessArchitecture.cs",
+      "name": "FxDbg.Platform.WindowsProcessArchitecture.Failure"
+    },
+    {
+      "rate": 0.8181818181818182,
+      "covered": 18,
+      "total": 22,
+      "file": "src/FxDbg.Interop/NativeVariableValue.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.TypeNameOf"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 3,
+      "file": "src/FxDbg.Core/Requests/InspectionRequests.cs",
+      "name": "FxDbg.Core.Requests.StatusRequest..ctor"
+    },
+    {
+      "rate": 0.9230769230769231,
+      "covered": 12,
+      "total": 13,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.ReleaseEntryStop"
+    },
+    {
+      "rate": 0.7142857142857143,
+      "covered": 5,
+      "total": 7,
+      "file": "src/FxDbg.Interop/NativeVariableValue.Properties.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.ReadCompressed"
+    },
+    {
+      "rate": 0.9473684210526315,
+      "covered": 18,
+      "total": 19,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Evaluation.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.<>c__DisplayClass79_0.<EvaluateFrame>b__0"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 4,
+      "file": "src/FxDbg.Engine/Program.cs",
+      "name": "FxDbg.Engine.Program.<>c__DisplayClass0_1.<Main>b__2"
+    },
+    {
+      "rate": 0.9090909090909091,
+      "covered": 20,
+      "total": 22,
+      "file": "src/FxDbg.Host/Sessions/DebugSessionService.cs",
+      "name": "FxDbg.Host.Sessions.DebugSessionService.<CreateAsync>d__11.MoveNext"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 11,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Exceptions.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.<ExceptionTypeHierarchy>d__85.MoveNext"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 11,
+      "file": "src/FxDbg.Engine/Program.cs",
+      "name": "FxDbg.Engine.Program.ExitCode"
+    },
+    {
+      "rate": 0.8571428571428571,
+      "covered": 6,
+      "total": 7,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Stack.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.GetStack"
+    },
+    {
+      "rate": 0.9,
+      "covered": 9,
+      "total": 10,
+      "file": "src/FxDbg.Host/Engine/LocalPipeIdentity.cs",
+      "name": "FxDbg.Host.Engine.LocalPipeIdentity.RequireEngine"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 4,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Execution.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.Detach"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Interop/NativeVariableValue.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.get_Diagnostic"
+    },
+    {
+      "rate": 0.875,
+      "covered": 7,
+      "total": 8,
+      "file": "src/FxDbg.Interop/NativeVariableValue.Evaluation.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.Expression"
+    },
+    {
+      "rate": 0.8695652173913043,
+      "covered": 20,
+      "total": 23,
+      "file": "src/FxDbg.Interop/NativeVariableValue.Properties.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.MatchesType"
+    },
+    {
+      "rate": 0.9696969696969697,
+      "covered": 32,
+      "total": 33,
+      "file": "src/FxDbg.DapHost/DapServer.Inspection.cs",
+      "name": "FxDbg.DapHost.DapServer.<Variables>d__53.MoveNext"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 9,
+      "file": "src/FxDbg.Cli/Program.cs",
+      "name": "Program.<<Main>$>g__FindEngineDirectory|0_2"
+    },
+    {
+      "rate": 0.5,
+      "covered": 3,
+      "total": 6,
+      "file": "src/FxDbg.Engine/EngineLaunchPreparation.cs",
+      "name": "FxDbg.Engine.EngineLaunchPreparation.Dispose"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 18,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Exceptions.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.CaptureException"
+    },
+    {
+      "rate": 0.7530864197530864,
+      "covered": 61,
+      "total": 81,
+      "file": "src/FxDbg.Host/Sessions/DebugSessionService.cs",
+      "name": "FxDbg.Host.Sessions.DebugSessionService.<InvokeAsync>d__10.MoveNext"
+    },
+    {
+      "rate": 0.8484848484848485,
+      "covered": 28,
+      "total": 33,
+      "file": "src/FxDbg.Engine/Scheduling/SingleThreadCommandScheduler.cs",
+      "name": "FxDbg.Engine.Scheduling.SingleThreadCommandScheduler.Run"
+    },
+    {
+      "rate": 0.782608695652174,
+      "covered": 54,
+      "total": 69,
+      "file": "src/FxDbg.McpHost/Program.cs",
+      "name": "Program.<<Main>$>d__0.MoveNext"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 4,
+      "file": "src/FxDbg.Core/Requests/BreakpointRequests.cs",
+      "name": "FxDbg.Core.Requests.RemoveBreakpointRequest..ctor"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 9,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Execution.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.Pause"
+    },
+    {
+      "rate": 0.9294117647058824,
+      "covered": 79,
+      "total": 85,
+      "file": "src/FxDbg.Symbols.Windows/WindowsModuleSymbols.cs",
+      "name": "FxDbg.Symbols.Windows.WindowsModuleSymbols.Load"
+    },
+    {
+      "rate": 0.75,
+      "covered": 3,
+      "total": 4,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.AppDomains.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.RequireAppDomain"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Engine/EngineServer.cs",
+      "name": "FxDbg.Engine.EngineServer.<>c__DisplayClass11_0.<Dispatch>b__4"
+    },
+    {
+      "rate": 0.2727272727272727,
+      "covered": 3,
+      "total": 11,
+      "file": "src/FxDbg.Interop/FrameworkDebuggerBootstrap.cs",
+      "name": "FxDbg.Interop.FrameworkDebuggerBootstrap.AttachProcess"
+    },
+    {
+      "rate": 0.875,
+      "covered": 7,
+      "total": 8,
+      "file": "src/FxDbg.Core/Model/SourcePathMapper.cs",
+      "name": "FxDbg.Core.Model.SourcePathMapping..ctor"
+    },
+    {
+      "rate": 0.8823529411764706,
+      "covered": 15,
+      "total": 17,
+      "file": "src/FxDbg.Host/Engine/EngineProcessHost.cs",
+      "name": "FxDbg.Host.Engine.EngineProcessHost.Dispose"
+    },
+    {
+      "rate": 0.6666666666666666,
+      "covered": 4,
+      "total": 6,
+      "file": "src/FxDbg.Host/Architecture/ArchitectureRouter.cs",
+      "name": "FxDbg.Host.Architecture.ArchitectureRouter.Resolve"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 9,
+      "file": "src/FxDbg.Core/Requests/InspectionRequests.cs",
+      "name": "FxDbg.Core.Requests.StackRequest..ctor"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 30,
+      "file": "src/FxDbg.DapHost/DapServer.Exceptions.cs",
+      "name": "FxDbg.DapHost.DapServer.<SetExceptionBreakpoints>d__32.MoveNext"
+    },
+    {
+      "rate": 0.9666666666666667,
+      "covered": 29,
+      "total": 30,
+      "file": "src/FxDbg.Host/Engine/PersistentSessionServer.cs",
+      "name": "FxDbg.Host.Engine.PersistentSessionServer.<RunAsync>d__1.MoveNext"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Interop/NativeVariableValue.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.<>c__DisplayClass18_2.<GetMembers>b__1"
+    },
+    {
+      "rate": 0.8888888888888888,
+      "covered": 8,
+      "total": 9,
+      "file": "src/FxDbg.Interop/NativeVariableValue.Properties.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.ReadTargetBytes"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Interop/NativeVariableValue.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.FaultValue.Format"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Breakpoints.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.<WithSynchronizedTarget>b__37_0"
+    },
+    {
+      "rate": 0.6842105263157895,
+      "covered": 13,
+      "total": 19,
+      "file": "src/FxDbg.DapHost/Program.cs",
+      "name": "Program.<<Main>$>d__0.MoveNext"
+    },
+    {
+      "rate": 0.6363636363636364,
+      "covered": 7,
+      "total": 11,
+      "file": "src/FxDbg.Interop/NativeVariableValue.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.GetMembers"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 14,
+      "file": "src/FxDbg.Interop/ManagedCreateProcessObserver.cs",
+      "name": "FxDbg.Interop.ManagedCreateProcessObserver.BestEffortDetach"
+    },
+    {
+      "rate": 0.7142857142857143,
+      "covered": 30,
+      "total": 42,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Breakpoints.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.HandleBreakpointCallback"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 9,
+      "file": "src/FxDbg.Engine.Protocol/WireJson.cs",
+      "name": "FxDbg.Engine.Protocol.WireJson.IdentifierConverter.ReadJson"
+    },
+    {
+      "rate": 0.7777777777777778,
+      "covered": 7,
+      "total": 9,
+      "file": "src/FxDbg.Core/Requests/LifecycleRequests.cs",
+      "name": "FxDbg.Core.Requests.AttachRequest..ctor"
+    },
+    {
+      "rate": 0.8333333333333334,
+      "covered": 5,
+      "total": 6,
+      "file": "src/FxDbg.Interop/TargetProcessLifetime.cs",
+      "name": "FxDbg.Interop.TargetProcessLifetime.get_HasExited"
+    },
+    {
+      "rate": 0.7142857142857143,
+      "covered": 5,
+      "total": 7,
+      "file": "src/FxDbg.Core/Sessions/SessionId.cs",
+      "name": "FxDbg.Core.Sessions.SessionId..ctor"
+    },
+    {
+      "rate": 0.7368421052631579,
+      "covered": 14,
+      "total": 19,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Execution.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.WaitForStop"
+    },
+    {
+      "rate": 0.9591836734693877,
+      "covered": 47,
+      "total": 49,
+      "file": "src/FxDbg.Core/Evaluation/ExpressionIntrinsics.cs",
+      "name": "FxDbg.Core.Evaluation.ExpressionIntrinsics.Call"
+    },
+    {
+      "rate": 0.5,
+      "covered": 6,
+      "total": 12,
+      "file": "src/FxDbg.Core/Execution/ContinueStopCoordinator.cs",
+      "name": "FxDbg.Core.Execution.ContinueStopCoordinator.RecordCallbackStop"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.McpHost/BoundedStdioTransport.cs",
+      "name": "FxDbg.McpHost.BoundedStdioTransport.get_SessionId"
+    },
+    {
+      "rate": 0.4523809523809524,
+      "covered": 19,
+      "total": 42,
+      "file": "src/FxDbg.Engine/EngineTargetValidator.cs",
+      "name": "FxDbg.Engine.EngineTargetValidator.ValidateAttachRuntime"
+    },
+    {
+      "rate": 0.9166666666666666,
+      "covered": 11,
+      "total": 12,
+      "file": "src/FxDbg.Engine.Protocol/RpcPeer.cs",
+      "name": "FxDbg.Engine.Protocol.RpcPeer.<HeartbeatLoop>d__23.MoveNext"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Variables.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.<>c__DisplayClass119_3.<DescribeRoots>b__3"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Interop/NativeVariableValue.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.FaultValue.get_TypeName"
+    },
+    {
+      "rate": 0.7619047619047619,
+      "covered": 16,
+      "total": 21,
+      "file": "src/FxDbg.Host/Engine/EngineProcessHost.cs",
+      "name": "FxDbg.Host.Engine.EngineProcessHost.<InvokeAsync>d__11.MoveNext"
+    },
+    {
+      "rate": 0.6,
+      "covered": 15,
+      "total": 25,
+      "file": "src/FxDbg.Interop/NativeVariableValue.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.<>c__DisplayClass18_0.<GetMembers>b__0"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 3,
+      "file": "src/FxDbg.Core/Requests/ExecutionRequests.cs",
+      "name": "FxDbg.Core.Requests.PauseRequest..ctor"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Interop/NativeVariableValue.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.FaultValue..ctor"
+    },
+    {
+      "rate": 0.6666666666666666,
+      "covered": 4,
+      "total": 6,
+      "file": "src/FxDbg.Engine/EngineOptions.cs",
+      "name": "FxDbg.Engine.EngineOptions.ParseSessionId"
+    },
+    {
+      "rate": 0.3,
+      "covered": 3,
+      "total": 10,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.DrainDetachedCallbacks"
+    },
+    {
+      "rate": 0.6842105263157895,
+      "covered": 13,
+      "total": 19,
+      "file": "src/FxDbg.Interop/DebugModule.cs",
+      "name": "FxDbg.Interop.DebugModule.ReloadSymbols"
+    },
+    {
+      "rate": 0.5348837209302325,
+      "covered": 23,
+      "total": 43,
+      "file": "src/FxDbg.Host/Sessions/DebugSessionService.Execution.cs",
+      "name": "FxDbg.Host.Sessions.DebugSessionService.<ControlAsync>d__27.MoveNext"
+    },
+    {
+      "rate": 0.9375,
+      "covered": 30,
+      "total": 32,
+      "file": "src/FxDbg.McpHost/BoundedStdioTransport.cs",
+      "name": "FxDbg.McpHost.BoundedStdioTransport.<ReadAsync>d__25.MoveNext"
+    },
+    {
+      "rate": 0.45454545454545453,
+      "covered": 5,
+      "total": 11,
+      "file": "src/FxDbg.Interop/FrameworkDebuggerBootstrap.cs",
+      "name": "FxDbg.Interop.FrameworkDebuggerBootstrap.RequireEngineArchitecture"
+    },
+    {
+      "rate": 0.9545454545454546,
+      "covered": 21,
+      "total": 22,
+      "file": "src/FxDbg.Core/Breakpoints/BreakpointManager.cs",
+      "name": "FxDbg.Core.Breakpoints.BreakpointManager.Bind"
+    },
+    {
+      "rate": 0.8,
+      "covered": 16,
+      "total": 20,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Execution.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.StopAt"
+    },
+    {
+      "rate": 0.42857142857142855,
+      "covered": 3,
+      "total": 7,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.ThrowIfWrongThread"
+    },
+    {
+      "rate": 0.84,
+      "covered": 21,
+      "total": 25,
+      "file": "src/FxDbg.Core/Evaluation/ExpressionNumbers.cs",
+      "name": "FxDbg.Core.Evaluation.ExpressionNumbers.Cast"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.<>c__DisplayClass66_0.<SynchronizeAndDetach>b__1"
+    },
+    {
+      "rate": 0.7777777777777778,
+      "covered": 7,
+      "total": 9,
+      "file": "src/FxDbg.Core/Model/SourcePathMapper.cs",
+      "name": "FxDbg.Core.Model.SourcePathMapping.Normalize"
+    },
+    {
+      "rate": 0.9375,
+      "covered": 15,
+      "total": 16,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Evaluation.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.EvaluateCore"
+    },
+    {
+      "rate": 0.75,
+      "covered": 9,
+      "total": 12,
+      "file": "src/FxDbg.Host/Engine/EngineProcessPaths.cs",
+      "name": "FxDbg.Host.Engine.EngineProcessPaths.For"
+    },
+    {
+      "rate": 0.6,
+      "covered": 3,
+      "total": 5,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.ThrowIfDisposed"
+    },
+    {
+      "rate": 0.5555555555555556,
+      "covered": 5,
+      "total": 9,
+      "file": "src/FxDbg.Core/Execution/ContinueStopCoordinator.cs",
+      "name": "FxDbg.Core.Execution.ContinueStopCoordinator.RecordStop"
+    },
+    {
+      "rate": 0.55,
+      "covered": 11,
+      "total": 20,
+      "file": "src/Shared/WindowsProcessArchitecture.cs",
+      "name": "FxDbg.Platform.WindowsProcessArchitecture.Detect"
+    },
+    {
+      "rate": 0.6307692307692307,
+      "covered": 41,
+      "total": 65,
+      "file": "src/FxDbg.Cli/Program.cs",
+      "name": "Program.<<Main>$>d__0.MoveNext"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 31,
+      "file": "src/FxDbg.Interop/MetadataNames.cs",
+      "name": "FxDbg.Interop.MetadataNames.ThreadName"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 3,
+      "file": "src/FxDbg.Core/Requests/LifecycleRequests.cs",
+      "name": "FxDbg.Core.Requests.DetachRequest..ctor"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Engine/Program.cs",
+      "name": "FxDbg.Engine.Program.<>c__DisplayClass0_0.<Main>b__1"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 7,
+      "file": "src/FxDbg.Host/Sessions/DebugSessionService.cs",
+      "name": "FxDbg.Host.Sessions.DebugSessionService.FailObservation"
+    },
+    {
+      "rate": 0.29411764705882354,
+      "covered": 5,
+      "total": 17,
+      "file": "src/FxDbg.Interop/NativeVariableValue.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.FormatPrimitive"
+    },
+    {
+      "rate": 0.75,
+      "covered": 12,
+      "total": 16,
+      "file": "src/FxDbg.Engine/EngineLaunchPreparation.cs",
+      "name": "FxDbg.Engine.EngineLaunchPreparation.Create"
+    },
+    {
+      "rate": 0.8888888888888888,
+      "covered": 8,
+      "total": 9,
+      "file": "src/FxDbg.Interop/NativeVariableValue.Properties.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.MatchesOwner"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 2,
+      "file": "src/FxDbg.Host/Sessions/DebugSessionService.cs",
+      "name": "FxDbg.Host.Sessions.DebugSessionService.<>c__DisplayClass10_0.<InvokeAsync>b__1"
+    },
+    {
+      "rate": 0.9655172413793104,
+      "covered": 28,
+      "total": 29,
+      "file": "src/FxDbg.DapHost/DapTransport.cs",
+      "name": "FxDbg.DapHost.DapTransport.<ReadCoreAsync>d__12.MoveNext"
+    },
+    {
+      "rate": 0.7777777777777778,
+      "covered": 7,
+      "total": 9,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Evaluation.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.EvaluateBreakpointFrame"
+    },
+    {
+      "rate": 0.8709677419354839,
+      "covered": 27,
+      "total": 31,
+      "file": "src/FxDbg.Core/Sessions/StopInfo.cs",
+      "name": "FxDbg.Core.Sessions.StopInfo..ctor"
+    },
+    {
+      "rate": 0.23809523809523808,
+      "covered": 5,
+      "total": 21,
+      "file": "src/FxDbg.Engine/EngineLaunchPreparation.cs",
+      "name": "FxDbg.Engine.EngineLaunchPreparation.CreateEnvironmentBlock"
+    },
+    {
+      "rate": 0.71875,
+      "covered": 46,
+      "total": 64,
+      "file": "src/FxDbg.Engine/EngineServer.cs",
+      "name": "FxDbg.Engine.EngineServer.Dispatch"
+    },
+    {
+      "rate": 0.9230769230769231,
+      "covered": 48,
+      "total": 52,
+      "file": "src/FxDbg.Engine.Protocol/RpcPeer.cs",
+      "name": "FxDbg.Engine.Protocol.RpcPeer.<ReadLoop>d__20.MoveNext"
+    },
+    {
+      "rate": 0.6363636363636364,
+      "covered": 14,
+      "total": 22,
+      "file": "src/FxDbg.Engine/Scheduling/SingleThreadCommandScheduler.cs",
+      "name": "FxDbg.Engine.Scheduling.SingleThreadCommandScheduler.Dispose"
+    },
+    {
+      "rate": 0.9032258064516129,
+      "covered": 56,
+      "total": 62,
+      "file": "src/FxDbg.Host/Engine/EngineProcessHost.cs",
+      "name": "FxDbg.Host.Engine.EngineProcessHost.<RunAsync>d__20.MoveNext"
+    },
+    {
+      "rate": 0.8648648648648649,
+      "covered": 32,
+      "total": 37,
+      "file": "src/FxDbg.McpHost/ToolCatalog.cs",
+      "name": "FxDbg.McpHost.ToolCatalog.ValidateValue"
+    },
+    {
+      "rate": 0.8333333333333334,
+      "covered": 5,
+      "total": 6,
+      "file": "src/FxDbg.Host/Engine/PersistentSessionServer.cs",
+      "name": "FxDbg.Host.Engine.PersistentSessionServer.<>c__DisplayClass1_0.<<RunAsync>b__0>d.MoveNext"
+    },
+    {
+      "rate": 0.8260869565217391,
+      "covered": 19,
+      "total": 23,
+      "file": "src/FxDbg.Interop/NativeVariableValue.Properties.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.ConstantResult"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Interop/NativeVariableValue.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.FaultValue.GetMembers"
+    },
+    {
+      "rate": 0.49166666666666664,
+      "covered": 59,
+      "total": 120,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.SynchronizeAndDetach"
+    },
+    {
+      "rate": 0.7272727272727273,
+      "covered": 8,
+      "total": 11,
+      "file": "src/FxDbg.Interop/DebugModule.cs",
+      "name": "FxDbg.Interop.DebugModule.SymbolsFileChanged"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Core/Sessions/SessionId.cs",
+      "name": "FxDbg.Core.Sessions.SessionId.op_Inequality"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Engine/EngineServer.cs",
+      "name": "FxDbg.Engine.EngineServer.<>c__DisplayClass11_0.<Dispatch>b__2"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Engine/Program.cs",
+      "name": "FxDbg.Engine.Program.<>c__DisplayClass0_0.<Main>b__0"
+    },
+    {
+      "rate": 0.6666666666666666,
+      "covered": 4,
+      "total": 6,
+      "file": "src/FxDbg.Host/Architecture/ArchitectureRouter.cs",
+      "name": "FxDbg.Host.Architecture.ArchitectureRouter.Resolve"
+    },
+    {
+      "rate": 0.8461538461538461,
+      "covered": 11,
+      "total": 13,
+      "file": "src/FxDbg.Core/Execution/ContinueStopCoordinator.cs",
+      "name": "FxDbg.Core.Execution.ContinueStopCoordinator.Continue"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Host/Sessions/DebugSessionService.cs",
+      "name": "FxDbg.Host.Sessions.DebugSessionService.Invalid"
+    },
+    {
+      "rate": 0.75,
+      "covered": 3,
+      "total": 4,
+      "file": "src/FxDbg.McpHost/StdioInitializationGate.cs",
+      "name": "FxDbg.McpHost.StdioInitializationGate.RequireAllowed"
+    },
+    {
+      "rate": 0.375,
+      "covered": 3,
+      "total": 8,
+      "file": "src/FxDbg.Interop/NativeVariableValue.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.Read"
+    },
+    {
+      "rate": 0.7894736842105263,
+      "covered": 15,
+      "total": 19,
+      "file": "src/FxDbg.Core/Breakpoints/BreakpointManager.cs",
+      "name": "FxDbg.Core.Breakpoints.BreakpointManager.SetEnabled"
+    },
+    {
+      "rate": 0.8,
+      "covered": 4,
+      "total": 5,
+      "file": "src/FxDbg.Interop/NativeVariableValue.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.Capture"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Breakpoints.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.remove_BreakpointChanged"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Core/Model/VariableReferenceId.cs",
+      "name": "FxDbg.Core.Model.VariableReferenceId.Equals"
+    },
+    {
+      "rate": 0.9512195121951219,
+      "covered": 39,
+      "total": 41,
+      "file": "src/FxDbg.Host/Sessions/DebugSessionService.cs",
+      "name": "FxDbg.Host.Sessions.DebugSessionService.<PumpEventsAsync>d__12.MoveNext"
+    },
+    {
+      "rate": 0.625,
+      "covered": 5,
+      "total": 8,
+      "file": "src/FxDbg.Core/Requests/LifecycleRequests.cs",
+      "name": "FxDbg.Core.Requests.LaunchRequest.CopyEnvironment"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Engine/EngineServer.cs",
+      "name": "FxDbg.Engine.EngineServer.<>c__DisplayClass11_0.<Dispatch>b__3"
+    },
+    {
+      "rate": 0.8333333333333334,
+      "covered": 5,
+      "total": 6,
+      "file": "src/FxDbg.Host/Engine/EngineProcessHost.cs",
+      "name": "FxDbg.Host.Engine.EngineProcessHost.<Watch>d__21.MoveNext"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Host/Sessions/DebugSessionService.Execution.cs",
+      "name": "FxDbg.Host.Sessions.DebugSessionService.<>c__DisplayClass25_0.<WatchDeadlineAsync>b__0"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 3,
+      "file": "src/FxDbg.Core/Execution/ContinueStopCoordinator.cs",
+      "name": "FxDbg.Core.Execution.ContinueStopCoordinator.RecordManualStop"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Core/Evaluation/ExpressionValue.cs",
+      "name": "FxDbg.Core.Evaluation.ExpressionValue.ScalarVariable.get_Diagnostic"
+    },
+    {
+      "rate": 0.8,
+      "covered": 4,
+      "total": 5,
+      "file": "src/FxDbg.McpHost/BoundedStdioTransport.cs",
+      "name": "FxDbg.McpHost.BoundedStdioTransport.<DisposeAsync>d__29.MoveNext"
+    },
+    {
+      "rate": 0.92,
+      "covered": 23,
+      "total": 25,
+      "file": "src/FxDbg.McpHost/Program.cs",
+      "name": "Program.<>c__DisplayClass0_0.<<<Main>$>b__5>d.MoveNext"
+    },
+    {
+      "rate": 0.8571428571428571,
+      "covered": 6,
+      "total": 7,
+      "file": "src/FxDbg.Interop/TargetProcessLifetime.cs",
+      "name": "FxDbg.Interop.TargetProcessLifetime.ReadImagePath"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.<RunPauseContinueCycles>b__63_0"
+    },
+    {
+      "rate": 0.8181818181818182,
+      "covered": 9,
+      "total": 11,
+      "file": "src/FxDbg.Core/Model/ManagedThreadInfo.cs",
+      "name": "FxDbg.Core.Model.ManagedThreadInfo..ctor"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 3,
+      "file": "src/FxDbg.Core/Requests/InspectionRequests.cs",
+      "name": "FxDbg.Core.Requests.ThreadsRequest..ctor"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 8,
+      "file": "src/FxDbg.Engine/Program.cs",
+      "name": "FxDbg.Engine.Program.FormatVerification"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 13,
+      "file": "src/FxDbg.Engine/EngineTargetValidator.cs",
+      "name": "FxDbg.Engine.EngineTargetValidator.ValidateImageWillLoadFramework4"
+    },
+    {
+      "rate": 0.7894736842105263,
+      "covered": 15,
+      "total": 19,
+      "file": "src/FxDbg.Cli/CliCommand.cs",
+      "name": "FxDbg.Cli.CliCommand.Allowed"
+    },
+    {
+      "rate": 0.22727272727272727,
+      "covered": 5,
+      "total": 22,
+      "file": "src/FxDbg.Host/Architecture/ProcessArchitectureDetector.cs",
+      "name": "FxDbg.Host.Architecture.ProcessArchitectureDetector.Detect"
+    },
+    {
+      "rate": 0.7291666666666666,
+      "covered": 35,
+      "total": 48,
+      "file": "src/FxDbg.Interop/ManagedCreateProcessObserver.cs",
+      "name": "FxDbg.Interop.ManagedCreateProcessObserver.Start"
+    },
+    {
+      "rate": 0.5454545454545454,
+      "covered": 6,
+      "total": 11,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Breakpoints.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.PollSymbolFiles"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 28,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Exceptions.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.ReadExceptionMessage"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 4,
+      "file": "src/FxDbg.Engine/Program.cs",
+      "name": "FxDbg.Engine.Program.<>c__DisplayClass0_2.<Main>b__3"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 2,
+      "file": "src/FxDbg.Host/Sessions/DebugSessionService.cs",
+      "name": "FxDbg.Host.Sessions.DebugSessionService.<>c__DisplayClass10_0.<InvokeAsync>b__3"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 8,
+      "file": "src/FxDbg.DapHost/DapServer.Inspection.cs",
+      "name": "FxDbg.DapHost.DapServer.<Threads>d__49.MoveNext"
+    },
+    {
+      "rate": 0.8125,
+      "covered": 13,
+      "total": 16,
+      "file": "src/Shared/WindowsDebugPrivilege.cs",
+      "name": "FxDbg.Platform.WindowsDebugPrivilege.NativeAdjustment.Acquire"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Core/Model/FrameId.cs",
+      "name": "FxDbg.Core.Model.FrameId.Equals"
+    },
+    {
+      "rate": 0.6,
+      "covered": 18,
+      "total": 30,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.AppDomains.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.HandleAppDomainCallback"
+    },
+    {
+      "rate": 0.8888888888888888,
+      "covered": 16,
+      "total": 18,
+      "file": "src/FxDbg.Core/Model/VariableInfo.cs",
+      "name": "FxDbg.Core.Model.VariableInfo.Available"
+    },
+    {
+      "rate": 0.7777777777777778,
+      "covered": 14,
+      "total": 18,
+      "file": "src/FxDbg.Engine/Scheduling/SingleThreadCommandScheduler.cs",
+      "name": "FxDbg.Engine.Scheduling.SingleThreadCommandScheduler.EnqueueAsync"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Engine/EngineServer.cs",
+      "name": "FxDbg.Engine.EngineServer.<>c__DisplayClass11_0.<Dispatch>b__3"
+    },
+    {
+      "rate": 0.7922077922077922,
+      "covered": 61,
+      "total": 77,
+      "file": "src/FxDbg.DapHost/DapServer.cs",
+      "name": "FxDbg.DapHost.DapServer.<Dispatch>d__20.MoveNext"
+    },
+    {
+      "rate": 0.75,
+      "covered": 15,
+      "total": 20,
+      "file": "src/FxDbg.DapHost/DapServer.cs",
+      "name": "FxDbg.DapHost.DapServer.<PollAsync>d__23.MoveNext"
+    },
+    {
+      "rate": 0,
+      "covered": 0,
+      "total": 1,
+      "file": "src/FxDbg.Core/Sessions/SessionId.cs",
+      "name": "FxDbg.Core.Sessions.SessionId.op_Equality"
+    },
+    {
+      "rate": 0.7,
+      "covered": 7,
+      "total": 10,
+      "file": "src/FxDbg.Interop/NativeVariableValue.Properties.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.HasNoExceptionSections"
+    }
+  ],
+  "incompleteChangedMethods": [
+    {
+      "total": 38,
+      "file": "src/FxDbg.Interop/NativeVariableValue.Properties.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.ProveProperty",
+      "rate": 0.8947368421052632,
+      "covered": 34,
+      "uncoveredChangedLines": [
+        137,
+        149,
+        165,
+        166
+      ]
+    },
+    {
+      "total": 66,
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Variables.cs",
+      "name": "FxDbg.Interop.FrameworkDebugSession.<DescribeRoots>d__119.MoveNext",
+      "rate": 0.8484848484848485,
+      "covered": 56,
+      "uncoveredChangedLines": [
+        91
+      ]
+    },
+    {
+      "total": 37,
+      "file": "src/FxDbg.Core/Evaluation/ExpressionNumbers.cs",
+      "name": "FxDbg.Core.Evaluation.ExpressionNumbers.Binary",
+      "rate": 0.9459459459459459,
+      "covered": 35,
+      "uncoveredChangedLines": [
+        68,
+        69
+      ]
+    },
+    {
+      "total": 7,
+      "file": "src/FxDbg.Interop/NativeVariableValue.Properties.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.MatchesTypeToken",
+      "rate": 0.8571428571428571,
+      "covered": 6,
+      "uncoveredChangedLines": [
+        321
+      ]
+    },
+    {
+      "total": 15,
+      "file": "src/FxDbg.Core/Evaluation/ExpressionIntrinsics.cs",
+      "name": "FxDbg.Core.Evaluation.ExpressionIntrinsics.Search",
+      "rate": 0.9333333333333333,
+      "covered": 14,
+      "uncoveredChangedLines": [
+        92
+      ]
+    },
+    {
+      "total": 7,
+      "file": "src/FxDbg.Interop/NativeVariableValue.Properties.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.ReadCompressed",
+      "rate": 0.7142857142857143,
+      "covered": 5,
+      "uncoveredChangedLines": [
+        362,
+        363
+      ]
+    },
+    {
+      "total": 23,
+      "file": "src/FxDbg.Interop/NativeVariableValue.Properties.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.MatchesType",
+      "rate": 0.8695652173913043,
+      "covered": 20,
+      "uncoveredChangedLines": [
+        346,
+        347,
+        348
+      ]
+    },
+    {
+      "total": 9,
+      "file": "src/FxDbg.Interop/NativeVariableValue.Properties.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.ReadTargetBytes",
+      "rate": 0.8888888888888888,
+      "covered": 8,
+      "uncoveredChangedLines": [
+        242
+      ]
+    },
+    {
+      "total": 49,
+      "file": "src/FxDbg.Core/Evaluation/ExpressionIntrinsics.cs",
+      "name": "FxDbg.Core.Evaluation.ExpressionIntrinsics.Call",
+      "rate": 0.9591836734693877,
+      "covered": 47,
+      "uncoveredChangedLines": [
+        58,
+        69
+      ]
+    },
+    {
+      "total": 25,
+      "file": "src/FxDbg.Core/Evaluation/ExpressionNumbers.cs",
+      "name": "FxDbg.Core.Evaluation.ExpressionNumbers.Cast",
+      "rate": 0.84,
+      "covered": 21,
+      "uncoveredChangedLines": [
+        152,
+        154,
+        155,
+        167
+      ]
+    },
+    {
+      "total": 9,
+      "file": "src/FxDbg.Interop/NativeVariableValue.Properties.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.MatchesOwner",
+      "rate": 0.8888888888888888,
+      "covered": 8,
+      "uncoveredChangedLines": [
+        311
+      ]
+    },
+    {
+      "total": 23,
+      "file": "src/FxDbg.Interop/NativeVariableValue.Properties.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.ConstantResult",
+      "rate": 0.8260869565217391,
+      "covered": 19,
+      "uncoveredChangedLines": [
+        259,
+        268,
+        269,
+        270
+      ]
+    },
+    {
+      "total": 10,
+      "file": "src/FxDbg.Interop/NativeVariableValue.Properties.cs",
+      "name": "FxDbg.Interop.NativeVariableValue.HasNoExceptionSections",
+      "rate": 0.7,
+      "covered": 7,
+      "uncoveredChangedLines": [
+        231,
+        232,
+        233
+      ]
+    }
+  ],
+  "files": [
+    {
+      "executableChangedLines": 6,
+      "instrumented": true,
+      "covered": 6,
+      "uncovered": [],
+      "file": "src/FxDbg.Core/Evaluation/EvaluationBudget.cs"
+    },
+    {
+      "executableChangedLines": 74,
+      "instrumented": true,
+      "covered": 71,
+      "uncovered": [
+        58,
+        69,
+        92
+      ],
+      "file": "src/FxDbg.Core/Evaluation/ExpressionIntrinsics.cs"
+    },
+    {
+      "executableChangedLines": 67,
+      "instrumented": true,
+      "covered": 61,
+      "uncovered": [
+        68,
+        69,
+        152,
+        154,
+        155,
+        167
+      ],
+      "file": "src/FxDbg.Core/Evaluation/ExpressionNumbers.cs"
+    },
+    {
+      "executableChangedLines": 0,
+      "instrumented": true,
+      "covered": 0,
+      "uncovered": [],
+      "file": "src/FxDbg.Core/Evaluation/ExpressionValue.cs"
+    },
+    {
+      "executableChangedLines": 53,
+      "instrumented": true,
+      "covered": 53,
+      "uncovered": [],
+      "file": "src/FxDbg.Core/Evaluation/MemberSuggestions.cs"
+    },
+    {
+      "executableChangedLines": 41,
+      "instrumented": true,
+      "covered": 41,
+      "uncovered": [],
+      "file": "src/FxDbg.Core/Evaluation/RestrictedExpression.cs"
+    },
+    {
+      "executableChangedLines": 25,
+      "instrumented": true,
+      "covered": 25,
+      "uncovered": [],
+      "file": "src/FxDbg.Core/Evaluation/TrivialGetterProof.cs"
+    },
+    {
+      "executableChangedLines": 22,
+      "instrumented": true,
+      "covered": 22,
+      "uncovered": [],
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Evaluation.cs"
+    },
+    {
+      "executableChangedLines": 14,
+      "instrumented": true,
+      "covered": 13,
+      "uncovered": [
+        91
+      ],
+      "file": "src/FxDbg.Interop/FrameworkDebugSession.Variables.cs"
+    },
+    {
+      "executableChangedLines": 0,
+      "instrumented": true,
+      "covered": 0,
+      "uncovered": [],
+      "file": "src/FxDbg.Interop/NativeVariableValue.cs"
+    },
+    {
+      "executableChangedLines": 14,
+      "instrumented": true,
+      "covered": 14,
+      "uncovered": [],
+      "file": "src/FxDbg.Interop/NativeVariableValue.Evaluation.cs"
+    },
+    {
+      "executableChangedLines": 282,
+      "instrumented": true,
+      "covered": 263,
+      "uncovered": [
+        137,
+        149,
+        165,
+        166,
+        231,
+        232,
+        233,
+        242,
+        259,
+        268,
+        269,
+        270,
+        311,
+        321,
+        346,
+        347,
+        348,
+        362,
+        363
+      ],
+      "file": "src/FxDbg.Interop/NativeVariableValue.Properties.cs"
+    }
+  ],
+  "coverageFiles": [
+    "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\expression-extension\\coverage\\final\\real-Debug\\9c503808-2fc3-4cae-a286-9a39c4852db1\\silev_SILSURFACE10_2026-09-11.10_25_39.cobertura.xml",
+    "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\expression-extension\\coverage\\final\\unit-Debug\\3b62424b-70d7-4a6e-802e-c5035a4a0a6b\\silev_SILSURFACE10_2026-09-11.10_22_00.cobertura.xml",
+    "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\expression-extension\\coverage\\final\\unit-Release\\130a8e03-3f99-4d13-900c-a1fa2e383468\\silev_SILSURFACE10_2026-09-11.10_22_29.cobertura.xml"
+  ],
+  "rate": 0.9515050167224081,
+  "total": 598,
+  "covered": 569
+}

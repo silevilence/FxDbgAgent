@@ -1,0 +1,77 @@
+{
+  "outcomes": [
+    {
+      "name": "exception-filters-publish-mcp-Debug",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\exception-filters-publish-mcp-Debug.log",
+      "exitCode": 0
+    },
+    {
+      "name": "exception-filters-publish-dap-Debug",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\exception-filters-publish-dap-Debug.log",
+      "exitCode": 0
+    },
+    {
+      "name": "exception-filters-unit-Debug",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\exception-filters-unit-Debug.log",
+      "exitCode": 0
+    },
+    {
+      "name": "exception-filters-native-Debug-x86",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\exception-filters-native-Debug-x86.log",
+      "exitCode": 0
+    },
+    {
+      "name": "exception-filters-native-Debug-x64",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\exception-filters-native-Debug-x64.log",
+      "exitCode": 0
+    },
+    {
+      "name": "exception-filters-mcp-Debug",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\exception-filters-mcp-Debug.log",
+      "exitCode": 0
+    },
+    {
+      "name": "exception-filters-dap-cli-Debug",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\exception-filters-dap-cli-Debug.log",
+      "exitCode": 0
+    },
+    {
+      "name": "exception-filters-publish-mcp-Release",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\exception-filters-publish-mcp-Release.log",
+      "exitCode": 0
+    },
+    {
+      "name": "exception-filters-publish-dap-Release",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\exception-filters-publish-dap-Release.log",
+      "exitCode": 0
+    },
+    {
+      "name": "exception-filters-unit-Release",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\exception-filters-unit-Release.log",
+      "exitCode": 0
+    },
+    {
+      "name": "exception-filters-native-Release-x86",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\exception-filters-native-Release-x86.log",
+      "exitCode": 0
+    },
+    {
+      "name": "exception-filters-native-Release-x64",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\exception-filters-native-Release-x64.log",
+      "exitCode": 0
+    },
+    {
+      "name": "exception-filters-mcp-Release",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\exception-filters-mcp-Release.log",
+      "exitCode": 0
+    },
+    {
+      "name": "exception-filters-dap-cli-Release",
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\exception-filters-dap-cli-Release.log",
+      "exitCode": 0
+    }
+  ],
+  "configuration": "Debug+Release",
+  "passed": true,
+  "atUtc": "2026-09-11T02:38:20.0329483+00:00"
+}
