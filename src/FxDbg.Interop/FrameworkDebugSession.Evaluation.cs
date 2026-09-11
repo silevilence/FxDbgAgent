@@ -46,11 +46,15 @@ public sealed partial class FrameworkDebugSession
     private ExpressionValue EvaluateFrame(CorDebugILFrame frame, RestrictedExpression parsed, EvaluationBudget budget) =>
         parsed.Evaluate((name, limits) =>
         {
+            RootVariable? receiver = null;
             foreach (RootVariable root in DescribeRoots(frame))
             {
                 limits.Step();
                 if (root.Name == name) return NativeVariableValue.Expression(root.Read, frame, limits);
+                if (root.Name == "this") receiver = root;
             }
+            if (receiver is not null)
+                return NativeVariableValue.Expression(receiver.Read, frame, limits).Object?.Field(name, limits) ?? throw EvaluationBudget.TypeError();
             throw new FxDbgException(FxDbgErrorCode.ExpressionNameNotFound, "Expression name is unavailable in this frame.");
         }, budget);
 

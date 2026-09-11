@@ -16,6 +16,12 @@ public interface IExpressionObject
     int Length(int dimension, EvaluationBudget budget);
 }
 
+/// <summary>Array search requires a one-dimensional array and its actual lower bound.</summary>
+public interface IExpressionArray : IExpressionObject
+{
+    int SearchLowerBound(EvaluationBudget budget);
+}
+
 public sealed class ExpressionValue
 {
     public object? Scalar { get; }

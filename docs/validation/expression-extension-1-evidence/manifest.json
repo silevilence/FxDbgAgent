@@ -1,0 +1,425 @@
+{
+  "localOnly": true,
+  "files": [
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-publish-mcp-Debug.log",
+      "sha256": "F3FDCA2A35CCC8C0EF2DBF535D95B0B4AE215B3341380D2935FDC0453601E516",
+      "length": 8566
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-publish-mcp-Debug.log.processes",
+      "sha256": "821B364C1FE00A83EAA27ABC1E13F7564DD16AB42B61292B0B9E51B8D34F8B00",
+      "length": 8588
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-publish-mcp-Debug.log.timing.json",
+      "sha256": "D2DCD9CA7CDD8438997E7E70F1C94387A6AD3FA39AD817BBA982E63D0F2A6597",
+      "length": 179
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-publish-dap-Debug.log",
+      "sha256": "F0E76D2946EA7CDD9E96173B052A825F22CFED97FF92CAD3513DFD37296F78BF",
+      "length": 4600
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-publish-dap-Debug.log.processes",
+      "sha256": "C78441FEF51B340AE6BEA259E73E1F55AE36B8497E795B04E3D8625D54DC914E",
+      "length": 2878
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-publish-dap-Debug.log.timing.json",
+      "sha256": "145886E0048B50A6939340018F3D8C0F61C86C78A851DC06202BA09353E8865A",
+      "length": 179
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-unit-Debug.log",
+      "sha256": "8FBE80B43C8B98832356BBC4035C2AB6F34EAB89E652D63D7B32178D6C777CCB",
+      "length": 382
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-unit-Debug.log.processes",
+      "sha256": "3AB1456FC0178D15EDBA67CCA46646F8F6D19E671840E44A57DD0659E6FD75E0",
+      "length": 12786
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-unit-Debug.log.timing.json",
+      "sha256": "274E1FAA92AF89A9D2B628CD2BF68791D15CE78641A89B3AD994DAE5DA802889",
+      "length": 179
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-native-Debug-x86.log",
+      "sha256": "DC39A5BB18B0261434625AB037B994DE7C66E20C329E9AC42F53B09F1E6EFCA8",
+      "length": 189
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-native-Debug-x86.log.processes",
+      "sha256": "8F24A373B893AACDF55820C1324CE6160EFDDB50AF7637114BF8F6DA4C733AFA",
+      "length": 285
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-native-Debug-x86.log.timing.json",
+      "sha256": "4CAC3A2DD3B0D10833B23C6B28B3604C4DFE7FD67ED7DE7EF1DE5B85DABE5C3D",
+      "length": 178
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-native-Debug-x64.log",
+      "sha256": "5DC0EB9F699635736D7982F75030C8C1CF754A8A9FC5CFFBFE758BB10D23FE23",
+      "length": 189
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-native-Debug-x64.log.processes",
+      "sha256": "2762959BF63DF5DA366ABCB43B96CCB949A58C8043B56CB9C59FD2920474861E",
+      "length": 282
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-native-Debug-x64.log.timing.json",
+      "sha256": "4D3F092F9EFE06B86935E67B07B2DEA6F4976A50DBC380DDB547B187D656E5C2",
+      "length": 178
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-mcp-Debug.log",
+      "sha256": "1126F8BA1830CF0516B03F4C49E1024204BB8C864F7EB95D5C085B4A59719E54",
+      "length": 231
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-mcp-Debug.log.processes",
+      "sha256": "0ED81FA7FD88C9595A34C9105E00B0ABA908250366EC36309FA31F482FDFF9AD",
+      "length": 1063
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-mcp-Debug.log.timing.json",
+      "sha256": "16EA349281AE38505EA72B8D27AD859C60F759A07CA17AADFEF3CA131AD40F96",
+      "length": 178
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-dap-cli-Debug.log",
+      "sha256": "371F11951A73D1AF9B6BF174C2147903674D055A0555551314B8338AB33F1621",
+      "length": 393
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-dap-cli-Debug.log.processes",
+      "sha256": "0C4FC8D992E67911BF887B97D16714877CF39B767ED75821860A04D2C0A116DE",
+      "length": 6576
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-dap-cli-Debug.log.timing.json",
+      "sha256": "89264758AB594A89965E204C45F85C290D1C44CA03561659E5D651E5F0A8EC08",
+      "length": 179
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-publish-mcp-Release.log",
+      "sha256": "36AB3880CA9500B1A96219B1F86E85245C5FEB76C3AF7A45109DC1515EB638F3",
+      "length": 4672
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-publish-mcp-Release.log.processes",
+      "sha256": "1BBD9B2441BF0B4EEEA72B829C7C4EE80FB1B698C9EBF7BB6D11345007685B1B",
+      "length": 8586
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-publish-mcp-Release.log.timing.json",
+      "sha256": "E48556155A9780A099602A97B807485DB8580B6F3171F5899979DA2D21FA74EA",
+      "length": 179
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-publish-dap-Release.log",
+      "sha256": "31FF82054579CD61277932319CD2F606869FB87BB098F3ECF647161611D771C4",
+      "length": 4672
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-publish-dap-Release.log.processes",
+      "sha256": "A21C2E56B7DC0FB5E3FA4F33CBB546611AC90CD8307404E360ADAA67B88B3C84",
+      "length": 2893
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-publish-dap-Release.log.timing.json",
+      "sha256": "F6557CA2F3D0EA1C88537DB3D13E66AEA3209A8C7A75E8DECA508CD1BD4DF28D",
+      "length": 179
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-unit-Release.log",
+      "sha256": "BB9F152BD83612915A432BF4F8A1EC1C88AA0A0C91CD37B901D84A197F869B4A",
+      "length": 384
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-unit-Release.log.processes",
+      "sha256": "6AEFCE564D3BB18BBF99538FA530C6A00B2AD8623A0BE6DDD525C290576583F2",
+      "length": 12800
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-unit-Release.log.timing.json",
+      "sha256": "29A7207A8FB21AB8AF03292C2DD084D27D541F67CF483D6CA3F612FA70B90685",
+      "length": 179
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-native-Release-x86.log",
+      "sha256": "939E1884C96793C2EDF3DF775CC61C05D58A658899E607EF01715183B17D487B",
+      "length": 191
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-native-Release-x86.log.processes",
+      "sha256": "0E3CCFE5FCC2B5B3A581EE4E43ED2AA04B49CD129D692FB67073C3792DF2DC80",
+      "length": 286
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-native-Release-x86.log.timing.json",
+      "sha256": "DD72F999ACB3748B1AF516DDA148213171F59D3DADB05C1B4A676116AEAE7624",
+      "length": 178
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-native-Release-x64.log",
+      "sha256": "F410D09DE1011767ED958B9D5C556FEB1AC4047FE97B7D18CE8330B9C6E4E4CA",
+      "length": 191
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-native-Release-x64.log.processes",
+      "sha256": "AA3A315AE772B838F747EEF57E1E13233E20B93622CA3309FA84754C99DD7F5F",
+      "length": 281
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-native-Release-x64.log.timing.json",
+      "sha256": "603D271069609DD1B123EF450088ECB1B89CCD35DE00F35B1CB42200D3515FC3",
+      "length": 178
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-mcp-Release.log",
+      "sha256": "862D6DDA22C38B8791A3C8154830EC338B3AD7289FEF48A8A5423C8B424EF4BC",
+      "length": 235
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-mcp-Release.log.processes",
+      "sha256": "C35008A4466713E4233C812819E196BDFEE0428F10BC5857C38D2F3AFBB4479E",
+      "length": 1064
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-mcp-Release.log.timing.json",
+      "sha256": "32656C58144D5C0E18551393D6710A493B34D99C957A9B081A2F547050E911E0",
+      "length": 178
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-dap-cli-Release.log",
+      "sha256": "B3254A0594410CED36CB12D52DA4F4F57A0BAE609D576A8D70783551DC894D33",
+      "length": 401
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-dap-cli-Release.log.processes",
+      "sha256": "A5B11C40DEC55FB5392376E75ABBE6F445836273BB34E7683D3D77C2D98DCCE9",
+      "length": 6458
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\evaluation-dap-cli-Release.log.timing.json",
+      "sha256": "2B6E5E3E2CA65D09A96D659DB777ACDD5A3E8205EBCE96C60871846AE391B0D9",
+      "length": 179
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-publish-mcp-Debug.log",
+      "sha256": "62E2B4ABB299FD5069B338ADC99573E943C022B93ABB85413CE80188AC527162",
+      "length": 4600
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-publish-mcp-Debug.log.processes",
+      "sha256": "EFC4707B9CCF8707602A308DEC522F6EE50B33A1C9C06E83EEB65ECB6BDCF8ED",
+      "length": 2894
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-publish-mcp-Debug.log.timing.json",
+      "sha256": "76CBE60A7DDFA848EB9E015A9D57BA9EC6EA134C1DC35D9FE36D0B401EBF81E9",
+      "length": 179
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-publish-dap-Debug.log",
+      "sha256": "A5B557891A5DB4D4BAAE33C749DF42DF942BFAD899EA6DA87EA73F29FE1CFE30",
+      "length": 4600
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-publish-dap-Debug.log.processes",
+      "sha256": "E10199ACF58C91C845A3074EB82DE46BAA7ECE48426721EAB31ACF8591A546C8",
+      "length": 2892
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-publish-dap-Debug.log.timing.json",
+      "sha256": "C7200BB67B139EF5011771F14475F11C9BF4D0FB64BCA58D394D03B90FC21FD7",
+      "length": 179
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-unit-Debug.log",
+      "sha256": "1CD566CFB850268CA1D6570D35069654795190429A6ACB4CB4B5F1B2443E4B32",
+      "length": 382
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-unit-Debug.log.processes",
+      "sha256": "470D25224DF09C8A5702B08C4B23B13729E820BC423472E91EA106A2A84D3B28",
+      "length": 12794
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-unit-Debug.log.timing.json",
+      "sha256": "A259D4EBF8A239F5B3EBFB49AD74D83257C1B1081831AF094F93A1ACE011AAA9",
+      "length": 179
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-native-Debug-x86.log",
+      "sha256": "367F9AD7D5F64DF9ACFD0BA1A6D524EA77E795F03CF8F1C8D88526B1C7E934BE",
+      "length": 1239
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-native-Debug-x86.log.processes",
+      "sha256": "215FE70EF2C28BEFF6F7E91114F11C9F75ACF70AF88A25E6F9244419711DECEC",
+      "length": 1211
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-native-Debug-x86.log.timing.json",
+      "sha256": "11ADED4F70A40F281564D858D649239355881BA307886F40828477385651AF04",
+      "length": 178
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-native-Debug-x64.log",
+      "sha256": "F8386AF7A0ADC384B8A41978C094216C5C770670B1D1D2784F99BD15D2050440",
+      "length": 1239
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-native-Debug-x64.log.processes",
+      "sha256": "12FA89B2B0F14CCFBA13A1A0CECEEF1895BA1C462088761454FF49808B7DD707",
+      "length": 1172
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-native-Debug-x64.log.timing.json",
+      "sha256": "FE8CFC052BD2A57EB001090A53847D73AA2C27C703D5229BF5A3C5E6C9C36623",
+      "length": 178
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-mcp-Debug.log",
+      "sha256": "56FCEAD7AAFBD03AEB21B9B795B7552B6E13685956F85BB40F512D675B929D07",
+      "length": 2227
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-mcp-Debug.log.processes",
+      "sha256": "F3947DF384E2D0C810F55C1F3676AEE1105F76F2F1060EAD70DF98C69B704CF8",
+      "length": 9209
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-mcp-Debug.log.timing.json",
+      "sha256": "625806B569481038D9B550E0F7C52FDDACEAE22C5BFEEBCDA58E40CAC0FB6080",
+      "length": 179
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-dap-cli-Debug.log",
+      "sha256": "7F9A72E26B71A5D67BC0A1A6F1B6C2FDB8738FAA88D5993C635649BCFE668223",
+      "length": 4217
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-dap-cli-Debug.log.processes",
+      "sha256": "E6B559F2B61FF53B75E068E41A85D8171D8B6880C2CED8B3AC31FEF003338F5A",
+      "length": 71893
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-dap-cli-Debug.log.timing.json",
+      "sha256": "503827F720DA29EEB1EA3FB0E0D4B5F6FC7835B2CA2B252F2EF6A7D6E5DCC384",
+      "length": 179
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-publish-mcp-Release.log",
+      "sha256": "B4468EA3B53AE5A7930811D05F379A7CCA2B256A226D2346C67607C66477F95D",
+      "length": 4672
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-publish-mcp-Release.log.processes",
+      "sha256": "25139B07BCE5A158A23D4939F6EA5F4356373786F2F6F068335B41C296E7E60F",
+      "length": 2892
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-publish-mcp-Release.log.timing.json",
+      "sha256": "6989F04FF6F114C524DDBB01BF1FBFE26C1DD0BE8EC5BFA022BA45A5161E4864",
+      "length": 179
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-publish-dap-Release.log",
+      "sha256": "DAFA271252A3BBA9D2E072F174DB8EA3A0DAE7D1B8F12D312A2F95CE5B87B41E",
+      "length": 4672
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-publish-dap-Release.log.processes",
+      "sha256": "5346238239603004FEEE87ADFF93F75BA0AA414BCB248E19D4F65BDA9EC1CA6D",
+      "length": 2893
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-publish-dap-Release.log.timing.json",
+      "sha256": "91647D097CDD137F45C99A50E23D82A2097B9DEF5B69C445501CD78F3B5E6640",
+      "length": 179
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-unit-Release.log",
+      "sha256": "3020C7FEC77C3B925539E62B112465F88FC8C0259D78478DC6B44C11963B7535",
+      "length": 384
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-unit-Release.log.processes",
+      "sha256": "64FD134A8EDAB13D62FFAB72424D9A8BE79B55448CD7AB8D7AD92D35A3E0EAD8",
+      "length": 12789
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-unit-Release.log.timing.json",
+      "sha256": "B2C3F96685B95D8287C77CFD46ABDE78753FD4FC652B6A2960F3D10D2B428750",
+      "length": 179
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-native-Release-x86.log",
+      "sha256": "F55F9060CEDB355BB1833F23992A1F45090065A4DD15CF9C5245B4B96E089BC5",
+      "length": 1263
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-native-Release-x86.log.processes",
+      "sha256": "C9F0A1F8992F6BD42C07AFCE578B44745834EB63A74F33E6E641BFF2B26625E9",
+      "length": 1419
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-native-Release-x86.log.timing.json",
+      "sha256": "50B4BAB51CD73D762AD0BA4EE9BAF4640C555515FCF3AD022DAF03306B73D9E7",
+      "length": 178
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-native-Release-x64.log",
+      "sha256": "9255712A75DEA5D352E22751E1A925E3DADD84A0F354069675B6DF8DC34D44E0",
+      "length": 1263
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-native-Release-x64.log.processes",
+      "sha256": "5E23056C99C40770353538A7D7C88398279C44B8E65856356B96FB9484AFAC58",
+      "length": 1171
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-native-Release-x64.log.timing.json",
+      "sha256": "09F9878AF75897DCC94A680249E806FE033F77600DCCD6D3AEE876C66674AF56",
+      "length": 178
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-mcp-Release.log",
+      "sha256": "46A2BECEE16DD3C28EC471B12C188FE1704619B17C6DE42AF73EE805BA9A94C5",
+      "length": 2267
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-mcp-Release.log.processes",
+      "sha256": "6FB82CA9B3AC65552CE75E36DD8DC3D69D95C6ECC756F41577ADA714EE284802",
+      "length": 9202
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-mcp-Release.log.timing.json",
+      "sha256": "066C7B491C816249B198D574AA9B1A89DEE973976997DA19CD6D807C68B94A72",
+      "length": 179
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-dap-cli-Release.log",
+      "sha256": "2E0DC37E9625AA0D40F4AD498CE14A692F0C51E8119CC581F60D46C1A179438C",
+      "length": 4297
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-dap-cli-Release.log.processes",
+      "sha256": "0D88655BA70738148A485C12AD11E639EED7D9C48FA0BC5B08DD7692C8271000",
+      "length": 72464
+    },
+    {
+      "path": "artifacts\\expression-extension\\task1-accepted\\conditional-breakpoints-dap-cli-Release.log.timing.json",
+      "sha256": "AF4D9BA5035C90EF81A2181E33874EF61E0DB29E0312657D9A2059A7BD71E68D",
+      "length": 179
+    }
+  ]
+}

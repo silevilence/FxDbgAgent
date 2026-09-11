@@ -32,6 +32,12 @@ internal static class ExpressionNumbers
     internal static object Unary(string op, object? value)
     {
         NumberKind kind = Kind(value);
+        if (op == "~") return kind switch
+        {
+            NumberKind.Int => (object)~Convert.ToInt32(value, CultureInfo.InvariantCulture),
+            NumberKind.UInt => ~(uint)value!, NumberKind.Long => ~(long)value!, NumberKind.ULong => ~(ulong)value!,
+            _ => throw EvaluationBudget.TypeError()
+        };
         if (op == "+") return kind == NumberKind.Int ? Convert.ToInt32(value, CultureInfo.InvariantCulture) : value!;
         if (kind == NumberKind.ULong) throw EvaluationBudget.TypeError();
         if (kind == NumberKind.Float) return -(float)value!;
@@ -42,6 +48,27 @@ internal static class ExpressionNumbers
     internal static object Binary(string op, object? left, object? right)
     {
         if (left is null || right is null) throw EvaluationBudget.TypeError();
+        if (op is "&" or "|" or "^")
+        {
+            if (left is bool a && right is bool b) return op switch { "&" => a & b, "|" => a | b, _ => a ^ b };
+            NumberKind integral = Promote(left, right);
+            if (integral is NumberKind.Float or NumberKind.Double) throw EvaluationBudget.TypeError();
+            ulong xBits = Bits(left), yBits = Bits(right);
+            ulong bits = op switch { "&" => xBits & yBits, "|" => xBits | yBits, _ => xBits ^ yBits };
+            return FromBits(bits, integral);
+        }
+        if (op is "<<" or ">>")
+        {
+            int shift = new ExpressionValue(right).Integer();
+            return Kind(left) switch
+            {
+                NumberKind.Int => (object)(op == "<<" ? Convert.ToInt32(left, CultureInfo.InvariantCulture) << shift : Convert.ToInt32(left, CultureInfo.InvariantCulture) >> shift),
+                NumberKind.UInt => op == "<<" ? (uint)left << shift : (uint)left >> shift,
+                NumberKind.Long => op == "<<" ? (long)left << shift : (long)left >> shift,
+                NumberKind.ULong => op == "<<" ? (ulong)left << shift : (ulong)left >> shift,
+                _ => throw EvaluationBudget.TypeError()
+            };
+        }
         NumberKind kind = Promote(left, right);
         if (kind is NumberKind.Double or NumberKind.Float)
         {
@@ -82,6 +109,19 @@ internal static class ExpressionNumbers
         if (left is ushort g && right is ushort h) return minimum ? Math.Min(g,h) : Math.Max(g,h);
         return Binary(minimum ? "min" : "max", left, right);
     }
+    internal static object Clamp(object? value, object? low, object? high)
+    {
+        if (value is null || low is null || high is null) throw EvaluationBudget.TypeError();
+        // Reuse the existing numeric promotion contract, but compare rather than min/max:
+        // NaN bounds must not turn an otherwise finite result into NaN.
+        object sample = MinMax(true, MinMax(false, value, low), high);
+        string type = new ExpressionValue(sample).Variable.TypeName;
+        object x = Cast(type, value), minimum = Cast(type, low), maximum = Cast(type, high);
+        if ((bool)Binary(">", minimum, maximum)) throw new ArithmeticException();
+        if ((bool)Binary("<", x, minimum)) return minimum;
+        if ((bool)Binary(">", x, maximum)) return maximum;
+        return x;
+    }
     private static object Box(decimal value, NumberKind kind)
     {
         switch (kind)
@@ -93,4 +133,45 @@ internal static class ExpressionNumbers
             default: throw EvaluationBudget.TypeError();
         }
     }
+
+    internal static bool IsCastType(string type) => type is "sbyte" or "byte" or "short" or "ushort" or "char" or "int" or "uint" or "long" or "ulong" or "float" or "double";
+    internal static object Cast(string type, object? value)
+    {
+        NumberKind kind = Kind(value);
+        if (type == "float") return Convert.ToSingle(Primitive(value!), CultureInfo.InvariantCulture);
+        if (type == "double") return Convert.ToDouble(Primitive(value!), CultureInfo.InvariantCulture);
+        // Integral narrowing keeps the low bits. Floating conversion uses the Engine CLR's
+        // unchecked conv.* behavior; out-of-range/NaN results are implementation-specific in C#.
+        if (kind is NumberKind.Float or NumberKind.Double)
+        {
+            double number = Convert.ToDouble(value, CultureInfo.InvariantCulture);
+            unchecked
+            {
+                return type switch
+                {
+                    "sbyte" => (object)(sbyte)number, "byte" => (byte)number, "short" => (short)number,
+                    "ushort" => (ushort)number, "char" => (char)number, "int" => (int)number,
+                    "uint" => (uint)number, "long" => (long)number, "ulong" => (ulong)number,
+                    _ => throw EvaluationBudget.TypeError()
+                };
+            }
+        }
+        ulong bits = Bits(value!);
+        unchecked
+        {
+            return type switch
+            {
+                "sbyte" => (object)(sbyte)bits, "byte" => (byte)bits, "short" => (short)bits,
+                "ushort" => (ushort)bits, "char" => (char)bits, "int" => (int)bits,
+                "uint" => (uint)bits, "long" => (long)bits, "ulong" => bits,
+                _ => throw EvaluationBudget.TypeError()
+            };
+        }
+    }
+    private static ulong Bits(object value) => value is ulong unsigned ? unsigned : value is uint word ? word : unchecked((ulong)Convert.ToInt64(value, CultureInfo.InvariantCulture));
+    private static object FromBits(ulong bits, NumberKind kind) => kind switch
+    {
+        NumberKind.Int => (object)unchecked((int)bits), NumberKind.UInt => unchecked((uint)bits),
+        NumberKind.Long => unchecked((long)bits), NumberKind.ULong => bits, _ => throw EvaluationBudget.TypeError()
+    };
 }

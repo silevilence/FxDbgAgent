@@ -41,6 +41,20 @@ internal static partial class Program
                 VariableInfo value=session.Evaluate(frame,expressions[i],1000);
                 Require(value.DisplayValue==expected[i],"Evaluation mismatch: "+expressions[i]+" => "+value.DisplayValue);
             }
+            foreach (var pair in new System.Collections.Generic.Dictionary<string,string>
+            {
+                ["number == 42 ? 0xFF & 3 : 1 / 0"]="3", ["(byte)257"]="1", ["(int)0xffffffff"]="-1",
+                ["~number"]="-43", ["number << 2"]="168", ["fallbackNumber"]="17", ["this.number"]="900",
+                ["String.Substring(message,2,3)"]="cde", ["String.IndexOf(message,\"p\")"]="15",
+                ["String.Contains(message,\"ijk\")"]="true", ["String.StartsWith(message,\"abc\")"]="true",
+                ["String.EndsWith(message,\"nop\")"]="true", ["String.Trim(\" a \")"]="a",
+                ["String.CompareOrdinal(message,message)"]="0", ["String.IsNullOrWhiteSpace(\" \")"]="true",
+                ["Math.Round(2.5)"]="2", ["Math.Floor(-1.2)"]="-2", ["Math.Ceiling(-1.2)"]="-1",
+                ["Math.Truncate(-1.2)"]="-1", ["Math.Sqrt(9)"]="3", ["Math.Sign(number)"]="1",
+                ["Math.Clamp(number,0,10)"]="10", ["Array.IndexOf(Values,20)"]="1", ["Array.IndexOf(Values,20L)"]="-1",
+                ["Array.IndexOf(ShiftedVector,0)"]="-2", ["Array.IndexOf(ShiftedVector,1)"]="-3"
+            }) Require(session.Evaluate(frame,pair.Key,1000).DisplayValue==pair.Value,"Extension result: "+pair.Key);
+            ExpectError(FxDbgErrorCode.ExpressionTypeError,()=>session.Evaluate(frame,"Array.IndexOf(matrix,40)",1000));
             var node=session.Evaluate(frame,"node",1000,maxDepth:0);
             Require(node.ReferenceId is not null && session.GetVariables(frame,node.ReferenceId).Any(x=>x.Name=="Label" && x.DisplayValue=="node-label"),"Evaluation object references reuse variable paging.");
             ExpectError(FxDbgErrorCode.ExpressionForbidden,()=>session.Evaluate(frame,"node.ToString()",1000));

@@ -28,7 +28,7 @@ internal static class EvaluationSuite
                 var before=await Call("status"); int thread=(int)before["stop"]!["threadId"]!;
                 string frame=(string)(await Call("stack",new(){["threadId"]=thread}))[0]!["frameId"]!;
                 async Task<JsonNode> Eval(string expression,string? error=null) => await Call("evaluate",new(){["frameId"]=frame,["expression"]=expression,["evaluationTimeoutMs"]=1000,["maxDepth"]=0},error);
-                foreach(var pair in new Dictionary<string,string>{["number + 2"]="44",["matrix[1,1]"]="40",["shifted[-1,7]"]="99",["exact == 9007199254740993L"]="true",["node.Self == node"]="true",["String.Equals(node.Label,\"node-label\")"]="true",["userCodeCalls"]="0"})
+                foreach(var pair in new Dictionary<string,string>{["number + 2"]="44",["(number & 0x1) == 0 ? Math.Clamp(number,0,10) : 0"]="10",["(byte)257"]="1",["String.Substring(message,2,3)"]="cde",["fallbackNumber"]="17",["Array.IndexOf(Values,20)"]="1",["matrix[1,1]"]="40",["shifted[-1,7]"]="99",["exact == 9007199254740993L"]="true",["node.Self == node"]="true",["String.Equals(node.Label,\"node-label\")"]="true",["userCodeCalls"]="0"})
                 {
                     var result=await Eval(pair.Key); ObservationSuite.Require((string?)result["displayValue"]==pair.Value,"MCP evaluation result: "+pair.Key);
                     evidence.Add(new JsonObject{["configuration"]=configuration,["architecture"]=architecture,["expression"]=pair.Key,["result"]=result.DeepClone()});

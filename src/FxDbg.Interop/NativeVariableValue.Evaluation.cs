@@ -8,7 +8,7 @@ using FxDbg.Core.Variables;
 
 namespace FxDbg.Interop;
 
-internal sealed partial class NativeVariableValue : IExpressionObject
+internal sealed partial class NativeVariableValue : IExpressionArray
 {
     IVariableValue IExpressionObject.Variable => this;
     internal static ExpressionValue Expression(Func<CorDebugValue> read, CorDebugILFrame frame, EvaluationBudget budget)
@@ -90,5 +90,13 @@ internal sealed partial class NativeVariableValue : IExpressionObject
         int rank = array.Rank;
         if (rank < 1 || rank > 32 || dimension < 0 || dimension >= rank) throw RestrictedExpression.IndexError();
         return array.GetDimensions(rank)[dimension];
+    });
+    int IExpressionArray.SearchLowerBound(EvaluationBudget budget) => Read(() =>
+    {
+        budget.Read();
+        if (value?.Raw is not ICorDebugArrayValue raw) throw EvaluationBudget.TypeError();
+        var array = new CorDebugArrayValue(raw);
+        if (array.Rank != 1) throw EvaluationBudget.TypeError();
+        return array.HasBaseIndicies() ? array.GetBaseIndicies(1)[0] : 0;
     });
 }

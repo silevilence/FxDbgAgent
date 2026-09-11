@@ -90,3 +90,5 @@ npx --yes skills@1.5.23 add <FxDbg源码绝对路径> --skill fxdbg-agent --agen
 阶段4-2新增debug_configure_exceptions：用sessionId和firstChance:true加rules数组限定异常类型（exact完整类型、namespace按点分隔的命名空间前缀、derived自身/基类匹配，多个规则OR）。运行中可动态更新；rules:[]或firstChance:false清空，true省略rules会停在所有first-chance。默认只停未处理异常，按需使用窄规则避免频繁停止；非法配置保留旧规则。不要用属性Getter、ToString或反射推断类型/消息。诊断提示无法过滤时会保守停止，可修正规则或关闭过滤再继续。
 
 阶段4-3在debug_set_breakpoint新建时可带condition和hitCondition（=N或>=N，N正整数≤2147483647）。表达式必须为bool并遵守250ms只读解释预算，次数与表达式AND。debug_status的breakpoints可查hitCount和conditionDiagnostic；模块重载保留计数，删除重建重置。条件错误/超时会保守停止，先查诊断，禁用/移除或修正重建后再继续，不重复求值当前错误，不调用目标Getter/格式化。
+
+ADR-005扩展允许三元、位运算、十六进制与基础数值unchecked显式转换，裸名可回退this成员；新增String/Math/Array固有操作的参数及边界以mcp-tools为准，例如`number > 0 ? Math.Clamp(number,0,10) : 0`、`String.Substring(message,0,3)`。这些能力也用于断点条件，仍禁止目标函数调用。

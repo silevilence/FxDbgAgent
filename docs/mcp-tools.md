@@ -44,9 +44,15 @@ debug_evaluate在指定当前帧解释表达式，线程由frameId确定；可�
 
 固有操作白名单为Math.Abs/Min/Max基础数值参数、String.IsNullOrEmpty、String.Equals(string,string)（ordinal）、String.Concat(string,string)、Array.GetLength(array,dimension)。名称区分大小写，在调试器内执行，不调用目标mscorlib；用户Getter、ToString、方法、运算符、隐式转换、构造器、反射、赋值、自增减、循环和脚本均拒绝。对象支持字段读取、null/引用身份比较与变量树展示。
 
-这是C#的明确子集：小整数/char算术提升int，uint与有符号整数按long提升，ulong与有符号整数混合拒绝（不实现常量隐式转换），float/double按基础提升，整数检查溢出，整数除法向零截断。十进制整数字面量无后缀依次选择int/long/ulong，支持u/l/ul、浮点f/d与指数；不支持十六进制、decimal、指针、强制转换、位运算、条件运算符或完整C#重载选择。字符串字面量支持引号、反斜杠及n/r/t/0转义；计算使用完整原始值，不用显示截断值。
+这是C#的明确子集：小整数/char算术提升int，uint与有符号整数按long提升，ulong与有符号整数混合拒绝（不实现常量隐式转换），float/double按基础提升，整数检查溢出，整数除法向零截断。十进制整数字面量无后缀依次选择int/long/ulong，支持u/l/ul、浮点f/d与指数；不支持decimal、指针或完整C#重载选择。字符串字面量支持引号、反斜杠及n/r/t/0转义；计算使用完整原始值，不用显示截断值。
 
 Math固有操作优先保留已支持的精确小整数重载：Abs(sbyte/short)保留返回类型且最小值溢出；Min/Max的同型sbyte/byte/short/ushort保留类型。其余使用上述基础提升规则，Abs(byte/ushort/char)返回int，Min/Max(char,char)及混合小整数按基础提升。这是解释器明确的子集，不声称与完整C#重载解析相同。
+
+ADR-005语法扩展：三元`?:`右结合且仅计算选中的分支，返回该分支的运行时类型（不做未执行分支的静态类型统一）；两边仍须通过语法及禁止调用检查。`& | ^`支持整数和bool（bool不短路），`~`仅整数，`<< >>`右操作数须可提升为int，移位次数按32/64位掩码，右移按左操作数符号扩展。优先级从高到低为一元、乘除、加减、移位、关系、相等、`&`、`^`、`|`、`&&`、`||`、`?:`。十六进制`0x`/`0X`无后缀依次选int/uint/long/ulong，支持u/l/ul/lu。
+
+显式转换仅支持`(sbyte/byte/short/ushort/char/int/uint/long/ulong/float/double)x`，采用C# unchecked数值转换：整数窄化保留低位，浮点到整数向零截断；超范围/NaN/无穷到整数的值由Engine CLR决定，C#对此不规定固定结果，不作为跨架构恒等保证。普通整数算术仍检查溢出。见[Microsoft数值转换说明](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/numeric-conversions)。裸名先匹配参数/局部/this，未命中再读取this同名成员；参数优先于同名实例字段。
+
+新增固有操作全部用静态白名单名称调用：String.Substring(s,start[,count])、IndexOf(s,value[,start])、Contains/StartsWith/EndsWith(s,value)使用ordinal、Trim(s)、CompareOrdinal(a,b)、IsNullOrWhiteSpace(s)。仅后两者接受null；越界返回expression_index_out_of_range。Math.Round(x[,digits])用ToEven、digits为0～15；Floor/Ceiling/Truncate/Sqrt返回double，Sign返回int，Clamp(x,min,max)沿用基础数值提升且同型小整数保留类型；min>max与Sign(NaN)返回expression_arithmetic_error。Array.IndexOf(array,value)仅一维数组，从真实下界起扫描，未找到返回下界减一；primitive按精确装箱类型和值比较（NaN相等）、对象按引用身份比较，绝不调用目标Equals，复杂值类型不做内容相等。扫描消耗既有步骤/读取预算，超限即拒绝。所有新语法与固有操作自动用于断点条件。
 
 输入4096个UTF-16代码单元，最多1024语法节点、32层、10000解释步骤、1024次值读取；单字符串32768、累计中间字符串65536个代码单元，超限拒绝，不能截断后继续计算。evaluationTimeoutMs包含Engine排队、解析、读取和计算；timeoutMs仍是Host调用期限。取消观察请求可先返回，后台只读工作在原期限内收尾；不会为求值Continue或使帧失效。不可中断原生COM故障沿用隔离清理，不能承诺此类故障后继续或强杀Engine后目标存活。
 

@@ -6,11 +6,14 @@
 
 ## 📝 计划中 (Planned)
 
-- [ ] **受限表达式语法与内置函数增强**——扩展解释器语法与固有函数白名单（Core）
-    - [ ] 语法：三元 `?:`、位运算 `& | ^ ~ << >>`、`0x` 字面量、基础数值显式转换 `(T)x`（C# unchecked 语义并文档化）、裸名回退按 `this` 成员解析
-    - [ ] 内置函数：字符串 Substring/IndexOf/Contains/StartsWith/EndsWith/Trim/CompareOrdinal/IsNullOrWhiteSpace；Math Round/Floor/Ceiling/Truncate/Sqrt/Sign/Clamp；Array.IndexOf；全部作用于已读值，不调用目标 mscorlib
-    - [ ] 七个错误码与既有预算/期限语义保持不变；断点条件自动继承新语法
+## 🚧 开发中 (In Progress)
+
+- [x] **受限表达式语法与内置函数增强**——扩展解释器语法与固有函数白名单（Core）
+    - [x] 语法：三元 `?:`、位运算 `& | ^ ~ << >>`、`0x` 字面量、基础数值显式转换 `(T)x`（C# unchecked 语义并文档化）、裸名回退按 `this` 成员解析
+    - [x] 内置函数：字符串 Substring/IndexOf/Contains/StartsWith/EndsWith/Trim/CompareOrdinal/IsNullOrWhiteSpace；Math Round/Floor/Ceiling/Truncate/Sqrt/Sign/Clamp；Array.IndexOf；全部作用于已读值，不调用目标 mscorlib
+    - [x] 七个错误码与既有预算/期限语义保持不变；断点条件自动继承新语法
     - 验收：正反例单元测试覆盖优先级、数值提升/溢出/转换语义与拒绝面；真实 x86/x64 × Debug/Release 结果与变量模型一致；既有表达式与断点条件回归完全一致；超时/预算/取消行为不变。
+    - 验证记录：2026-09-11 求值与条件断点双配置双架构四入口矩阵共28个监督步骤通过，每配置315项普通单测，输入一致、快速审核无遗留阻塞；见 docs/validation/expression-extension-1.md。
 
 - [ ] **IL 证明的属性读取**——按运行时类型解析属性 getter，仅当其 IL 可证明只读字段时由解释器代读（Interop）
     - [ ] 解析链：字段精确名 → 属性证明 → 拒绝并附原因；模式白名单（`ldarg.0; ldfld; ret`、`ldsfld; ret`、常量 `ldc.*/ldnull; ret`，单方法≤16字节，禁分支/调用/异常子句）；token 解析（FieldDef/MemberRef）与字段槽匹配，歧义拒绝；显式接口实现与带参 getter 拒绝
@@ -27,8 +30,6 @@
     - [ ] 扩展验收入口纳入本组任务专项；双配置双架构全量回归（真实 Service/IIS、VS Code 及阶段4/3/2/1/0）；覆盖率采集与变更生产行≥90%门槛核对
     - [ ] 独立 Standards/Spec 双轴审核、阻塞修复与复核；报告与原始证据按仓库文档纪律归档
     - 验收：全量回归 Debug/Release 通过、无跳过；审核遗留阻塞为零；报告逐条关联上述任务与 ADR-005；失败或缺失证据不得勾选。
-
-## 🚧 开发中 (In Progress)
 
 ## ✅ 已完成 (Completed)
 

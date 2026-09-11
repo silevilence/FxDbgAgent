@@ -1,0 +1,77 @@
+{
+  "outcomes": [
+    {
+      "name": "conditional-breakpoints-publish-mcp-Debug",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\conditional-breakpoints-publish-mcp-Debug.log"
+    },
+    {
+      "name": "conditional-breakpoints-publish-dap-Debug",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\conditional-breakpoints-publish-dap-Debug.log"
+    },
+    {
+      "name": "conditional-breakpoints-unit-Debug",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\conditional-breakpoints-unit-Debug.log"
+    },
+    {
+      "name": "conditional-breakpoints-native-Debug-x86",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\conditional-breakpoints-native-Debug-x86.log"
+    },
+    {
+      "name": "conditional-breakpoints-native-Debug-x64",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\conditional-breakpoints-native-Debug-x64.log"
+    },
+    {
+      "name": "conditional-breakpoints-mcp-Debug",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\conditional-breakpoints-mcp-Debug.log"
+    },
+    {
+      "name": "conditional-breakpoints-dap-cli-Debug",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\conditional-breakpoints-dap-cli-Debug.log"
+    },
+    {
+      "name": "conditional-breakpoints-publish-mcp-Release",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\conditional-breakpoints-publish-mcp-Release.log"
+    },
+    {
+      "name": "conditional-breakpoints-publish-dap-Release",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\conditional-breakpoints-publish-dap-Release.log"
+    },
+    {
+      "name": "conditional-breakpoints-unit-Release",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\conditional-breakpoints-unit-Release.log"
+    },
+    {
+      "name": "conditional-breakpoints-native-Release-x86",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\conditional-breakpoints-native-Release-x86.log"
+    },
+    {
+      "name": "conditional-breakpoints-native-Release-x64",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\conditional-breakpoints-native-Release-x64.log"
+    },
+    {
+      "name": "conditional-breakpoints-mcp-Release",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\conditional-breakpoints-mcp-Release.log"
+    },
+    {
+      "name": "conditional-breakpoints-dap-cli-Release",
+      "exitCode": 0,
+      "log": "C:\\code\\dotnet\\FxDbgAgent\\artifacts\\stage4-validation\\conditional-breakpoints-dap-cli-Release.log"
+    }
+  ],
+  "configuration": "Debug+Release",
+  "atUtc": "2026-09-11T01:21:20.4722804+00:00",
+  "passed": true
+}

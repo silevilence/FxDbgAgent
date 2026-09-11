@@ -34,6 +34,8 @@ public sealed class RestrictedExpression
                 if (node.Literal is string text) budget.String(text.Length);
                 return new ExpressionValue(node.Literal);
             case "name": return resolve(node.Text, budget);
+            case "conditional": return Child(0).Boolean() ? Child(1) : Child(2);
+            case "cast": return new ExpressionValue(ExpressionNumbers.Cast(node.Text, Scalar(Child(0))));
             case "field":
                 ExpressionValue receiver = Child(0);
                 if (node.Text == "Length")
@@ -78,6 +80,7 @@ public sealed class RestrictedExpression
                 return new ExpressionValue(ExpressionNumbers.Binary(node.Text, Scalar(left), Scalar(right)));
             case "call":
                 ExpressionValue[] values = node.Children.Select(child => Run(child, resolve, budget)).ToArray();
+                if (ExpressionIntrinsics.Supports(node.Text)) return ExpressionIntrinsics.Call(node.Text, values, budget);
                 switch (node.Text)
                 {
                     case "Math.Abs": RequireCount(values, 1); return new ExpressionValue(ExpressionNumbers.Abs(Scalar(values[0])));
@@ -130,8 +133,16 @@ public sealed class RestrictedExpression
         {
             budget.Step(); if (depth >= 32) throw EvaluationBudget.Limit();
             Node left;
-            if (token is "!" or "+" or "-") { string op = token; Next(); left = Make("unary", op, null, Expression(7, depth + 1)); }
-            else if (token == "(") { Next(); left = Expression(0, depth + 1); Eat(")"); }
+            if (token is "!" or "+" or "-" or "~") { string op = token; Next(); left = Make("unary", op, null, Expression(11, depth + 1)); }
+            else if (token == "(")
+            {
+                Next();
+                if (category == "name" && ExpressionNumbers.IsCastType(token))
+                {
+                    string type = token; Next(); Eat(")"); left = Make("cast", type, null, Expression(11, depth + 1));
+                }
+                else { left = Expression(0, depth + 1); Eat(")"); }
+            }
             else if (category == "literal") { left = Make("literal", "", literal); Next(); }
             else if (category == "name") { left = Make("name", token); Next(); }
             else throw Syntax();
@@ -151,10 +162,16 @@ public sealed class RestrictedExpression
                 if (token == "(")
                 {
                     string? path = Path(left);
-                    if (path is not ("Math.Abs" or "Math.Min" or "Math.Max" or "String.IsNullOrEmpty" or "String.Equals" or "String.Concat" or "Array.GetLength")) throw Forbidden();
+                    if (path is not ("Math.Abs" or "Math.Min" or "Math.Max" or "String.IsNullOrEmpty" or "String.Equals" or "String.Concat" or "Array.GetLength") && !ExpressionIntrinsics.Supports(path)) throw Forbidden();
                     Next(); var arguments = new List<Node>();
-                    if (token != ")") { arguments.Add(Expression(0, depth + 1)); while (token == ",") { Next(); if (arguments.Count >= 2) throw EvaluationBudget.TypeError(); arguments.Add(Expression(0, depth + 1)); } }
+                    int argumentLimit = path is "String.Substring" or "String.IndexOf" or "Math.Clamp" ? 3 : 2;
+                    if (token != ")") { arguments.Add(Expression(0, depth + 1)); while (token == ",") { Next(); if (arguments.Count >= argumentLimit) throw EvaluationBudget.TypeError(); arguments.Add(Expression(0, depth + 1)); } }
                     Eat(")"); left = Make("call", path!, null, arguments.ToArray()); continue;
+                }
+                if (token == "?" && precedence == 0)
+                {
+                    Next(); Node yes = Expression(0, depth + 1); Eat(":");
+                    left = Make("conditional", "", null, left, yes, Expression(0, depth + 1)); continue;
                 }
                 int level = Precedence(token); if (level == 0 || level <= precedence) break;
                 string operation = token; Next(); left = Make("binary", operation, null, left, Expression(level, depth + 1));
@@ -162,7 +179,7 @@ public sealed class RestrictedExpression
             return left;
         }
         private static string? Path(Node node) => node.Kind == "name" ? node.Text : node.Kind == "field" && Path(node.Children[0]) is { } parent ? parent + "." + node.Text : null;
-        private static int Precedence(string op) => op switch { "||" => 1, "&&" => 2, "==" or "!=" => 3, "<" or "<=" or ">" or ">=" => 4, "+" or "-" => 5, "*" or "/" or "%" => 6, _ => 0 };
+        private static int Precedence(string op) => op switch { "||" => 1, "&&" => 2, "|" => 3, "^" => 4, "&" => 5, "==" or "!=" => 6, "<" or "<=" or ">" or ">=" => 7, "<<" or ">>" => 8, "+" or "-" => 9, "*" or "/" or "%" => 10, _ => 0 };
         private void Eat(string expected) { if (token != expected) throw Syntax(); Next(); }
         private void Next()
         {
@@ -197,6 +214,24 @@ public sealed class RestrictedExpression
             }
             if (c >= '0' && c <= '9')
             {
+                if (c == '0' && position < source.Length && source[position] is 'x' or 'X')
+                {
+                    position++; int digits = position;
+                    while (position < source.Length && Uri.IsHexDigit(source[position])) position++;
+                    if (position == digits || !ulong.TryParse(source.Substring(digits, position - digits), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out ulong hex)) throw Syntax();
+                    int suffixAt = position;
+                    while (position < source.Length && source[position] is 'u' or 'U' or 'l' or 'L') position++;
+                    string hexSuffix = source.Substring(suffixAt, position - suffixAt).ToLowerInvariant();
+                    if (hexSuffix is not ("" or "u" or "l" or "ul" or "lu")) throw Syntax();
+                    if (hexSuffix is "ul" or "lu") literal = hex;
+                    else if (hexSuffix == "l") { if (hex <= long.MaxValue) literal = (long)hex; else literal = hex; }
+                    else if (hexSuffix == "u") { if (hex <= uint.MaxValue) literal = (uint)hex; else literal = hex; }
+                    else if (hex <= int.MaxValue) literal = (int)hex;
+                    else if (hex <= uint.MaxValue) literal = (uint)hex;
+                    else if (hex <= long.MaxValue) literal = (long)hex;
+                    else literal = hex;
+                    token = "literal"; category = "literal"; return;
+                }
                 while (position < source.Length && char.IsDigit(source[position])) position++;
                 bool real = false;
                 if (position < source.Length && source[position] == '.' && position + 1 < source.Length && char.IsDigit(source[position+1]))
@@ -224,10 +259,10 @@ public sealed class RestrictedExpression
                 token = "literal"; category = "literal"; return;
             }
             string pair = position < source.Length ? source.Substring(start,2) : "";
-            if (pair is "++" or "--" or "+=" or "-=" or "*=" or "/=" or "=>" or "??" or "?.") throw Forbidden();
-            if (pair is "==" or "!=" or "<=" or ">=" or "&&" or "||") { position++; token = pair; return; }
+            if (pair is "++" or "--" or "+=" or "-=" or "*=" or "/=" or "%=" or "&=" or "|=" or "^=" or "=>" or "??" or "?.") throw Forbidden();
+            if (pair is "==" or "!=" or "<=" or ">=" or "&&" or "||" or "<<" or ">>") { position++; token = pair; return; }
             if (c == '=') throw Forbidden();
-            if ("()+-*/%!<>,.[]".IndexOf(c) < 0) throw Syntax();
+            if ("()+-*/%!<>,.[]?:&|^~".IndexOf(c) < 0) throw Syntax();
             token = c.ToString();
         }
     }

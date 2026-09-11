@@ -23,7 +23,7 @@ namespace FxDbg.Debuggees
         }
     }
 
-    internal static class Program
+    internal sealed class Program
     {
         private static int executionSink;
         private static int variableSink;
@@ -40,7 +40,7 @@ namespace FxDbg.Debuggees
                 var matrix = new int[,] { { 10,20 }, { 30,40 } };
                 Array shifted = Array.CreateInstance(typeof(int), new[] {2,3}, new[] {-2,5}); shifted.SetValue(99,-1,7);
                 variableSink = Node.Counter;
-                EvaluateTarget(42,"abcdefghijklmnop",node,matrix,shifted,9007199254740993L,new string('s',32769));
+                new Program().EvaluateTarget(42,"abcdefghijklmnop",node,matrix,shifted,9007199254740993L,new string('s',32769));
                 if (userCodeCalls != 0 || Node.Counter != 777 || node.Label != "node-label" || node.Self != node ||
                     matrix[1,1] != 40 || (int)shifted.GetValue(-1,7) != 99 || variableSink != 42)
                     throw new InvalidOperationException("Evaluation changed target state.");
@@ -148,12 +148,19 @@ namespace FxDbg.Debuggees
             GC.KeepAlive(nothing);
         }
 
+        public int fallbackNumber = 17;
+        public int number = 900;
+        public int[] Values = new[] {10,20,30};
+        public Array ShiftedVector = Array.CreateInstance(typeof(int), new[] {3}, new[] {-2});
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void EvaluateTarget(int number, string message, Node node, int[,] matrix, Array shifted, long exact, string oversized)
+        private void EvaluateTarget(int number, string message, Node node, int[,] matrix, Array shifted, long exact, string oversized)
         {
             int localNumber = number * 2;
             variableSink = number; // EVALUATION_BREAKPOINT
-            if ((int)shifted.GetValue(-1,7) != 99 || oversized.Length != 32769) throw new InvalidOperationException("Evaluation arguments changed.");
+            if (fallbackNumber != 17 || this.number != 900 || Values[1] != 20 || (int)ShiftedVector.GetValue(-1) != 0)
+                throw new InvalidOperationException("Evaluation receiver state changed.");
+            if ((int)shifted.GetValue(-1,7) != 99 || oversized.Length != 32769 || matrix[1,1] != 40 || exact != 9007199254740993L ||
+                message != "abcdefghijklmnop" || node.Label != "node-label" || number != 42) throw new InvalidOperationException("Evaluation arguments changed.");
             GC.KeepAlive(number); GC.KeepAlive(message); GC.KeepAlive(node); GC.KeepAlive(matrix);
             GC.KeepAlive(shifted); GC.KeepAlive(exact); GC.KeepAlive(oversized); GC.KeepAlive(localNumber);
         }

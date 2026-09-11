@@ -28,7 +28,7 @@ Get-ChildItem -LiteralPath (Join-Path $repoRoot "src/FxDbg.Engine/bin/$Configura
 if ($Entry -eq 'Mcp') {
     $skillDestination = Join-Path $OutputDirectory 'skills'
     $null = New-Item -ItemType Directory -Path $skillDestination -Force
-    Copy-Item -LiteralPath (Join-Path $repoRoot 'skills/fxdbg-agent') -Destination $skillDestination -Recurse
+    Copy-Item -LiteralPath (Join-Path $repoRoot 'skills/fxdbg-agent') -Destination $skillDestination -Recurse -Force
 }
 . (Join-Path $PSScriptRoot 'bundle-manifest.ps1')
 Get-BundleHashes $OutputDirectory | Set-Content -LiteralPath (Join-Path $OutputDirectory 'bundle-manifest.sha256') -Encoding utf8
