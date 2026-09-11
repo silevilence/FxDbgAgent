@@ -66,4 +66,3 @@ if (@($rows | Where-Object { -not $_.instrumented }).Count) { throw 'Changed pro
 if ($total -eq 0 -or $covered/$total -lt 0.90) { throw "Changed production coverage is below 90%: $covered/$total" }
 $rows | ConvertTo-Json -Depth 4
 "Changed production coverage: $covered/$total = $([Math]::Round(100*$covered/$total,2))%"
-
