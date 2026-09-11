@@ -164,7 +164,7 @@ public sealed class RestrictedExpression
                     string? path = Path(left);
                     if (path is not ("Math.Abs" or "Math.Min" or "Math.Max" or "String.IsNullOrEmpty" or "String.Equals" or "String.Concat" or "Array.GetLength") && !ExpressionIntrinsics.Supports(path)) throw Forbidden();
                     Next(); var arguments = new List<Node>();
-                    int argumentLimit = path is "String.Substring" or "String.IndexOf" or "Math.Clamp" ? 3 : 2;
+                    int argumentLimit = ExpressionIntrinsics.Arity(path)?.Maximum ?? 2;
                     if (token != ")") { arguments.Add(Expression(0, depth + 1)); while (token == ",") { Next(); if (arguments.Count >= argumentLimit) throw EvaluationBudget.TypeError(); arguments.Add(Expression(0, depth + 1)); } }
                     Eat(")"); left = Make("call", path!, null, arguments.ToArray()); continue;
                 }
@@ -251,7 +251,7 @@ public sealed class RestrictedExpression
                     if (suffix is not ("" or "u" or "l" or "ul" or "lu") || !ulong.TryParse(number, NumberStyles.None, CultureInfo.InvariantCulture, out ulong integer)) throw Syntax();
                     if (suffix is "ul" or "lu") literal = integer;
                     else if (suffix == "u") { if (integer <= uint.MaxValue) literal = (uint)integer; else literal = integer; }
-                    else if (suffix == "l") { if (integer > long.MaxValue) throw Syntax(); literal = (long)integer; }
+                    else if (suffix == "l") { if (integer <= long.MaxValue) literal = (long)integer; else literal = integer; }
                     else if (integer <= int.MaxValue) literal = (int)integer;
                     else if (integer <= long.MaxValue) literal = (long)integer;
                     else literal = integer;

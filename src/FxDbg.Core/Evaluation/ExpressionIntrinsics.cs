@@ -6,20 +6,21 @@ namespace FxDbg.Core.Evaluation;
 /// <summary>Closed operations over captured primitives. Never invokes a target method or equality overload.</summary>
 internal static class ExpressionIntrinsics
 {
-    internal static bool Supports(string? name) => name is
-        "String.Substring" or "String.IndexOf" or "String.Contains" or "String.StartsWith" or "String.EndsWith" or
-        "String.Trim" or "String.CompareOrdinal" or "String.IsNullOrWhiteSpace" or
-        "Math.Round" or "Math.Floor" or "Math.Ceiling" or "Math.Truncate" or "Math.Sqrt" or "Math.Sign" or "Math.Clamp" or "Array.IndexOf";
+    internal static (int Minimum, int Maximum)? Arity(string? name) => name switch
+    {
+        "String.Substring" or "String.IndexOf" => (2, 3),
+        "String.Contains" or "String.StartsWith" or "String.EndsWith" or "String.CompareOrdinal" or "Array.IndexOf" => (2, 2),
+        "Math.Round" => (1, 2),
+        "Math.Clamp" => (3, 3),
+        "String.Trim" or "String.IsNullOrWhiteSpace" or "Math.Floor" or "Math.Ceiling" or "Math.Truncate" or "Math.Sqrt" or "Math.Sign" => (1, 1),
+        _ => null
+    };
+    internal static bool Supports(string? name) => Arity(name).HasValue;
 
     internal static ExpressionValue Call(string name, ExpressionValue[] args, EvaluationBudget budget)
     {
         budget.Step();
-        int minimum = name switch
-        {
-            "String.Substring" or "String.IndexOf" or "String.Contains" or "String.StartsWith" or "String.EndsWith" or "String.CompareOrdinal" or "Array.IndexOf" => 2,
-            "Math.Clamp" => 3, _ => 1
-        };
-        int maximum = name is "String.Substring" or "String.IndexOf" ? 3 : name == "Math.Round" ? 2 : minimum;
+        var (minimum, maximum) = Arity(name) ?? throw EvaluationBudget.TypeError();
         if (args.Length < minimum || args.Length > maximum) throw EvaluationBudget.TypeError();
         object? result;
         switch (name)

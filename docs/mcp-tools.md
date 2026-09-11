@@ -44,7 +44,7 @@ debug_evaluate在指定当前帧解释表达式，线程由frameId确定；可�
 
 固有操作白名单为Math.Abs/Min/Max基础数值参数、String.IsNullOrEmpty、String.Equals(string,string)（ordinal）、String.Concat(string,string)、Array.GetLength(array,dimension)。名称区分大小写，在调试器内执行，不调用目标mscorlib；目标Getter执行、ToString、方法、运算符、隐式转换、构造器、反射、赋值、自增减、循环和脚本均拒绝。对象支持字段读取、null/引用身份比较与变量树展示。
 
-这是C#的明确子集：小整数/char算术提升int，uint与有符号整数按long提升，ulong与有符号整数混合拒绝（不实现常量隐式转换），float/double按基础提升，整数检查溢出，整数除法向零截断。十进制整数字面量无后缀依次选择int/long/ulong，支持u/l/ul、浮点f/d与指数；不支持decimal、指针或完整C#重载选择。字符串字面量支持引号、反斜杠及n/r/t/0转义；计算使用完整原始值，不用显示截断值。
+这是C#的明确子集：小整数/char算术提升int，uint与有符号整数按long提升，ulong与有符号整数混合拒绝（不实现常量隐式转换），float/double按基础提升，整数检查溢出，整数除法向零截断。十进制整数字面量无后缀依次选择int/long/ulong，支持u/l/ul/lu、浮点f/d与指数；十进制和十六进制的l/L后缀均依次选择long/ulong，只有超出ulong范围才拒绝。不支持decimal、指针或完整C#重载选择。字符串字面量支持引号、反斜杠及n/r/t/0转义；计算使用完整原始值，不用显示截断值。
 
 Math固有操作优先保留已支持的精确小整数重载：Abs(sbyte/short)保留返回类型且最小值溢出；Min/Max的同型sbyte/byte/short/ushort保留类型。其余使用上述基础提升规则，Abs(byte/ushort/char)返回int，Min/Max(char,char)及混合小整数按基础提升。这是解释器明确的子集，不声称与完整C#重载解析相同。
 

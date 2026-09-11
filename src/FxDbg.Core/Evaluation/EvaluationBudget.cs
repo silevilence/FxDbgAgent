@@ -36,7 +36,7 @@ public sealed class EvaluationBudget : IDisposable
     public void InspectIl(int length)
     {
         Step();
-        if (length < 0 || length > 16 || length > 256 - ilBytes) throw Limit();
+        if (length < 0 || length > TrivialGetterProof.MaximumIlBytes || length > 256 - ilBytes) throw Limit();
         ilBytes += length;
     }
     public void String(int length)

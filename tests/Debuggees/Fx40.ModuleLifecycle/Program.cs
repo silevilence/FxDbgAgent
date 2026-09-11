@@ -31,6 +31,12 @@ namespace FxDbg.Debuggees
         public static void Record() { Calls++; }
     }
     public sealed class InheritedVirtualModel : VirtualProofBase { }
+    public interface IUnrelatedOperation { void Run(); }
+    public class VirtualProofMiddle : VirtualProofBase { }
+    public sealed class UnrelatedImplementationModel : VirtualProofMiddle, IUnrelatedOperation
+    {
+        void IUnrelatedOperation.Run() { VirtualProofBase.Record(); }
+    }
 
     internal sealed class Program
     {
@@ -170,6 +176,7 @@ namespace FxDbg.Debuggees
         public VirtualProofBase OddVirtual = MakeHiddenOverride(true);
         public VirtualProofBase ImplicitVirtual = MakeHiddenOverride(false);
         public VirtualProofBase InheritedVirtual = new InheritedVirtualModel();
+        public VirtualProofBase UnrelatedImplementation = new UnrelatedImplementationModel();
         public PropertyBase ComputedVirtual = new ComputedPropertyModel();
         public ValueModel Struct = new ValueModel { Field = 31 };
         public GenericModel<string> Generic = new GenericModel<string> { Field = "generic" };

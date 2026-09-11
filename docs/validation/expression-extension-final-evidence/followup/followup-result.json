@@ -1,0 +1,412 @@
+{
+  "stages": [
+    {
+      "stage": "4-1",
+      "outcomes": [
+        {
+          "name": "evaluation-publish-mcp-Debug",
+          "exitCode": 0
+        },
+        {
+          "name": "evaluation-publish-dap-Debug",
+          "exitCode": 0
+        },
+        {
+          "name": "evaluation-unit-Debug",
+          "exitCode": 0
+        },
+        {
+          "name": "evaluation-native-Debug-x86",
+          "exitCode": 0
+        },
+        {
+          "name": "evaluation-native-Debug-x64",
+          "exitCode": 0
+        },
+        {
+          "name": "evaluation-mcp-Debug",
+          "exitCode": 0
+        },
+        {
+          "name": "evaluation-dap-cli-Debug",
+          "exitCode": 0
+        },
+        {
+          "name": "evaluation-publish-mcp-Release",
+          "exitCode": 0
+        },
+        {
+          "name": "evaluation-publish-dap-Release",
+          "exitCode": 0
+        },
+        {
+          "name": "evaluation-unit-Release",
+          "exitCode": 0
+        },
+        {
+          "name": "evaluation-native-Release-x86",
+          "exitCode": 0
+        },
+        {
+          "name": "evaluation-native-Release-x64",
+          "exitCode": 0
+        },
+        {
+          "name": "evaluation-mcp-Release",
+          "exitCode": 0
+        },
+        {
+          "name": "evaluation-dap-cli-Release",
+          "exitCode": 0
+        }
+      ],
+      "passed": true
+    },
+    {
+      "stage": "4-3",
+      "outcomes": [
+        {
+          "name": "conditional-breakpoints-publish-mcp-Debug",
+          "exitCode": 0
+        },
+        {
+          "name": "conditional-breakpoints-publish-dap-Debug",
+          "exitCode": 0
+        },
+        {
+          "name": "conditional-breakpoints-unit-Debug",
+          "exitCode": 0
+        },
+        {
+          "name": "conditional-breakpoints-native-Debug-x86",
+          "exitCode": 0
+        },
+        {
+          "name": "conditional-breakpoints-native-Debug-x64",
+          "exitCode": 0
+        },
+        {
+          "name": "conditional-breakpoints-mcp-Debug",
+          "exitCode": 0
+        },
+        {
+          "name": "conditional-breakpoints-dap-cli-Debug",
+          "exitCode": 0
+        },
+        {
+          "name": "conditional-breakpoints-publish-mcp-Release",
+          "exitCode": 0
+        },
+        {
+          "name": "conditional-breakpoints-publish-dap-Release",
+          "exitCode": 0
+        },
+        {
+          "name": "conditional-breakpoints-unit-Release",
+          "exitCode": 0
+        },
+        {
+          "name": "conditional-breakpoints-native-Release-x86",
+          "exitCode": 0
+        },
+        {
+          "name": "conditional-breakpoints-native-Release-x64",
+          "exitCode": 0
+        },
+        {
+          "name": "conditional-breakpoints-mcp-Release",
+          "exitCode": 0
+        },
+        {
+          "name": "conditional-breakpoints-dap-cli-Release",
+          "exitCode": 0
+        }
+      ],
+      "passed": true
+    }
+  ],
+  "coverage": {
+    "files": [
+      {
+        "instrumented": true,
+        "uncovered": [],
+        "file": "src/FxDbg.Core/Evaluation/EvaluationBudget.cs",
+        "executableChangedLines": 1,
+        "covered": 1
+      },
+      {
+        "instrumented": true,
+        "uncovered": [],
+        "file": "src/FxDbg.Core/Evaluation/ExpressionIntrinsics.cs",
+        "executableChangedLines": 11,
+        "covered": 11
+      },
+      {
+        "instrumented": true,
+        "uncovered": [],
+        "file": "src/FxDbg.Core/Evaluation/RestrictedExpression.cs",
+        "executableChangedLines": 2,
+        "covered": 2
+      },
+      {
+        "instrumented": true,
+        "uncovered": [],
+        "file": "src/FxDbg.Core/Evaluation/TrivialGetterProof.cs",
+        "executableChangedLines": 2,
+        "covered": 2
+      },
+      {
+        "instrumented": true,
+        "uncovered": [],
+        "file": "src/FxDbg.Interop/NativeVariableValue.cs",
+        "executableChangedLines": 19,
+        "covered": 19
+      },
+      {
+        "instrumented": true,
+        "uncovered": [],
+        "file": "src/FxDbg.Interop/NativeVariableValue.Properties.cs",
+        "executableChangedLines": 4,
+        "covered": 4
+      }
+    ],
+    "rate": 1,
+    "total": 39,
+    "covered": 39
+  },
+  "coverageTests": [
+    {
+      "file": "artifacts\\expression-review-followup\\coverage\\real-Debug\\real.trx",
+      "sha256": "A00D0D1ED8BD92E03ACFE66CB765F66AEF802A8AA11BC8AFD914D01F5FBE77BC",
+      "total": 6,
+      "failed": 0,
+      "passed": 6
+    },
+    {
+      "file": "artifacts\\expression-review-followup\\coverage\\unit-Debug\\unit.trx",
+      "sha256": "A77EE8FB26028225960FA66BEEFF542BB70ED042D022FB67CB4BC49F040DD062",
+      "total": 348,
+      "failed": 0,
+      "passed": 348
+    },
+    {
+      "file": "artifacts\\expression-review-followup\\coverage\\unit-Release\\unit.trx",
+      "sha256": "5DCFB252615E991686D1EBC28B2E8D5F9A0CB760F13BBAC6E0370A9787BCB220",
+      "total": 348,
+      "failed": 0,
+      "passed": 348
+    }
+  ],
+  "sourceTree": "6055ed4d8e838532c82a598aca7a4cbd1da2e0cc",
+  "rawEvidenceLocalOnly": true,
+  "baseline": "a7914a9f7b0be372439465536898efc7eae9a122",
+  "rawFiles": [
+    {
+      "path": "artifacts\\expression-review-followup\\coverage.log",
+      "sha256": "5FAD804A9A6E6561B1B5CBEED47E0DCB10355F98934C211AEF84AE18A80F066B",
+      "length": 2228
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\green-build.log",
+      "sha256": "9F898E99C3656DE0AEF4A601171BFBA45083A88E6C89E8D7D3702EAF6EF3FD30",
+      "length": 4331
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\green-native.log",
+      "sha256": "06E019AE131828758161C2616286359A301DFDA520D22B78E51D62532967F553",
+      "length": 132
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\measure.ps1",
+      "sha256": "66CCF15561B4F8C31C66BC97E08D46EC769FF72ABC3B982C7C362799852775E2",
+      "length": 1449
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\red-build.log",
+      "sha256": "D91A57734BC59586F6CD99BFF79AF8A3A96E4B2B59F510B025D33C1B51CD8917",
+      "length": 4331
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\red-native.log",
+      "sha256": "FCECE241637872C9A54B4132BC207CFBB6E515874C9C8A28B19D5AD649DABD5B",
+      "length": 2600
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\test-inputs.sha256",
+      "sha256": "08A15DC42F9C50192091EA72ABAB249FA7D4A80F768358845933AA64CBDBEDC2",
+      "length": 33659
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\validation.log",
+      "sha256": "6C9E9EF198B598F7831C728F9C375E397D9ABB16B75CDF27C497EEB3AC734DC2",
+      "length": 9263
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\compiler\\Compiler.csproj",
+      "sha256": "17CB9ABFCC912E088434312FBB27B7F15C91333331ED759732AC4A3984616717",
+      "length": 149
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\compiler\\Program.cs",
+      "sha256": "7AE1C7DCC28080387FA21225C3D8DEC3F12584896B312D65950CCCCABF62C328",
+      "length": 295
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\coverage\\real-Debug\\real.trx",
+      "sha256": "A00D0D1ED8BD92E03ACFE66CB765F66AEF802A8AA11BC8AFD914D01F5FBE77BC",
+      "length": 11045
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\coverage\\unit-Debug\\unit.trx",
+      "sha256": "A77EE8FB26028225960FA66BEEFF542BB70ED042D022FB67CB4BC49F040DD062",
+      "length": 504593
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\coverage\\unit-Release\\unit.trx",
+      "sha256": "5DCFB252615E991686D1EBC28B2E8D5F9A0CB760F13BBAC6E0370A9787BCB220",
+      "length": 505985
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\dap-cli-conditional-breakpoints.log",
+      "sha256": "7F9A72E26B71A5D67BC0A1A6F1B6C2FDB8738FAA88D5993C635649BCFE668223",
+      "length": 4217
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\dap-cli-conditional-breakpoints.log.processes",
+      "sha256": "E6D48DDC81B13A2AC0E661D6C007CCDD5CB315AAF53A1C6FFEF45F8E6235F1F4",
+      "length": 72519
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\dap-cli-conditional-breakpoints.log.timing.json",
+      "sha256": "5ED8F8614E55E1054104B420B887B0C09E90D3627E73E04DA18393C33E9C0E11",
+      "length": 180
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\dap-cli-evaluation.log",
+      "sha256": "371F11951A73D1AF9B6BF174C2147903674D055A0555551314B8338AB33F1621",
+      "length": 393
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\dap-cli-evaluation.log.processes",
+      "sha256": "E3D82AB68D3A932DA5F058A985431AF5F3F53637DAF00A926D40E7D562087647",
+      "length": 10003
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\dap-cli-evaluation.log.timing.json",
+      "sha256": "2A5DC728FFBAB904F6CB177816722B468C96E05E98655E34F732F8349AD59F92",
+      "length": 179
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\mcp-conditional-breakpoints.log",
+      "sha256": "56FCEAD7AAFBD03AEB21B9B795B7552B6E13685956F85BB40F512D675B929D07",
+      "length": 2227
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\mcp-conditional-breakpoints.log.processes",
+      "sha256": "BACC330AE699EFE72B1714CD3A80E5CA4F0F53BA6431C9E3EF7BFE8059AD583C",
+      "length": 9202
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\mcp-conditional-breakpoints.log.timing.json",
+      "sha256": "B7580F2E094FAB3021E0C7E9DB3D467B5CD0AAED0422AD70B614448C30E3015A",
+      "length": 179
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\mcp-evaluation.log",
+      "sha256": "1126F8BA1830CF0516B03F4C49E1024204BB8C864F7EB95D5C085B4A59719E54",
+      "length": 231
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\mcp-evaluation.log.processes",
+      "sha256": "0217BAEDE891C786044E677D204EF451E82380F22AEAB6A564DA04746A524595",
+      "length": 1063
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\mcp-evaluation.log.timing.json",
+      "sha256": "8854C0A290148539666F44FAE86B28AFB9C27DE22D3BA5B6A9FB0F6343065493",
+      "length": 178
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\native-conditional-breakpoints-x64.log",
+      "sha256": "F8386AF7A0ADC384B8A41978C094216C5C770670B1D1D2784F99BD15D2050440",
+      "length": 1239
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\native-conditional-breakpoints-x64.log.processes",
+      "sha256": "5C595D2A647B5B3772FF72342C50825FBEC7B7C3DB82FF705E000F738EC3AB2F",
+      "length": 1368
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\native-conditional-breakpoints-x64.log.timing.json",
+      "sha256": "1424F84C60FDF85228DBAF4FB3BB8AC1AD7EE5F2D76DBA8B88D1A358C06A7970",
+      "length": 178
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\native-conditional-breakpoints-x86.log",
+      "sha256": "367F9AD7D5F64DF9ACFD0BA1A6D524EA77E795F03CF8F1C8D88526B1C7E934BE",
+      "length": 1239
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\native-conditional-breakpoints-x86.log.processes",
+      "sha256": "756A3A7FE6BF9BD3F6C79858A1A53A916B70879E6C9FFCD138D2771F6F1F7033",
+      "length": 1417
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\native-conditional-breakpoints-x86.log.timing.json",
+      "sha256": "D370ED8555AF8D346F8B9A16904C8BD95FCD03CFF7510BC8786CA8CDE6E44794",
+      "length": 178
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\native-evaluation-x64.log",
+      "sha256": "5DC0EB9F699635736D7982F75030C8C1CF754A8A9FC5CFFBFE758BB10D23FE23",
+      "length": 189
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\native-evaluation-x64.log.processes",
+      "sha256": "97EE56E1633049858D061A9E833F61DD6B9CC4CDF955CC9CCAA0EEC34BA9E58F",
+      "length": 279
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\native-evaluation-x64.log.timing.json",
+      "sha256": "82B421672C141EE316CC92DB75FE147EEBA1FD42109181E6A11F0081BA571262",
+      "length": 178
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\native-evaluation-x86.log",
+      "sha256": "DC39A5BB18B0261434625AB037B994DE7C66E20C329E9AC42F53B09F1E6EFCA8",
+      "length": 189
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\native-evaluation-x86.log.processes",
+      "sha256": "F5685E4F94AD8235A922E61FBAE0989B9280435163ECBDE6284D0392E1540067",
+      "length": 286
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\real-logs\\native-evaluation-x86.log.timing.json",
+      "sha256": "B24230118D6601CA92A942087932988C1B93FD2FAF225268A8EBC2AAFADDC072",
+      "length": 178
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\red-unit\\red.trx",
+      "sha256": "4BFCDCF0A21CA4CC2A18ABC20DBB7E930D5D3B189534CEEFE8D822FB9BA00805",
+      "length": 144992
+    }
+  ],
+  "decisionCounts": {
+    "rejected": 1,
+    "partial": 2,
+    "full": 4
+  },
+  "scopeLimit": "This follow-up did not rerun Service/IIS, VS Code or the full stage 0-4 acceptance.",
+  "review": {
+    "scope": "Changes from a7914a9; local review, no new independent agents",
+    "blockingFindings": 0
+  },
+  "verification": {
+    "inputsUnchanged": true,
+    "verifiedUtc": "2026-09-11T13:12:02.1231343+08:00",
+    "files": 884
+  },
+  "validationRun": "artifacts/validation-runs/2e38d3ed7cdd4aebb902296bcff3a72e",
+  "testInputCount": 309
+}

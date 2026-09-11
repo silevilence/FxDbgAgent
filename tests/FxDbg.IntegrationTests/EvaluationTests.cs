@@ -57,6 +57,7 @@ internal static partial class Program
             ExpectError(FxDbgErrorCode.ExpressionTypeError,()=>session.Evaluate(frame,"Array.IndexOf(matrix,40)",1000));
             foreach (var pair in new System.Collections.Generic.Dictionary<string,string>
             {
+                ["UnrelatedImplementation.Value"]="13",
                 ["Properties.Promoted"]="5", ["Properties.StillTiny"]="5", ["Properties.UnsignedProperty"]="4000000000", ["Properties.WideProperty"]="18000000000000000000", ["InheritedVirtual.Value"]="13", ["List.Count"]="3", ["Queue.Count"]="2", ["Stack.Count"]="1", ["Properties.Auto"]="19", ["Properties.Pure"]="23",
                 ["Virtual.Value"]="23", ["Properties.Static"]="37", ["Properties.Constant"]="7", ["Properties.Flag"]="true",
                 ["Properties.Letter"]="Z", ["Properties.Long"]="1234567890123", ["Properties.Single"]="1.5", ["Properties.Double"]="2.5",
@@ -89,6 +90,9 @@ internal static partial class Program
             using var metadataBudget=new EvaluationBudget(1000);
             ExpectError(FxDbgErrorCode.ExpressionLimitExceeded,()=>session.Evaluate(frame,"Huge.Missing",budget:metadataBudget));
             Require((int)typeof(EvaluationBudget).GetField("metadataProbes",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(metadataBudget)! ==257,"Real metadata traversal must stop before probe 257 executes.");
+            var huge=session.Evaluate(frame,"Huge",1000,maxDepth:0);
+            Require(huge.ReferenceId is not null && session.GetVariables(frame,huge.ReferenceId,start:255,count:5).Count==5,
+                "Variable paging retains its wider field limit independently of the expression probe budget.");
             using var repeatedRoots=new EvaluationBudget(1000);
             Require(session.Evaluate(frame,string.Join("+",Enumerable.Repeat("number",16)),budget:repeatedRoots).DisplayValue=="672","Repeated roots retain their values.");
             Require((int)typeof(EvaluationBudget).GetField("metadataProbes",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(repeatedRoots)! < 10,"Repeated root names must not repeat metadata scans.");

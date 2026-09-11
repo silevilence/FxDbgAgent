@@ -112,26 +112,33 @@ internal sealed partial class NativeVariableValue : IVariableValue
         {
             if (++hierarchyDepth > 128) throw new FxDbgException(FxDbgErrorCode.ValueUnavailable, "Type hierarchy exceeds 128 levels.");
             MetaDataImport metadata = type.Class.Module.GetMetaDataInterface().MetaDataImport;
-            var tokens = new mdFieldDef[64];
-            IntPtr enumeration = IntPtr.Zero;
-            try
-            {
-                int count;
-                while ((count = MetadataNames.EnumFields(metadata, ref enumeration, type.Class.Token, tokens)) > 0)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    if (result.Count + count > 10000) throw new FxDbgException(FxDbgErrorCode.ValueUnavailable, "Type field count exceeds 10000.");
-                    for (int index = 0; index < count; index++)
-                    {
-                        GetFieldPropsResult fieldProperties = metadata.GetFieldProps(tokens[index]);
-                        result.Add(new FieldSlot(fieldProperties.szField, tokens[index], type, (fieldProperties.pdwAttr & CorFieldAttr.fdStatic) != 0));
-                    }
-                }
-            }
-            finally { if (enumeration != IntPtr.Zero) metadata.CloseEnum(enumeration); }
+            AddFields(type, metadata, result, cancellationToken.ThrowIfCancellationRequested);
             type = type.Base;
         }
         return fields = result;
+    }
+
+    private static void AddFields(CorDebugType type, MetaDataImport metadata, List<FieldSlot> result, Action beforeRead)
+    {
+        var tokens = new mdFieldDef[64];
+        IntPtr enumeration = IntPtr.Zero;
+        try
+        {
+            while (true)
+            {
+                beforeRead();
+                int count = MetadataNames.EnumFields(metadata, ref enumeration, type.Class.Token, tokens);
+                if (count == 0) break;
+                if (result.Count + count > 10000) throw new FxDbgException(FxDbgErrorCode.ValueUnavailable, "Type field count exceeds 10000.");
+                for (int index = 0; index < count; index++)
+                {
+                    beforeRead();
+                    GetFieldPropsResult field = metadata.GetFieldProps(tokens[index]);
+                    result.Add(new FieldSlot(field.szField, tokens[index], type, (field.pdwAttr & CorFieldAttr.fdStatic) != 0));
+                }
+            }
+        }
+        finally { if (enumeration != IntPtr.Zero) metadata.CloseEnum(enumeration); }
     }
 
     private static T Read<T>(Func<T> action)

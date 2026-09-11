@@ -18,7 +18,7 @@
 - [x] **IL 证明的属性读取**——按运行时类型解析属性 getter，仅当其 IL 可证明只读字段时由解释器代读（Interop）
     - [x] 解析链：字段精确名 → 属性证明 → 拒绝并附原因；模式白名单（`ldarg.0; ldfld; ret`、`ldsfld; ret`、常量 `ldc.*/ldnull; ret`，单方法≤16字节，禁分支/调用/异常子句）；token 解析（FieldDef/MemberRef）与字段槽匹配，歧义拒绝；显式接口实现与带参 getter 拒绝
     - [x] 预算：元数据探针≤256/表达式、IL 累计≤256字节；类型级缓存绑定停止代次；不创建 ICorDebugEval、不新增 Continue
-    - [x] 覆盖容器 Count（List/Dictionary/Queue/Stack 等）与模型 auto-property/手写纯字段属性；计算型 getter 保持拒绝
+    - [x] 覆盖容器 Count 的通过/拒绝矩阵：List/Queue/Stack 的纯字段实现通过，Dictionary.Count 的计算型实现保持拒绝；模型 auto-property/手写纯字段属性通过，其他计算型 getter 保持拒绝
     - 验收：真实双架构 × 双配置的通过/拒绝矩阵（容器、模型属性、虚属性、静态属性、值类型接收者、计算属性、显式接口实现）；副作用计数与 Continue 配对计数证据；禁止路径调用计数为零；CLI/MCP/DAP 结果一致；文档同步。
     - 验证记录：2026-09-11双配置双架构四入口求值/条件矩阵共28个监督步骤通过，每配置319项普通单测，真实预算及跨停止缓存验证通过；Dictionary.Count等计算型实现仍拒绝，快速审核无遗留阻塞。见docs/validation/expression-extension-2.md。
 

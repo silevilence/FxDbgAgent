@@ -36,6 +36,11 @@ public sealed class ExpressionExtensionTests
     [InlineData("~0L", "-1", "long")]
     [InlineData("0xFFFFFFFF", "4294967295", "uint")]
     [InlineData("0XffffffffffffffffL", "18446744073709551615", "ulong")]
+    [InlineData("18446744073709551615L", "18446744073709551615", "ulong")]
+    [InlineData("9223372036854775808L", "9223372036854775808", "ulong")]
+    [InlineData("0x8000000000000000L", "9223372036854775808", "ulong")]
+    [InlineData("9223372036854775807L", "9223372036854775807", "long")]
+    [InlineData("0x7fffffffffffffffL", "9223372036854775807", "long")]
     [InlineData("0x10u | 1u", "17", "uint")]
     [InlineData("0x10UL ^ 1u", "17", "ulong")]
     [InlineData("(int)0xFFFFFFFF", "-1", "int")]
@@ -96,6 +101,8 @@ public sealed class ExpressionExtensionTests
     [InlineData("(int)null", FxDbgErrorCode.ExpressionTypeError)]
     [InlineData("0x", FxDbgErrorCode.ExpressionSyntaxError)]
     [InlineData("0x10000000000000000", FxDbgErrorCode.ExpressionSyntaxError)]
+    [InlineData("0x10000000000000000L", FxDbgErrorCode.ExpressionSyntaxError)]
+    [InlineData("18446744073709551616L", FxDbgErrorCode.ExpressionSyntaxError)]
     [InlineData("0x1uu", FxDbgErrorCode.ExpressionSyntaxError)]
     [InlineData("x |= 2", FxDbgErrorCode.ExpressionForbidden)]
     [InlineData("x <<= 2", FxDbgErrorCode.ExpressionForbidden)]
@@ -111,6 +118,31 @@ public sealed class ExpressionExtensionTests
     [InlineData("Array.IndexOf(1,1)", FxDbgErrorCode.ExpressionTypeError)]
     public void Rejections_keep_the_error_contract(string text, FxDbgErrorCode expected) =>
         Assert.Equal(expected, Assert.Throws<FxDbgException>(() => Eval(text)).Code);
+
+    [Theory]
+    [InlineData("String.Substring", 3)]
+    [InlineData("String.IndexOf", 3)]
+    [InlineData("String.Contains", 2)]
+    [InlineData("String.StartsWith", 2)]
+    [InlineData("String.EndsWith", 2)]
+    [InlineData("String.CompareOrdinal", 2)]
+    [InlineData("Array.IndexOf", 2)]
+    [InlineData("Math.Round", 2)]
+    [InlineData("Math.Clamp", 3)]
+    [InlineData("String.Trim", 1)]
+    [InlineData("String.IsNullOrWhiteSpace", 1)]
+    [InlineData("Math.Floor", 1)]
+    [InlineData("Math.Ceiling", 1)]
+    [InlineData("Math.Truncate", 1)]
+    [InlineData("Math.Sqrt", 1)]
+    [InlineData("Math.Sign", 1)]
+    public void Too_many_intrinsic_arguments_are_rejected_even_in_skipped_branches(string name, int maximum)
+    {
+        string arguments = string.Join(",", System.Linq.Enumerable.Repeat("missing", maximum + 1));
+        using var budget = new EvaluationBudget(1000);
+        Assert.Equal(FxDbgErrorCode.ExpressionTypeError,
+            Assert.Throws<FxDbgException>(() => RestrictedExpression.Parse("true ? 1 : " + name + "(" + arguments + ")", budget)).Code);
+    }
 
     [Fact]
     public void Bitwise_boolean_operators_evaluate_both_operands()

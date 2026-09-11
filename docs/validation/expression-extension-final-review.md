@@ -74,3 +74,35 @@ Standards原1项、已修复1项、遗留0项；Spec原2项、已修复2项、�
 本组四项全部完成，可按原位置勾选并本地提交；Standards和Spec遗留阻塞均为0。最后验收结束后仅补充完成状态与证据文档，生产源码保持上述被测子树。Dictionary.Count等计算型getter、跨模块TypeRef等不能证明的字段引用继续明确拒绝；没有扩大目标代码执行权限。
 
 929个可保留原始证据文件已复制到本机`artifacts/expression-extension/full-a4e7cdc4fd774cb481fa3203cc0ffea2/`并逐文件核验SHA256，原路径、归档路径、长度和哈希见[归档清单](expression-extension-final-evidence/manifest.json)。其中包括完整全量日志、阶段0对照、环境状态、单独扩展入口及最终覆盖率原件；Git中的机器摘要均≤64KiB，输入/归档逐文件清单按仓库规则保留。
+
+## 2026-09-11 增量审核修复（基线 a7914a9）
+
+本节对应用户后续提供的7项非阻塞意见；上述全量验收及569/598覆盖率仍仅证明原被测子树，不能作为本次修改的实测证据。本次逐条核实结果为：完全采纳4项、部分采纳2项、不采纳1项。没有需要用户另行决策的事项。
+
+| 编号 | 意见 | 决策 | 处理与依据 |
+| --- | --- | --- | --- |
+| Standards-1 | 字段枚举重复及不同上限错误码 | 部分采纳 | 在[NativeVariableValue.cs](../../src/FxDbg.Interop/NativeVariableValue.cs)提取AddFields，共用EnumFields/GetFieldProps/CloseEnum、64项缓冲和10000字段上限；变量树传取消检查，表达式传MetadataProbe。不统一两者错误码：ADR-005要求表达式256探针先行限流，不能为追求同码绕过预算。真实Huge用例验证表达式在第257次探针执行前拒绝，而变量树仍能分页读取第256～260个字段。 |
+| Standards-2 | 固有函数元数三处声明 | 完全采纳 | [ExpressionIntrinsics.Arity](../../src/FxDbg.Core/Evaluation/ExpressionIntrinsics.cs)成为本次扩展16个固有函数的唯一支持名单与元数来源，解析器和求值器共同使用。增加16组未执行分支的过量参数测试；既有合法元数/结果测试保留，原7个固有函数契约不变。 |
+| Standards-3 | MemberCatalog与EvaluationBudget参数簇、元数据重取 | 不采纳 | MemberCatalog按停止代次缓存，EvaluationBudget按单次求值持有取消和截止时间，两者生命周期不同；现有显式参数避免把过期预算放入缓存。实例和MemberCatalog均未持久持有MetaDataImport，枚举方法中的metadata只是局部变量。属性可能在祖类或其他模块声明，ProveProperty必须从property.Type取得正确模块元数据，不能用接收者模块替代。没有重复查询导致预算/耗时失败的证据，新增上下文/元数据缓存超出本次最小修复需要。 |
+| Standards-4 | 16字节IL上限散布 | 完全采纳 | [TrivialGetterProof.MaximumIlBytes](../../src/FxDbg.Core/Evaluation/TrivialGetterProof.cs)统一预算、解码器、方法头检查和Interop拒绝文案；数值仍为16。补充16/17字节头边界，既有单方法及累计预算测试保留。 |
+| Spec-1 | Dictionary.Count与ROADMAP表述矛盾 | 完全采纳 | 按用户要求原地修正[ROADMAP](../../ROADMAP.md)已勾选行：List/Queue/Stack的纯字段Count通过，Dictionary.Count属于计算型拒绝矩阵；不放宽IL白名单，不改写历史验收结果。 |
+| Spec-2 | 无关MethodImpl误拒继承getter | 完全采纳 | 先加入UnrelatedImplementationModel，经中间祖类继承VirtualProofBase.Value，并显式实现无关接口Run；旧实现真实Debug x64复现expression_name_not_found。删除任意MethodImpl直接拒绝，保留逐声明名称检查及隐式覆盖扫描。修复后该属性返回13，OddVirtual/ImplicitVirtual仍拒绝，副作用计数和Continue计数均不变。 |
+| Spec-3 | 十六进制L溢出行为 | 部分采纳 | 采纳十进制/十六进制L行为不一致的事实，不采纳将合法十六进制L改为语法错误的建议。修正十进制路径允许long/ulong，新增两种进制的long上界、上界+1、ulong上界及越界测试，同步工具文档和技能副本。 |
+
+Spec-3的关键依据：[微软整数类型文档](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/integral-numeric-types#integer-literals)明确L后缀按long、ulong依次选型，超出ulong才产生CS1021。本机.NET SDK 10.0.301编译器对`(0xffffffffffffffffL).GetType()`与`(18446744073709551615L).GetType()`均输出System.UInt64，对`(9223372036854775807L).GetType()`输出System.Int64。修复前新增十进制边界测试2项失败，均在原Parser.Next抛ExpressionSyntaxError，证明应修正十进制路径。未改变已明确文档化的无后缀十进制int/long/ulong子集规则。
+
+### 增量修复验证
+
+被测生产子树固定为`6055ed4d8e838532c82a598aca7a4cbd1da2e0cc`。`eng/verify-expression-extension.ps1`双配置默认入口通过，本轮上下文为`2e38d3ed7cdd4aebb902296bcff3a72e`；阶段4-1/4-3共28项监督步骤（含准备复用）均退出0，覆盖Debug/Release、x86/x64、原生/MCP/DAP/CLI的求值和条件断点。每配置完整普通单测348项通过、0失败/跳过；最终884项准备产物SHA256核验通过，输入未变。
+
+随后单独采集Debug/Release普通单测（各348项）及Debug真实四入口求值/条件断点harness（6组，内部包含双架构），全部通过、0跳过。仅合并本轮3个主XML附件，未重复计入TRX附件副本。相对a7914a9，本次6个生产文件的变更可执行行**39/39（100%）**，满足≥90%门槛；这是行覆盖率，不是分支覆盖率。309项专项输入在采集前后SHA256均一致；Fx40目标继续排除在插桩之外。
+
+证据：[精简结果及原件哈希](expression-extension-final-evidence/followup/followup-result.json)、[专项输入](expression-extension-final-evidence/followup/inputs.sha256)、[覆盖率输入与源码子树](expression-extension-final-evidence/followup/coverage-inputs.json)、[变更行覆盖率](expression-extension-final-evidence/followup/coverage-changes.json)、[汇总脚本](expression-extension-final-evidence/followup/summarize-coverage.ps1)。新增机器摘要最大约14KiB；XML、TRX、日志、负向复现及编译器对照源码仅保存在本机`artifacts/expression-review-followup/`，不作为已上传制品。原始真实场景日志已复制到该目录的`real-logs/`，避免后续harness覆盖其原路径。
+
+复现时先运行`./eng/verify-expression-extension.ps1`，再对普通单测项目的Debug/Release和现有`expression-extension-final-evidence/coverage-harness/ExpressionCoverage.csproj`的Debug执行`dotnet test --collect "Code Coverage" --settings eng/coverage.runsettings`。真实harness需设置`FXDBG_COVERAGE_ROOT`为仓库根、`FXDBG_COVERAGE_CONFIGURATION=Debug`及`FXDBG_COVERAGE_NODE`。新一轮须为独立结果目录重新记录3个主XML路径/SHA256、输入哈希及被测子树，再运行汇总脚本；不能将新结果套用本轮清单。使用本机保留原件复核本轮覆盖率可执行：
+
+```powershell
+./docs/validation/expression-extension-final-evidence/followup/summarize-coverage.ps1 -RepoRoot (Get-Location).Path
+```
+
+本次范围内静态复核无遗留阻塞：没有新增目标调用、写入、ICorDebugEval或Continue，原错误码保持不变，两组工具文档与技能副本逐字节一致。本轮未重新启动独立审核代理，也未重跑Service/IIS、真实VS Code或阶段0～4整套验收；它们的上次完整通过记录仍仅对应本报告前述历史源码子树。

@@ -52,24 +52,8 @@ internal sealed partial class NativeVariableValue
             if (++depth > 128) throw EvaluationBudget.Limit();
             catalog.Hierarchy.Add(type);
             MetaDataImport metadata = type.Class.Module.GetMetaDataInterface().MetaDataImport;
-            var fieldTokens = new mdFieldDef[32]; IntPtr enumeration = IntPtr.Zero;
-            try
-            {
-                while (true)
-                {
-                    budget.MetadataProbe();
-                    int count = MetadataNames.EnumFields(metadata, ref enumeration, type.Class.Token, fieldTokens);
-                    if (count == 0) break;
-                    for (int index = 0; index < count; index++)
-                    {
-                        budget.MetadataProbe();
-                        GetFieldPropsResult field = metadata.GetFieldProps(fieldTokens[index]);
-                        catalog.Fields.Add(new FieldSlot(field.szField, fieldTokens[index], type, (field.pdwAttr & CorFieldAttr.fdStatic) != 0));
-                    }
-                }
-            }
-            finally { if (enumeration != IntPtr.Zero) metadata.CloseEnum(enumeration); }
-            var propertyTokens = new mdProperty[32]; enumeration = IntPtr.Zero;
+            AddFields(type, metadata, catalog.Fields, budget.MetadataProbe);
+            var propertyTokens = new mdProperty[32]; IntPtr enumeration = IntPtr.Zero;
             try
             {
                 while (true)
@@ -143,7 +127,8 @@ internal sealed partial class NativeVariableValue
                 return RejectProperty("Virtual getter dispatch cannot be proved from the property metadata.");
             budget.MetadataProbe();
             CorDebugCode code = module.GetFunctionFromToken(property.Getter).ILCode;
-            if (code is null || code.Size < 2 || code.Size > 16) return RejectProperty("Getter has no IL or exceeds the 16-byte whitelist.");
+            if (code is null || code.Size < 2 || code.Size > TrivialGetterProof.MaximumIlBytes)
+                return RejectProperty($"Getter has no IL or exceeds the {TrivialGetterProof.MaximumIlBytes}-byte whitelist.");
             budget.MetadataProbe();
             if (!HasNoExceptionSections(module, method.pulCodeRVA, code, budget))
                 return RejectProperty("Method header is unavailable, inconsistent or contains extra sections.");
@@ -182,9 +167,8 @@ internal sealed partial class NativeVariableValue
                     HRESULT status = metadata.TryEnumMethodImpls(ref enumeration, type.Class.Token, bodies, declarations, out int count);
                     if (status != HRESULT.S_FALSE) ClrDebug.Extensions.ThrowOnFailed(status);
                     if (count == 0) break;
-                    // An explicit mapping in a more-derived type may replace an inherited
-                    // getter without any Property row. Do not guess its virtual slot.
-                    if (depth < property.Depth - 1) return false;
+                    // A MethodImpl may replace this getter without a Property row. Check
+                    // its declaration; unrelated interface implementations do not replace it.
                     for (int index = 0; index < count; index++)
                     {
                         budget.MetadataProbe();

@@ -7,6 +7,7 @@ public enum GetterLoadKind { InstanceField, StaticField, Constant }
 /// <summary>Exact IL recognition only. Metadata, exception clauses and field identity must be proved by Interop.</summary>
 public sealed class TrivialGetterProof
 {
+    public const int MaximumIlBytes = 16;
     private TrivialGetterProof(GetterLoadKind kind, int token = 0, object? constant = null)
     { Kind = kind; FieldToken = token; Constant = constant; }
     public GetterLoadKind Kind { get; }
@@ -16,7 +17,7 @@ public sealed class TrivialGetterProof
     /// <summary>ECMA-335 II.25.4: no unknown flags, extra sections or inconsistent code size.</summary>
     public static int HeaderSizeWithoutSections(byte[] header, int codeSize)
     {
-        if (header is null || header.Length == 0 || codeSize < 2 || codeSize > 16) return 0;
+        if (header is null || header.Length == 0 || codeSize < 2 || codeSize > MaximumIlBytes) return 0;
         if ((header[0] & 3) == 2) return header[0] >> 2 == codeSize ? 1 : 0;
         if (header.Length != 12 || (header[0] & 3) != 3) return 0;
         int flags = BitConverter.ToUInt16(header, 0);
@@ -25,7 +26,7 @@ public sealed class TrivialGetterProof
 
     public static TrivialGetterProof? Decode(byte[] il, bool staticGetter)
     {
-        if (il is null || il.Length < 2 || il.Length > 16 || il[il.Length - 1] != 0x2a) return null;
+        if (il is null || il.Length < 2 || il.Length > MaximumIlBytes || il[il.Length - 1] != 0x2a) return null;
         if (!staticGetter && il.Length == 7 && il[0] == 0x02 && il[1] == 0x7b)
             return Field(GetterLoadKind.InstanceField, BitConverter.ToInt32(il, 2));
         if (il.Length == 6 && il[0] == 0x7e) return Field(GetterLoadKind.StaticField, BitConverter.ToInt32(il, 1));

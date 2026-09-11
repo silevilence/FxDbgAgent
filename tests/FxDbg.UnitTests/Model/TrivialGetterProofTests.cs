@@ -20,6 +20,8 @@ public sealed class TrivialGetterProofTests
         fat[1] = 0x30; fat[2] = 0; Assert.Equal(0, TrivialGetterProof.HeaderSizeWithoutSections(fat, 7));
         Assert.Equal(0, TrivialGetterProof.HeaderSizeWithoutSections(new byte[] { 3 }, 7));
         Assert.Equal(0, TrivialGetterProof.HeaderSizeWithoutSections(Array.Empty<byte>(), 7));
+        Assert.Equal(1, TrivialGetterProof.HeaderSizeWithoutSections(new byte[] { (16 << 2) | 2 }, 16));
+        Assert.Equal(0, TrivialGetterProof.HeaderSizeWithoutSections(new byte[] { (17 << 2) | 2 }, 17));
     }
     [Fact]
     public void Only_exact_load_patterns_are_accepted()

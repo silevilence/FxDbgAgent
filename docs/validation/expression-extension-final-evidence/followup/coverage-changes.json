@@ -1,0 +1,50 @@
+{
+  "covered": 39,
+  "total": 39,
+  "rate": 1,
+  "files": [
+    {
+      "instrumented": true,
+      "uncovered": [],
+      "file": "src/FxDbg.Core/Evaluation/EvaluationBudget.cs",
+      "executableChangedLines": 1,
+      "covered": 1
+    },
+    {
+      "instrumented": true,
+      "uncovered": [],
+      "file": "src/FxDbg.Core/Evaluation/ExpressionIntrinsics.cs",
+      "executableChangedLines": 11,
+      "covered": 11
+    },
+    {
+      "instrumented": true,
+      "uncovered": [],
+      "file": "src/FxDbg.Core/Evaluation/RestrictedExpression.cs",
+      "executableChangedLines": 2,
+      "covered": 2
+    },
+    {
+      "instrumented": true,
+      "uncovered": [],
+      "file": "src/FxDbg.Core/Evaluation/TrivialGetterProof.cs",
+      "executableChangedLines": 2,
+      "covered": 2
+    },
+    {
+      "instrumented": true,
+      "uncovered": [],
+      "file": "src/FxDbg.Interop/NativeVariableValue.cs",
+      "executableChangedLines": 19,
+      "covered": 19
+    },
+    {
+      "instrumented": true,
+      "uncovered": [],
+      "file": "src/FxDbg.Interop/NativeVariableValue.Properties.cs",
+      "executableChangedLines": 4,
+      "covered": 4
+    }
+  ],
+  "incompleteChangedMethods": []
+}

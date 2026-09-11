@@ -1,0 +1,38 @@
+{
+  "measurementSources": [
+    {
+      "path": "docs\\validation\\expression-extension-final-evidence\\coverage-harness\\ExpressionCoverage.csproj",
+      "sha256": "A3F3AF258E205EEE786249950698723EDC8BE4F2EF351E02491487F333B33A87"
+    },
+    {
+      "path": "docs\\validation\\expression-extension-final-evidence\\coverage-harness\\RealExpressionCoverage.cs",
+      "sha256": "4E1103C40DB38BF6B6E9C5B68458038252F039FBF639ABE2129875221301D22A"
+    },
+    {
+      "path": "eng\\coverage.runsettings",
+      "sha256": "8FF21D965AD1115E31EB92ED0C604CA217BA7B90E2EE4C7ABFAB4E4B32A3A413"
+    }
+  ],
+  "baseline": "a7914a9f7b0be372439465536898efc7eae9a122",
+  "sourceRoot": "C:\\code\\dotnet\\FxDbgAgent",
+  "testInputsManifest": "docs/validation/expression-extension-final-evidence/followup/inputs.sha256",
+  "testInputsSha256": "08A15DC42F9C50192091EA72ABAB249FA7D4A80F768358845933AA64CBDBEDC2",
+  "inputs": [
+    {
+      "path": "artifacts\\expression-review-followup\\coverage\\real-Debug\\07d00c81-783c-415b-be87-48ddd54bb81e\\silev_SILSURFACE10_2026-09-11.13_16_56.cobertura.xml",
+      "sha256": "E223AA6F0A294820C3FC1F7CF04EEEE6F8AB4DC4F08BF37DE9C657EF66F7413A",
+      "length": 3006330
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\coverage\\unit-Debug\\5eb2f62a-4285-425b-b397-13577bf8430b\\silev_SILSURFACE10_2026-09-11.13_13_15.cobertura.xml",
+      "sha256": "1EF8CBCF8551687A4D15A5ADA3E3871FDF983E9429C455B6DA38E3835CBC727B",
+      "length": 2080046
+    },
+    {
+      "path": "artifacts\\expression-review-followup\\coverage\\unit-Release\\cac9bff1-e134-4f75-917b-b88dc08af09f\\silev_SILSURFACE10_2026-09-11.13_13_45.cobertura.xml",
+      "sha256": "3482F3B0AEB93545A565934809CD403DB93AA8D5FA72EF1E0490C0A7714E2E35",
+      "length": 1926104
+    }
+  ],
+  "sourceTree": "6055ed4d8e838532c82a598aca7a4cbd1da2e0cc"
+}
