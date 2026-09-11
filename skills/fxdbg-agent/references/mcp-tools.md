@@ -62,6 +62,8 @@ FieldDef按模块+token匹配；MemberRef验证声明类型（包括同模块泛
 
 输入4096个UTF-16代码单元，最多1024语法节点、32层、10000解释步骤、1024次值读取；单字符串32768、累计中间字符串65536个代码单元，超限拒绝，不能截断后继续计算。evaluationTimeoutMs包含Engine排队、解析、读取和计算；timeoutMs仍是Host调用期限。取消观察请求可先返回，后台只读工作在原期限内收尾；不会为求值Continue或使帧失效。不可中断原生COM故障沿用隔离清理，不能承诺此类故障后继续或强杀Engine后目标存活。
 
+诊断自愈（ADR-005）：成员失败可附`Candidate members:`，仅列接收者字段/属性元数据名称，最多8个、每名≤64字符，仅字母/数字/下划线且首字符非数字；编译器生成名、接口限定名、控制字符等不输出。精确大小写前缀优先，其次忽略大小写前缀，最后忽略大小写的编辑距离≤2；同级按距离及Ordinal名称排序、去重。名称建议不代表getter可读取，拒绝仍说明不能证明只读、不会调用。计算计入共享步骤预算，耗尽沿用expression_limit_exceeded。允许元数据名称这一脱敏例外，仍不回显请求表达式、运行值或内部堆栈；审计日志仍仅操作元数据。
+
 错误分类为expression_syntax_error、expression_forbidden、expression_type_error、expression_name_not_found（包括未找到字段的Getter请求）、expression_index_out_of_range、expression_arithmetic_error、expression_limit_exceeded；上下文/读取/期限继续使用invalid_session_state、frame_not_found、value_unavailable、value_optimized_away、operation_timed_out/cancelled。错误不回显表达式、值或内部堆栈。正常结果固定name=result，对象referenceId仅在当前停止有效；恢复后重新取帧。求值失败先查status，修正表达式或预算后重试，无需额外Continue。
 
 示例：`debug_evaluate({sessionId,frameId,expression:"number + matrix[1,1]"})`；读取字段为node.Label，比较为node.Self == node，字符串比较为String.Equals(node.Label,"node-label")。

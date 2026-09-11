@@ -67,6 +67,15 @@ internal static partial class Program
             }
             foreach (string rejected in new[] { "Dictionary.Count", "Properties.Computed", "Properties.SideEffect", "Properties.WithFinally", "Properties.Cold", "ComputedVirtual.Value", "Properties.Item", "Properties.Explicit", "Generic.OtherInstantiation" })
                 ExpectError(FxDbgErrorCode.ExpressionNameNotFound,()=>session.Evaluate(frame,rejected,1000));
+            foreach (var diagnostic in new[] { ("Properties.Puer", "Pure"), ("Properties.pure", "Pure"), ("node.Labl", "Label"), ("Properties.Computed", "Computed") })
+            {
+                try { session.Evaluate(frame,diagnostic.Item1,1000); throw new InvalidOperationException("Missing expected diagnostic."); }
+                catch (FxDbgException error)
+                {
+                    Require(error.Code==FxDbgErrorCode.ExpressionNameNotFound && error.Message.Contains("Candidate members: "+diagnostic.Item2),"Metadata suggestion and frozen error code.");
+                    Require(error.Message.Contains("Getter cannot be proved read-only and will not be called.") && !error.Message.Contains(diagnostic.Item1) && !error.Message.Contains("node-label") && !error.Message.Contains("FxDbg.Interop"),"Only metadata names and stable reasons may enter diagnostics.");
+                }
+            }
             string Balanced(int first, int count) => count == 1 ? "Many.P"+first : "("+Balanced(first,count/2)+"+"+Balanced(first+count/2,count-count/2)+")";
             // Warm only the type catalogue (no getter proofs), so this case isolates the IL cap.
             Require(session.Evaluate(frame,"Many.Field",1000).DisplayValue=="1","Metadata-only catalogue warmup.");

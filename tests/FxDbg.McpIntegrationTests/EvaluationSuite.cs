@@ -11,7 +11,9 @@ internal static class EvaluationSuite
         foreach(string architecture in new[]{"x86","x64"})
         {
             using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(90));
-            await using var connection = await McpTestConnection.Create(bundle,timeout.Token);
+            string auditDirectory=Path.Combine(root,"artifacts/stage4-validation/diagnostics-"+Guid.NewGuid().ToString("N")); Directory.CreateDirectory(auditDirectory);
+            string auditPath=Path.Combine(auditDirectory,"audit.jsonl");
+            await using var connection = await McpTestConnection.Create(bundle,timeout.Token,arguments:["--log-level","debug","--log-file",auditPath,"--value-logs","off"]);
             string name = architecture=="x86" ? "Fx40.ModuleLifecycle.x86" : "Fx40.ModuleLifecycle";
             string exe=Path.Combine(root,$"tests/Debuggees/{name}/bin/{configuration}/net40/{name}.exe");
             var created=await ObservationSuite.Call(connection.Client,"launch",new(){["exe"]=exe,["args"]=new[]{"--evaluation"},["stopAtEntry"]=true},timeout.Token);
@@ -37,6 +39,12 @@ internal static class EvaluationSuite
                 var children=(await Call("variables",new(){["frameId"]=frame,["referenceId"]=(string)node["referenceId"]!})).AsArray();
                 ObservationSuite.Require(children.Any(x=>(string?)x!["name"]=="Label"&&(string?)x["displayValue"]=="node-label"),"MCP evaluation result expands using variables.");
                 foreach (string rejected in new[]{"Dictionary.Count","Properties.Computed","Properties.SideEffect","ComputedVirtual.Value","Properties.Item","Properties.Explicit","Properties.Cold","Generic.OtherInstantiation"}) await Eval(rejected,"expression_name_not_found");
+                foreach (var diagnostic in new[]{("Properties.Puer","Pure"),("Properties.pure","Pure"),("node.Labl","Label"),("Properties.Computed","Computed")})
+                {
+                    var error=await Eval(diagnostic.Item1,"expression_name_not_found"); string text=(string)error["message"]!;
+                    ObservationSuite.Require(text.Contains("Candidate members: "+diagnostic.Item2) && text.Contains("Getter cannot be proved read-only") && !text.Contains(diagnostic.Item1) && !text.Contains("node-label") && !text.Contains("FxDbg.Interop"),"MCP bounded metadata diagnostics, no expression/value/stack.");
+                }
+                await Eval("String.Concat(\"SECRET_DIAGNOSTIC_EXPRESSION\", node.Labl)","expression_name_not_found");
                 await Eval("node.ToString()","expression_forbidden"); await Eval("node.Dangerous","expression_name_not_found");
                 await Eval("1/0","expression_arithmetic_error"); await Eval("1+","expression_syntax_error");
                 await Eval("oversized","expression_limit_exceeded"); await Eval("Array.GetLength(matrix,-1)","expression_index_out_of_range");
@@ -47,6 +55,10 @@ internal static class EvaluationSuite
                 await Call("step",new(){["threadId"]=thread,["kind"]="over"}); await Eval("number","frame_not_found");
                 await Call("continue"); await process.WaitForExitAsync(timeout.Token);
                 ObservationSuite.Require(process.ExitCode==0,"MCP target confirms unchanged state and zero side effects.");
+                await connection.DisposeAsync();
+                string diagnostics=connection.StandardError+File.ReadAllText(auditPath);
+                foreach(string forbidden in new[]{"SECRET_DIAGNOSTIC_EXPRESSION","node-label","abcdefghijklmnop","Properties.Puer","node.Labl","FxDbg.Interop"})
+                    ObservationSuite.Require(!diagnostics.Contains(forbidden),"Evaluation audit/stderr must not leak expressions, values or internal stacks.");
                 Console.WriteLine($"PASS: MCP evaluation {architecture} {configuration}, values, paging, rejection, stale frame, state oracle.");
             }
             finally { if(!process.HasExited){process.Kill();await process.WaitForExitAsync();} }

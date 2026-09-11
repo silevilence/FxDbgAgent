@@ -94,3 +94,5 @@ npx --yes skills@1.5.23 add <FxDbg源码绝对路径> --skill fxdbg-agent --agen
 ADR-005扩展允许三元、位运算、十六进制与基础数值unchecked显式转换，裸名可回退this成员；新增String/Math/Array固有操作的参数及边界以mcp-tools为准，例如`number > 0 ? Math.Clamp(number,0,10) : 0`、`String.Substring(message,0,3)`。这些能力也用于断点条件，仍禁止目标函数调用。
 
 属性读取先查精确字段，再按运行时类型证明getter IL并代读字段/常量；例如`List.Count`和纯字段auto-property可用，Dictionary.Count等计算getter仍拒绝。不能证明时不要改用方法调用，按错误原因选择直接字段或变量树。缓存只活到当前停止，证明预算为每表达式256次元数据探针/累计256字节IL、单方法16字节；详见mcp-tools。
+
+成员拼写错误可根据`Candidate members:`中的元数据名称（最多8个）修正后重试；提示按前缀、大小写、编辑距离排序。候选不保证属性可读：若getter无法证明只读，改读已知字段或使用variables观察，禁止请求目标调用。诊断不会回显完整表达式或值，七类错误码不变；具体预算与脱敏规则见mcp-tools。

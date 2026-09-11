@@ -26,13 +26,17 @@ async function main() {
       const object=await client.request('evaluate',{frameId,expression:'node'}); assert.ok(object.variablesReference>0);
       const children=await client.request('variables',{variablesReference:object.variablesReference}); assert.ok(children.variables.some(x=>x.name==='Label'&&x.value==='node-label'));
       for (const expression of ['Dictionary.Count','Properties.Computed','Properties.SideEffect','ComputedVirtual.Value','Properties.Item','Properties.Explicit','Properties.Cold','Generic.OtherInstantiation']) await assert.rejects(client.request('evaluate',{frameId,expression}),/expression_name_not_found/);
+      for (const [expression,name] of [['Properties.Puer','Pure'],['Properties.pure','Pure'],['node.Labl','Label'],['Properties.Computed','Computed']]) {
+        await assert.rejects(client.request('evaluate',{frameId,expression}),error=>error.message.includes('expression_name_not_found')&&error.message.includes('Candidate members: '+name)&&error.message.includes('Getter cannot be proved read-only')&&!error.message.includes(expression)&&!error.message.includes('node-label'));
+      }
+      await assert.rejects(client.request('evaluate',{frameId,expression:'String.Concat("SECRET_DIAGNOSTIC_EXPRESSION", node.Labl)'}),/expression_name_not_found/);
       await assert.rejects(client.request('evaluate',{frameId,expression:'node.ToString()'}),/expression_forbidden/);
       let cursor=client.events.length; await client.request('next',{threadId:stop.body.threadId}); await client.event('stopped',cursor);
       await assert.rejects(client.request('evaluate',{frameId,expression:'number'}));
       cursor=client.events.length; await client.request('continue'); await client.event('terminated',cursor);
       await until(()=>fs.existsSync(dapOracle),'DAP target state oracle'); assert.equal(fs.readFileSync(dapOracle,'utf8'),'ok');
       console.log(`PASS: DAP evaluation ${configuration} ${architecture}, watch, object paging, rejection, stale frame, state oracle.`);
-    } finally { await client.close(); }
+    } finally { await client.close(); assert.ok(!/SECRET_DIAGNOSTIC_EXPRESSION|node-label|Properties\.Puer|FxDbg\.Interop/.test(client.stderr)); }
 
     // CLI is a separate persistent Host using the same Engine command.
     const cli=path.join(root,`src/FxDbg.Cli/bin/${configuration}/net10.0-windows/fxdbg.dll`);
@@ -47,6 +51,11 @@ async function main() {
       const stop=call('wait').result; const frame=call('stack',['--thread',String(stop.threadId)]).result[0].frameId;
       assert.equal(call('evaluate',['--frame',frame,'--expression','number + matrix[1,1]']).result.displayValue,'82');
       for (const [expression,expected] of [['(number & 0x1) == 0 ? Math.Clamp(number,0,10) : 0','10'],['fallbackNumber','17'],['String.Substring(message,2,3)','cde'],['Array.IndexOf(Values,20)','1'],['List.Count','3'],['Properties.Pure','23'],['Virtual.Value','23'],['Properties.Static','37'],['Struct.Pure','31'],['Properties.Flag','true'],['userCodeCalls','0']]) assert.equal(call('evaluate',['--frame',frame,'--expression',expression]).result.displayValue,expected);
+      for (const [expression,name] of [['Properties.Puer','Pure'],['node.Labl','Label'],['Properties.Computed','Computed']]) {
+        const rejected=spawnSync('dotnet',[cli,'evaluate','--session',session,'--frame',frame,'--expression',expression],{encoding:'utf8',windowsHide:true,timeout:30000});
+        assert.equal(rejected.status,1); const error=JSON.parse(rejected.stderr);
+        assert.equal(error.code,'expression_name_not_found'); assert.ok(error.message.includes('Candidate members: '+name)&&error.message.includes('Getter cannot be proved read-only')&&!error.message.includes(expression)&&!error.message.includes('node-label'));
+      }
       call('continue'); const exited=call('wait').result; assert.equal(exited.reason,'processExit');
       assert.equal(fs.readFileSync(cliOracle,'utf8'),'ok');
       console.log(`PASS: CLI evaluation ${configuration} ${architecture}, shared Engine path and target state oracle.`);

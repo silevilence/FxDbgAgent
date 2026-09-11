@@ -92,12 +92,12 @@ internal sealed partial class NativeVariableValue
     private ExpressionValue ReadProvedProperty(string name, MemberCatalog catalog, EvaluationBudget budget)
     {
         PropertySlot[] matches = catalog.Properties.Where(property => property.Name == name).ToArray();
-        if (matches.Length == 0) throw MemberUnavailable("Member was not found.");
+        if (matches.Length == 0) throw MemberUnavailable("Member was not found.", name, catalog, budget);
         PropertySlot property = matches[0];
-        if (matches.Count(candidate => candidate.Depth == property.Depth) != 1) throw MemberUnavailable("Property metadata is ambiguous.");
+        if (matches.Count(candidate => candidate.Depth == property.Depth) != 1) throw MemberUnavailable("Property metadata is ambiguous.", name, catalog, budget);
         PropertyProof proof = property.Proof ?? ProveProperty(property, catalog, budget);
         budget.Check(); property.Proof = proof;
-        if (proof.Rejection is not null) throw MemberUnavailable(proof.Rejection);
+        if (proof.Rejection is not null) throw MemberUnavailable(proof.Rejection, name, catalog, budget);
         if (proof.Constant is not null) return proof.Constant;
         FieldSlot field = proof.Field!;
         var instance = new CorDebugObjectValue((ICorDebugObjectValue)value!.Raw);
@@ -106,8 +106,9 @@ internal sealed partial class NativeVariableValue
     }
 
     private static PropertyProof RejectProperty(string reason) => new() { Rejection = reason };
-    private static FxDbgException MemberUnavailable(string reason) => new(FxDbgErrorCode.ExpressionNameNotFound,
-        "Getter cannot be proved read-only and will not be called. " + reason);
+    private static FxDbgException MemberUnavailable(string reason, string name, MemberCatalog catalog, EvaluationBudget budget) => new(FxDbgErrorCode.ExpressionNameNotFound,
+        "Getter cannot be proved read-only and will not be called. " + reason +
+        MemberSuggestions.Suffix(name, catalog.Fields.Select(field => field.Name).Concat(catalog.Properties.Select(property => property.Name)), budget));
 
     private static PropertyProof ProveProperty(PropertySlot property, MemberCatalog catalog, EvaluationBudget budget)
     {

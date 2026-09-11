@@ -1,0 +1,235 @@
+{
+  "localOnly": true,
+  "files": [
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-publish-mcp-Debug.log",
+      "length": 4600,
+      "sha256": "2D8356E5A43940A168CCADC71A61F44A5297C5965290C9DD5ED8BC83410F1277"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-publish-mcp-Debug.log.processes",
+      "length": 7425,
+      "sha256": "70D0698235001F2A22C2D9D42D9604EDA4FA2012684A6680C77808CD44519662"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-publish-mcp-Debug.log.timing.json",
+      "length": 179,
+      "sha256": "14BA90DB04A63E6885ED3086F4BD6BC2109F55931FD69482A78009FC8741C466"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-publish-dap-Debug.log",
+      "length": 4600,
+      "sha256": "83942EBF1B1CC3B87755B4C68FCFF4964EF2D59CF3DA349FE266F2F30802879C"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-publish-dap-Debug.log.processes",
+      "length": 2876,
+      "sha256": "CA84E6DC3E706B32765A1BFBB4601363C5A837F0497772B413AB8F2034F670A8"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-publish-dap-Debug.log.timing.json",
+      "length": 179,
+      "sha256": "19CFC1DDA11308BCF41AFF20B5ED7C322C2A9C162BD833A96C77DE316640DBD2"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-unit-Debug.log",
+      "length": 382,
+      "sha256": "48C7E6730B27A5E524A9D830FBAFA71C00A60E128872603F24A3E26BBDC62C97"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-unit-Debug.log.processes",
+      "length": 12796,
+      "sha256": "C77407291323C82856D1D6A13CD9BEA1359187A9541EB016D0F2C8D6B649A238"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-unit-Debug.log.timing.json",
+      "length": 179,
+      "sha256": "D3214D736270BFE0AD6ACC9413937A076806C6C7AFE90E13EBBD273B0BCD6524"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-native-Debug-x86.log",
+      "length": 189,
+      "sha256": "DC39A5BB18B0261434625AB037B994DE7C66E20C329E9AC42F53B09F1E6EFCA8"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-native-Debug-x86.log.processes",
+      "length": 285,
+      "sha256": "6AA6586FEC4B9234419F2B9FD8F96591B7C6E76561A32A1A85A9C431F0CB08E6"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-native-Debug-x86.log.timing.json",
+      "length": 178,
+      "sha256": "76D12DD1BB23CF366D5106F713A7C1FCAAD34AE35C64C844D1E0DDFBDB3BE940"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-native-Debug-x64.log",
+      "length": 189,
+      "sha256": "5DC0EB9F699635736D7982F75030C8C1CF754A8A9FC5CFFBFE758BB10D23FE23"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-native-Debug-x64.log.processes",
+      "length": 282,
+      "sha256": "7DD1AA2BC9608155458323A90614F81C5B44624E49F9B4B0F391BD158ADB3213"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-native-Debug-x64.log.timing.json",
+      "length": 178,
+      "sha256": "5F42E257A60A43D4FD630EB0EDCF36437DCF24007E870190ACAE889655A4566A"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-mcp-Debug.log",
+      "length": 231,
+      "sha256": "1126F8BA1830CF0516B03F4C49E1024204BB8C864F7EB95D5C085B4A59719E54"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-mcp-Debug.log.processes",
+      "length": 1065,
+      "sha256": "1F498C945BCE3E418E6AC0A3A0C8E7F06B57DD43914FC09D688541807A73B3AB"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-mcp-Debug.log.timing.json",
+      "length": 178,
+      "sha256": "4FA6FD4025422DEF97844FE48C251485E05F9C90B7F95880A3BCDC9A004C5945"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-dap-cli-Debug.log",
+      "length": 393,
+      "sha256": "371F11951A73D1AF9B6BF174C2147903674D055A0555551314B8338AB33F1621"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-dap-cli-Debug.log.processes",
+      "length": 9657,
+      "sha256": "00EF6028C6CBED4638C4CFD61284CF7AA1A6466ED7BAEE394F20AD1860135873"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-dap-cli-Debug.log.timing.json",
+      "length": 179,
+      "sha256": "A5632AAB26468D287B8292B51A7614CC5DB60DD867B4DC08A83ED1FC9A6FE9FD"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-publish-mcp-Release.log",
+      "length": 4672,
+      "sha256": "85989E973C0C6F1E858385928456F9A37969ED020BFDF040058ACA4625F34C8B"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-publish-mcp-Release.log.processes",
+      "length": 8595,
+      "sha256": "B31D0DE0F8F1ED07915E3C924C75603DA0704974C3693746D5055A49AAEAD23C"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-publish-mcp-Release.log.timing.json",
+      "length": 179,
+      "sha256": "24B78DD28008071031D9244144849AEAC057F937655767375C6C93C91F85D1AE"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-publish-dap-Release.log",
+      "length": 4672,
+      "sha256": "F9E4CD349506A68975070CDB634FBC99BF9B500348A6406192CB47E4F5D492CB"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-publish-dap-Release.log.processes",
+      "length": 2885,
+      "sha256": "763B3F54465B7FF3D761CA49EFCCD3D8F84C7F5E62859077A076BCD2E9040CF7"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-publish-dap-Release.log.timing.json",
+      "length": 179,
+      "sha256": "CE0C51527FBCBB24EBD59D602B79E0093F70DFA3783D347103CC6C56E0FEDA54"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-unit-Release.log",
+      "length": 384,
+      "sha256": "BAE5373582E339C2CD4F3AF79F7239AC95CA9B730DA29420054F72DE838F8BF6"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-unit-Release.log.processes",
+      "length": 12809,
+      "sha256": "F42BFF23C6EF9776F4554483C461748DDAB82F5DB0911BDB0D83F6FD86A27E75"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-unit-Release.log.timing.json",
+      "length": 179,
+      "sha256": "8E43AB6354DEF37CA2ABDF98990C195FD9ABBBCA14E36637371C534336E1C386"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-native-Release-x86.log",
+      "length": 191,
+      "sha256": "939E1884C96793C2EDF3DF775CC61C05D58A658899E607EF01715183B17D487B"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-native-Release-x86.log.processes",
+      "length": 286,
+      "sha256": "F3316E2E934071FB86B127704B2AD56CF05C6019411163E3E5A47EECF6E43903"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-native-Release-x86.log.timing.json",
+      "length": 178,
+      "sha256": "3D93D8EC8631A81621F831FB67B66CEEE784C040F509DE44ACB2032B4E8489A9"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-native-Release-x64.log",
+      "length": 191,
+      "sha256": "F410D09DE1011767ED958B9D5C556FEB1AC4047FE97B7D18CE8330B9C6E4E4CA"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-native-Release-x64.log.processes",
+      "length": 282,
+      "sha256": "8888F2BD7055687FE246CA0D868E4E9F6AB93862CB2DA61039A304644480BFCF"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-native-Release-x64.log.timing.json",
+      "length": 178,
+      "sha256": "36B26F3E8B0EBA0B04C08EC38952C9D6327D3217200613D8D1DBB570DE375BC6"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-mcp-Release.log",
+      "length": 235,
+      "sha256": "862D6DDA22C38B8791A3C8154830EC338B3AD7289FEF48A8A5423C8B424EF4BC"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-mcp-Release.log.processes",
+      "length": 1061,
+      "sha256": "45504D133CD0CF7B3C61B736F548C4ED4C31D98C3EABEFD23E2989FBC95E1236"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-mcp-Release.log.timing.json",
+      "length": 178,
+      "sha256": "612688E8D786B8446AD8C57609F92061E3917F67764001A576F24F1540EE3444"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-dap-cli-Release.log",
+      "length": 401,
+      "sha256": "B3254A0594410CED36CB12D52DA4F4F57A0BAE609D576A8D70783551DC894D33"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-dap-cli-Release.log.processes",
+      "length": 9651,
+      "sha256": "15B0753586370DA207378678C43FEF8D68C30EBE6E59FF0AB6F31CA7AA53016B"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\evaluation-dap-cli-Release.log.timing.json",
+      "length": 179,
+      "sha256": "9A43EB8739634002515A02D18CF27632592F8773535BCEA732976F6D508D26C5"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\diagnostics-24b340f66cc343ff9dfee6ac56ab8869-audit.jsonl",
+      "length": 9891,
+      "sha256": "A98A4A30307B4109F4E20E22F7D852E1D02C8E7BC56D4D33DE6CAE32A6B262B9"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\diagnostics-6ded952c865d45f9b26ee7a9423c019e-audit.jsonl",
+      "length": 9880,
+      "sha256": "E127BC4F195D63FE18A8871161A43415ED108E35FCB8CD534D495C83C1C779A0"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\diagnostics-a358e7a5a14640ccb5721ca8e43d50ea-audit.jsonl",
+      "length": 9869,
+      "sha256": "FEAC45716B56F53D86450DF4F88A41B26936E946C2CB4705D34FCB587AC0EE60"
+    },
+    {
+      "path": "artifacts\\expression-extension\\task3-accepted\\diagnostics-c197fa6316b14943a8d099909fc6235d-audit.jsonl",
+      "length": 9873,
+      "sha256": "07CF9665DB334A49F11F125C77285C10FCB0F11D7ADD12FEEEDB2F9CD2A40DAC"
+    }
+  ]
+}
